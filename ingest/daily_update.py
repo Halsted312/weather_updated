@@ -42,10 +42,10 @@ logger = logging.getLogger(__name__)
 CITIES = {
     "chicago": {"series": "KXHIGHCHI", "station": "GHCND:USW00014819"},
     "miami": {"series": "KXHIGHMIA", "station": "GHCND:USW00012839"},
-    "austin": {"series": "KXHIGHAUST", "station": "GHCND:USW00013958"},
-    "la": {"series": "KXHIGHLA", "station": "GHCND:USW00023174"},
+    "austin": {"series": "KXHIGHAUS", "station": "GHCND:USW00013958"},
+    "la": {"series": "KXHIGHLAX", "station": "GHCND:USW00023174"},
     "denver": {"series": "KXHIGHDEN", "station": "GHCND:USW00003017"},
-    "philadelphia": {"series": "KXHIGHPHL", "station": "GHCND:USW00013739"},
+    "philadelphia": {"series": "KXHIGHPHIL", "station": "GHCND:USW00013739"},
 }
 
 

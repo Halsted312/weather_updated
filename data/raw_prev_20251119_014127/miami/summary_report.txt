@@ -1,0 +1,25 @@
+============================================================
+CHICAGO WEATHER MARKETS DATA SUMMARY
+============================================================
+
+Series: KXHIGHMIA
+Title: Highest temperature in Miami
+Category: Climate and Weather
+Frequency: daily
+
+Total Markets: 600
+Date Range: 2025-08-04 to 2025-11-11
+Markets by status:
+  finalized: 600
+
+Settled markets: 600
+  YES: 100
+  NO: 500
+
+Total 1-minute candles: 52,259
+Markets with candlestick data: 586
+Average candles per market: 89
+
+Data Quality:
+
+============================================================

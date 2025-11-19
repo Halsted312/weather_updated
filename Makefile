@@ -1,6 +1,14 @@
 .PHONY: help init init-dev db-up db-down db-migrate db-reset install test lint format clean
 .DEFAULT_GOAL := help
 
+# Detect docker compose CLI
+DOCKER_COMPOSE_BIN := $(shell command -v docker-compose 2>/dev/null)
+ifeq ($(DOCKER_COMPOSE_BIN),)
+DOCKER_COMPOSE := docker compose
+else
+DOCKER_COMPOSE := docker-compose
+endif
+
 # Directories
 PROJECT_DIR := $(shell pwd)
 DATA_DIR := $(PROJECT_DIR)/data
@@ -41,12 +49,12 @@ install: ## Install Python dependencies
 # Docker & Database Commands
 db-up: ## Start PostgreSQL container
 	@echo "$(CYAN)Starting PostgreSQL...$(NC)"
-	docker-compose up -d postgres
+	$(DOCKER_COMPOSE) up -d postgres
 	@echo "$(GREEN)✓ PostgreSQL started on localhost:5444$(NC)"
 
 db-down: ## Stop PostgreSQL container
 	@echo "$(CYAN)Stopping PostgreSQL...$(NC)"
-	docker-compose down
+	$(DOCKER_COMPOSE) down
 	@echo "$(GREEN)✓ PostgreSQL stopped$(NC)"
 
 db-migrate: ## Run database migrations
