@@ -24,7 +24,7 @@ CITY_MAP = {
     'KXHIGHAUS': ('austin', 'KAUS'),
     'KXHIGHLAX': ('los_angeles', 'KLAX'),
     'KXHIGHDEN': ('denver', 'KDEN'),
-    'KXHIGHPHL': ('philadelphia', 'KPHL'),
+    'KXHIGHPHIL': ('philadelphia', 'KPHL'),
 }
 
 def test_5min_joins(session):
@@ -175,7 +175,7 @@ def test_data_coverage(session):
                 WHEN market_ticker LIKE 'KXHIGHAUS-%' THEN 'KAUS'
                 WHEN market_ticker LIKE 'KXHIGHLAX-%' THEN 'KLAX'
                 WHEN market_ticker LIKE 'KXHIGHDEN-%' THEN 'KDEN'
-                WHEN market_ticker LIKE 'KXHIGHPHL-%' THEN 'KPHL'
+                WHEN market_ticker LIKE 'KXHIGHPHIL-%' THEN 'KPHL'
             END as loc_id,
             MIN(timestamp)::date as earliest,
             MAX(timestamp)::date as latest,
@@ -190,7 +190,7 @@ def test_data_coverage(session):
                 WHEN market_ticker LIKE 'KXHIGHAUS-%' THEN 'KAUS'
                 WHEN market_ticker LIKE 'KXHIGHLAX-%' THEN 'KLAX'
                 WHEN market_ticker LIKE 'KXHIGHDEN-%' THEN 'KDEN'
-                WHEN market_ticker LIKE 'KXHIGHPHL-%' THEN 'KPHL'
+                WHEN market_ticker LIKE 'KXHIGHPHIL-%' THEN 'KPHL'
             END
         ORDER BY loc_id
     """)).fetchall()

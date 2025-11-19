@@ -288,10 +288,10 @@ Configured in `config/cities.yaml`:
 |------|---------------|--------------|
 | Chicago | KXHIGHCHI | GHCND:USW00014819 (Midway) |
 | Miami | KXHIGHMIA | GHCND:USW00012839 (Miami Airport) |
-| Austin | KXHIGHAUST | GHCND:USW00013958 (Austin Airport) |
-| LA | KXHIGHLA | GHCND:USW00023174 (LAX) |
+| Austin | KXHIGHAUS | GHCND:USW00013958 (Austin Airport) |
+| LA | KXHIGHLAX | GHCND:USW00023174 (LAX) |
 | Denver | KXHIGHDEN | GHCND:USW00003017 (Denver Airport) |
-| Philadelphia | KXHIGHPHL | GHCND:USW00013739 (Philly Airport) |
+| Philadelphia | KXHIGHPHIL | GHCND:USW00013739 (Philly Airport) |
 
 ## API References
 

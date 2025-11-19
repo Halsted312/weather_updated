@@ -113,8 +113,8 @@ def check_kalshi_data(session):
                MAX(close_time)::date as latest_close
         FROM markets
         WHERE series_ticker IN (
-            'KXHIGHCHI', 'KXHIGHMIA', 'KXHIGHAUST',
-            'KXHIGHLA', 'KXHIGHDEN', 'KXHIGHPHL'
+            'KXHIGHCHI', 'KXHIGHMIA', 'KXHIGHAUS',
+            'KXHIGHLAX', 'KXHIGHDEN', 'KXHIGHPHIL'
         )
         GROUP BY series_ticker
         ORDER BY series_ticker
