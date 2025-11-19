@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 load_dotenv()
 
 # Database URL from environment
-DATABASE_URL = os.getenv("DB_URL", "postgresql://kalshi:kalshi@localhost:5433/kalshi")
+DATABASE_URL = os.getenv("DB_URL", "postgresql://kalshi:kalshi@localhost:5444/kalshi")
 
 # Create engine with connection pooling
 engine = create_engine(

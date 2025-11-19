@@ -12,7 +12,7 @@ YELLOW := \033[1;33m
 NC := \033[0m # No Color
 
 help: ## Show this help message
-	@echo "$(CYAN)Kalshi Weather Trading Bot - Makefile Commands$(NC)"
+	@echo "$(CYAN)Kalshi Weather Data Pipeline - Makefile Commands$(NC)"
 	@echo ""
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "$(GREEN)%-20s$(NC) %s\n", $$1, $$2}'
 
@@ -31,7 +31,7 @@ init-dev: ## Initialize development environment with all tools
 	pip install -e ".[dev]"
 	@$(MAKE) db-up --profile tools
 	@echo "$(GREEN)✓ Dev environment ready!$(NC)"
-	@echo "pgAdmin available at http://localhost:5050 (admin@kalshi.local / admin)"
+	@echo "pgAdmin available at http://localhost:5151 (admin@kalshi.local / admin)"
 
 install: ## Install Python dependencies
 	@echo "$(CYAN)Installing dependencies...$(NC)"
@@ -42,7 +42,7 @@ install: ## Install Python dependencies
 db-up: ## Start PostgreSQL container
 	@echo "$(CYAN)Starting PostgreSQL...$(NC)"
 	docker-compose up -d postgres
-	@echo "$(GREEN)✓ PostgreSQL started on localhost:5432$(NC)"
+	@echo "$(GREEN)✓ PostgreSQL started on localhost:5444$(NC)"
 
 db-down: ## Stop PostgreSQL container
 	@echo "$(CYAN)Stopping PostgreSQL...$(NC)"
@@ -58,9 +58,9 @@ db-reset: ## Reset database (WARNING: destroys all data)
 	@echo "$(YELLOW)⚠ WARNING: This will destroy all data!$(NC)"
 	@read -p "Are you sure? [y/N] " -n 1 -r; \
 	echo; \
-	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
+		if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
 		$(MAKE) db-down; \
-		docker volume rm kalshi_weather_postgres_data 2>/dev/null || true; \
+		docker volume rm kalshi_weather_mom_postgres_data 2>/dev/null || true; \
 		$(MAKE) db-up; \
 		$(MAKE) db-migrate; \
 		echo "$(GREEN)✓ Database reset complete$(NC)"; \
@@ -135,27 +135,11 @@ poll-wx-stop: ## Stop Visual Crossing poller
 		echo "$(YELLOW)No poller PID found$(NC)"; \
 	fi
 
-# Backtest Commands
-backtest-demo: ## Run demo backtest (7 days Chicago)
-	@echo "$(CYAN)Running demo backtest...$(NC)"
-	python scripts/run_backtest.py --city chicago --days 7 --strategy price-only
-	@echo "$(GREEN)✓ Backtest complete$(NC)"
-
-backtest-chicago: ## Run full Chicago backtest (100 days)
-	@echo "$(CYAN)Running Chicago backtest (100 days)...$(NC)"
-	python scripts/run_backtest.py --city chicago --days 100 --strategy price-only
-	@echo "$(GREEN)✓ Results saved to $(DATA_DIR)/results/$(NC)"
-
 # Development Commands
-test: ## Run test suite
-	@echo "$(CYAN)Running tests...$(NC)"
-	pytest
-	@echo "$(GREEN)✓ Tests passed$(NC)"
-
 lint: ## Run linters (ruff + mypy)
 	@echo "$(CYAN)Running linters...$(NC)"
 	ruff check .
-	mypy kalshi ingest weather db backtest models scripts
+	mypy kalshi ingest weather db scripts
 	@echo "$(GREEN)✓ Linting complete$(NC)"
 
 format: ## Format code with black
