@@ -1,0 +1,9 @@
+{
+  "best_params": {
+    "C": 0.10668678790542625,
+    "class_weight": null
+  },
+  "calibration": "isotonic",
+  "n_trials": 5,
+  "seed": 42
+}
