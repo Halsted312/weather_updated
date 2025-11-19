@@ -3,7 +3,7 @@ version: '3.8'
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: kalshi_weather_postgres
+    container_name: kalshi_weather_mom_postgres
     restart: unless-stopped
     environment:
       POSTGRES_USER: kalshi
@@ -11,7 +11,7 @@ services:
       POSTGRES_DB: kalshi
       PGDATA: /var/lib/postgresql/data/pgdata
     ports:
-      - "5433:5432"
+      - "5444:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./init-db:/docker-entrypoint-initdb.d
@@ -25,14 +25,14 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4:latest
-    container_name: kalshi_weather_pgadmin
+    container_name: kalshi_weather_mom_pgadmin
     restart: unless-stopped
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@kalshi.local
       PGADMIN_DEFAULT_PASSWORD: admin
       PGADMIN_CONFIG_SERVER_MODE: 'False'
     ports:
-      - "5051:80"
+      - "5151:80"
     volumes:
       - pgadmin_data:/var/lib/pgadmin
     depends_on:
@@ -44,8 +44,10 @@ services:
 
 volumes:
   postgres_data:
+    name: kalshi_weather_mom_postgres_data
     driver: local
   pgadmin_data:
+    name: kalshi_weather_mom_pgadmin_data
     driver: local
 
 networks:

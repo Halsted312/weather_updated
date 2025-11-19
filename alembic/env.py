@@ -20,7 +20,7 @@ load_dotenv()
 config = context.config
 
 # Override sqlalchemy.url from environment
-db_url = os.getenv("DB_URL", "postgresql://kalshi:kalshi@localhost:5433/kalshi")
+db_url = os.getenv("DB_URL", "postgresql://kalshi:kalshi@localhost:5444/kalshi")
 config.set_main_option("sqlalchemy.url", db_url)
 
 # Interpret the config file for Python logging.

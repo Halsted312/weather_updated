@@ -66,11 +66,11 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Load historical parquet data into database"
     )
-parser.add_argument(
-    "--city",
-    type=str,
-    help="City to load (e.g., chicago, miami). If not specified, loads all cities.",
-)
+    parser.add_argument(
+        "--city",
+        type=str,
+        help="City to load (e.g., chicago, miami). If not specified, loads all cities.",
+    )
     parser.add_argument(
         "--data-dir",
         type=str,

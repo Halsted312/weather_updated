@@ -1,7 +1,0 @@
-usage: run_backtest.py [-h] [--city CITY] --start-date START_DATE --end-date
-                       END_DATE [--strategy {buyhold,model_kelly}]
-                       [--bracket {between,greater,less}]
-                       [--models-dir MODELS_DIR] [--initial-cash INITIAL_CASH]
-                       [--entry-price ENTRY_PRICE] [--contracts CONTRACTS]
-                       [--verbose]
-run_backtest.py: error: unrecognized arguments:       

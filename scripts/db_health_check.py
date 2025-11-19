@@ -14,8 +14,8 @@ from sqlalchemy import text
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from db.connection import get_session
-from ml.city_config import CITY_CONFIG
-from ml.date_utils import series_ticker_for_city
+from kalshi.city_config import CITY_CONFIG
+from kalshi.date_utils import series_ticker_for_city
 from weather.time_utils import coerce_datetime_to_utc, utc_now
 
 logger = logging.getLogger(__name__)

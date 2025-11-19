@@ -11,7 +11,7 @@ import os
 
 load_dotenv()
 
-DB_URL = os.getenv("DB_URL", "postgresql://kalshi:kalshi@localhost:5433/kalshi")
+DB_URL = os.getenv("DB_URL", "postgresql://kalshi:kalshi@localhost:5444/kalshi")
 engine = create_engine(DB_URL)
 
 print("=" * 80)

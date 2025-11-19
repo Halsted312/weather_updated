@@ -14,7 +14,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from db.connection import get_session
 from sqlalchemy import text
-from ml.date_utils import event_date_from_close_time
+from kalshi.date_utils import event_date_from_close_time
 
 
 def export_kalshi_settlements(output_csv: str) -> int:

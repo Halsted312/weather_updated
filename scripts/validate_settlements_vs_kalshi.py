@@ -24,7 +24,7 @@ import argparse
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from backtest.bin_labels import bin_resolves_yes
+from kalshi.bin_labels import bin_resolves_yes
 
 logger = logging.getLogger(__name__)
 

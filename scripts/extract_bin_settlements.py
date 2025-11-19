@@ -20,7 +20,7 @@ import pandas as pd
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from ml.date_utils import event_date_from_close_time
+from kalshi.date_utils import event_date_from_close_time
 
 # Setup logging
 logging.basicConfig(
