@@ -1,0 +1,11 @@
+{
+  "best_params": {
+    "penalty": "elasticnet",
+    "C": 899.3329861859144,
+    "l1_ratio": 0.9916853061475601,
+    "class_weight": "balanced"
+  },
+  "calibration": "sigmoid",
+  "n_trials": 15,
+  "seed": 42
+}

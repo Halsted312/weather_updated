@@ -1,0 +1,10 @@
+{
+  "sharpe": 10.157697121956536,
+  "max_drawdown": 0.0,
+  "total_pnl_cents": 193650,
+  "total_fees_cents": 1695,
+  "gross_pnl_cents": 195345,
+  "ece_trades": 0.10343772097913857,
+  "ece_all_minutes": null,
+  "n_trades": 2
+}

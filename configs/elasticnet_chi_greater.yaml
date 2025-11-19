@@ -1,0 +1,57 @@
+# Production configuration for ElasticNet model: Chicago / greater bracket
+# Generated from Phase 2B training results (2025-08-02 to 2025-11-13)
+
+# City and bracket
+city: chicago
+bracket: greater
+
+# Feature set
+feature_set: elasticnet_rich
+
+# Training window parameters
+train_days: 90  # Training window size in days
+test_days: 7    # Test window size in days
+step_days: 7    # Step size for walk-forward windows
+start_date: "2025-08-02"
+end_date: "2025-11-13"
+
+# Hyperparameter search space (Optuna)
+penalties:
+  - elasticnet  # L1 + L2 penalty for feature selection
+trials: 60      # Optuna trials per window
+cv_splits: 4    # GroupKFold splits
+
+# ElasticNet search ranges
+search_space:
+  C_min: 0.001      # Inverse regularization strength (log scale)
+  C_max: 1000.0
+  l1_ratio_min: 0.0  # 0 = pure L2 (Ridge), 1 = pure L1 (Lasso)
+  l1_ratio_max: 1.0
+  class_weight: [null, "balanced"]  # Options for class imbalance
+
+# Calibration
+calibration:
+  method_large: isotonic  # Use if N_cal >= threshold
+  method_small: sigmoid   # Use if N_cal < threshold (Platt scaling)
+  threshold: 1000         # Calibration set size threshold
+
+# Opinion pooling (log-odds blending)
+blend_weight: 0.7  # Model weight (0.7), market weight (0.3)
+
+# Risk management parameters
+risk:
+  kelly_alpha: 0.25           # Fractional Kelly (0.25 = quarter Kelly)
+  max_spread_cents: 3         # Skip if spread > 3¢
+  tau_open_cents: 1           # Entry gate: edge ≥ 1¢ after costs
+  tau_close_cents: 0.5        # Exit gate: edge ≥ 0.5¢
+  slip_per_leg_cents: 1       # Slippage assumption per leg
+  max_bankroll_pct_city_day_side: 0.10  # Max 10% capital per city/day/side
+
+# Visual Crossing feature configuration
+use_vc_minutes: true  # This city uses VC minute data
+
+# Reproducibility
+seed: 42
+
+# Model provenance
+pilot_dir: models/production/chicago/greater

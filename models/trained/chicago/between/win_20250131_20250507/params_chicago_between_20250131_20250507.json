@@ -1,0 +1,10 @@
+{
+  "best_params": {
+    "penalty": "l1",
+    "C": 0.016873691249005545,
+    "class_weight": "balanced"
+  },
+  "calibration": "sigmoid",
+  "n_trials": 30,
+  "seed": 42
+}
