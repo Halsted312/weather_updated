@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import json
 from dataclasses import dataclass
 from typing import Dict, Iterable, List, Sequence
 
@@ -134,14 +135,14 @@ def save_mc_params(params: MCParams) -> None:
             updated_at = now()
         """
     )
-    with engine.connect() as conn:
+    with engine.begin() as conn:
         conn.execute(
             query,
             {
                 "city": params.city,
                 "rho": params.rho,
-                "sigma_buckets": params.sigma_buckets,
-                "baseline": params.baseline,
+                "sigma_buckets": json.dumps(params.sigma_buckets),
+                "baseline": json.dumps(params.baseline) if params.baseline else None,
             },
         )
 
@@ -197,11 +198,17 @@ def build_baseline_from_template(
     )
     grid_utc = grid_local.tz_convert(dt.timezone.utc)
 
-    temp_series = panel[["ts_utc", "wx_temp_1m", "wx_temp_5m"]].copy()
-    temp_series["wx_temp"] = temp_series["wx_temp_1m"].fillna(temp_series["wx_temp_5m"])
+    temp_cols = [col for col in ("wx_temp_1m", "wx_temp_5m") if col in panel.columns]
+    if not temp_cols:
+        raise ValueError("panel must include at least one wx_temp column")
+    cols = ["ts_utc"] + temp_cols
+    temp_series = panel[cols].copy()
+    temp_series["wx_temp"] = temp_series[temp_cols].bfill(axis=1).iloc[:, 0]
     temp_series = temp_series.dropna(subset=["wx_temp"])
 
-    obs = temp_series.set_index("ts_utc")["wx_temp"].sort_index()
+    ts_index = pd.to_datetime(temp_series["ts_utc"], utc=True)
+    obs = pd.Series(temp_series["wx_temp"].values, index=ts_index).sort_index()
+    obs = obs[~obs.index.duplicated(keep="last")]
     obs = obs.reindex(grid_utc, method="ffill")
 
     if obs.isna().all():
@@ -210,7 +217,7 @@ def build_baseline_from_template(
         obs = panel_close.reindex(grid_utc, method="ffill")
 
     obs = obs.ffill()
-    obs = obs.fillna(method="bfill")
+    obs = obs.bfill()
 
     return obs
 
@@ -355,18 +362,26 @@ def compute_p_wx_and_hazards(
     grouped = panel.groupby("ts_utc")
     for ts_utc, rows in grouped:
         rows = rows.copy()
+        ts_utc_ts = pd.Timestamp(ts_utc)
+        if ts_utc_ts.tzinfo is None:
+            ts_utc_ts = ts_utc_ts.tz_localize(dt.timezone.utc)
+        else:
+            ts_utc_ts = ts_utc_ts.tz_convert(dt.timezone.utc)
         m_run_series = rows.get("wx_running_max")
         if m_run_series is not None and not m_run_series.isna().all():
             m_run_temp = float(m_run_series.iloc[0])
         else:
-            temp_cols = ["wx_temp_1m", "wx_temp_5m"]
-            temp_vals = rows[temp_cols].bfill(axis=1).iloc[:, 0]
-            if temp_vals.isna().all():
-                m_run_temp = float(rows["mid_prob"].iloc[0] * 100.0)
+            temp_cols = [col for col in ("wx_temp_1m", "wx_temp_5m") if col in rows.columns]
+            if temp_cols:
+                temp_vals = rows[temp_cols].bfill(axis=1).iloc[:, 0]
+                if temp_vals.isna().all():
+                    m_run_temp = float(rows["mid_prob"].iloc[0] * 100.0)
+                else:
+                    m_run_temp = float(temp_vals.max())
             else:
-                m_run_temp = float(temp_vals.max())
+                m_run_temp = float(rows["mid_prob"].iloc[0] * 100.0)
 
-        future = baseline.loc[baseline.index > ts_utc]
+        future = baseline.loc[baseline.index > ts_utc_ts]
         if future.empty:
             # no future grid points; hazard zero, probability mass at m_run
             hazard_next_5m = 0.0
@@ -430,7 +445,7 @@ def persist_pmf_rows(df: pd.DataFrame) -> None:
             mc_version = EXCLUDED.mc_version
         """
     )
-    with engine.connect() as conn:
+    with engine.begin() as conn:
         conn.execute(insert_sql, records)
 
 
@@ -484,14 +499,6 @@ def main() -> None:
         raise ValueError(f"Unknown command {args.cmd}")
 
 
-if __name__ == "__main__":
-    main()
-
-
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
-
 def _init_sigma_bucket_dict() -> Dict[str, List[float]]:
     labels = []
     prev = 0
@@ -512,10 +519,14 @@ def _bucket_label(minute: float) -> str:
 
 
 def _extract_resampled_temps(panel: pd.DataFrame, grid_minutes: int) -> pd.Series | None:
-    if "ts_local" not in panel or "wx_temp_1m" not in panel:
+    if "ts_local" not in panel:
         return None
-    temps = panel[["ts_local", "wx_temp_1m", "wx_temp_5m"]].copy()
-    temps["wx_temp"] = temps["wx_temp_1m"].fillna(temps["wx_temp_5m"])
+    temp_cols = [col for col in ("wx_temp_1m", "wx_temp_5m") if col in panel.columns]
+    if not temp_cols:
+        return None
+    cols = ["ts_local"] + temp_cols
+    temps = panel[cols].copy()
+    temps["wx_temp"] = temps[temp_cols].bfill(axis=1).iloc[:, 0]
     temps = temps.dropna(subset=["wx_temp"]).set_index("ts_local").sort_index()
     if temps.empty:
         return None
@@ -582,3 +593,7 @@ def _build_result_row(
         "hazard_next_60m": hazard_60m,
         "mc_version": mc_version,
     }
+
+
+if __name__ == "__main__":
+    main()

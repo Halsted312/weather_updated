@@ -95,11 +95,6 @@ load-to-db: ## Load fetched data into database
 	python ingest/load_to_db.py --data-dir $(DATA_DIR)/raw
 	@echo "$(GREEN)✓ Data loaded to database$(NC)"
 
-fetch-weather: ## Fetch NOAA weather observations
-	@echo "$(CYAN)Fetching NOAA weather data...$(NC)"
-	python scripts/fetch_weather.py --output $(DATA_DIR)/raw/weather
-	@echo "$(GREEN)✓ Weather data fetched$(NC)"
-
 # Visual Crossing Weather Commands
 backfill-wx-demo: ## Backfill 3 days Visual Crossing data (Chicago only)
 	@echo "$(CYAN)Backfilling Visual Crossing demo data (3 days, Chicago)...$(NC)"
@@ -166,4 +161,4 @@ clean: ## Clean generated files and caches
 # Quick workflow shortcuts
 quick-start: install db-up db-migrate ingest-chicago-demo load-to-db ## Quick start: setup + fetch demo data
 
-full-pipeline: ingest-all-cities fetch-weather load-to-db ## Full pipeline: ingest all data
+full-pipeline: ingest-all-cities load-to-db ## Full pipeline: ingest all data

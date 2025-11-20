@@ -49,6 +49,7 @@ def parse_args() -> argparse.Namespace:
         help="Model type (logistic regression or gradient boosting)",
     )
     parser.add_argument("--export-val", type=str, default=None, help="Optional CSV path to export validation probs")
+    parser.add_argument("--export-test", type=str, default=None, help="Optional CSV path to export test probs")
     return parser.parse_args()
 
 
@@ -86,6 +87,7 @@ def build_labels(df: pd.DataFrame, horizon_min: int, epsilon: float) -> pd.DataF
 
 
 def features_and_target(df: pd.DataFrame) -> Tuple[np.ndarray, np.ndarray]:
+    df = df.copy()
     feature_cols = [
         "mid_prob",
         "mid_velocity",
@@ -101,6 +103,9 @@ def features_and_target(df: pd.DataFrame) -> Tuple[np.ndarray, np.ndarray]:
         "p_mkt",
         "p_fused_norm",
     ]
+    missing = [col for col in feature_cols if col not in df.columns]
+    for col in missing:
+        df[col] = 0.0
     X = df[feature_cols].fillna(0.0).to_numpy()
     y = (df["label_dir"] > 0).astype(int).to_numpy()
     return X, y
@@ -153,7 +158,7 @@ def expected_calibration_error(y_true: np.ndarray, y_prob: np.ndarray, n_bins: i
     return float(ece)
 
 
-def train_model(dataset: Dataset, model_name: str, export_val: str | None = None) -> None:
+def train_model(dataset: Dataset, model_name: str, export_val: str | None = None, export_test: str | None = None) -> None:
     model = build_model(model_name)
     X_train, y_train = features_and_target(dataset.splits["train"])
     model.fit(X_train, y_train)
@@ -164,6 +169,9 @@ def train_model(dataset: Dataset, model_name: str, export_val: str | None = None
         if len(y) == 0:
             LOGGER.warning("No samples for %s split", split_name)
             continue
+        pos = int(y.sum())
+        neg = int(len(y) - pos)
+        LOGGER.info("%s: samples=%d pos=%d neg=%d", split_name, len(y), pos, neg)
         y_prob = model.predict_proba(X)[:, 1]
         acc = accuracy_score(y, (y_prob > 0.5).astype(int))
         auc = roc_auc_score(y, y_prob) if len(np.unique(y)) > 1 else float("nan")
@@ -172,11 +180,17 @@ def train_model(dataset: Dataset, model_name: str, export_val: str | None = None
         LOGGER.info("%s: acc=%.3f AUC=%.3f Brier=%.4f ECE=%.4f", split_name, acc, auc, brier, ece)
 
         if split_name == "val" and export_val:
-            export_df = split_df[["ts_utc", "market_ticker", "local_date"]].copy()
-            export_df["y_true"] = y
-            export_df["y_prob"] = y_prob
-            export_df.to_csv(export_val, index=False)
-            LOGGER.info("Exported validation predictions to %s", export_val)
+            export_predictions(split_df, y, y_prob, export_val, "validation")
+        if split_name == "test" and export_test:
+            export_predictions(split_df, y, y_prob, export_test, "test")
+
+
+def export_predictions(df: pd.DataFrame, y_true: np.ndarray, y_prob: np.ndarray, path: str, split_name: str) -> None:
+    export_df = df[["ts_utc", "market_ticker", "local_date"]].copy()
+    export_df["y_true"] = y_true
+    export_df["y_prob"] = y_prob
+    export_df.to_csv(path, index=False)
+    LOGGER.info("Exported %s predictions to %s", split_name, path)
 
 
 def main() -> None:
@@ -184,7 +198,7 @@ def main() -> None:
     df = load_features(args.city, args.start_date, args.end_date)
     df = build_labels(df, args.horizon_min, args.epsilon)
     dataset = split_by_day(df)
-    train_model(dataset, args.model, args.export_val)
+    train_model(dataset, args.model, args.export_val, args.export_test)
 
 
 if __name__ == "__main__":

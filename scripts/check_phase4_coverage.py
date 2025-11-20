@@ -17,7 +17,7 @@ from pathlib import Path
 from datetime import datetime, date
 from typing import List
 import pandas as pd
-from sqlalchemy import text
+from sqlalchemy import text, bindparam
 
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -61,7 +61,7 @@ def check_market_coverage(start_date: date, end_date: date) -> pd.DataFrame:
               AND close_time <= :end_date
             GROUP BY series_ticker, DATE(close_time AT TIME ZONE 'America/Chicago')
             ORDER BY series_ticker, market_date
-        """)
+        """).bindparams(bindparam("series_list", expanding=True))
 
         result = session.execute(
             query,
@@ -99,7 +99,7 @@ def check_candle_coverage(start_date: date, end_date: date) -> pd.DataFrame:
               AND m.status = 'settled'
             GROUP BY m.series_ticker, DATE(m.close_time AT TIME ZONE 'America/Chicago')
             ORDER BY m.series_ticker, market_date
-        """)
+        """).bindparams(bindparam("series_list", expanding=True))
 
         result = session.execute(
             query,
@@ -137,7 +137,7 @@ def check_settlement_coverage(start_date: date, end_date: date) -> pd.DataFrame:
               AND date_local >= :start_date
               AND date_local <= :end_date
             ORDER BY loc_id, date_local
-        """)
+        """).bindparams(bindparam("loc_ids", expanding=True))
 
         result = session.execute(
             query,
@@ -175,7 +175,7 @@ def check_vc_coverage(start_date: date, end_date: date) -> pd.DataFrame:
               AND DATE(ts_utc AT TIME ZONE 'America/Chicago') <= :end_date
             GROUP BY loc_id, DATE(ts_utc AT TIME ZONE 'America/Chicago')
             ORDER BY loc_id, date_local
-        """)
+        """).bindparams(bindparam("loc_ids", expanding=True))
 
         result = session.execute(
             query,

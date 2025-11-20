@@ -23,6 +23,9 @@ SELECT
     pm.p_wx,
     pm.hazard_next_5m,
     pm.hazard_next_60m,
+    pm.p_mkt,
+    pm.p_fused,
+    pm.p_fused_norm,
     pm.mc_version
 FROM feat.minute_panel_with_weather w
 LEFT JOIN pmf.minute pm
