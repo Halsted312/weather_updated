@@ -5,10 +5,10 @@ Wants=network-online.target
 
 [Service]
 Type=simple
-WorkingDirectory=/home/halsted/Documents/python/kalshi_weather
-EnvironmentFile=/home/halsted/Documents/python/kalshi_weather/.env
-Environment=PYTHONPATH=/home/halsted/Documents/python/kalshi_weather
-ExecStart=/home/halsted/Documents/python/kalshi_weather/scripts/run_settlement_poller.sh
+WorkingDirectory=/home/halsted/Documents/python/kalshi_weather_mom
+EnvironmentFile=/home/halsted/Documents/python/kalshi_weather_mom/.env
+Environment=PYTHONPATH=/home/halsted/Documents/python/kalshi_weather_mom
+ExecStart=/home/halsted/Documents/python/kalshi_weather_mom/scripts/run_settlement_poller.sh
 Restart=always
 RestartSec=10
 

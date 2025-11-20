@@ -5,7 +5,7 @@ The `scripts/poll_settlements.py` runner can now execute in a loop (30‑minute 
 ## Installation
 
 ```bash
-sudo cp /home/halsted/Documents/python/kalshi_weather/init/systemd/kalshi-settlement-poller.service /etc/systemd/system/
+sudo cp /home/halsted/Documents/python/kalshi_weather_mom/init/systemd/kalshi-settlement-poller.service /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl enable --now kalshi-settlement-poller.service
 ```

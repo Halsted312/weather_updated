@@ -5,7 +5,7 @@ Database connection management.
 import os
 from typing import Generator
 from contextlib import contextmanager
-from sqlalchemy import create_engine, event
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.pool import QueuePool
 from dotenv import load_dotenv
@@ -84,7 +84,7 @@ def check_connection() -> bool:
     """Check if database connection is working."""
     try:
         with engine.connect() as conn:
-            conn.execute("SELECT 1")
+            conn.execute(text("SELECT 1"))
         logger.info("Database connection OK")
         return True
     except Exception as e:
