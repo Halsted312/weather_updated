@@ -10,9 +10,10 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import json
 import logging
 from dataclasses import dataclass
-from typing import Dict, Iterable, List
+from typing import Dict, Iterable, List, Optional
 
 import numpy as np
 import pandas as pd
@@ -37,6 +38,12 @@ class TriadConfig:
     alpha_accel: float = 0.5
     alpha_volume: float = 0.2
     alpha_hazard: float = 0.2
+    alpha_misprice: float = 0.0
+    hazard_min: float = 0.0
+    triad_mass_min: float = 0.0
+    tod_start: int = 0  # inclusive, local hour
+    tod_end: int = 23   # inclusive, local hour
+    edge_wx_min: float = 0.0
 
 
 def parse_args() -> argparse.Namespace:
@@ -51,6 +58,11 @@ def parse_args() -> argparse.Namespace:
     sig.add_argument("--min-volume", type=float, default=10.0)
     sig.add_argument("--min-score", type=float, default=1.0)
     sig.add_argument("--max-spread", type=float, default=5.0)
+    sig.add_argument("--hazard-min", type=float, default=0.0)
+    sig.add_argument("--triad-mass-min", type=float, default=0.0)
+    sig.add_argument("--tod-start", type=int, default=0)
+    sig.add_argument("--tod-end", type=int, default=23)
+    sig.add_argument("--edge-wx-min", type=float, default=0.0)
 
     diag = sub.add_parser("diagnostics", help="Print top triad scores without gates")
     diag.add_argument("--city", required=True)
@@ -64,18 +76,92 @@ def parse_args() -> argparse.Namespace:
 def load_triad_panel(city: str, start_date: str, end_date: str) -> pd.DataFrame:
     query = text(
         """
-        SELECT *
-        FROM feat.minute_panel_triads
-        WHERE city = :city
-          AND local_date BETWEEN :start AND :end
-        ORDER BY ts_utc, event_ticker, bracket_idx
+        SELECT
+            t.*,
+            b.open_c,
+            b.high_c,
+            b.low_c,
+            b.num_trades,
+            f.p_wx,
+            f.p_mkt,
+            f.p_fused_norm,
+            f.hazard_next_5m,
+            f.hazard_next_60m
+        FROM feat.minute_panel_triads t
+        JOIN feat.minute_panel_base b
+          ON b.market_ticker = t.market_ticker
+         AND b.ts_utc = t.ts_utc
+        LEFT JOIN feat.minute_panel_full f
+          ON f.market_ticker = t.market_ticker
+         AND f.ts_utc = t.ts_utc
+        WHERE t.city = :city
+          AND t.local_date BETWEEN :start AND :end
+        ORDER BY t.ts_utc, t.event_ticker, t.bracket_idx
         """
     )
     with engine.connect() as conn:
         df = pd.read_sql_query(query, conn, params={"city": city, "start": start_date, "end": end_date})
     if df.empty:
         raise ValueError(f"No triad rows for {city} between {start_date} and {end_date}")
+    df = _maybe_join_calibrated_probs(df, city)
     return df
+
+
+def _maybe_join_calibrated_probs(df: pd.DataFrame, city: str) -> pd.DataFrame:
+    """
+    Attach calibrated up-probabilities for the 5m horizon if calibration + prediction
+    artifacts exist on disk. The default column name is p_up_calibrated_5m.
+    """
+
+    calib_path = f"results/calibration_{city}_gbdt_5m.json"
+    val_path = f"results/{city}_gbdt_5m_val.csv"
+    test_path = f"results/{city}_gbdt_5m_test.csv"
+    try:
+        with open(calib_path, "r") as fh:
+            calib = json.load(fh)
+    except FileNotFoundError:
+        LOGGER.debug("Calibration file not found: %s", calib_path)
+        return df
+
+    best_method = calib.get("best_method", "")
+    params = calib.get("params", {}).get(best_method, {})
+    if not params:
+        LOGGER.debug("No params for best_method=%s in %s", best_method, calib_path)
+        return df
+
+    preds = []
+    for path in (val_path, test_path):
+        try:
+            preds.append(pd.read_csv(path, parse_dates=["ts_utc"]))
+        except FileNotFoundError:
+            LOGGER.debug("Prediction file not found: %s", path)
+    if not preds:
+        return df
+
+    pred_df = pd.concat(preds, ignore_index=True)
+    pred_df.rename(columns={"y_prob": "p_raw"}, inplace=True)
+
+    def apply_isotonic(x: pd.Series, x_thresh: List[float], y_thresh: List[float]) -> pd.Series:
+        return pd.Series(np.interp(x, x_thresh, y_thresh), index=x.index)
+
+    if best_method == "isotonic":
+        x_thr = params.get("x_thresholds", [])
+        y_thr = params.get("y_thresholds", [])
+        pred_df["p_calibrated"] = apply_isotonic(pred_df["p_raw"].astype(float), x_thr, y_thr)
+    elif best_method == "platt":
+        coef = params.get("coef", [0.0])[0]
+        intercept = params.get("intercept", [0.0])[0]
+        logits = coef * pred_df["p_raw"].astype(float) + intercept
+        pred_df["p_calibrated"] = 1 / (1 + np.exp(-logits))
+    else:
+        LOGGER.debug("Unsupported calibration method %s", best_method)
+        return df
+
+    pred_df = pred_df[["ts_utc", "market_ticker", "p_calibrated"]].dropna()
+    pred_df.rename(columns={"p_calibrated": "p_up_calibrated_5m"}, inplace=True)
+
+    merged = df.merge(pred_df, how="left", on=["ts_utc", "market_ticker"])
+    return merged
 
 
 def _group_zscore(series: pd.Series) -> pd.Series:
@@ -110,16 +196,33 @@ def compute_scores(df: pd.DataFrame, cfg: TriadConfig, apply_gates: bool = True)
     else:
         df["hazard_gate"] = 0.0
 
+    # Mispricing term: p_wx - implied (falls back to mid_prob)
+    implied_cols = [c for c in ["p_fused_norm", "p_mkt", "mid_prob"] if c in df.columns]
+    implied = df[implied_cols[0]] if implied_cols else df["mid_prob"]
+    wx_col = df["p_wx"] if "p_wx" in df.columns else None
+    if wx_col is not None:
+        df["edge_wx"] = wx_col - implied
+        df["edge_wx_z"] = grouped["edge_wx"].transform(_group_zscore)
+    else:
+        df["edge_wx_z"] = 0.0
+
     df["score_raw"] = (
         cfg.alpha_ras * df["ras_accel_z"].fillna(0.0)
         + cfg.alpha_accel * df["accel_diff_z"].fillna(0.0)
         + cfg.alpha_volume * df["vol_z"].fillna(0.0)
         + cfg.alpha_hazard * df["hazard_gate"].fillna(0.0)
+        + cfg.alpha_misprice * df["edge_wx_z"].fillna(0.0)
     )
 
     if apply_gates:
         df["is_edge"] = (df["bracket_idx"] == 1) | (df["bracket_idx"] == df["num_brackets"])
-        df["score"] = np.where(df["liq_ok"] & df["spread_ok"] & (~df["is_edge"]), df["score_raw"], -np.inf)
+        triad_mass_ok = df["triad_mass"] >= cfg.triad_mass_min if "triad_mass" in df.columns else True
+        hazard_ok = df["hazard_gate"] >= cfg.hazard_min
+        hour_local = pd.to_datetime(df["ts_local"]).dt.hour
+        tod_ok = (hour_local >= cfg.tod_start) & (hour_local <= cfg.tod_end)
+        edge_wx_ok = (df["edge_wx"].abs() >= cfg.edge_wx_min) if "edge_wx" in df.columns else True
+        gate = df["liq_ok"] & df["spread_ok"] & (~df["is_edge"]) & triad_mass_ok & hazard_ok & tod_ok & edge_wx_ok
+        df["score"] = np.where(gate, df["score_raw"], -np.inf)
     else:
         df["is_edge"] = False
         df["score"] = df["score_raw"]
