@@ -214,6 +214,8 @@ def build_baseline_from_template(
     if obs.isna().all():
         # fall back to panel close values scaled to Fahrenheit
         panel_close = panel.set_index("ts_utc")["close_c"] / 100.0 * 100
+        panel_close.index = pd.to_datetime(panel_close.index, utc=True)
+        panel_close = panel_close[~panel_close.index.duplicated(keep="last")]
         obs = panel_close.reindex(grid_utc, method="ffill")
 
     obs = obs.ffill()
