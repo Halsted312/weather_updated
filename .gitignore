@@ -102,3 +102,18 @@ models/saved/*.h5
 tmp/
 temp/
 *.tmp
+
+# Archive folder (keep for reference)
+# archive/
+archive/alembic.ini
+archive/api_key.txt
+archive/CLAUDE.md
+archive/NOAA_API_KEY.txt
+archive/old_docker-compose.yml
+archive/old_Makefile
+archive/old_pyproject.toml
+archive/README.md
+archive/secret.txt
+archive/old_alembic/env.py
+archive/old_alembic/README
+migrations/env.py
