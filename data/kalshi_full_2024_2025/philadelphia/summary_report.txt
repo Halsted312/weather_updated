@@ -1,0 +1,25 @@
+============================================================
+CHICAGO WEATHER MARKETS DATA SUMMARY
+============================================================
+
+Series: KXHIGHPHIL
+Title: Highest temperature in Philadelphia
+Category: Climate and Weather
+Frequency: daily
+
+Total Markets: 2154
+Date Range: 2024-11-21 to 2025-11-14
+Markets by status:
+  finalized: 2154
+
+Settled markets: 2154
+  YES: 359
+  NO: 1795
+
+Total 1-minute candles: 126,992
+Markets with candlestick data: 2100
+Average candles per market: 60
+
+Data Quality:
+
+============================================================

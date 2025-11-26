@@ -1,0 +1,25 @@
+============================================================
+CHICAGO WEATHER MARKETS DATA SUMMARY
+============================================================
+
+Series: KXHIGHAUS
+Title: Highest temperature in Austin
+Category: Climate and Weather
+Frequency: daily
+
+Total Markets: 24
+Date Range: 2025-11-15 to 2025-11-18
+Markets by status:
+  finalized: 24
+
+Settled markets: 24
+  YES: 4
+  NO: 20
+
+Total 1-minute candles: 2,808
+Markets with candlestick data: 24
+Average candles per market: 117
+
+Data Quality:
+
+============================================================

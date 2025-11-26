@@ -1,0 +1,64 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kalshi-weather"
+version = "0.1.0"
+description = "Kalshi weather markets ingestion and database utilities"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    # Core
+    "requests>=2.31.0",
+    "pandas>=2.1.0",
+    "numpy>=1.26.0",
+    "pydantic>=2.5.0",
+    "pyyaml>=6.0.1",
+    "python-dotenv>=1.0.0",
+    "pyjwt[crypto]>=2.8.0",
+
+    # Database
+    "sqlalchemy>=2.0.23",
+    "psycopg2-binary>=2.9.9",
+    "alembic>=1.13.0",
+
+    # Utilities
+    "pyarrow>=14.0.1",  # For parquet files
+    "python-dateutil>=2.8.2",
+    "pytz>=2023.3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.3",
+    "pytest-cov>=4.1.0",
+    "black>=23.12.0",
+    "ruff>=0.1.7",
+    "mypy>=1.7.1",
+    "ipython>=8.18.1",
+    "jupyter>=1.0.0",
+]
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+include = '\.pyi?$'
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+select = ["E", "F", "I", "N", "W", "UP"]
+ignore = ["E501"]  # Line too long (handled by black)
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["kalshi*", "ingest*", "weather*", "db*", "scripts*"]
+exclude = ["tests*", "data*", "config*"]

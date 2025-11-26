@@ -1,0 +1,25 @@
+============================================================
+CHICAGO WEATHER MARKETS DATA SUMMARY
+============================================================
+
+Series: KXHIGHLAX
+Title: Highest temperature in Los Angeles
+Category: Climate and Weather
+Frequency: daily
+
+Total Markets: 30
+Date Range: 2025-11-14 to 2025-11-18
+Markets by status:
+  finalized: 30
+
+Settled markets: 30
+  YES: 5
+  NO: 25
+
+Total 1-minute candles: 4,550
+Markets with candlestick data: 30
+Average candles per market: 152
+
+Data Quality:
+
+============================================================

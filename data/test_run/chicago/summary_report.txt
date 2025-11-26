@@ -1,0 +1,25 @@
+============================================================
+CHICAGO WEATHER MARKETS DATA SUMMARY
+============================================================
+
+Series: KXHIGHCHI
+Title: Highest temperature in Chicago
+Category: Climate and Weather
+Frequency: daily
+
+Total Markets: 12
+Date Range: 2024-11-13 to 2024-11-14
+Markets by status:
+  finalized: 12
+
+Settled markets: 12
+  YES: 2
+  NO: 10
+
+Total 1-minute candles: 2,757
+Markets with candlestick data: 12
+Average candles per market: 230
+
+Data Quality:
+
+============================================================
