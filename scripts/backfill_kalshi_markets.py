@@ -91,25 +91,39 @@ def parse_market_ticker(ticker: str) -> dict:
     cap_strike = None
 
     if strike_part.startswith("B"):
-        # Between bracket: B50 means 50-54 (5-degree buckets typically)
+        # Between bracket: B55.5 means 55.5-57.5 (2-degree buckets for new markets)
+        # Legacy format: B50 means 50-54 (5-degree buckets)
         strike_type = "between"
         try:
-            floor_strike = int(re.search(r"B(\d+)", strike_part).group(1))
-            cap_strike = floor_strike + 4  # Default 5-degree bucket
+            m = re.search(r"B(\d+(?:\.\d+)?)", strike_part)
+            if m:
+                floor_val = float(m.group(1))
+                # Detect bucket width: if floor has decimal (.5), it's new 2°F format
+                # Otherwise it's legacy 5°F format
+                if "." in m.group(1):
+                    bucket_width = 2.0  # New 2°F buckets (B55.5 -> 55.5-57.5)
+                else:
+                    bucket_width = 4.0  # Legacy 5°F buckets (B50 -> 50-54)
+                floor_strike = floor_val
+                cap_strike = floor_val + bucket_width
         except (AttributeError, ValueError):
             pass
     elif strike_part.endswith("LO"):
-        # Less than: T34LO means < 34
+        # Less than: T34LO or T34.5LO means < 34 or < 34.5
         strike_type = "less"
         try:
-            cap_strike = int(re.search(r"T(\d+)LO", strike_part).group(1))
+            m = re.search(r"T(\d+(?:\.\d+)?)LO", strike_part)
+            if m:
+                cap_strike = float(m.group(1))
         except (AttributeError, ValueError):
             pass
     elif strike_part.startswith("T"):
-        # Greater than: T90 means >= 90
+        # Greater than: T90 or T90.5 means >= 90 or >= 90.5
         strike_type = "greater"
         try:
-            floor_strike = int(re.search(r"T(\d+)", strike_part).group(1))
+            m = re.search(r"T(\d+(?:\.\d+)?)", strike_part)
+            if m:
+                floor_strike = float(m.group(1))
         except (AttributeError, ValueError):
             pass
 
@@ -122,8 +136,9 @@ def parse_market_ticker(ticker: str) -> dict:
         "HIGHDEN": "denver",
         "HIGHLAX": "los_angeles",
         "HIGHMIA": "miami",
-        "HIGHPHL": "philadelphia",
-        "HIGHNYC": "new_york",  # Even though excluded, map it
+        "HIGHPHL": "philadelphia",   # Legacy format
+        "HIGHPHIL": "philadelphia",  # Kalshi actually uses PHIL not PHL
+        "HIGHNYC": "new_york",       # Even though excluded, map it
     }
     city_map.update(legacy_map)
     city = city_map.get(series_ticker)
