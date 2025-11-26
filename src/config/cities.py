@@ -72,7 +72,7 @@ CITIES: Dict[str, CityConfig] = {
         city_id="philadelphia",
         icao="KPHL",
         nws_office="PHL",
-        series_ticker="KXHIGHPHL",
+        series_ticker="KXHIGHPHIL",  # Note: Kalshi uses "PHIL" not "PHL"
         timezone="America/New_York",
         ghcnd_station="GHCND:USW00013739",
     ),
