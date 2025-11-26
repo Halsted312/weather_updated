@@ -1,0 +1,21 @@
+{
+  "timestamp": "2025-11-16T07:53:00.070551",
+  "excluded_cities": [
+    "nyc"
+  ],
+  "city_config_keys": [
+    "chicago",
+    "nyc",
+    "miami",
+    "austin",
+    "la",
+    "denver",
+    "philadelphia"
+  ],
+  "validation": {
+    "nyc_in_excluded_set": true,
+    "all_excluded_cities_valid": true,
+    "invalid_exclusions": [],
+    "only_nyc_excluded": true
+  }
+}

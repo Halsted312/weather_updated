@@ -1,0 +1,16 @@
+[Unit]
+Description=Kalshi Weather Settlement Poller (30-minute cadence)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/halsted/Documents/python/kalshi_weather_mom
+EnvironmentFile=/home/halsted/Documents/python/kalshi_weather_mom/.env
+Environment=PYTHONPATH=/home/halsted/Documents/python/kalshi_weather_mom
+ExecStart=/home/halsted/Documents/python/kalshi_weather_mom/scripts/run_settlement_poller.sh
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
