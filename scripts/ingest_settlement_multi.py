@@ -41,9 +41,12 @@ def get_kalshi_settlement_for_date(
     """
     Find the Kalshi market that settled YES for a given city and date.
 
+    For overlapping "greater than X" markets, picks the most specific one
+    (highest floor_strike). For "less than X" markets, picks lowest cap_strike.
+
     Returns dict with settled_ticker, settled_bucket_type, floor_strike, cap_strike, bucket_label.
     """
-    # Query for the market that settled YES on this date
+    # Query for all markets that settled YES on this date
     stmt = select(KalshiMarket).where(
         and_(
             KalshiMarket.city == city,
@@ -52,10 +55,33 @@ def get_kalshi_settlement_for_date(
         )
     )
 
-    result = session.execute(stmt).scalar_one_or_none()
+    results = session.execute(stmt).scalars().all()
 
-    if not result:
+    if not results:
         return None
+
+    # If multiple results, pick the most specific bucket
+    if len(results) > 1:
+        # Group by strike_type and pick most specific
+        between = [r for r in results if r.strike_type == "between"]
+        greater = [r for r in results if r.strike_type == "greater"]
+        less = [r for r in results if r.strike_type == "less"]
+
+        # "between" buckets are most specific, prefer them
+        if between:
+            result = between[0]
+        # For "greater", pick highest floor_strike (most restrictive)
+        elif greater:
+            result = max(greater, key=lambda r: r.floor_strike or 0)
+        # For "less", pick lowest cap_strike (most restrictive)
+        elif less:
+            result = min(less, key=lambda r: r.cap_strike or 999)
+        else:
+            result = results[0]
+
+        logger.debug(f"Multiple YES markets for {city} {target_date}, picked {result.ticker}")
+    else:
+        result = results[0]
 
     # Build human-readable bucket label
     bucket_label = None
@@ -288,7 +314,8 @@ def main():
             except Exception as e:
                 logger.error(f"Error processing {city}: {e}", exc_info=True)
                 if checkpoint_id:
-                    complete_checkpoint(session, checkpoint_id, "failed", str(e))
+                    update_checkpoint(session, checkpoint_id, error=str(e))
+                    complete_checkpoint(session, checkpoint_id, "failed")
                 continue
 
     logger.info(f"\n{'='*60}")
