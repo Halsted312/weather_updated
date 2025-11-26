@@ -33,7 +33,21 @@ class Base(DeclarativeBase):
 
 
 class WxSettlement(Base):
-    """Official NWS daily max temperature (ground truth for Kalshi settlement)."""
+    """Official NWS daily max temperature (ground truth for Kalshi settlement).
+
+    Multi-source TMAX tracking:
+    - tmax_cli_f: NWS CLI (via IEM parsed JSON)
+    - tmax_cf6_f: NWS CF6 (preliminary monthly)
+    - tmax_iem_f: IEM CLI JSON API (historical)
+    - tmax_ncei_f: NCEI daily-summaries (canonical fallback)
+    - tmax_ads_f: Legacy ADS data
+
+    Kalshi bucket tracking:
+    - settled_ticker: The winning market ticker
+    - settled_bucket_type: 'between' | 'less' | 'greater'
+    - settled_floor_strike, settled_cap_strike: Temperature bounds
+    - settled_bucket_label: Human-readable label
+    """
 
     __tablename__ = "settlement"
     __table_args__ = {"schema": "wx"}
@@ -44,14 +58,31 @@ class WxSettlement(Base):
     # Source-specific temperatures (integer °F)
     tmax_cli_f: Mapped[Optional[int]] = mapped_column(SmallInteger, nullable=True)
     tmax_cf6_f: Mapped[Optional[int]] = mapped_column(SmallInteger, nullable=True)
+    tmax_iem_f: Mapped[Optional[int]] = mapped_column(SmallInteger, nullable=True)
+    tmax_ncei_f: Mapped[Optional[int]] = mapped_column(SmallInteger, nullable=True)
     tmax_ads_f: Mapped[Optional[int]] = mapped_column(SmallInteger, nullable=True)
 
     # Chosen settlement value
     tmax_final: Mapped[int] = mapped_column(SmallInteger, nullable=False)
-    source_final: Mapped[str] = mapped_column(Text, nullable=False)  # 'cli' | 'cf6' | 'ads'
+    source_final: Mapped[str] = mapped_column(Text, nullable=False)  # 'cli' | 'cf6' | 'iem' | 'ncei' | 'ads'
 
-    # Metadata
+    # Legacy raw payload (kept for backwards compatibility)
     raw_payload: Mapped[Optional[dict]] = mapped_column(JSONB, nullable=True)
+
+    # Per-source raw payloads
+    raw_payload_cli: Mapped[Optional[dict]] = mapped_column(JSONB, nullable=True)
+    raw_payload_cf6: Mapped[Optional[dict]] = mapped_column(JSONB, nullable=True)
+    raw_payload_iem: Mapped[Optional[dict]] = mapped_column(JSONB, nullable=True)
+    raw_payload_ncei: Mapped[Optional[dict]] = mapped_column(JSONB, nullable=True)
+
+    # Kalshi settlement bucket tracking
+    settled_ticker: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    settled_bucket_type: Mapped[Optional[str]] = mapped_column(Text, nullable=True)  # 'between' | 'less' | 'greater'
+    settled_floor_strike: Mapped[Optional[int]] = mapped_column(SmallInteger, nullable=True)
+    settled_cap_strike: Mapped[Optional[int]] = mapped_column(SmallInteger, nullable=True)
+    settled_bucket_label: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+
+    # Timestamps
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=text("NOW()")
     )
@@ -177,7 +208,12 @@ class KalshiMarket(Base):
 
 
 class KalshiCandle1m(Base):
-    """1-minute OHLCV candlesticks for Kalshi markets."""
+    """1-minute OHLCV candlesticks for Kalshi markets.
+
+    Supports dual storage with `source` column:
+    - 'api_event': From Kalshi Event Candlesticks API (primary)
+    - 'trades': Aggregated from individual trades (fallback/audit)
+    """
 
     __tablename__ = "candles_1m"
     __table_args__ = {"schema": "kalshi"}
@@ -187,6 +223,10 @@ class KalshiCandle1m(Base):
     )
     bucket_start: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), primary_key=True
+    )
+    # Source of candle data: 'api_event' | 'trades'
+    source: Mapped[str] = mapped_column(
+        String(20), primary_key=True, default="trades"
     )
 
     # OHLC prices (0-100 cents)
@@ -330,3 +370,47 @@ class SimTrade(Base):
 
     # Relationships
     run: Mapped["SimRun"] = relationship(back_populates="trades")
+
+
+# =============================================================================
+# Schema: meta (Operations/Infrastructure)
+# =============================================================================
+
+
+class IngestCheckpoint(Base):
+    """Track ingestion progress for resumable backfills.
+
+    Each (pipeline_name, city) combo tracks where we left off,
+    enabling resume on crash/restart.
+    """
+
+    __tablename__ = "ingestion_checkpoint"
+    __table_args__ = {"schema": "meta"}
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+
+    # What are we tracking?
+    pipeline_name: Mapped[str] = mapped_column(Text, nullable=False)
+    city: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+
+    # Where did we get to?
+    last_processed_date: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
+    last_processed_cursor: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    last_processed_ticker: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+
+    # Status tracking
+    status: Mapped[str] = mapped_column(Text, default="running")  # running, completed, failed
+    total_processed: Mapped[int] = mapped_column(Integer, default=0)
+    error_count: Mapped[int] = mapped_column(Integer, default=0)
+    last_error: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+
+    # Timestamps
+    started_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=text("NOW()")
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=text("NOW()"), onupdate=text("NOW()")
+    )
+    completed_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )

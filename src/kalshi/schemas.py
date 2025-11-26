@@ -188,7 +188,7 @@ class Trade(BaseModel):
 
 
 class CandlestickResponse(BaseModel):
-    """Response from candlesticks endpoint."""
+    """Response from per-market candlesticks endpoint."""
 
     candles: List[Candle] = Field(default_factory=list)
     adjusted_start_ts: Optional[int] = None
@@ -199,6 +199,64 @@ class CandlestickResponse(BaseModel):
     def parse_adjusted_timestamps(cls, v: Union[str, int, None]) -> Optional[int]:
         """Convert ISO 8601 strings to Unix timestamps."""
         return parse_timestamp(v)
+
+
+class EventCandlestickResponse(BaseModel):
+    """Response from event candlesticks endpoint (multiple markets).
+
+    Event candlesticks return all markets for an event in a single call.
+    The API returns market_candlesticks as a LIST of lists (parallel to market_tickers),
+    NOT a dict. Each index in market_candlesticks corresponds to the same index in market_tickers.
+
+    Example response:
+    {
+        "market_tickers": ["TICKER1", "TICKER2", ...],
+        "market_candlesticks": [
+            [candles for TICKER1...],
+            [candles for TICKER2...],
+        ],
+        "adjusted_start_ts": ...,
+        "adjusted_end_ts": ...
+    }
+    """
+
+    market_tickers: List[str] = Field(default_factory=list)
+    # API returns list of lists, parallel to market_tickers
+    market_candlesticks: List[List[Dict[str, Any]]] = Field(default_factory=list)
+    adjusted_start_ts: Optional[int] = None
+    adjusted_end_ts: Optional[int] = None
+
+    @field_validator("adjusted_start_ts", "adjusted_end_ts", mode="before")
+    @classmethod
+    def parse_adjusted_timestamps(cls, v: Union[str, int, None]) -> Optional[int]:
+        """Convert ISO 8601 strings to Unix timestamps."""
+        return parse_timestamp(v)
+
+    def get_candles_for_market(self, ticker: str) -> List[Candle]:
+        """Get parsed Candle objects for a specific market."""
+        try:
+            idx = self.market_tickers.index(ticker)
+            if idx < len(self.market_candlesticks):
+                raw_candles = self.market_candlesticks[idx]
+                return [Candle(**c) for c in raw_candles]
+        except ValueError:
+            pass
+        return []
+
+    def get_all_candles(self) -> Dict[str, List[Candle]]:
+        """Get all candles parsed as Candle objects by ticker."""
+        result = {}
+        for i, ticker in enumerate(self.market_tickers):
+            if i < len(self.market_candlesticks):
+                candles = self.market_candlesticks[i]
+                result[ticker] = [Candle(**c) for c in candles]
+            else:
+                result[ticker] = []
+        return result
+
+    def has_data(self) -> bool:
+        """Check if any market has candlestick data."""
+        return any(len(candles) > 0 for candles in self.market_candlesticks)
 
 
 class MarketsResponse(BaseModel):
