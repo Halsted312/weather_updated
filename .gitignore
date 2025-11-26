@@ -117,3 +117,4 @@ archive/secret.txt
 archive/old_alembic/env.py
 archive/old_alembic/README
 migrations/env.py
+archive/
