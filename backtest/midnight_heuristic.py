@@ -263,11 +263,14 @@ def get_price_at_time(
     window_minutes: int = 30,
 ) -> Optional[float]:
     """
-    Get the closing price for a ticker near a target time.
+    Get the ask price (yes_ask_c) for a ticker near a target time.
 
-    Looks for the first candle within window_minutes after target_time.
+    Uses yes_ask_c (the price to buy YES) for realistic fill simulation.
+    Falls back to close_c if yes_ask_c is not available.
     """
-    query = select(KalshiCandle1m.close_c).where(
+    query = select(
+        func.coalesce(KalshiCandle1m.yes_ask_c, KalshiCandle1m.close_c)
+    ).where(
         KalshiCandle1m.ticker == ticker,
         KalshiCandle1m.bucket_start >= target_time_utc,
         KalshiCandle1m.bucket_start < target_time_utc + timedelta(minutes=window_minutes),
@@ -283,7 +286,10 @@ def get_first_price_of_day(
     event_date: date,
 ) -> Optional[Tuple[datetime, float]]:
     """
-    Get the first available price for a ticker on its event date.
+    Get the first available ask price for a ticker on its event date.
+
+    Uses yes_ask_c (the price to buy YES) for realistic fill simulation.
+    Falls back to close_c if yes_ask_c is not available.
 
     Returns (timestamp, price) or None if no candles exist.
     """
@@ -294,12 +300,13 @@ def get_first_price_of_day(
 
     query = select(
         KalshiCandle1m.bucket_start,
-        KalshiCandle1m.close_c
+        func.coalesce(KalshiCandle1m.yes_ask_c, KalshiCandle1m.close_c)
     ).where(
         KalshiCandle1m.ticker == ticker,
         KalshiCandle1m.bucket_start >= start_utc,
         KalshiCandle1m.bucket_start < end_utc,
-        KalshiCandle1m.close_c.isnot(None),
+        # Need at least one price available
+        (KalshiCandle1m.yes_ask_c.isnot(None)) | (KalshiCandle1m.close_c.isnot(None)),
     ).order_by(KalshiCandle1m.bucket_start).limit(1)
 
     result = session.execute(query).first()
@@ -320,20 +327,46 @@ def find_bracket_for_temp(
     """
     Find the bracket containing a temperature.
 
+    Priority: between > less/less_or_equal > greater/greater_or_equal
+    This ensures we match specific brackets before tail brackets.
+
     Returns (ticker, floor_strike, cap_strike) or None.
     """
     day_markets = markets_df[markets_df["event_date"] == event_date]
 
+    # First pass: check "between" brackets (the specific temperature ranges)
     for _, row in day_markets.iterrows():
         if row["strike_type"] == "between":
-            if row["floor_strike"] <= temp < row["cap_strike"]:
-                return row["ticker"], row["floor_strike"], row["cap_strike"]
-        elif row["strike_type"] == "less":
-            if temp < row["floor_strike"]:
-                return row["ticker"], None, row["floor_strike"]
-        elif row["strike_type"] == "greater":
-            if temp >= row["floor_strike"]:
-                return row["ticker"], row["floor_strike"], None
+            floor_s = row["floor_strike"]
+            cap_s = row["cap_strike"]
+            if floor_s is not None and cap_s is not None and floor_s <= temp < cap_s:
+                return row["ticker"], floor_s, cap_s
+
+    # Second pass: check tail brackets only if no between bracket matched
+    # Low tail: "less" or "less_or_equal" (YES if below some threshold)
+    for _, row in day_markets.iterrows():
+        strike_type = row["strike_type"]
+        cap_s = row["cap_strike"]
+
+        if strike_type == "less":
+            if cap_s is not None and temp < cap_s:
+                return row["ticker"], None, cap_s
+        elif strike_type == "less_or_equal":
+            if cap_s is not None and temp <= cap_s:
+                return row["ticker"], None, cap_s
+
+    # High tail: "greater" or "greater_or_equal" (YES if above some threshold)
+    for _, row in day_markets.iterrows():
+        strike_type = row["strike_type"]
+        floor_s = row["floor_strike"]
+
+        if strike_type == "greater":
+            # Only match if cap_strike is NULL (true tail) or temp is above all between brackets
+            if floor_s is not None and row["cap_strike"] is None and temp >= floor_s:
+                return row["ticker"], floor_s, None
+        elif strike_type == "greater_or_equal":
+            if floor_s is not None and temp > floor_s:
+                return row["ticker"], floor_s, None
 
     return None
 
@@ -553,6 +586,60 @@ def save_results_to_db(result: BacktestResult) -> None:
         logger.info(f"Saved {len(result.trades)} trades to database")
 
 
+def print_debug_trades(result: BacktestResult, n: int = 20) -> None:
+    """
+    Print detailed info for N random trades for sanity checking.
+
+    For each trade shows:
+    - Bracket info (floor/cap strikes)
+    - Entry price, contracts, fees
+    - P&L breakdown
+    """
+    import random
+
+    if not result.trades:
+        print("No trades to debug")
+        return
+
+    sample = random.sample(result.trades, min(n, len(result.trades)))
+
+    print("\n" + "=" * 80)
+    print(f"DEBUG: Sample of {len(sample)} trades")
+    print("=" * 80)
+
+    with get_db_session() as session:
+        for trade in sorted(sample, key=lambda t: (t.city, t.event_date)):
+            # Get settlement data
+            settlement = session.execute(
+                select(WxSettlement.tmax_final).where(
+                    WxSettlement.city == trade.city,
+                    WxSettlement.date_local == trade.event_date
+                )
+            ).scalar_one_or_none()
+
+            # Get market info
+            market = session.execute(
+                select(KalshiMarket).where(KalshiMarket.ticker == trade.ticker)
+            ).scalar_one_or_none()
+
+            bracket_str = f"{market.strike_type}"
+            if market.floor_strike is not None and market.cap_strike is not None:
+                bracket_str += f" [{market.floor_strike}, {market.cap_strike})"
+            elif market.floor_strike is not None:
+                bracket_str += f" >= {market.floor_strike}"
+            elif market.cap_strike is not None:
+                bracket_str += f" < {market.cap_strike}"
+
+            print(f"\n{trade.city} | {trade.event_date} | {trade.ticker}")
+            print(f"  Bracket: {bracket_str}")
+            print(f"  Entry: {trade.price_cents:.1f}¢ x {trade.num_contracts} contracts = ${trade.amount_usd:.2f}")
+            print(f"  Fee: ${trade.fee_usd:.2f}")
+            print(f"  Actual TMAX: {settlement}°F")
+            print(f"  Won: {trade.bin_won} | P&L: ${trade.pnl_usd:+.2f}")
+
+    print("\n" + "=" * 80)
+
+
 def print_results(result: BacktestResult) -> None:
     """Print backtest results to console."""
     print("\n" + "=" * 60)
@@ -637,6 +724,10 @@ def main():
         "--save", action="store_true",
         help="Save results to database"
     )
+    parser.add_argument(
+        "--debug", action="store_true",
+        help="Print detailed info for 20 random trades for sanity checking"
+    )
 
     args = parser.parse_args()
 
@@ -676,6 +767,10 @@ def main():
 
     # Print results
     print_results(result)
+
+    # Debug output if requested
+    if args.debug:
+        print_debug_trades(result, n=20)
 
     # Save if requested
     if args.save:
