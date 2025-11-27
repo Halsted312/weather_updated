@@ -301,3 +301,223 @@ Finally, please update the CLI and reporting so that:
 * Each strategy’s trades are stored in `sim.trade` with an appropriate `strategy_id` and `decision_type` so we can slice and dice them later in SQL.
 
 Once you’ve got `base`, `next_over`, and `divvy` implemented and tunable with Optuna (using a time-based train/test split and `sharpe_daily` as the objective), we can look at the results and decide which combination is worth turning into live logic – and where to add more sophisticated rules (like your “two brackets away” exit) without overcomplicating things.
+
+
+
+## Further answers to your specific questions
+---
+
+Thanks, this is heading exactly where I want. Here are my answers and how I’d like to proceed.
+
+---
+
+## 1. Implementation scope: stage it, but design for multiple strategies
+
+Let’s **start with base + next_over**, then add divvy on top of that:
+
+* **Option B:**
+
+  * Implement `open_maker_base` (which we already have), plus the new **“next_over” exit strategy** first.
+  * Make sure the architecture supports multiple strategies cleanly (via `strategy_id`, separate param dataclasses, shared execution engine).
+  * Once that’s solid and we see metrics for *both* strategies side by side, then we add the **divvy** strategy (`center + neighbours`) as a third one.
+
+So: **don’t implement all 3 in one shot.**
+Do **base + next_over** first, but build it so adding `open_maker_divvy` is just “drop in another strategy class”.
+
+---
+
+## 2. CLI behaviour: keep backward compatible default
+
+I want this to **continue to work** as it does now:
+
+```bash
+python -m open_maker.core --all-cities --days 90
+```
+
+So:
+
+* If **no** `--strategy` is supplied, default to `open_maker_base` (the current behaviour).
+* If `--strategy` is supplied, run one or more named strategies:
+
+  ```bash
+  # Single strategy
+  python -m open_maker.core --all-cities --days 90 --strategy open_maker_next_over
+
+  # Multiple strategies in one run
+  python -m open_maker.core --all-cities --days 90 \
+    --strategy open_maker_base \
+    --strategy open_maker_next_over
+  ```
+
+That way we can compare strategies side by side without breaking existing scripts/notebooks.
+
+---
+
+## 3. Candle data coverage & price source
+
+We should assume that **`yes_bid_c` is NOT always present** in every minute candle (very thin markets, no resting bid at that instant, etc.). The docs show yes_bid/yes_ask as core price fields for markets and candlesticks, but they don’t guarantee they’re populated every minute.
+
+So from the start, please build in a **robust fallback chain** for the price you use at decision time:
+
+For **our own exit / sell decision** (we’re trying to *hit the bid* to get out):
+
+1. **First choice:** `yes_bid_c` (best bid)
+2. If `yes_bid_c` is null but both `yes_bid_c` and `yes_ask_c` are available in nearby candles:
+
+   * Compute a simple **mid**: `(yes_bid_c + yes_ask_c)/2` as a fallback approximation.
+3. If neither bid nor ask is usable:
+
+   * Fall back to `close_c` (last traded price) as a final fallback.
+4. If everything is missing in a reasonable window around the decision time:
+
+   * Don’t apply the exit rule for that trade; just hold to settlement and log a warning.
+
+For **neighbour bracket prices** used in the **“next_over”** trigger (we’re using this as a *signal*, not a fill price):
+
+* Use `yes_bid_c` if available; otherwise `close_c` (we just need relative levels).
+
+Make this behaviour explicit in code and comments, so we can revisit it if we see weird behaviour in very thin minutes.
+
+---
+
+## 4. Decision time: tune “minutes to estimated high” via Optuna
+
+I like the idea of **tuning how far before the predicted high** we run the exit heuristic.
+
+Concretely for `open_maker_next_over`:
+
+### 4.1 How to define the decision time
+
+Per `(city, event_date)`:
+
+1. Use the **hourly forecast curves** from Visual Crossing for the **target date** and for **basis_date = event_date - 1** (yesterday’s midnight run). You already store this in `wx.forecast_snapshot_hourly`.
+
+2. From that basis, extract:
+
+   * `predicted_high_hour_prev` – the **hour-of-day** for the **max temp for event_date** in yesterday’s run. That’s our “last time we thought we had a high temp (the day before)” reference.
+
+3. Define a tunable integer `decision_offset_min` (negative values mean “before the predicted high”):
+
+   ```python
+   decision_time_local = predicted_high_hour_prev + decision_offset_min / 60.0
+   ```
+
+   For example:
+
+   * `predicted_high_hour_prev = 15.0` (3pm local),
+   * `decision_offset_min = -120` → decision at 13:00 (1pm local).
+
+4. Convert `decision_time_local` to UTC using the city’s timezone (which you already have in `cities.py`), then pick the nearest candle at or before that time for both our bracket and the neighbour.
+
+### 4.2 Optuna search space (fine-grained, 150–200 trials)
+
+Given we want “exact, gradual” control, not huge jumps:
+
+* `decision_offset_min`:
+
+  * Let’s start with a range like **120 to 360 minutes before the predicted high**, in reasonably fine steps:
+
+    ```python
+    decision_offset_min ∈ {-360, -330, -300, -270, -240, -210, -180, -150, -120}
+    ```
+
+  * That’s 2–6 hours before expected high; more than that and you’re basically back to “midday” or earlier.
+
+Given this plus other parameters, **150–200 trials** is a sensible Optuna budget.
+
+---
+
+## 5. Strategies & parameters: what to implement now
+
+### 5.1 Strategy `"open_maker_base"` – unchanged, baseline
+
+* Already implemented; no changes beyond what you’ve just done.
+
+### 5.2 Strategy `"open_maker_next_over"` – first exit heuristic
+
+Keep this as the first incremental heuristic:
+
+**Entry:**
+
+* Same as base: pick center bin via forecast + temp_bias_deg, post maker at `entry_price_cents` (like 45c), assume we get filled.
+
+**Decision time (tuned):**
+
+* Use `predicted_high_hour_prev` from **yesterday’s** forecast curve (basis_date = event_date-1).
+* `decision_offset_min` tunable parameter (negative minutes before that time).
+
+**Exit rule (simple version):**
+
+* At `decision_time`:
+
+  * Let `i` = center bin index (0..5).
+  * Let `j = i + 1` (bin immediately above).
+
+* Fetch prices at decision time:
+
+  * `price_center_c` = our bin’s `yes_bid_c` (or mid/close fallback).
+  * `price_up_c` = neighbour bin’s `yes_bid_c` (or close fallback).
+
+* Exit rule (thresholds tunable):
+
+  ```python
+  if price_up_c >= neighbor_price_min_c and price_center_c <= our_price_max_c:
+      # Sell our entire position at price_center_c (assume we hit the bid)
+      exit_price_c = price_center_c
+      # P&L = (exit_price_c - entry_price_c) * contracts - exit fees
+  else:
+      hold to maturity
+  ```
+
+**Parameters to tune in Optuna (`NextOverParams`):**
+
+* `entry_price_cents` ∈ {40, 45, 50}
+* `temp_bias_deg` ∈ [-2.0, +2.0] (continuous)
+* `basis_offset_days` ∈ {1, 0}
+* `decision_offset_min` ∈ {-360, -330, -300, -270, -240, -210, -180, -150, -120}
+* `neighbor_price_min_c` ∈ {40, 45, 50}
+* `our_price_max_c` ∈ {20, 25, 30}
+
+**Optuna objective:**
+
+* Use **`sharpe_daily`** as the primary objective (train), with time-based train/test split (70/30).
+* After finding best params on train, evaluate once on test and print both ROI & Sharpe.
+
+### 5.3 Strategy `"open_maker_divvy"` – to follow after next_over is solid
+
+Once base + next_over are working and debugged, then:
+
+* Implement `"open_maker_divvy"` with the softmax allocation weights as discussed earlier:
+
+  * Raw params `a_center`, `a_lower`, `a_upper` tuned by Optuna.
+  * Convert to weights `(w_center, w_lower, w_upper)` via softmax.
+  * Allocate a fixed total `bet_amount_usd` across center and neighbours.
+  * No exit logic in v1; pure buy & hold.
+
+This is **Part 8b**, after we’re confident `"next_over"` behaves as expected.
+
+---
+
+## 6. Summary of answers to your specific questions
+
+1. **Implementation scope:**
+
+   * Use **Option B**: implement `open_maker_next_over` first, keeping the architecture multi-strategy-ready. Add `open_maker_divvy` afterwards.
+
+2. **CLI:**
+
+   * Keep current behaviour as default: if `--strategy` is not provided, run `open_maker_base`.
+   * Allow multiple `--strategy` flags to run several strategies in one go.
+
+3. **Candle coverage:**
+
+   * Assume `yes_bid_c` is **not 100% present**; implement price selection with robust fallbacks:
+
+     * Our exit / fill price: `yes_bid_c → mid (if we have both bid/ask) → close_c → skip exit if nothing is usable nearby`.
+     * Neighbour signal: `yes_bid_c → close_c`.
+
+4. **Decision-time tuning:**
+
+   * Add `decision_offset_min` param (minutes relative to **yesterday’s predicted high hour for today**, from hourly forecast) and tune it with Optuna over a discrete set in roughly `[-360, -120]` with 150–200 trials.
+
+Once you’ve got `"open_maker_next_over"` wired up with these parameters and the Sharpe-based Optuna objective, we can look at the train/test results and a few debug trades, then move on to `"open_maker_divvy"` and more sophisticated combinations.
