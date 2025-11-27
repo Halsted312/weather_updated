@@ -69,8 +69,9 @@ def candle_to_db_dict(ticker: str, candle: Candle, source: str) -> dict:
     Returns:
         Dict ready for database upsert
     """
+    # API returns end_period_ts (bar end), subtract 60s to get true bar start
     bucket_start = (
-        datetime.fromtimestamp(candle.end_period_ts, tz=timezone.utc)
+        datetime.fromtimestamp(candle.end_period_ts - 60, tz=timezone.utc)
         if candle.end_period_ts
         else None
     )
