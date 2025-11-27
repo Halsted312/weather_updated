@@ -1,13 +1,18 @@
 #!/usr/bin/env python3
 """
-Optuna parameter tuning for the open-maker strategy.
+Optuna parameter tuning for open-maker strategies.
 
-Optimizes parameters (entry_price, temp_bias, basis_offset) to maximize strategy performance.
-Uses chronological train/test split to prevent overfitting.
+Supports both base and next_over strategies with chronological train/test split
+to prevent overfitting.
 
 Usage:
+    # Base strategy (default)
     python -m open_maker.optuna_tuner --all-cities --days 365 --trials 50
-    python -m open_maker.optuna_tuner --city chicago --days 180 --metric win_rate
+
+    # NextOver strategy with sharpe_daily metric
+    python -m open_maker.optuna_tuner --city chicago --days 180 --strategy open_maker_next_over --metric sharpe_daily
+
+    # With persistent storage
     python -m open_maker.optuna_tuner --all-cities --days 365 --storage sqlite:///optuna_open_maker.db
 """
 
@@ -24,9 +29,10 @@ sys.path.insert(0, str(__file__).rsplit("/", 2)[0])
 
 from open_maker.core import (
     OpenMakerParams,
-    run_backtest,
+    run_strategy,
     print_results,
 )
+from open_maker.strategies.next_over import NextOverParams
 from src.config import CITIES
 
 logging.basicConfig(
@@ -39,7 +45,7 @@ logger = logging.getLogger(__name__)
 optuna.logging.set_verbosity(optuna.logging.WARNING)
 
 
-def create_objective(
+def create_objective_base(
     cities: List[str],
     start_date: date,
     end_date: date,
@@ -47,13 +53,13 @@ def create_objective(
     bet_amount_usd: float = 200.0,
 ):
     """
-    Create an Optuna objective function for the open-maker strategy.
+    Create an Optuna objective function for the base open-maker strategy.
 
     Args:
         cities: List of cities to backtest
         start_date: Start date for backtest (train period)
         end_date: End date for backtest (train period)
-        metric: Metric to optimize ('total_pnl', 'win_rate', 'avg_pnl', 'sharpe', 'roi')
+        metric: Metric to optimize ('total_pnl', 'win_rate', 'avg_pnl', 'sharpe', 'sharpe_daily', 'roi')
         bet_amount_usd: Fixed bet amount for all trials
 
     Returns:
@@ -61,7 +67,7 @@ def create_objective(
     """
 
     def objective(trial: optuna.Trial) -> float:
-        # Sample parameters
+        # Sample parameters for base strategy
         params = OpenMakerParams(
             # Entry price: 30-60 cents in 5-cent increments
             entry_price_cents=trial.suggest_categorical(
@@ -76,38 +82,15 @@ def create_objective(
         )
 
         try:
-            result = run_backtest(
+            result = run_strategy(
+                strategy_id="open_maker_base",
                 cities=cities,
                 start_date=start_date,
                 end_date=end_date,
                 params=params,
-                strategy_name=f"optuna_trial_{trial.number}",
             )
 
-            if not result.trades:
-                return float("-inf")
-
-            if metric == "total_pnl":
-                return result.total_pnl
-            elif metric == "win_rate":
-                return result.win_rate
-            elif metric == "avg_pnl":
-                return result.total_pnl / result.num_trades
-            elif metric == "roi":
-                return result.total_pnl / result.total_wagered if result.total_wagered > 0 else 0
-            elif metric == "sharpe":
-                # Rough Sharpe approximation
-                pnls = [t.pnl_net for t in result.trades]
-                if len(pnls) < 2:
-                    return float("-inf")
-                import statistics
-                mean_pnl = statistics.mean(pnls)
-                std_pnl = statistics.stdev(pnls)
-                if std_pnl == 0:
-                    return float("inf") if mean_pnl > 0 else float("-inf")
-                return mean_pnl / std_pnl
-            else:
-                return result.total_pnl
+            return _extract_metric(result, metric)
 
         except Exception as e:
             logger.warning(f"Trial {trial.number} failed: {e}")
@@ -116,7 +99,106 @@ def create_objective(
     return objective
 
 
+def create_objective_next_over(
+    cities: List[str],
+    start_date: date,
+    end_date: date,
+    metric: str = "sharpe_daily",
+    bet_amount_usd: float = 200.0,
+):
+    """
+    Create an Optuna objective function for the next_over exit strategy.
+
+    Args:
+        cities: List of cities to backtest
+        start_date: Start date for backtest (train period)
+        end_date: End date for backtest (train period)
+        metric: Metric to optimize (default: sharpe_daily for exit strategies)
+        bet_amount_usd: Fixed bet amount for all trials
+
+    Returns:
+        Objective function for Optuna
+    """
+
+    def objective(trial: optuna.Trial) -> float:
+        # Sample parameters for next_over strategy
+        params = NextOverParams(
+            # Entry price: tighter range than base
+            entry_price_cents=trial.suggest_categorical(
+                "entry_price_cents", [40.0, 45.0, 50.0]
+            ),
+            # Temperature bias: -2 to +2 degrees
+            temp_bias_deg=trial.suggest_float("temp_bias_deg", -2.0, 2.0),
+            # Basis offset: 0 (same day) or 1 (previous day)
+            basis_offset_days=trial.suggest_int("basis_offset_days", 0, 1),
+            # Fixed bet amount
+            bet_amount_usd=bet_amount_usd,
+            # Decision timing: minutes before predicted high
+            # Range: -360 (6h before) to -120 (2h before) in 30min increments
+            decision_offset_min=trial.suggest_categorical(
+                "decision_offset_min",
+                [-360, -330, -300, -270, -240, -210, -180, -150, -120]
+            ),
+            # Exit thresholds
+            neighbor_price_min_c=trial.suggest_categorical(
+                "neighbor_price_min_c", [40, 45, 50]
+            ),
+            our_price_max_c=trial.suggest_categorical(
+                "our_price_max_c", [20, 25, 30]
+            ),
+        )
+
+        try:
+            result = run_strategy(
+                strategy_id="open_maker_next_over",
+                cities=cities,
+                start_date=start_date,
+                end_date=end_date,
+                params=params,
+            )
+
+            return _extract_metric(result, metric)
+
+        except Exception as e:
+            logger.warning(f"Trial {trial.number} failed: {e}")
+            return float("-inf")
+
+    return objective
+
+
+def _extract_metric(result, metric: str) -> float:
+    """Extract the specified metric from a backtest result."""
+    if not result.trades:
+        return float("-inf")
+
+    if metric == "total_pnl":
+        return result.total_pnl
+    elif metric == "win_rate":
+        return result.win_rate
+    elif metric == "avg_pnl":
+        return result.total_pnl / result.num_trades
+    elif metric == "roi":
+        return result.total_pnl / result.total_wagered if result.total_wagered > 0 else 0
+    elif metric == "sharpe":
+        # Per-trade Sharpe
+        pnls = [t.pnl_net for t in result.trades]
+        if len(pnls) < 2:
+            return float("-inf")
+        import statistics
+        mean_pnl = statistics.mean(pnls)
+        std_pnl = statistics.stdev(pnls)
+        if std_pnl == 0:
+            return float("inf") if mean_pnl > 0 else float("-inf")
+        return mean_pnl / std_pnl
+    elif metric == "sharpe_daily":
+        # Daily Sharpe (use the result's built-in property)
+        return result.sharpe_daily if hasattr(result, 'sharpe_daily') else float("-inf")
+    else:
+        return result.total_pnl
+
+
 def run_optimization(
+    strategy_id: str,
     cities: List[str],
     start_date: date,
     end_date: date,
@@ -130,6 +212,7 @@ def run_optimization(
     Run Optuna optimization.
 
     Args:
+        strategy_id: Strategy to optimize ('open_maker_base' or 'open_maker_next_over')
         cities: List of cities to optimize over
         start_date: Backtest start date (train period)
         end_date: Backtest end date (train period)
@@ -152,15 +235,25 @@ def run_optimization(
         load_if_exists=True,
     )
 
-    objective = create_objective(
-        cities=cities,
-        start_date=start_date,
-        end_date=end_date,
-        metric=metric,
-        bet_amount_usd=bet_amount_usd,
-    )
+    # Select objective based on strategy
+    if strategy_id == "open_maker_next_over":
+        objective = create_objective_next_over(
+            cities=cities,
+            start_date=start_date,
+            end_date=end_date,
+            metric=metric,
+            bet_amount_usd=bet_amount_usd,
+        )
+    else:
+        objective = create_objective_base(
+            cities=cities,
+            start_date=start_date,
+            end_date=end_date,
+            metric=metric,
+            bet_amount_usd=bet_amount_usd,
+        )
 
-    logger.info(f"Starting optimization: {n_trials} trials, metric={metric}")
+    logger.info(f"Starting optimization: {strategy_id}, {n_trials} trials, metric={metric}")
     logger.info(f"Cities: {cities}")
     logger.info(f"Date range: {start_date} to {end_date}")
 
@@ -169,14 +262,15 @@ def run_optimization(
     return study
 
 
-def print_optimization_results(study: optuna.Study) -> None:
+def print_optimization_results(study: optuna.Study, strategy_id: str) -> None:
     """Print optimization results."""
     print("\n" + "=" * 60)
     print("OPTIMIZATION RESULTS")
     print("=" * 60)
 
-    print(f"\nBest trial: {study.best_trial.number}")
-    print(f"Best value: {study.best_value:.2f}")
+    print(f"\nStrategy: {strategy_id}")
+    print(f"Best trial: {study.best_trial.number}")
+    print(f"Best value: {study.best_value:.4f}")
 
     print("\nBest parameters:")
     for key, value in study.best_params.items():
@@ -200,7 +294,12 @@ def print_optimization_results(study: optuna.Study) -> None:
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Optuna parameter tuning for open-maker strategy"
+        description="Optuna parameter tuning for open-maker strategies"
+    )
+    parser.add_argument(
+        "--strategy", type=str, default="open_maker_base",
+        choices=["open_maker_base", "open_maker_next_over"],
+        help="Strategy to optimize (default: open_maker_base)"
     )
     parser.add_argument(
         "--city", action="append",
@@ -227,17 +326,17 @@ def main():
         help="Number of optimization trials"
     )
     parser.add_argument(
-        "--metric", type=str, default="total_pnl",
-        choices=["total_pnl", "win_rate", "avg_pnl", "sharpe", "roi"],
-        help="Metric to optimize"
+        "--metric", type=str, default=None,
+        choices=["total_pnl", "win_rate", "avg_pnl", "sharpe", "sharpe_daily", "roi"],
+        help="Metric to optimize (default: total_pnl for base, sharpe_daily for next_over)"
     )
     parser.add_argument(
         "--storage", type=str,
         help="Optuna storage URL (e.g., sqlite:///optuna.db)"
     )
     parser.add_argument(
-        "--study-name", type=str, default="open_maker",
-        help="Name for the Optuna study"
+        "--study-name", type=str, default=None,
+        help="Name for the Optuna study (default: strategy name)"
     )
     parser.add_argument(
         "--run-best", action="store_true",
@@ -253,6 +352,18 @@ def main():
     )
 
     args = parser.parse_args()
+
+    # Determine strategy and defaults
+    strategy_id = args.strategy
+
+    # Default metric based on strategy
+    if args.metric is None:
+        metric = "sharpe_daily" if strategy_id == "open_maker_next_over" else "total_pnl"
+    else:
+        metric = args.metric
+
+    # Default study name based on strategy
+    study_name = args.study_name if args.study_name else strategy_id
 
     # Determine cities
     if args.all_cities:
@@ -278,6 +389,8 @@ def main():
     test_start = train_end + timedelta(days=1)
     test_end = end_date
 
+    logger.info(f"Strategy: {strategy_id}")
+    logger.info(f"Metric: {metric}")
     logger.info(f"Train period: {start_date} to {train_end} ({train_days} days)")
     logger.info(f"Test period: {test_start} to {test_end} ({total_days - train_days - 1} days)")
 
@@ -288,18 +401,33 @@ def main():
             return
 
         study = optuna.load_study(
-            study_name=args.study_name,
+            study_name=study_name,
             storage=args.storage,
         )
 
         print(f"\nRunning backtest with best parameters on TEST period ({test_start} to {test_end})...")
-        best_params = OpenMakerParams(
-            entry_price_cents=study.best_params["entry_price_cents"],
-            temp_bias_deg=study.best_params["temp_bias_deg"],
-            basis_offset_days=study.best_params["basis_offset_days"],
-            bet_amount_usd=args.bet_amount,
-        )
-        result = run_backtest(
+
+        # Build params based on strategy
+        if strategy_id == "open_maker_next_over":
+            best_params = NextOverParams(
+                entry_price_cents=study.best_params["entry_price_cents"],
+                temp_bias_deg=study.best_params["temp_bias_deg"],
+                basis_offset_days=study.best_params["basis_offset_days"],
+                bet_amount_usd=args.bet_amount,
+                decision_offset_min=study.best_params["decision_offset_min"],
+                neighbor_price_min_c=study.best_params["neighbor_price_min_c"],
+                our_price_max_c=study.best_params["our_price_max_c"],
+            )
+        else:
+            best_params = OpenMakerParams(
+                entry_price_cents=study.best_params["entry_price_cents"],
+                temp_bias_deg=study.best_params["temp_bias_deg"],
+                basis_offset_days=study.best_params["basis_offset_days"],
+                bet_amount_usd=args.bet_amount,
+            )
+
+        result = run_strategy(
+            strategy_id=strategy_id,
             cities=cities,
             start_date=test_start,
             end_date=test_end,
@@ -310,35 +438,49 @@ def main():
 
     # Run optimization on TRAIN period
     study = run_optimization(
+        strategy_id=strategy_id,
         cities=cities,
         start_date=start_date,
         end_date=train_end,  # Use train period
         n_trials=args.trials,
-        metric=args.metric,
+        metric=metric,
         storage=args.storage,
-        study_name=args.study_name,
+        study_name=study_name,
         bet_amount_usd=args.bet_amount,
     )
 
-    print_optimization_results(study)
+    print_optimization_results(study, strategy_id)
 
     # Run final backtest with best params on TEST period (out-of-sample)
     print(f"\n{'='*60}")
     print(f"OUT-OF-SAMPLE TEST ({test_start} to {test_end})")
     print(f"{'='*60}")
 
-    best_params = OpenMakerParams(
-        entry_price_cents=study.best_params["entry_price_cents"],
-        temp_bias_deg=study.best_params["temp_bias_deg"],
-        basis_offset_days=study.best_params["basis_offset_days"],
-        bet_amount_usd=args.bet_amount,
-    )
-    test_result = run_backtest(
+    # Build params based on strategy
+    if strategy_id == "open_maker_next_over":
+        best_params = NextOverParams(
+            entry_price_cents=study.best_params["entry_price_cents"],
+            temp_bias_deg=study.best_params["temp_bias_deg"],
+            basis_offset_days=study.best_params["basis_offset_days"],
+            bet_amount_usd=args.bet_amount,
+            decision_offset_min=study.best_params["decision_offset_min"],
+            neighbor_price_min_c=study.best_params["neighbor_price_min_c"],
+            our_price_max_c=study.best_params["our_price_max_c"],
+        )
+    else:
+        best_params = OpenMakerParams(
+            entry_price_cents=study.best_params["entry_price_cents"],
+            temp_bias_deg=study.best_params["temp_bias_deg"],
+            basis_offset_days=study.best_params["basis_offset_days"],
+            bet_amount_usd=args.bet_amount,
+        )
+
+    test_result = run_strategy(
+        strategy_id=strategy_id,
         cities=cities,
         start_date=test_start,
         end_date=test_end,
         params=best_params,
-        strategy_name="open_maker_best_test",
     )
     print_results(test_result)
 
@@ -346,12 +488,12 @@ def main():
     print(f"\n{'='*60}")
     print(f"TRAIN PERIOD COMPARISON ({start_date} to {train_end})")
     print(f"{'='*60}")
-    train_result = run_backtest(
+    train_result = run_strategy(
+        strategy_id=strategy_id,
         cities=cities,
         start_date=start_date,
         end_date=train_end,
         params=best_params,
-        strategy_name="open_maker_best_train",
     )
     print_results(train_result)
 

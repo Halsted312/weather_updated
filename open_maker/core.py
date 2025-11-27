@@ -36,17 +36,29 @@ from src.db.models import (
     WxSettlement,
     WxForecastSnapshot,
     KalshiMarket,
+    KalshiCandle1m,
     SimRun,
     SimTrade,
 )
 
 from .utils import (
     kalshi_maker_fee,
+    kalshi_taker_fee,
     find_bracket_for_temp,
     calculate_position_size,
     calculate_pnl,
+    calculate_exit_pnl,
     get_city_timezone,
+    get_predicted_high_hour,
+    compute_decision_time_utc,
+    get_candle_price_for_exit,
+    get_candle_price_for_signal,
+    get_bracket_index,
+    get_neighbor_ticker,
 )
+from .strategies import get_strategy
+from .strategies.base import TradeContext, TradeDecision, StrategyParamsBase
+from .strategies.next_over import NextOverParams
 
 logging.basicConfig(
     level=logging.INFO,
@@ -100,6 +112,12 @@ class OpenMakerTrade:
     pnl_gross: float
     fee_usd: float
     pnl_net: float
+
+    # Exit info (for strategies with early exit)
+    exited_early: bool = False
+    exit_price_cents: Optional[float] = None
+    exit_time: Optional[datetime] = None
+    exit_reason: Optional[str] = None
 
 
 @dataclass
@@ -319,6 +337,45 @@ def load_market_data(
     return df
 
 
+def load_candle_data(
+    session,
+    tickers: List[str],
+    start_time: datetime,
+    end_time: datetime,
+) -> pd.DataFrame:
+    """
+    Load minute candle data for a set of tickers in a time range.
+
+    Args:
+        session: SQLAlchemy session
+        tickers: List of market tickers
+        start_time: Start time (UTC)
+        end_time: End time (UTC)
+
+    Returns:
+        DataFrame with candle data
+    """
+    if not tickers:
+        return pd.DataFrame()
+
+    query = select(
+        KalshiCandle1m.ticker,
+        KalshiCandle1m.bucket_start,
+        KalshiCandle1m.close_c,
+        KalshiCandle1m.yes_bid_c,
+        KalshiCandle1m.yes_ask_c,
+    ).where(
+        KalshiCandle1m.ticker.in_(tickers),
+        KalshiCandle1m.bucket_start.between(start_time, end_time),
+    ).order_by(KalshiCandle1m.bucket_start)
+
+    result = session.execute(query)
+    df = pd.DataFrame(result.fetchall(), columns=[
+        "ticker", "bucket_start", "close_c", "yes_bid_c", "yes_ask_c"
+    ])
+    return df
+
+
 def get_forecast_at_open(
     forecast_df: pd.DataFrame,
     event_date: date,
@@ -357,51 +414,69 @@ def get_forecast_at_open(
 
 
 # =============================================================================
-# Backtest Logic
+# Unified Strategy Runner
 # =============================================================================
 
-def run_backtest(
+def run_strategy(
+    strategy_id: str,
     cities: List[str],
     start_date: date,
     end_date: date,
-    params: OpenMakerParams,
-    strategy_name: str = "open_maker_v1",
+    params: StrategyParamsBase,
 ) -> OpenMakerResult:
     """
-    Run the open-maker backtest.
+    Unified backtest runner for all strategies.
 
-    For each (city, event_date):
-    1. Get forecast at market open time (with basis_offset_days)
-    2. Apply temp_bias_deg adjustment
-    3. Find bracket for adjusted temp
-    4. Calculate position size at entry_price
-    5. Determine P&L based on settlement
+    Uses the strategy registry to get the appropriate strategy class,
+    then runs uniform entry setup and calls strategy.decide() for
+    strategy-specific logic.
 
     Args:
+        strategy_id: Strategy identifier (e.g., "open_maker_base", "open_maker_next_over")
         cities: List of city IDs to backtest
         start_date: Start date for backtest
         end_date: End date for backtest
-        params: Strategy parameters
-        strategy_name: Name for this run
+        params: Strategy parameters (must match strategy's expected params class)
 
     Returns:
         OpenMakerResult with all trades
     """
+    import uuid
+
     run_id = str(uuid.uuid4())[:8]
+
+    # Get strategy class from registry
+    StrategyCls, _ = get_strategy(strategy_id)
+    strategy = StrategyCls(params)
+
+    # Build result container with base params for compatibility
+    base_params = OpenMakerParams(
+        entry_price_cents=params.entry_price_cents,
+        temp_bias_deg=params.temp_bias_deg,
+        basis_offset_days=params.basis_offset_days,
+        bet_amount_usd=params.bet_amount_usd,
+    )
     result = OpenMakerResult(
         run_id=run_id,
-        strategy_name=strategy_name,
-        params=params,
+        strategy_name=strategy_id,
+        params=base_params,
         start_date=start_date,
         end_date=end_date,
         cities=cities,
     )
 
-    logger.info(f"Starting open-maker backtest: {strategy_name}")
+    logger.info(f"Starting backtest: {strategy_id}")
     logger.info(f"  Date range: {start_date} to {end_date}")
     logger.info(f"  Cities: {cities}")
-    logger.info(f"  Params: entry={params.entry_price_cents}c, bias={params.temp_bias_deg}F, "
-                f"offset={params.basis_offset_days}d, bet=${params.bet_amount_usd}")
+
+    # Log params based on strategy type
+    if strategy_id == "open_maker_next_over":
+        logger.info(f"  Params: entry={params.entry_price_cents}c, bias={params.temp_bias_deg}F, "
+                    f"offset={params.decision_offset_min}min, neighbor_min={params.neighbor_price_min_c}c, "
+                    f"our_max={params.our_price_max_c}c")
+    else:
+        logger.info(f"  Params: entry={params.entry_price_cents}c, bias={params.temp_bias_deg}F, "
+                    f"offset={params.basis_offset_days}d, bet=${params.bet_amount_usd}")
 
     with get_db_session() as session:
         for city in cities:
@@ -422,10 +497,17 @@ def run_backtest(
                 logger.warning(f"  No market data for {city}")
                 continue
 
+            # Track exits for next_over
+            exits_triggered = 0
+
             # Process each event_date
             event_dates = sorted(settlement_df["event_date"].unique())
 
             for event_date in event_dates:
+                # ==========================================
+                # UNIFORM ENTRY SETUP (same for all strategies)
+                # ==========================================
+
                 # Get forecast at open
                 forecast_result = get_forecast_at_open(
                     forecast_df,
@@ -451,6 +533,14 @@ def run_backtest(
 
                 ticker, floor_strike, cap_strike = bracket
 
+                # Get bracket index and sorted brackets
+                bin_idx, total_bins, sorted_brackets = get_bracket_index(
+                    market_df, event_date, ticker
+                )
+
+                if bin_idx < 0:
+                    continue
+
                 # Get settlement result
                 settlement_row = settlement_df[settlement_df["event_date"] == event_date]
                 if settlement_row.empty:
@@ -459,33 +549,114 @@ def run_backtest(
 
                 tmax_final = float(settlement_row.iloc[0]["tmax_final"])
 
-                # Determine if we won
-                winning_bracket = find_bracket_for_temp(market_df, event_date, tmax_final)
-                bin_won = winning_bracket is not None and winning_bracket[0] == ticker
-
                 # Calculate position size
                 num_contracts, amount_usd = calculate_position_size(
                     params.entry_price_cents,
                     params.bet_amount_usd,
                 )
 
-                # Calculate fees (maker = $0 for weather)
-                fee_usd = kalshi_maker_fee(params.entry_price_cents, num_contracts)
+                # ==========================================
+                # BUILD TRADE CONTEXT
+                # ==========================================
 
-                # Calculate P&L
-                pnl_net = calculate_pnl(
-                    params.entry_price_cents,
-                    num_contracts,
-                    bin_won,
-                    fee_usd,
+                context = TradeContext(
+                    city=city,
+                    event_date=event_date,
+                    forecast_basis_date=basis_date,
+                    temp_fcst_open=temp_fcst,
+                    temp_adjusted=temp_adjusted,
+                    ticker=ticker,
+                    floor_strike=floor_strike,
+                    cap_strike=cap_strike,
+                    bin_index=bin_idx,
+                    total_bins=total_bins,
+                    all_brackets=sorted_brackets,
+                    markets_df=market_df,
+                    entry_price_cents=params.entry_price_cents,
+                    num_contracts=num_contracts,
+                    amount_usd=amount_usd,
+                    tmax_final=tmax_final,
                 )
 
-                # Gross P&L (before fees)
-                entry_price_dollars = params.entry_price_cents / 100
-                if bin_won:
-                    pnl_gross = num_contracts * (1.0 - entry_price_dollars)
+                # ==========================================
+                # STRATEGY-SPECIFIC DECISION
+                # ==========================================
+
+                candles_df = None  # Default: no candles needed
+
+                # For next_over: compute decision time and load candles
+                if strategy_id == "open_maker_next_over":
+                    # Get predicted high hour from yesterday's forecast
+                    predicted_high_hour = get_predicted_high_hour(
+                        session, city, event_date
+                    )
+
+                    if predicted_high_hour is not None:
+                        # Compute decision time
+                        decision_time = compute_decision_time_utc(
+                            city=city,
+                            event_date=event_date,
+                            predicted_high_hour=predicted_high_hour,
+                            offset_minutes=params.decision_offset_min,
+                        )
+
+                        # Get neighbor ticker for candle loading
+                        neighbor_ticker = get_neighbor_ticker(sorted_brackets, bin_idx, "up")
+                        tickers_to_load = [ticker]
+                        if neighbor_ticker:
+                            tickers_to_load.append(neighbor_ticker)
+
+                        # Load candles around decision time
+                        window_start = decision_time - timedelta(minutes=10)
+                        window_end = decision_time + timedelta(minutes=5)
+                        candles_df = load_candle_data(
+                            session, tickers_to_load, window_start, window_end
+                        )
+
+                # Call strategy decision
+                decision = strategy.decide(context, candles_df)
+
+                # ==========================================
+                # P&L CALCULATION
+                # ==========================================
+
+                exited_early = decision.action == "exit"
+                exit_price_cents = decision.exit_price_cents
+                exit_time = decision.exit_time
+                exit_reason = decision.exit_reason
+
+                if exited_early:
+                    exits_triggered += 1
+                    # Taker fee for exit
+                    fee_usd = kalshi_taker_fee(exit_price_cents, num_contracts)
+                    # Exited early at exit_price
+                    pnl_net = calculate_exit_pnl(
+                        params.entry_price_cents,
+                        exit_price_cents,
+                        num_contracts,
+                        fee_usd,
+                    )
+                    pnl_gross = pnl_net + fee_usd
+                    # For exited trades, bin_won is based on exit P&L
+                    bin_won = pnl_net > 0
                 else:
-                    pnl_gross = -num_contracts * entry_price_dollars
+                    # Held to settlement - maker fee ($0 for weather)
+                    fee_usd = kalshi_maker_fee(params.entry_price_cents, num_contracts)
+                    # Determine if we won
+                    winning_bracket = find_bracket_for_temp(market_df, event_date, tmax_final)
+                    bin_won = winning_bracket is not None and winning_bracket[0] == ticker
+                    pnl_net = calculate_pnl(
+                        params.entry_price_cents,
+                        num_contracts,
+                        bin_won,
+                        fee_usd,
+                    )
+                    # Gross P&L
+                    entry_price_dollars = params.entry_price_cents / 100
+                    if bin_won:
+                        pnl_gross = num_contracts * (1.0 - entry_price_dollars)
+                    else:
+                        pnl_gross = -num_contracts * entry_price_dollars
 
                 # Create trade record
                 trade = OpenMakerTrade(
@@ -505,14 +676,99 @@ def run_backtest(
                     pnl_gross=pnl_gross,
                     fee_usd=fee_usd,
                     pnl_net=pnl_net,
+                    exited_early=exited_early,
+                    exit_price_cents=exit_price_cents,
+                    exit_time=exit_time,
+                    exit_reason=exit_reason,
                 )
 
                 result.trades.append(trade)
 
-            logger.info(f"  {city}: {len([t for t in result.trades if t.city == city])} trades")
+            # Log city summary
+            city_trades = [t for t in result.trades if t.city == city]
+            if strategy_id == "open_maker_next_over":
+                city_exits = sum(1 for t in city_trades if t.exited_early)
+                logger.info(f"  {city}: {len(city_trades)} trades, {city_exits} exits")
+            else:
+                logger.info(f"  {city}: {len(city_trades)} trades")
 
-    logger.info(f"Backtest complete: {result.num_trades} total trades")
+    # Final summary
+    if strategy_id == "open_maker_next_over":
+        total_exits = sum(1 for t in result.trades if t.exited_early)
+        logger.info(f"Backtest complete: {result.num_trades} trades, {total_exits} exits")
+    else:
+        logger.info(f"Backtest complete: {result.num_trades} total trades")
+
     return result
+
+
+# =============================================================================
+# Legacy Backtest Functions (for backward compatibility)
+# These functions delegate to the unified run_strategy() for simplicity.
+# =============================================================================
+
+def run_backtest(
+    cities: List[str],
+    start_date: date,
+    end_date: date,
+    params: OpenMakerParams,
+    strategy_name: str = "open_maker_base",
+) -> OpenMakerResult:
+    """
+    Run the open-maker base backtest.
+
+    This is a legacy wrapper that delegates to run_strategy().
+    Kept for backward compatibility with existing code.
+
+    Args:
+        cities: List of city IDs to backtest
+        start_date: Start date for backtest
+        end_date: End date for backtest
+        params: Strategy parameters
+        strategy_name: Name for this run (ignored, uses "open_maker_base")
+
+    Returns:
+        OpenMakerResult with all trades
+    """
+    return run_strategy(
+        strategy_id="open_maker_base",
+        cities=cities,
+        start_date=start_date,
+        end_date=end_date,
+        params=params,
+    )
+
+
+def run_backtest_next_over(
+    cities: List[str],
+    start_date: date,
+    end_date: date,
+    params: NextOverParams,
+    strategy_name: str = "open_maker_next_over",
+) -> OpenMakerResult:
+    """
+    Run the next_over strategy backtest with exit logic.
+
+    This is a legacy wrapper that delegates to run_strategy().
+    Kept for backward compatibility with existing code.
+
+    Args:
+        cities: List of city IDs to backtest
+        start_date: Start date for backtest
+        end_date: End date for backtest
+        params: NextOverParams with exit thresholds
+        strategy_name: Name for this run (ignored, uses "open_maker_next_over")
+
+    Returns:
+        OpenMakerResult with all trades
+    """
+    return run_strategy(
+        strategy_id="open_maker_next_over",
+        cities=cities,
+        start_date=start_date,
+        end_date=end_date,
+        params=params,
+    )
 
 
 # =============================================================================
@@ -654,6 +910,20 @@ def print_debug_trades(result: OpenMakerResult, n: int = 20) -> None:
 # CLI
 # =============================================================================
 
+def print_comparison_table(results: List[OpenMakerResult]) -> None:
+    """Print a comparison table for multiple strategy results."""
+    print("\n" + "=" * 70)
+    print("STRATEGY COMPARISON")
+    print("=" * 70)
+    print(f"{'Strategy':<25} {'Trades':>7} {'Win%':>7} {'ROI':>8} {'Sharpe_daily':>12}")
+    print("-" * 70)
+    for r in results:
+        print(f"{r.strategy_name:<25} {r.num_trades:>7} {r.win_rate:>6.1%} "
+              f"{(r.total_pnl / r.total_wagered * 100 if r.total_wagered > 0 else 0):>7.1f}% "
+              f"{r.sharpe_daily:>12.3f}")
+    print("=" * 70)
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Open-maker backtest for Kalshi weather markets"
@@ -695,6 +965,24 @@ def main():
         help="Bet amount in USD (default: 200)"
     )
     parser.add_argument(
+        "--strategy", action="append",
+        choices=["open_maker_base", "open_maker_next_over"],
+        help="Strategy to run (can specify multiple for comparison)"
+    )
+    # NextOver-specific params
+    parser.add_argument(
+        "--decision-offset", type=int, default=-180,
+        help="Minutes before predicted high for exit decision (default: -180)"
+    )
+    parser.add_argument(
+        "--neighbor-min", type=int, default=50,
+        help="Neighbor price threshold to trigger exit in cents (default: 50)"
+    )
+    parser.add_argument(
+        "--our-max", type=int, default=30,
+        help="Our price threshold to allow exit in cents (default: 30)"
+    )
+    parser.add_argument(
         "--save", action="store_true",
         help="Save results to database"
     )
@@ -722,32 +1010,60 @@ def main():
         end_date = today - timedelta(days=1)
         start_date = end_date - timedelta(days=args.days)
 
-    # Create params
-    params = OpenMakerParams(
-        entry_price_cents=args.price,
-        temp_bias_deg=args.bias,
-        basis_offset_days=args.offset,
-        bet_amount_usd=args.bet_amount,
-    )
+    # Determine strategies (default to base if not specified)
+    strategies = args.strategy if args.strategy else ["open_maker_base"]
 
-    # Run backtest
-    result = run_backtest(
-        cities=cities,
-        start_date=start_date,
-        end_date=end_date,
-        params=params,
-    )
+    results = []
+
+    for strategy_id in strategies:
+        # Build params based on strategy type
+        if strategy_id == "open_maker_base":
+            params = OpenMakerParams(
+                entry_price_cents=args.price,
+                temp_bias_deg=args.bias,
+                basis_offset_days=args.offset,
+                bet_amount_usd=args.bet_amount,
+            )
+        elif strategy_id == "open_maker_next_over":
+            params = NextOverParams(
+                entry_price_cents=args.price,
+                temp_bias_deg=args.bias,
+                basis_offset_days=args.offset,
+                bet_amount_usd=args.bet_amount,
+                decision_offset_min=args.decision_offset,
+                neighbor_price_min_c=args.neighbor_min,
+                our_price_max_c=args.our_max,
+            )
+        else:
+            logger.error(f"Unknown strategy: {strategy_id}")
+            continue
+
+        # Use unified runner for all strategies
+        result = run_strategy(
+            strategy_id=strategy_id,
+            cities=cities,
+            start_date=start_date,
+            end_date=end_date,
+            params=params,
+        )
+
+        results.append(result)
 
     # Print results
-    print_results(result)
-
-    # Debug output if requested
-    if args.debug:
-        print_debug_trades(result, n=20)
+    if len(results) == 1:
+        print_results(results[0])
+        if args.debug:
+            print_debug_trades(results[0], n=20)
+    else:
+        # Multiple strategies - print comparison table
+        for result in results:
+            print_results(result)
+        print_comparison_table(results)
 
     # Save if requested
     if args.save:
-        save_results_to_db(result)
+        for result in results:
+            save_results_to_db(result)
 
 
 if __name__ == "__main__":
