@@ -174,8 +174,8 @@ def market_to_db_dict(market: Market) -> dict:
         "event_date": parsed.get("event_date"),
         "exchange_market_id": None,  # Not in API response
         "strike_type": parsed.get("strike_type") or market.strike_type,
-        "floor_strike": int(parsed.get("floor_strike") or market.floor_strike or 0) if (parsed.get("floor_strike") or market.floor_strike) else None,
-        "cap_strike": int(parsed.get("cap_strike") or market.cap_strike or 0) if (parsed.get("cap_strike") or market.cap_strike) else None,
+        "floor_strike": float(parsed.get("floor_strike") or market.floor_strike or 0) if (parsed.get("floor_strike") or market.floor_strike) else None,
+        "cap_strike": float(parsed.get("cap_strike") or market.cap_strike or 0) if (parsed.get("cap_strike") or market.cap_strike) else None,
         "listed_at": listed_at,
         "close_time": close_time,
         "expiration_time": expiration_time,

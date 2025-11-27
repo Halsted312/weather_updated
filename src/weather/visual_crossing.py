@@ -347,3 +347,103 @@ class VisualCrossingClient:
                 results[city_id] = pd.DataFrame()
 
         return results
+
+    def fetch_historical_daily_forecast(
+        self,
+        location: str,
+        basis_date: str,
+        horizon_days: int = 15,
+    ) -> Dict[str, Any]:
+        """
+        Fetch the historical daily forecast as it looked on a specific past date.
+
+        Uses the Visual Crossing Timeline API with `forecastBasisDate` parameter
+        to retrieve what the forecast was for upcoming days as predicted on basis_date.
+
+        API Docs: https://www.visualcrossing.com/resources/documentation/weather-data/
+                  how-to-query-weather-forecasts-from-the-past-historical-forecasts/
+
+        Args:
+            location: Location string (e.g., "stn:KMDW" for Chicago Midway)
+            basis_date: The date the forecast was made (YYYY-MM-DD format)
+            horizon_days: Number of days in the forecast window (default: 15)
+
+        Returns:
+            Dict containing forecast data with "days" list, each day having:
+            - datetime: Target date (YYYY-MM-DD)
+            - tempmax: Forecast high temperature (°F)
+            - tempmin: Forecast low temperature (°F)
+            - precip: Forecast precipitation (inches)
+            - precipprob: Precipitation probability (%)
+            - humidity: Humidity (%)
+            - windspeed: Wind speed (mph)
+            - conditions: Conditions text
+            - icon: Weather icon name
+            - and more fields stored in raw response
+        """
+        # Calculate end date for the forecast horizon
+        from datetime import datetime as dt
+
+        basis_dt = dt.strptime(basis_date, "%Y-%m-%d")
+        end_dt = basis_dt + timedelta(days=horizon_days - 1)
+        end_date = end_dt.strftime("%Y-%m-%d")
+
+        # Build URL: {base_url}/{location}/{start_date}/{end_date}
+        url = f"{self.base_url}/{location}/{basis_date}/{end_date}"
+
+        # Request daily forecast elements
+        elements = ",".join([
+            "datetime",
+            "datetimeEpoch",
+            "tempmax",
+            "tempmin",
+            "temp",
+            "feelslikemax",
+            "feelslikemin",
+            "precip",
+            "precipprob",
+            "preciptype",
+            "snow",
+            "snowdepth",
+            "humidity",
+            "windspeed",
+            "windgust",
+            "winddir",
+            "cloudcover",
+            "visibility",
+            "pressure",
+            "conditions",
+            "icon",
+            "source",
+        ])
+
+        params = {
+            "key": self.api_key,
+            "unitGroup": "us",  # Fahrenheit, mph, inches
+            "include": "days",  # Daily data only (not hours/minutes)
+            "forecastBasisDate": basis_date,  # The key parameter for historical forecasts
+            "elements": elements,
+            "contentType": "json",
+        }
+
+        logger.debug(f"Fetching historical forecast for {location} as of {basis_date}...")
+
+        try:
+            response = self.session.get(url, params=params, timeout=60)
+            response.raise_for_status()
+
+            data = response.json()
+
+            # Track query cost for billing
+            query_cost = data.get("queryCost", 0)
+            days_count = len(data.get("days", []))
+            logger.debug(f"Query cost: {query_cost}, days returned: {days_count}")
+
+            # Rate limiting
+            time.sleep(self.rate_limit_delay)
+
+            return data
+
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Error fetching historical forecast: {e}")
+            raise

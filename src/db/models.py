@@ -78,8 +78,8 @@ class WxSettlement(Base):
     # Kalshi settlement bucket tracking
     settled_ticker: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     settled_bucket_type: Mapped[Optional[str]] = mapped_column(Text, nullable=True)  # 'between' | 'less' | 'greater'
-    settled_floor_strike: Mapped[Optional[int]] = mapped_column(SmallInteger, nullable=True)
-    settled_cap_strike: Mapped[Optional[int]] = mapped_column(SmallInteger, nullable=True)
+    settled_floor_strike: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    settled_cap_strike: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
     settled_bucket_label: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
     # Timestamps
@@ -184,8 +184,8 @@ class KalshiMarket(Base):
 
     exchange_market_id: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     strike_type: Mapped[Optional[str]] = mapped_column(Text, nullable=True)  # 'between' | 'less' | 'greater'
-    floor_strike: Mapped[Optional[int]] = mapped_column(SmallInteger, nullable=True)
-    cap_strike: Mapped[Optional[int]] = mapped_column(SmallInteger, nullable=True)
+    floor_strike: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    cap_strike: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
 
     listed_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     close_time: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
