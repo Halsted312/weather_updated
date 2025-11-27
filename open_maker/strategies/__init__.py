@@ -52,3 +52,4 @@ def list_strategies() -> list:
 # Import strategies to trigger registration
 from .base import BaseStrategy, OpenMakerParams  # noqa: E402
 from .next_over import NextOverStrategy, NextOverParams  # noqa: E402
+from .curve_gap import CurveGapStrategyV2, CurveGapParams, CurveGapDecision  # noqa: E402

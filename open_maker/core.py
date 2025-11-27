@@ -55,10 +55,14 @@ from .utils import (
     get_candle_price_for_signal,
     get_bracket_index,
     get_neighbor_ticker,
+    load_minute_obs,
+    get_forecast_temp_at_time,
+    compute_obs_stats,
 )
 from .strategies import get_strategy
 from .strategies.base import TradeContext, TradeDecision, StrategyParamsBase
 from .strategies.next_over import NextOverParams
+from .strategies.curve_gap import CurveGapParams, CurveGapDecision
 
 logging.basicConfig(
     level=logging.INFO,
@@ -474,6 +478,10 @@ def run_strategy(
         logger.info(f"  Params: entry={params.entry_price_cents}c, bias={params.temp_bias_deg}F, "
                     f"offset={params.decision_offset_min}min, neighbor_min={params.neighbor_price_min_c}c, "
                     f"our_max={params.our_price_max_c}c")
+    elif strategy_id == "open_maker_curve_gap":
+        logger.info(f"  Params: entry={params.entry_price_cents}c, bias={params.temp_bias_deg}F, "
+                    f"offset={params.decision_offset_min}min, delta_min={params.delta_obs_fcst_min_deg}F, "
+                    f"slope_min={params.slope_min_deg_per_hour}F/h, max_shift={params.max_shift_bins}")
     else:
         logger.info(f"  Params: entry={params.entry_price_cents}c, bias={params.temp_bias_deg}F, "
                     f"offset={params.basis_offset_days}d, bet=${params.bet_amount_usd}")
@@ -583,6 +591,8 @@ def run_strategy(
                 # ==========================================
 
                 candles_df = None  # Default: no candles needed
+                obs_stats = None  # For curve_gap
+                T_fcst_at_decision = None  # For curve_gap
 
                 # For next_over: compute decision time and load candles
                 if strategy_id == "open_maker_next_over":
@@ -613,8 +623,46 @@ def run_strategy(
                             session, tickers_to_load, window_start, window_end
                         )
 
-                # Call strategy decision
-                decision = strategy.decide(context, candles_df)
+                # For curve_gap: compute decision time, load observations, get forecast
+                elif strategy_id == "open_maker_curve_gap":
+                    # Get predicted high hour from yesterday's forecast
+                    predicted_high_hour = get_predicted_high_hour(
+                        session, city, event_date
+                    )
+
+                    if predicted_high_hour is not None:
+                        # Compute decision time
+                        decision_time = compute_decision_time_utc(
+                            city=city,
+                            event_date=event_date,
+                            predicted_high_hour=predicted_high_hour,
+                            offset_minutes=params.decision_offset_min,
+                        )
+
+                        # Load minute observations (1h before decision time)
+                        obs_start = decision_time - timedelta(minutes=75)
+                        obs_end = decision_time
+                        obs_df = load_minute_obs(session, city, obs_start, obs_end)
+
+                        # Compute observation stats
+                        if not obs_df.empty:
+                            obs_stats = compute_obs_stats(obs_df, decision_time)
+
+                        # Get interpolated forecast temp at decision time
+                        T_fcst_at_decision = get_forecast_temp_at_time(
+                            session, city, event_date, decision_time,
+                            basis_date=event_date - timedelta(days=params.basis_offset_days)
+                        )
+
+                # Call strategy decision with appropriate arguments
+                if strategy_id == "open_maker_curve_gap":
+                    decision = strategy.decide(
+                        context, candles_df,
+                        obs_stats=obs_stats,
+                        T_fcst_at_decision=T_fcst_at_decision
+                    )
+                else:
+                    decision = strategy.decide(context, candles_df)
 
                 # ==========================================
                 # P&L CALCULATION
@@ -624,6 +672,11 @@ def run_strategy(
                 exit_price_cents = decision.exit_price_cents
                 exit_time = decision.exit_time
                 exit_reason = decision.exit_reason
+
+                # For curve_gap: check for override_bin_index
+                override_bin_index = None
+                if isinstance(decision, CurveGapDecision):
+                    override_bin_index = decision.override_bin_index
 
                 if exited_early:
                     exits_triggered += 1
@@ -642,9 +695,17 @@ def run_strategy(
                 else:
                     # Held to settlement - maker fee ($0 for weather)
                     fee_usd = kalshi_maker_fee(params.entry_price_cents, num_contracts)
-                    # Determine if we won
+
+                    # Determine which bracket to use for P&L calculation
+                    # For curve_gap with override: use shifted bracket
+                    ticker_for_pnl = ticker
+                    if override_bin_index is not None and override_bin_index != bin_idx:
+                        # Get ticker for the shifted bracket
+                        ticker_for_pnl = sorted_brackets.iloc[override_bin_index]["ticker"]
+
+                    # Determine if we won based on the bracket used for P&L
                     winning_bracket = find_bracket_for_temp(market_df, event_date, tmax_final)
-                    bin_won = winning_bracket is not None and winning_bracket[0] == ticker
+                    bin_won = winning_bracket is not None and winning_bracket[0] == ticker_for_pnl
                     pnl_net = calculate_pnl(
                         params.entry_price_cents,
                         num_contracts,
@@ -689,6 +750,10 @@ def run_strategy(
             if strategy_id == "open_maker_next_over":
                 city_exits = sum(1 for t in city_trades if t.exited_early)
                 logger.info(f"  {city}: {len(city_trades)} trades, {city_exits} exits")
+            elif strategy_id == "open_maker_curve_gap":
+                # Count trades where shift was applied (exit_reason contains "shift")
+                city_shifts = sum(1 for t in city_trades if t.exit_reason and "shift" in t.exit_reason)
+                logger.info(f"  {city}: {len(city_trades)} trades, {city_shifts} shifts")
             else:
                 logger.info(f"  {city}: {len(city_trades)} trades")
 
@@ -696,6 +761,9 @@ def run_strategy(
     if strategy_id == "open_maker_next_over":
         total_exits = sum(1 for t in result.trades if t.exited_early)
         logger.info(f"Backtest complete: {result.num_trades} trades, {total_exits} exits")
+    elif strategy_id == "open_maker_curve_gap":
+        total_shifts = sum(1 for t in result.trades if t.exit_reason and "shift" in t.exit_reason)
+        logger.info(f"Backtest complete: {result.num_trades} trades, {total_shifts} shifts")
     else:
         logger.info(f"Backtest complete: {result.num_trades} total trades")
 
@@ -966,21 +1034,34 @@ def main():
     )
     parser.add_argument(
         "--strategy", action="append",
-        choices=["open_maker_base", "open_maker_next_over"],
+        choices=["open_maker_base", "open_maker_next_over", "open_maker_curve_gap"],
         help="Strategy to run (can specify multiple for comparison)"
     )
     # NextOver-specific params
     parser.add_argument(
         "--decision-offset", type=int, default=-180,
-        help="Minutes before predicted high for exit decision (default: -180)"
+        help="Minutes before predicted high for decision (default: -180)"
     )
     parser.add_argument(
         "--neighbor-min", type=int, default=50,
-        help="Neighbor price threshold to trigger exit in cents (default: 50)"
+        help="[next_over] Neighbor price threshold to trigger exit in cents (default: 50)"
     )
     parser.add_argument(
         "--our-max", type=int, default=30,
-        help="Our price threshold to allow exit in cents (default: 30)"
+        help="[next_over] Our price threshold to allow exit in cents (default: 30)"
+    )
+    # CurveGap-specific params
+    parser.add_argument(
+        "--delta-obs-fcst-min", type=float, default=1.5,
+        help="[curve_gap] Min T_obs - T_fcst to trigger shift in degrees F (default: 1.5)"
+    )
+    parser.add_argument(
+        "--slope-min", type=float, default=0.5,
+        help="[curve_gap] Min slope to trigger shift in degrees F/hour (default: 0.5)"
+    )
+    parser.add_argument(
+        "--max-shift-bins", type=int, default=1,
+        help="[curve_gap] Max bins to shift up (default: 1)"
     )
     parser.add_argument(
         "--save", action="store_true",
@@ -1033,6 +1114,17 @@ def main():
                 decision_offset_min=args.decision_offset,
                 neighbor_price_min_c=args.neighbor_min,
                 our_price_max_c=args.our_max,
+            )
+        elif strategy_id == "open_maker_curve_gap":
+            params = CurveGapParams(
+                entry_price_cents=args.price,
+                temp_bias_deg=args.bias,
+                basis_offset_days=args.offset,
+                bet_amount_usd=args.bet_amount,
+                decision_offset_min=args.decision_offset,
+                delta_obs_fcst_min_deg=args.delta_obs_fcst_min,
+                slope_min_deg_per_hour=args.slope_min,
+                max_shift_bins=args.max_shift_bins,
             )
         else:
             logger.error(f"Unknown strategy: {strategy_id}")

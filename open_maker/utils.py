@@ -537,3 +537,236 @@ def get_neighbor_ticker(
         return None
 
     return sorted_brackets.iloc[neighbor_idx]["ticker"]
+
+
+# =============================================================================
+# Observation Data Loading (for curve_gap strategy)
+# =============================================================================
+
+# Station ID mapping: city_id -> ICAO code
+CITY_STATION_MAP = {
+    "chicago": "KMDW",
+    "austin": "KAUS",
+    "denver": "KDEN",
+    "los_angeles": "KLAX",
+    "miami": "KMIA",
+    "philadelphia": "KPHL",
+}
+
+
+def load_minute_obs(
+    session,
+    city: str,
+    start_time: datetime,
+    end_time: datetime,
+) -> pd.DataFrame:
+    """
+    Load minute observations from wx.minute_obs.
+
+    Args:
+        session: SQLAlchemy session
+        city: City ID (e.g., "chicago")
+        start_time: Start time (UTC, timezone-aware)
+        end_time: End time (UTC, timezone-aware)
+
+    Returns:
+        DataFrame with columns: ts_utc, temp_f, humidity, windspeed_mph
+        Empty DataFrame if no data found or city not supported.
+    """
+    from sqlalchemy import select
+    from src.db.models import WxMinuteObs
+
+    # Get ICAO station ID for this city
+    loc_id = CITY_STATION_MAP.get(city)
+    if loc_id is None:
+        logger.warning(f"Unknown city for minute obs: {city}")
+        return pd.DataFrame()
+
+    query = select(
+        WxMinuteObs.ts_utc,
+        WxMinuteObs.temp_f,
+        WxMinuteObs.humidity,
+        WxMinuteObs.windspeed_mph,
+    ).where(
+        WxMinuteObs.loc_id == loc_id,
+        WxMinuteObs.ts_utc >= start_time,
+        WxMinuteObs.ts_utc <= end_time,
+    ).order_by(WxMinuteObs.ts_utc)
+
+    result = session.execute(query)
+    rows = result.fetchall()
+
+    if not rows:
+        logger.debug(f"No minute obs for {city}/{loc_id} between {start_time} and {end_time}")
+        return pd.DataFrame()
+
+    df = pd.DataFrame(rows, columns=["ts_utc", "temp_f", "humidity", "windspeed_mph"])
+    return df
+
+
+def get_forecast_temp_at_time(
+    session,
+    city: str,
+    event_date: date,
+    target_time: datetime,
+    basis_date: Optional[date] = None,
+) -> Optional[float]:
+    """
+    Interpolate hourly forecast to get temp at specific time.
+
+    Args:
+        session: SQLAlchemy session
+        city: City ID (e.g., "chicago")
+        event_date: The event date (target_date)
+        target_time: Target time (UTC, timezone-aware)
+        basis_date: Forecast basis date. If None, uses event_date - 1 day.
+
+    Returns:
+        Interpolated forecast temperature (°F) at target_time, or None if not available.
+    """
+    from sqlalchemy import select, func
+    from src.db.models import WxForecastSnapshotHourly
+
+    if basis_date is None:
+        basis_date = event_date - timedelta(days=1)
+
+    # Get hourly forecasts for the event_date from the specified basis
+    query = select(
+        WxForecastSnapshotHourly.target_hour_local,
+        WxForecastSnapshotHourly.temp_fcst_f,
+    ).where(
+        WxForecastSnapshotHourly.city == city,
+        WxForecastSnapshotHourly.basis_date == basis_date,
+        func.date(WxForecastSnapshotHourly.target_hour_local) == event_date,
+    ).order_by(WxForecastSnapshotHourly.target_hour_local)
+
+    result = session.execute(query)
+    rows = result.fetchall()
+
+    if not rows:
+        logger.debug(f"No hourly forecast for {city}/{event_date} from basis {basis_date}")
+        return None
+
+    # Build DataFrame for interpolation
+    df = pd.DataFrame(rows, columns=["target_hour_local", "temp_fcst_f"])
+
+    # Filter out None values
+    df = df.dropna(subset=["temp_fcst_f"])
+    if df.empty:
+        return None
+
+    # Get timezone for this city and convert target_time to local
+    tz = get_city_timezone(city)
+    target_local = target_time.astimezone(tz)
+
+    # Convert forecast hours to comparable format
+    # target_hour_local is naive datetime in local time
+    df["hour_float"] = df["target_hour_local"].apply(
+        lambda dt: dt.hour + dt.minute / 60.0
+    )
+    target_hour_float = target_local.hour + target_local.minute / 60.0
+
+    # Find surrounding hours for linear interpolation
+    before = df[df["hour_float"] <= target_hour_float]
+    after = df[df["hour_float"] > target_hour_float]
+
+    if before.empty:
+        # Target is before first forecast hour - use first value
+        return float(df.iloc[0]["temp_fcst_f"])
+    if after.empty:
+        # Target is after last forecast hour - use last value
+        return float(df.iloc[-1]["temp_fcst_f"])
+
+    # Linear interpolation between surrounding hours
+    h0 = before.iloc[-1]["hour_float"]
+    t0 = before.iloc[-1]["temp_fcst_f"]
+    h1 = after.iloc[0]["hour_float"]
+    t1 = after.iloc[0]["temp_fcst_f"]
+
+    if h1 == h0:
+        return float(t0)
+
+    # Interpolate
+    weight = (target_hour_float - h0) / (h1 - h0)
+    temp_interp = t0 + weight * (t1 - t0)
+    return float(temp_interp)
+
+
+def compute_obs_stats(
+    obs_df: pd.DataFrame,
+    decision_time: datetime,
+    avg_window_min: int = 15,
+    slope_window_min: int = 60,
+) -> dict:
+    """
+    Compute observation statistics at decision time.
+
+    Args:
+        obs_df: DataFrame from load_minute_obs() with ts_utc, temp_f columns
+        decision_time: Decision time (UTC, timezone-aware)
+        avg_window_min: Minutes to average for T_obs (default: 15)
+        slope_window_min: Minutes of history for slope calculation (default: 60)
+
+    Returns:
+        Dictionary with:
+        - T_obs: Average temp over avg_window_min before decision_time
+        - slope_1h: °F/hour slope over slope_window_min (positive = warming)
+        - n_points: Count of valid observations used
+        Returns empty dict if insufficient data.
+    """
+    import numpy as np
+
+    if obs_df.empty:
+        return {}
+
+    # Ensure ts_utc is timezone-aware for comparison
+    df = obs_df.copy()
+    if df["ts_utc"].dt.tz is None:
+        df["ts_utc"] = df["ts_utc"].dt.tz_localize("UTC")
+
+    # Filter to observations before or at decision time
+    df = df[df["ts_utc"] <= decision_time]
+    if df.empty:
+        return {}
+
+    # Sort by time
+    df = df.sort_values("ts_utc")
+
+    # Compute T_obs: average over last avg_window_min
+    avg_start = decision_time - timedelta(minutes=avg_window_min)
+    avg_mask = df["ts_utc"] >= avg_start
+    avg_df = df[avg_mask].dropna(subset=["temp_f"])
+
+    if avg_df.empty:
+        return {}
+
+    T_obs = float(avg_df["temp_f"].mean())
+    n_points = len(avg_df)
+
+    # Compute slope over last slope_window_min
+    slope_start = decision_time - timedelta(minutes=slope_window_min)
+    slope_df = df[df["ts_utc"] >= slope_start].dropna(subset=["temp_f"])
+
+    slope_1h = 0.0
+    if len(slope_df) >= 2:
+        # Convert time to hours from slope_start for linear regression
+        slope_df = slope_df.copy()
+        slope_df["hours"] = (slope_df["ts_utc"] - slope_start).dt.total_seconds() / 3600
+
+        # Simple linear regression: slope = Cov(x,y) / Var(x)
+        x = slope_df["hours"].values
+        y = slope_df["temp_f"].values
+
+        # Use numpy polyfit for robustness
+        if len(x) >= 2 and np.var(x) > 0:
+            try:
+                coeffs = np.polyfit(x, y, 1)
+                slope_1h = float(coeffs[0])  # °F per hour
+            except np.linalg.LinAlgError:
+                slope_1h = 0.0
+
+    return {
+        "T_obs": T_obs,
+        "slope_1h": slope_1h,
+        "n_points": n_points,
+    }
