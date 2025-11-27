@@ -8,7 +8,7 @@ Handles both ISO 8601 timestamps and Unix timestamps.
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Union
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 
 def parse_timestamp(v: Union[str, int, None]) -> Optional[int]:
@@ -139,6 +139,51 @@ class Candle(BaseModel):
     def parse_timestamp_field(cls, v: Union[str, int, None]) -> Optional[int]:
         """Convert ISO 8601 strings to Unix timestamps."""
         return parse_timestamp(v)
+
+    @model_validator(mode="before")
+    @classmethod
+    def extract_nested_prices(cls, data: dict) -> dict:
+        """Extract prices from nested yes_ask/yes_bid/price dicts if present."""
+        if not isinstance(data, dict):
+            return data
+
+        # Extract from nested yes_bid dict
+        if "yes_bid" in data and isinstance(data["yes_bid"], dict):
+            yes_bid = data["yes_bid"]
+            if data.get("yes_bid_open") is None and "open" in yes_bid:
+                data["yes_bid_open"] = yes_bid.get("open")
+            if data.get("yes_bid_high") is None and "high" in yes_bid:
+                data["yes_bid_high"] = yes_bid.get("high")
+            if data.get("yes_bid_low") is None and "low" in yes_bid:
+                data["yes_bid_low"] = yes_bid.get("low")
+            if data.get("yes_bid_close") is None and "close" in yes_bid:
+                data["yes_bid_close"] = yes_bid.get("close")
+
+        # Extract from nested yes_ask dict
+        if "yes_ask" in data and isinstance(data["yes_ask"], dict):
+            yes_ask = data["yes_ask"]
+            if data.get("yes_ask_open") is None and "open" in yes_ask:
+                data["yes_ask_open"] = yes_ask.get("open")
+            if data.get("yes_ask_high") is None and "high" in yes_ask:
+                data["yes_ask_high"] = yes_ask.get("high")
+            if data.get("yes_ask_low") is None and "low" in yes_ask:
+                data["yes_ask_low"] = yes_ask.get("low")
+            if data.get("yes_ask_close") is None and "close" in yes_ask:
+                data["yes_ask_close"] = yes_ask.get("close")
+
+        # Extract from nested price dict
+        if "price" in data and isinstance(data["price"], dict):
+            price = data["price"]
+            if data.get("price_open") is None and "open" in price:
+                data["price_open"] = price.get("open")
+            if data.get("price_high") is None and "high" in price:
+                data["price_high"] = price.get("high")
+            if data.get("price_low") is None and "low" in price:
+                data["price_low"] = price.get("low")
+            if data.get("price_close") is None and "close" in price:
+                data["price_close"] = price.get("close")
+
+        return data
 
 
 def parse_price_to_cents(v: Union[float, int, None]) -> Optional[int]:
