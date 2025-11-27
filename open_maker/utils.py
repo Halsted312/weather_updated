@@ -112,8 +112,9 @@ def find_bracket_for_temp(
         if row["strike_type"] == "between":
             floor_s = row["floor_strike"]
             cap_s = row["cap_strike"]
-            if floor_s is not None and cap_s is not None and floor_s <= temp < cap_s:
-                return row["ticker"], floor_s, cap_s
+            # Handle both None and NaN
+            if pd.notna(floor_s) and pd.notna(cap_s) and floor_s <= temp < cap_s:
+                return row["ticker"], float(floor_s), float(cap_s)
 
     # Second pass: check tail brackets only if no between bracket matched
     # Low tail: "less" or "less_or_equal" (YES if below some threshold)
@@ -122,11 +123,11 @@ def find_bracket_for_temp(
         cap_s = row["cap_strike"]
 
         if strike_type == "less":
-            if cap_s is not None and temp < cap_s:
-                return row["ticker"], None, cap_s
+            if pd.notna(cap_s) and temp < cap_s:
+                return row["ticker"], None, float(cap_s)
         elif strike_type == "less_or_equal":
-            if cap_s is not None and temp <= cap_s:
-                return row["ticker"], None, cap_s
+            if pd.notna(cap_s) and temp <= cap_s:
+                return row["ticker"], None, float(cap_s)
 
     # High tail: "greater" or "greater_or_equal" (YES if above some threshold)
     for _, row in day_markets.iterrows():
@@ -134,12 +135,12 @@ def find_bracket_for_temp(
         floor_s = row["floor_strike"]
 
         if strike_type == "greater":
-            # Only match if cap_strike is NULL (true tail)
-            if floor_s is not None and row["cap_strike"] is None and temp >= floor_s:
-                return row["ticker"], floor_s, None
+            # Only match if cap_strike is NULL/NaN (true tail)
+            if pd.notna(floor_s) and pd.isna(row["cap_strike"]) and temp >= floor_s:
+                return row["ticker"], float(floor_s), None
         elif strike_type == "greater_or_equal":
-            if floor_s is not None and temp > floor_s:
-                return row["ticker"], floor_s, None
+            if pd.notna(floor_s) and temp > floor_s:
+                return row["ticker"], float(floor_s), None
 
     return None
 
@@ -770,3 +771,65 @@ def compute_obs_stats(
         "slope_1h": slope_1h,
         "n_points": n_points,
     }
+
+
+# =============================================================================
+# Fill Realism Filter
+# =============================================================================
+
+def check_fill_achievable(
+    session,
+    ticker: str,
+    listed_at: datetime,
+    entry_price_cents: float,
+    window_hours: int = 2,
+) -> bool:
+    """
+    Check if a given entry price was achievable within a time window after listing.
+
+    For fill realism: require that within `window_hours` after listed_at, we see
+    at least one 1-minute candle where close_c <= entry_price_cents.
+
+    Args:
+        session: SQLAlchemy session
+        ticker: Contract ticker
+        listed_at: When the contract was listed (timezone-aware)
+        entry_price_cents: Target entry price in cents
+        window_hours: Hours after listing to check (default: 2)
+
+    Returns:
+        True if entry price was achievable, False otherwise
+    """
+    from sqlalchemy import select
+    from src.db.models import KalshiCandle1m
+
+    window_end = listed_at + timedelta(hours=window_hours)
+
+    # Query candles in the window
+    query = select(
+        KalshiCandle1m.bucket_start,
+        KalshiCandle1m.close_c,
+        KalshiCandle1m.yes_ask_c,
+    ).where(
+        KalshiCandle1m.ticker == ticker,
+        KalshiCandle1m.bucket_start >= listed_at,
+        KalshiCandle1m.bucket_start <= window_end,
+    ).order_by(KalshiCandle1m.bucket_start)
+
+    result = session.execute(query)
+    rows = result.fetchall()
+
+    if not rows:
+        # No candles in window - can't verify fill
+        logger.debug(f"No candles for {ticker} in fill window {listed_at} to {window_end}")
+        return False
+
+    # Check if any candle has price <= entry_price_cents
+    for row in rows:
+        # Prefer yes_ask if available, else use close
+        check_price = row.yes_ask_c if row.yes_ask_c is not None else row.close_c
+        if check_price is not None and check_price <= entry_price_cents:
+            return True
+
+    # No candle had a price <= entry_price_cents
+    return False

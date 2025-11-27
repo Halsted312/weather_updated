@@ -17,9 +17,11 @@ Usage:
 """
 
 import argparse
+import json
 import logging
 import sys
 from datetime import date, timedelta
+from pathlib import Path
 from typing import List, Optional
 
 import optuna
@@ -44,6 +46,63 @@ logger = logging.getLogger(__name__)
 
 # Reduce optuna verbosity
 optuna.logging.set_verbosity(optuna.logging.WARNING)
+
+
+def save_best_params(strategy_id: str, params: dict, metric: str, best_value: float) -> Path:
+    """
+    Save best parameters from Optuna study to a JSON file.
+
+    Args:
+        strategy_id: Strategy identifier (e.g., "open_maker_base")
+        params: Dictionary of best parameters from study.best_params
+        metric: The metric that was optimized
+        best_value: The best value achieved
+
+    Returns:
+        Path to the saved JSON file
+    """
+    config_dir = Path(__file__).parent.parent / "config"
+    config_dir.mkdir(exist_ok=True)
+    out_path = config_dir / f"{strategy_id}_best_params.json"
+
+    # Add metadata
+    output = {
+        "strategy_id": strategy_id,
+        "metric": metric,
+        "best_value": best_value,
+        "params": params,
+    }
+
+    with out_path.open("w") as f:
+        json.dump(output, f, indent=2, sort_keys=True)
+
+    logger.info(f"Saved best params to {out_path}")
+    return out_path
+
+
+def load_best_params(strategy_id: str) -> Optional[dict]:
+    """
+    Load best parameters from a JSON file.
+
+    Args:
+        strategy_id: Strategy identifier (e.g., "open_maker_base")
+
+    Returns:
+        Dictionary with params key containing the best parameters, or None if not found
+    """
+    config_dir = Path(__file__).parent.parent / "config"
+    param_path = config_dir / f"{strategy_id}_best_params.json"
+
+    if not param_path.exists():
+        return None
+
+    try:
+        with param_path.open("r") as f:
+            data = json.load(f)
+        return data
+    except (json.JSONDecodeError, IOError) as e:
+        logger.warning(f"Failed to load params from {param_path}: {e}")
+        return None
 
 
 def create_objective_base(
@@ -542,6 +601,14 @@ def main():
     )
 
     print_optimization_results(study, strategy_id)
+
+    # Save best params to JSON
+    save_best_params(
+        strategy_id=strategy_id,
+        params=study.best_params,
+        metric=metric,
+        best_value=study.best_value,
+    )
 
     # Run final backtest with best params on TEST period (out-of-sample)
     print(f"\n{'='*60}")

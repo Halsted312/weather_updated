@@ -14,6 +14,7 @@ Usage:
 """
 
 import argparse
+import json
 import logging
 import math
 import statistics
@@ -22,6 +23,7 @@ import uuid
 from collections import defaultdict
 from dataclasses import dataclass, field
 from datetime import date, datetime, timedelta
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 import pandas as pd
@@ -58,6 +60,7 @@ from .utils import (
     load_minute_obs,
     get_forecast_temp_at_time,
     compute_obs_stats,
+    check_fill_achievable,
 )
 from .strategies import get_strategy
 from .strategies.base import TradeContext, TradeDecision, StrategyParamsBase
@@ -90,6 +93,67 @@ class OpenMakerParams:
 
     # Position sizing
     bet_amount_usd: float = 200.0
+
+
+def load_tuned_params(strategy_id: str, bet_amount_usd: float = 200.0) -> Optional[StrategyParamsBase]:
+    """
+    Load tuned parameters from JSON file created by optuna_tuner.
+
+    Args:
+        strategy_id: Strategy identifier (e.g., "open_maker_base")
+        bet_amount_usd: Bet amount to use (not saved in tuned params)
+
+    Returns:
+        Params object for the strategy, or None if not found
+    """
+    config_dir = Path(__file__).parent.parent / "config"
+    param_path = config_dir / f"{strategy_id}_best_params.json"
+
+    if not param_path.exists():
+        logger.debug(f"No tuned params found at {param_path}")
+        return None
+
+    try:
+        with param_path.open("r") as f:
+            data = json.load(f)
+
+        params = data.get("params", {})
+
+        if strategy_id == "open_maker_base":
+            return OpenMakerParams(
+                entry_price_cents=params.get("entry_price_cents", 50.0),
+                temp_bias_deg=params.get("temp_bias_deg", 0.0),
+                basis_offset_days=params.get("basis_offset_days", 1),
+                bet_amount_usd=bet_amount_usd,
+            )
+        elif strategy_id == "open_maker_next_over":
+            return NextOverParams(
+                entry_price_cents=params.get("entry_price_cents", 40.0),
+                temp_bias_deg=params.get("temp_bias_deg", 0.0),
+                basis_offset_days=params.get("basis_offset_days", 1),
+                bet_amount_usd=bet_amount_usd,
+                decision_offset_min=params.get("decision_offset_min", -180),
+                neighbor_price_min_c=params.get("neighbor_price_min_c", 50),
+                our_price_max_c=params.get("our_price_max_c", 30),
+            )
+        elif strategy_id == "open_maker_curve_gap":
+            return CurveGapParams(
+                entry_price_cents=params.get("entry_price_cents", 30.0),
+                temp_bias_deg=params.get("temp_bias_deg", 0.0),
+                basis_offset_days=params.get("basis_offset_days", 1),
+                bet_amount_usd=bet_amount_usd,
+                decision_offset_min=params.get("decision_offset_min", -180),
+                delta_obs_fcst_min_deg=params.get("delta_obs_fcst_min_deg", 1.5),
+                slope_min_deg_per_hour=params.get("slope_min_deg_per_hour", 0.5),
+                max_shift_bins=params.get("max_shift_bins", 1),
+            )
+        else:
+            logger.warning(f"Unknown strategy for tuned params: {strategy_id}")
+            return None
+
+    except (json.JSONDecodeError, IOError) as e:
+        logger.warning(f"Failed to load tuned params from {param_path}: {e}")
+        return None
 
 
 # =============================================================================
@@ -427,6 +491,7 @@ def run_strategy(
     start_date: date,
     end_date: date,
     params: StrategyParamsBase,
+    fill_check: bool = False,
 ) -> OpenMakerResult:
     """
     Unified backtest runner for all strategies.
@@ -441,6 +506,7 @@ def run_strategy(
         start_date: Start date for backtest
         end_date: End date for backtest
         params: Strategy parameters (must match strategy's expected params class)
+        fill_check: If True, skip trades where entry price wasn't achievable in first 2h
 
     Returns:
         OpenMakerResult with all trades
@@ -507,6 +573,8 @@ def run_strategy(
 
             # Track exits for next_over
             exits_triggered = 0
+            # Track trades skipped due to fill check
+            fill_skipped = 0
 
             # Process each event_date
             event_dates = sorted(settlement_df["event_date"].unique())
@@ -540,6 +608,31 @@ def run_strategy(
                     continue
 
                 ticker, floor_strike, cap_strike = bracket
+
+                # ==============================================
+                # FILL REALISM CHECK (optional)
+                # ==============================================
+                if fill_check:
+                    # Get listed_at for this ticker
+                    ticker_row = market_df[
+                        (market_df["event_date"] == event_date) &
+                        (market_df["ticker"] == ticker)
+                    ]
+                    if not ticker_row.empty and ticker_row.iloc[0]["listed_at"] is not None:
+                        listed_at = ticker_row.iloc[0]["listed_at"]
+                        # Make timezone-aware if needed
+                        if listed_at.tzinfo is None:
+                            import pytz
+                            listed_at = pytz.UTC.localize(listed_at)
+
+                        if not check_fill_achievable(
+                            session, ticker, listed_at, params.entry_price_cents
+                        ):
+                            fill_skipped += 1
+                            logger.debug(
+                                f"  {event_date}: No fill at {params.entry_price_cents}c for {ticker}"
+                            )
+                            continue
 
                 # Get bracket index and sorted brackets
                 bin_idx, total_bins, sorted_brackets = get_bracket_index(
@@ -747,15 +840,16 @@ def run_strategy(
 
             # Log city summary
             city_trades = [t for t in result.trades if t.city == city]
+            fill_info = f", {fill_skipped} skipped (no fill)" if fill_check and fill_skipped > 0 else ""
             if strategy_id == "open_maker_next_over":
                 city_exits = sum(1 for t in city_trades if t.exited_early)
-                logger.info(f"  {city}: {len(city_trades)} trades, {city_exits} exits")
+                logger.info(f"  {city}: {len(city_trades)} trades, {city_exits} exits{fill_info}")
             elif strategy_id == "open_maker_curve_gap":
                 # Count trades where shift was applied (exit_reason contains "shift")
                 city_shifts = sum(1 for t in city_trades if t.exit_reason and "shift" in t.exit_reason)
-                logger.info(f"  {city}: {len(city_trades)} trades, {city_shifts} shifts")
+                logger.info(f"  {city}: {len(city_trades)} trades, {city_shifts} shifts{fill_info}")
             else:
-                logger.info(f"  {city}: {len(city_trades)} trades")
+                logger.info(f"  {city}: {len(city_trades)} trades{fill_info}")
 
     # Final summary
     if strategy_id == "open_maker_next_over":
@@ -1071,6 +1165,14 @@ def main():
         "--debug", action="store_true",
         help="Print detailed info for 20 random trades"
     )
+    parser.add_argument(
+        "--use-tuned", action="store_true",
+        help="Use tuned parameters from config/*.json (from optuna_tuner)"
+    )
+    parser.add_argument(
+        "--fill-check", action="store_true",
+        help="Enable fill realism filter - skip trades where entry price wasn't achievable"
+    )
 
     args = parser.parse_args()
 
@@ -1098,37 +1200,49 @@ def main():
 
     for strategy_id in strategies:
         # Build params based on strategy type
-        if strategy_id == "open_maker_base":
-            params = OpenMakerParams(
-                entry_price_cents=args.price,
-                temp_bias_deg=args.bias,
-                basis_offset_days=args.offset,
-                bet_amount_usd=args.bet_amount,
-            )
-        elif strategy_id == "open_maker_next_over":
-            params = NextOverParams(
-                entry_price_cents=args.price,
-                temp_bias_deg=args.bias,
-                basis_offset_days=args.offset,
-                bet_amount_usd=args.bet_amount,
-                decision_offset_min=args.decision_offset,
-                neighbor_price_min_c=args.neighbor_min,
-                our_price_max_c=args.our_max,
-            )
-        elif strategy_id == "open_maker_curve_gap":
-            params = CurveGapParams(
-                entry_price_cents=args.price,
-                temp_bias_deg=args.bias,
-                basis_offset_days=args.offset,
-                bet_amount_usd=args.bet_amount,
-                decision_offset_min=args.decision_offset,
-                delta_obs_fcst_min_deg=args.delta_obs_fcst_min,
-                slope_min_deg_per_hour=args.slope_min,
-                max_shift_bins=args.max_shift_bins,
-            )
-        else:
-            logger.error(f"Unknown strategy: {strategy_id}")
-            continue
+        params = None
+
+        # Try to load tuned params if requested
+        if args.use_tuned:
+            params = load_tuned_params(strategy_id, bet_amount_usd=args.bet_amount)
+            if params:
+                logger.info(f"Using tuned params for {strategy_id}: {params}")
+            else:
+                logger.warning(f"No tuned params found for {strategy_id}, using defaults")
+
+        # Fall back to CLI args if no tuned params
+        if params is None:
+            if strategy_id == "open_maker_base":
+                params = OpenMakerParams(
+                    entry_price_cents=args.price,
+                    temp_bias_deg=args.bias,
+                    basis_offset_days=args.offset,
+                    bet_amount_usd=args.bet_amount,
+                )
+            elif strategy_id == "open_maker_next_over":
+                params = NextOverParams(
+                    entry_price_cents=args.price,
+                    temp_bias_deg=args.bias,
+                    basis_offset_days=args.offset,
+                    bet_amount_usd=args.bet_amount,
+                    decision_offset_min=args.decision_offset,
+                    neighbor_price_min_c=args.neighbor_min,
+                    our_price_max_c=args.our_max,
+                )
+            elif strategy_id == "open_maker_curve_gap":
+                params = CurveGapParams(
+                    entry_price_cents=args.price,
+                    temp_bias_deg=args.bias,
+                    basis_offset_days=args.offset,
+                    bet_amount_usd=args.bet_amount,
+                    decision_offset_min=args.decision_offset,
+                    delta_obs_fcst_min_deg=args.delta_obs_fcst_min,
+                    slope_min_deg_per_hour=args.slope_min,
+                    max_shift_bins=args.max_shift_bins,
+                )
+            else:
+                logger.error(f"Unknown strategy: {strategy_id}")
+                continue
 
         # Use unified runner for all strategies
         result = run_strategy(
@@ -1137,6 +1251,7 @@ def main():
             start_date=start_date,
             end_date=end_date,
             params=params,
+            fill_check=args.fill_check,
         )
 
         results.append(result)
