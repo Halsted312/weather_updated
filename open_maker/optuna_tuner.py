@@ -33,6 +33,7 @@ from open_maker.core import (
     print_results,
 )
 from open_maker.strategies.next_over import NextOverParams
+from open_maker.strategies.curve_gap import CurveGapParams
 from src.config import CITIES
 
 logging.basicConfig(
@@ -166,6 +167,75 @@ def create_objective_next_over(
     return objective
 
 
+def create_objective_curve_gap(
+    cities: List[str],
+    start_date: date,
+    end_date: date,
+    metric: str = "sharpe_daily",
+    bet_amount_usd: float = 100.0,
+):
+    """
+    Create an Optuna objective function for the curve_gap hindsight strategy.
+
+    Args:
+        cities: List of cities to backtest
+        start_date: Start date for backtest (train period)
+        end_date: End date for backtest (train period)
+        metric: Metric to optimize (default: sharpe_daily)
+        bet_amount_usd: Fixed bet amount for all trials
+
+    Returns:
+        Objective function for Optuna
+    """
+
+    def objective(trial: optuna.Trial) -> float:
+        # Sample parameters for curve_gap strategy
+        params = CurveGapParams(
+            # Entry price: 25-45 cents (lower range since we shift to higher bins)
+            entry_price_cents=trial.suggest_categorical(
+                "entry_price_cents", [25.0, 30.0, 35.0, 40.0]
+            ),
+            # Temperature bias: -2 to +2 degrees
+            temp_bias_deg=trial.suggest_float("temp_bias_deg", -2.0, 2.0),
+            # Basis offset: use previous day forecast
+            basis_offset_days=trial.suggest_int("basis_offset_days", 0, 1),
+            # Fixed bet amount
+            bet_amount_usd=bet_amount_usd,
+            # Decision timing: minutes before predicted high
+            # Range: -360 (6h before) to -120 (2h before)
+            decision_offset_min=trial.suggest_categorical(
+                "decision_offset_min",
+                [-360, -300, -240, -180, -120]
+            ),
+            # Curve gap thresholds
+            delta_obs_fcst_min_deg=trial.suggest_float(
+                "delta_obs_fcst_min_deg", 1.0, 3.0
+            ),
+            slope_min_deg_per_hour=trial.suggest_float(
+                "slope_min_deg_per_hour", 0.2, 1.0
+            ),
+            # Shift control
+            max_shift_bins=trial.suggest_int("max_shift_bins", 1, 2),
+        )
+
+        try:
+            result = run_strategy(
+                strategy_id="open_maker_curve_gap",
+                cities=cities,
+                start_date=start_date,
+                end_date=end_date,
+                params=params,
+            )
+
+            return _extract_metric(result, metric)
+
+        except Exception as e:
+            logger.warning(f"Trial {trial.number} failed: {e}")
+            return float("-inf")
+
+    return objective
+
+
 def _extract_metric(result, metric: str) -> float:
     """Extract the specified metric from a backtest result."""
     if not result.trades:
@@ -244,6 +314,14 @@ def run_optimization(
             metric=metric,
             bet_amount_usd=bet_amount_usd,
         )
+    elif strategy_id == "open_maker_curve_gap":
+        objective = create_objective_curve_gap(
+            cities=cities,
+            start_date=start_date,
+            end_date=end_date,
+            metric=metric,
+            bet_amount_usd=bet_amount_usd,
+        )
     else:
         objective = create_objective_base(
             cities=cities,
@@ -298,7 +376,7 @@ def main():
     )
     parser.add_argument(
         "--strategy", type=str, default="open_maker_base",
-        choices=["open_maker_base", "open_maker_next_over"],
+        choices=["open_maker_base", "open_maker_next_over", "open_maker_curve_gap"],
         help="Strategy to optimize (default: open_maker_base)"
     )
     parser.add_argument(
@@ -358,7 +436,10 @@ def main():
 
     # Default metric based on strategy
     if args.metric is None:
-        metric = "sharpe_daily" if strategy_id == "open_maker_next_over" else "total_pnl"
+        if strategy_id in ("open_maker_next_over", "open_maker_curve_gap"):
+            metric = "sharpe_daily"
+        else:
+            metric = "total_pnl"
     else:
         metric = args.metric
 
@@ -418,6 +499,17 @@ def main():
                 neighbor_price_min_c=study.best_params["neighbor_price_min_c"],
                 our_price_max_c=study.best_params["our_price_max_c"],
             )
+        elif strategy_id == "open_maker_curve_gap":
+            best_params = CurveGapParams(
+                entry_price_cents=study.best_params["entry_price_cents"],
+                temp_bias_deg=study.best_params["temp_bias_deg"],
+                basis_offset_days=study.best_params["basis_offset_days"],
+                bet_amount_usd=args.bet_amount,
+                decision_offset_min=study.best_params["decision_offset_min"],
+                delta_obs_fcst_min_deg=study.best_params["delta_obs_fcst_min_deg"],
+                slope_min_deg_per_hour=study.best_params["slope_min_deg_per_hour"],
+                max_shift_bins=study.best_params["max_shift_bins"],
+            )
         else:
             best_params = OpenMakerParams(
                 entry_price_cents=study.best_params["entry_price_cents"],
@@ -466,6 +558,17 @@ def main():
             decision_offset_min=study.best_params["decision_offset_min"],
             neighbor_price_min_c=study.best_params["neighbor_price_min_c"],
             our_price_max_c=study.best_params["our_price_max_c"],
+        )
+    elif strategy_id == "open_maker_curve_gap":
+        best_params = CurveGapParams(
+            entry_price_cents=study.best_params["entry_price_cents"],
+            temp_bias_deg=study.best_params["temp_bias_deg"],
+            basis_offset_days=study.best_params["basis_offset_days"],
+            bet_amount_usd=args.bet_amount,
+            decision_offset_min=study.best_params["decision_offset_min"],
+            delta_obs_fcst_min_deg=study.best_params["delta_obs_fcst_min_deg"],
+            slope_min_deg_per_hour=study.best_params["slope_min_deg_per_hour"],
+            max_shift_bins=study.best_params["max_shift_bins"],
         )
     else:
         best_params = OpenMakerParams(
