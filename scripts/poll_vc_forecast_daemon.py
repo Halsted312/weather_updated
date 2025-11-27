@@ -24,7 +24,7 @@ import signal
 import sys
 import time
 from datetime import date, datetime, timedelta
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Dict, List, Optional, Set, Tuple
 from zoneinfo import ZoneInfo
 
 from sqlalchemy import select
@@ -68,25 +68,33 @@ def get_city_local_time(city_id: str) -> datetime:
 
 def is_in_snapshot_window(
     local_time: datetime,
-    window_start_hour: int = 0,
-    window_start_minute: int = 0,
+    window_start_minute: int = -5,
     window_end_minute: int = 10,
 ) -> bool:
     """
-    Check if local time is within the snapshot window (default: 00:00-00:10).
+    Check if local time is within the snapshot window (default: 23:55-00:10).
+
+    The window spans midnight to catch the new day's forecast as it becomes available.
+    Visual Crossing stores forecasts per forecastBasisDate (midnight UTC model runs),
+    so by local midnight the relevant run is already stored.
 
     Args:
         local_time: Current local datetime for the city
-        window_start_hour: Hour to start window (default: 0 = midnight)
-        window_start_minute: Minute to start window (default: 0)
-        window_end_minute: Minute to end window (default: 10)
+        window_start_minute: Minutes relative to midnight to start (default: -5 = 23:55)
+        window_end_minute: Minutes after midnight to end (default: 10 = 00:10)
 
     Returns:
         True if within the snapshot window
     """
-    if local_time.hour != window_start_hour:
-        return False
-    return window_start_minute <= local_time.minute < window_end_minute
+    # Convert to minutes since midnight (can be negative for previous day)
+    minutes_since_midnight = local_time.hour * 60 + local_time.minute
+
+    # Handle the 23:55-00:10 window (spans midnight)
+    # At 23:55, minutes_since_midnight = 1435, we want this to be -5
+    if minutes_since_midnight >= 23 * 60:  # After 23:00
+        minutes_since_midnight -= 24 * 60  # Make it negative
+
+    return window_start_minute <= minutes_since_midnight < window_end_minute
 
 
 def check_snapshot_exists(session, city_id: str, basis_date: date, table: str) -> bool:
@@ -115,6 +123,55 @@ def check_snapshot_exists(session, city_id: str, basis_date: date, table: str) -
 
     result = session.execute(query).scalar_one_or_none()
     return result is not None
+
+
+def validate_72_hour_coverage(session, city_id: str, basis_date: date) -> tuple[bool, str]:
+    """
+    Validate that we have complete 72-hour coverage for a city/basis_date.
+
+    Checks:
+    - Count of rows with target_hour_local BETWEEN basis_date 00:00 AND basis_date+2 23:00 is exactly 72
+    - MIN(target_hour_local) = basis_date 00:00
+    - MAX(target_hour_local) = basis_date+2 23:00
+
+    Args:
+        session: Database session
+        city_id: City ID
+        basis_date: The basis date to validate
+
+    Returns:
+        Tuple of (is_valid, message)
+    """
+    from sqlalchemy import func
+
+    expected_start = datetime.combine(basis_date, datetime.min.time())  # basis_date 00:00
+    expected_end = datetime.combine(basis_date + timedelta(days=2), datetime.min.time().replace(hour=23))  # basis_date+2 23:00
+
+    # Query count, min, max in one shot
+    query = select(
+        func.count(WxForecastSnapshotHourly.target_hour_local).label("cnt"),
+        func.min(WxForecastSnapshotHourly.target_hour_local).label("min_hour"),
+        func.max(WxForecastSnapshotHourly.target_hour_local).label("max_hour"),
+    ).where(
+        WxForecastSnapshotHourly.city == city_id,
+        WxForecastSnapshotHourly.basis_date == basis_date,
+        WxForecastSnapshotHourly.target_hour_local >= expected_start,
+        WxForecastSnapshotHourly.target_hour_local <= expected_end,
+    )
+
+    result = session.execute(query).one()
+    cnt, min_hour, max_hour = result.cnt, result.min_hour, result.max_hour
+
+    if cnt != 72:
+        return False, f"Expected 72 hours, got {cnt}"
+
+    if min_hour != expected_start:
+        return False, f"MIN mismatch: expected {expected_start}, got {min_hour}"
+
+    if max_hour != expected_end:
+        return False, f"MAX mismatch: expected {expected_end}, got {max_hour}"
+
+    return True, "Valid 72-hour coverage"
 
 
 def parse_daily_forecast_to_records(
@@ -335,46 +392,90 @@ def fetch_and_store_city_snapshot(
     return result
 
 
+def get_target_basis_date(local_time: datetime) -> date:
+    """
+    Determine the target basis_date for the forecast snapshot.
+
+    If we're before midnight (23:55-23:59), we want tomorrow's forecast.
+    If we're after midnight (00:00-00:10), we want today's forecast.
+
+    Args:
+        local_time: Current local datetime for the city
+
+    Returns:
+        The basis_date to use for the forecast
+    """
+    if local_time.hour >= 23:
+        # Before midnight - we want tomorrow's date as basis
+        return local_time.date() + timedelta(days=1)
+    else:
+        # After midnight - we want today's date
+        return local_time.date()
+
+
 def process_cities_tick(
     client: VisualCrossingClient,
     session,
     cities: List[str],
     window_start: int,
     window_end: int,
+    retry_counts: Optional[Dict[str, int]] = None,
+    max_retries: int = 3,
 ) -> dict:
     """
     Process one tick of the daemon loop.
 
     For each city, check if it's in the snapshot window and if snapshot is needed.
+    Uses proper 72-hour validation and retry logic with backoff.
 
     Args:
         client: Visual Crossing client
         session: Database session
         cities: List of city IDs to process
-        window_start: Minute to start window
-        window_end: Minute to end window
+        window_start: Minutes relative to midnight to start window
+        window_end: Minutes after midnight to end window
+        retry_counts: Dict tracking retry attempts per city (mutated)
+        max_retries: Maximum retries before giving up for the day
 
     Returns:
         Dict of cities processed this tick: {city_id: {"daily": N, "hourly": M}}
     """
+    if retry_counts is None:
+        retry_counts = {}
+
     processed = {}
 
     for city_id in cities:
         try:
             local_time = get_city_local_time(city_id)
-            basis_date = local_time.date()
 
             # Check if in snapshot window
             if not is_in_snapshot_window(local_time, window_start_minute=window_start, window_end_minute=window_end):
+                # Reset retry count when outside window
+                retry_counts.pop(city_id, None)
                 continue
 
-            # Check if snapshot already exists (check hourly as proxy - both are fetched together)
-            if check_snapshot_exists(session, city_id, basis_date, "hourly"):
-                logger.debug(f"{city_id}: Snapshot already exists for {basis_date}")
+            # Determine the correct basis_date (handles 23:55-00:10 spanning midnight)
+            basis_date = get_target_basis_date(local_time)
+
+            # Check if we already have valid 72-hour coverage
+            is_valid, msg = validate_72_hour_coverage(session, city_id, basis_date)
+            if is_valid:
+                logger.debug(f"{city_id}: Valid 72-hour coverage for {basis_date}")
+                retry_counts.pop(city_id, None)  # Reset retry count
+                continue
+
+            # Check retry limit
+            current_retries = retry_counts.get(city_id, 0)
+            if current_retries >= max_retries:
+                logger.warning(f"{city_id}: Max retries ({max_retries}) reached for {basis_date}, skipping until next day")
                 continue
 
             # Take snapshot!
-            logger.info(f"{city_id}: Taking forecast snapshot for basis_date={basis_date} (local time: {local_time.strftime('%H:%M')})")
+            logger.info(
+                f"{city_id}: Taking forecast snapshot for basis_date={basis_date} "
+                f"(local time: {local_time.strftime('%H:%M')}, retry: {current_retries})"
+            )
 
             # Create checkpoint for tracking
             checkpoint = get_or_create_checkpoint(
@@ -392,27 +493,46 @@ def process_cities_tick(
                     basis_date=basis_date,
                 )
 
-                # Update and complete checkpoint
-                update_checkpoint(
-                    session=session,
-                    checkpoint_id=checkpoint.id,
-                    last_date=basis_date,
-                    processed_count=counts["daily"] + counts["hourly"],
-                )
-                complete_checkpoint(
-                    session=session,
-                    checkpoint_id=checkpoint.id,
-                    status="completed",
-                )
-                session.commit()
+                # Validate the data we just wrote
+                is_valid, validation_msg = validate_72_hour_coverage(session, city_id, basis_date)
 
-                processed[city_id] = counts
-                logger.info(
-                    f"{city_id}: Snapshot complete - {counts['daily']} daily, "
-                    f"{counts['hourly']} hourly records"
-                )
+                if is_valid:
+                    # Success! Update and complete checkpoint
+                    update_checkpoint(
+                        session=session,
+                        checkpoint_id=checkpoint.id,
+                        last_date=basis_date,
+                        processed_count=counts["daily"] + counts["hourly"],
+                    )
+                    complete_checkpoint(
+                        session=session,
+                        checkpoint_id=checkpoint.id,
+                        status="completed",
+                    )
+                    session.commit()
+
+                    processed[city_id] = counts
+                    retry_counts.pop(city_id, None)  # Reset retry count
+                    logger.info(
+                        f"{city_id}: Snapshot complete and validated - {counts['daily']} daily, "
+                        f"{counts['hourly']} hourly records"
+                    )
+                else:
+                    # Data written but validation failed - will retry next tick
+                    retry_counts[city_id] = current_retries + 1
+                    logger.warning(
+                        f"{city_id}: Snapshot written but validation failed: {validation_msg}. "
+                        f"Will retry ({current_retries + 1}/{max_retries})"
+                    )
+                    update_checkpoint(
+                        session=session,
+                        checkpoint_id=checkpoint.id,
+                        error=f"Validation failed: {validation_msg}",
+                    )
+                    session.commit()
 
             except Exception as e:
+                retry_counts[city_id] = current_retries + 1
                 update_checkpoint(
                     session=session,
                     checkpoint_id=checkpoint.id,
@@ -424,7 +544,7 @@ def process_cities_tick(
                     status="failed",
                 )
                 session.commit()
-                logger.error(f"{city_id}: Snapshot failed - {e}")
+                logger.error(f"{city_id}: Snapshot failed - {e}. Will retry ({current_retries + 1}/{max_retries})")
 
         except Exception as e:
             logger.error(f"Error processing {city_id}: {e}")
@@ -435,19 +555,21 @@ def process_cities_tick(
 
 
 def run_daemon(
-    tick_interval: int = 60,
-    window_start: int = 0,
+    tick_interval: int = 30,
+    window_start: int = -5,
     window_end: int = 10,
     rate_limit: float = 0.05,
+    max_retries: int = 3,
 ):
     """
     Main daemon loop.
 
     Args:
-        tick_interval: Seconds between ticks (default: 60)
-        window_start: Minute to start snapshot window (default: 0)
-        window_end: Minute to end snapshot window (default: 10)
+        tick_interval: Seconds between ticks (default: 30)
+        window_start: Minutes relative to midnight to start window (default: -5 = 23:55)
+        window_end: Minutes after midnight to end window (default: 10 = 00:10)
         rate_limit: API rate limit delay in seconds
+        max_retries: Maximum retries per city before giving up
     """
     global shutdown_requested
 
@@ -466,17 +588,25 @@ def run_daemon(
     # Get cities to process (exclude VC-excluded cities)
     cities = [c for c in CITIES.keys() if c not in EXCLUDED_VC_CITIES]
 
+    # Format window for display
+    if window_start < 0:
+        window_start_str = f"23:{60 + window_start:02d}"
+    else:
+        window_start_str = f"00:{window_start:02d}"
+
     logger.info("=" * 60)
     logger.info("Visual Crossing Forecast Daemon Starting")
     logger.info(f"  Cities: {cities}")
     logger.info(f"  Tick interval: {tick_interval}s")
-    logger.info(f"  Snapshot window: 00:{window_start:02d} - 00:{window_end:02d} local")
+    logger.info(f"  Snapshot window: {window_start_str} - 00:{window_end:02d} local")
     logger.info(f"  Daily horizon: {MAX_DAY_HORIZON} days")
     logger.info(f"  Hourly horizon: {MAX_HOUR_HORIZON} hours")
+    logger.info(f"  Max retries per city: {max_retries}")
     logger.info("=" * 60)
 
     tick_count = 0
     total_snapshots = {"daily": 0, "hourly": 0}
+    retry_counts: Dict[str, int] = {}  # Track retries per city
 
     while not shutdown_requested:
         tick_count += 1
@@ -490,6 +620,8 @@ def run_daemon(
                     cities=cities,
                     window_start=window_start,
                     window_end=window_end,
+                    retry_counts=retry_counts,
+                    max_retries=max_retries,
                 )
 
                 # Accumulate totals
@@ -500,8 +632,8 @@ def run_daemon(
         except Exception as e:
             logger.error(f"Tick {tick_count} error: {e}")
 
-        # Log periodic status
-        if tick_count % 60 == 0:  # Every ~60 ticks (1 hour at 60s interval)
+        # Log periodic status (every ~30 minutes at 30s interval)
+        if tick_count % 60 == 0:
             logger.info(
                 f"Status: tick={tick_count}, total_daily={total_snapshots['daily']}, "
                 f"total_hourly={total_snapshots['hourly']}"
@@ -529,20 +661,24 @@ def main():
         description="24/7 Visual Crossing forecast polling daemon"
     )
     parser.add_argument(
-        "--tick-interval", type=int, default=60,
-        help="Seconds between ticks (default: 60)"
+        "--tick-interval", type=int, default=30,
+        help="Seconds between ticks (default: 30)"
     )
     parser.add_argument(
-        "--window-start", type=int, default=0,
-        help="Minute to start snapshot window (default: 0)"
+        "--window-start", type=int, default=-5,
+        help="Minutes relative to midnight to start window (default: -5 = 23:55)"
     )
     parser.add_argument(
         "--window-end", type=int, default=10,
-        help="Minute to end snapshot window (default: 10)"
+        help="Minutes after midnight to end window (default: 10 = 00:10)"
     )
     parser.add_argument(
         "--rate-limit", type=float, default=0.05,
         help="API rate limit delay in seconds (default: 0.05)"
+    )
+    parser.add_argument(
+        "--max-retries", type=int, default=3,
+        help="Maximum retries per city before giving up for the day (default: 3)"
     )
     parser.add_argument(
         "--once", action="store_true",
@@ -591,6 +727,7 @@ def main():
         window_start=args.window_start,
         window_end=args.window_end,
         rate_limit=args.rate_limit,
+        max_retries=args.max_retries,
     )
 
 

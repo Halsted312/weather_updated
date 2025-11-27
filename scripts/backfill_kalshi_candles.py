@@ -76,15 +76,22 @@ def candle_to_db_dict(ticker: str, candle: Candle, source: str) -> dict:
         else None
     )
 
+    # Use trade prices (price_*) if available, otherwise fall back to yes_ask prices
+    # yes_ask is what you pay to buy YES contracts
+    open_c = candle.price_open if candle.price_open is not None else candle.yes_ask_open
+    high_c = candle.price_high if candle.price_high is not None else candle.yes_ask_high
+    low_c = candle.price_low if candle.price_low is not None else candle.yes_ask_low
+    close_c = candle.price_close if candle.price_close is not None else candle.yes_ask_close
+
     return {
         "ticker": ticker,
         "bucket_start": bucket_start,
         "source": source,
-        # Use price fields for OHLC (these are the actual traded prices)
-        "open_c": candle.price_open,
-        "high_c": candle.price_high,
-        "low_c": candle.price_low,
-        "close_c": candle.price_close,
+        # OHLC prices (prefer trade prices, fall back to yes_ask)
+        "open_c": open_c,
+        "high_c": high_c,
+        "low_c": low_c,
+        "close_c": close_c,
         # Bid/Ask (use close values for snapshot)
         "yes_bid_c": candle.yes_bid_close,
         "yes_ask_c": candle.yes_ask_close,
