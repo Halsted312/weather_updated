@@ -10,13 +10,16 @@ Features:
 - JWT authentication
 """
 
+import base64
 import logging
 import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+from urllib.parse import urlparse
 
-import jwt
-import requests
+from cryptography.hazmat.primitives import hashes, serialization
+from cryptography.hazmat.primitives.asymmetric import padding
+import requests  # Note: jwt no longer needed with RSA-PSS signature auth
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
@@ -73,8 +76,11 @@ class KalshiClient:
         if not private_key_file.exists():
             raise FileNotFoundError(f"Private key not found: {private_key_path}")
 
-        with open(private_key_file, "r") as f:
-            self.private_key = f.read()
+        with open(private_key_file, "rb") as f:
+            self.private_key = serialization.load_pem_private_key(
+                f.read(),
+                password=None,
+            )
 
         # Setup session with HTTP-level retries for transient errors
         self.session = requests.Session()
@@ -93,25 +99,32 @@ class KalshiClient:
             f"(rate: {self.rate_limiter.current_rate:.1f} req/sec)"
         )
 
-    def _generate_token(self, expiry_minutes: int = 60) -> str:
+    def _generate_signature(self, method: str, path: str, timestamp_ms: int) -> str:
         """
-        Generate JWT token for authentication.
+        Generate RSA-PSS signature for Kalshi API authentication.
 
         Args:
-            expiry_minutes: Token expiry time in minutes
+            method: HTTP method (GET, POST, etc.)
+            path: API path without query parameters
+            timestamp_ms: Current timestamp in milliseconds
 
         Returns:
-            JWT token string
+            Base64-encoded signature string
         """
-        now = int(time.time())
-        payload = {
-            "iss": self.api_key,
-            "iat": now,
-            "exp": now + (expiry_minutes * 60),
-        }
+        # Message to sign: timestamp + method + path
+        message = f"{timestamp_ms}{method}{path}".encode("utf-8")
 
-        token = jwt.encode(payload, self.private_key, algorithm="RS256")
-        return token
+        # Sign with RSA-PSS padding and SHA256
+        signature = self.private_key.sign(
+            message,
+            padding.PSS(
+                mgf=padding.MGF1(hashes.SHA256()),
+                salt_length=padding.PSS.MAX_LENGTH,
+            ),
+            hashes.SHA256(),
+        )
+
+        return base64.b64encode(signature).decode("utf-8")
 
     def _request(
         self,
@@ -138,16 +151,27 @@ class KalshiClient:
             requests.HTTPError: On HTTP errors after retries exhausted
         """
         url = f"{self.base_url}/{endpoint.lstrip('/')}"
-        headers = {
-            "Authorization": f"Bearer {self._generate_token()}",
-            "Content-Type": "application/json",
-        }
+
+        # Extract path without query params for signature
+        parsed = urlparse(url)
+        path = parsed.path
 
         last_exception = None
 
         for attempt in range(max_retries):
             # Wait for rate limiter token
             self.rate_limiter.wait()
+
+            # Generate fresh timestamp and signature for each attempt
+            timestamp_ms = int(time.time() * 1000)
+            signature = self._generate_signature(method, path, timestamp_ms)
+
+            headers = {
+                "KALSHI-ACCESS-KEY": self.api_key,
+                "KALSHI-ACCESS-TIMESTAMP": str(timestamp_ms),
+                "KALSHI-ACCESS-SIGNATURE": signature,
+                "Content-Type": "application/json",
+            }
 
             logger.debug(f"{method} {url} params={params}")
 
@@ -604,3 +628,83 @@ class KalshiClient:
 
         logger.info(f"Total trades fetched for {ticker}: {len(all_trades)}")
         return all_trades
+
+    def get_orderbook(self, ticker: str, depth: int = 10) -> Dict[str, Any]:
+        """
+        Get orderbook for a market.
+
+        Args:
+            ticker: Market ticker
+            depth: Number of price levels (default 10)
+
+        Returns:
+            Orderbook with yes/no bids and asks
+        """
+        params = {"depth": depth}
+        logger.debug(f"Fetching orderbook for {ticker}")
+        data = self._request("GET", f"/markets/{ticker}/orderbook", params=params)
+        return data.get("orderbook", data)
+
+    def get_balance(self) -> Dict[str, Any]:
+        """
+        Get account balance.
+
+        Returns:
+            Balance info including available_balance (in cents)
+        """
+        logger.info("Fetching account balance")
+        data = self._request("GET", "/portfolio/balance")
+        return data
+
+    def create_order(
+        self,
+        ticker: str,
+        side: str,  # "yes" or "no"
+        action: str,  # "buy" or "sell"
+        count: int,
+        order_type: str = "limit",
+        yes_price: Optional[int] = None,
+        no_price: Optional[int] = None,
+        client_order_id: Optional[str] = None,
+        expiration_ts: Optional[int] = None,
+    ) -> Dict[str, Any]:
+        """
+        Create an order on Kalshi.
+
+        Args:
+            ticker: Market ticker
+            side: "yes" or "no"
+            action: "buy" or "sell"
+            count: Number of contracts
+            order_type: "limit" or "market"
+            yes_price: Price in cents for YES side (1-99)
+            no_price: Price in cents for NO side (1-99)
+            client_order_id: Optional client-provided order ID
+            expiration_ts: Optional expiration timestamp
+
+        Returns:
+            Order response with order_id
+        """
+        body: Dict[str, Any] = {
+            "ticker": ticker,
+            "side": side,
+            "action": action,
+            "count": count,
+            "type": order_type,
+        }
+
+        if yes_price is not None:
+            body["yes_price"] = yes_price
+        if no_price is not None:
+            body["no_price"] = no_price
+        if client_order_id:
+            body["client_order_id"] = client_order_id
+        if expiration_ts:
+            body["expiration_ts"] = expiration_ts
+
+        logger.info(
+            f"Creating order: {action.upper()} {count} {side.upper()} @ "
+            f"{yes_price if side == 'yes' else no_price}c on {ticker}"
+        )
+        data = self._request("POST", "/portfolio/orders", json_data=body)
+        return data
