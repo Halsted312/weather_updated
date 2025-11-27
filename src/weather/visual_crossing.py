@@ -447,3 +447,102 @@ class VisualCrossingClient:
         except requests.exceptions.RequestException as e:
             logger.error(f"Error fetching historical forecast: {e}")
             raise
+
+    def fetch_historical_hourly_forecast(
+        self,
+        location: str,
+        basis_date: str,
+        horizon_hours: int = 72,
+        horizon_days: int = 7,
+    ) -> Dict[str, Any]:
+        """
+        Fetch the historical hourly + daily forecast as it looked on a specific past date.
+
+        Uses the Visual Crossing Timeline API with `forecastBasisDate` parameter
+        and `include=days,hours` to get both daily summaries and hourly forecasts.
+
+        Args:
+            location: Location string (e.g., "stn:KMDW" for Chicago Midway)
+            basis_date: The date the forecast was made (YYYY-MM-DD format)
+            horizon_hours: Max hours of hourly data to return (default: 72 = 3 days)
+            horizon_days: Number of days to fetch (default: 7)
+
+        Returns:
+            Dict containing forecast data with "days" list, each day having:
+            - datetime: Target date (YYYY-MM-DD)
+            - tempmax, tempmin: Daily high/low
+            - hours: List of 24 hourly forecasts with:
+              - datetime: Local time (YYYY-MM-DDTHH:00:00)
+              - datetimeEpoch: UTC epoch timestamp
+              - temp, feelslike, humidity, precip, precipprob, windspeed, conditions
+        """
+        from datetime import datetime as dt
+
+        basis_dt = dt.strptime(basis_date, "%Y-%m-%d")
+        end_dt = basis_dt + timedelta(days=horizon_days - 1)
+        end_date = end_dt.strftime("%Y-%m-%d")
+
+        # Build URL: {base_url}/{location}/{start_date}/{end_date}
+        url = f"{self.base_url}/{location}/{basis_date}/{end_date}"
+
+        # Request both daily and hourly elements
+        elements = ",".join([
+            "datetime",
+            "datetimeEpoch",
+            # Daily
+            "tempmax",
+            "tempmin",
+            "temp",
+            "feelslikemax",
+            "feelslikemin",
+            "feelslike",
+            # Hourly & daily
+            "humidity",
+            "dew",
+            "precip",
+            "precipprob",
+            "preciptype",
+            "windspeed",
+            "windgust",
+            "winddir",
+            "pressure",
+            "visibility",
+            "cloudcover",
+            "conditions",
+            "icon",
+        ])
+
+        params = {
+            "key": self.api_key,
+            "unitGroup": "us",  # Fahrenheit, mph, inches
+            "include": "days,hours",  # Both daily summaries AND hourly data
+            "forecastBasisDate": basis_date,
+            "elements": elements,
+            "contentType": "json",
+            # NO timezone=Z - let VC return local times (per design decision)
+        }
+
+        logger.debug(f"Fetching hourly forecast for {location} as of {basis_date}...")
+
+        try:
+            response = self.session.get(url, params=params, timeout=60)
+            response.raise_for_status()
+
+            data = response.json()
+
+            # Track query cost
+            query_cost = data.get("queryCost", 0)
+            days_count = len(data.get("days", []))
+            total_hours = sum(len(day.get("hours", [])) for day in data.get("days", []))
+            logger.debug(
+                f"Query cost: {query_cost}, days: {days_count}, hours: {total_hours}"
+            )
+
+            # Rate limiting
+            time.sleep(self.rate_limit_delay)
+
+            return data
+
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Error fetching hourly forecast: {e}")
+            raise

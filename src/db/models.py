@@ -167,6 +167,41 @@ class WxForecastSnapshot(Base):
     )
 
 
+class WxForecastSnapshotHourly(Base):
+    """Visual Crossing hourly forecast snapshots for ML/trend analysis.
+
+    Stores 72-hour (3-day) forecast curves at local midnight basis times.
+    Used for temperature trend analysis and comparison with Kalshi prices.
+    """
+
+    __tablename__ = "forecast_snapshot_hourly"
+    __table_args__ = {"schema": "wx"}
+
+    city: Mapped[str] = mapped_column(Text, primary_key=True)
+    target_hour_local: Mapped[datetime] = mapped_column(DateTime, primary_key=True)
+    basis_date: Mapped[date] = mapped_column(Date, primary_key=True)
+
+    target_hour_epoch: Mapped[int] = mapped_column(Integer, nullable=False)
+    lead_hours: Mapped[int] = mapped_column(Integer, nullable=False)  # 0-71
+    provider: Mapped[str] = mapped_column(Text, default="visualcrossing")
+    tz_name: Mapped[str] = mapped_column(Text, nullable=False)  # IANA timezone
+
+    # Forecast values (hourly, not daily max/min)
+    temp_fcst_f: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    feelslike_fcst_f: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    humidity_fcst: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    precip_fcst_in: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    precip_prob_fcst: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    windspeed_fcst_mph: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    conditions_fcst: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+
+    # Metadata
+    raw_json: Mapped[Optional[dict]] = mapped_column(JSONB, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=text("NOW()")
+    )
+
+
 # =============================================================================
 # Schema: kalshi (Market Data)
 # =============================================================================

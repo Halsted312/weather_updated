@@ -20,6 +20,7 @@ from src.db.models import (
     SimRun,
     SimTrade,
     WxForecastSnapshot,
+    WxForecastSnapshotHourly,
     WxMinuteObs,
     WxSettlement,
 )
@@ -39,6 +40,7 @@ __all__ = [
     "WxSettlement",
     "WxMinuteObs",
     "WxForecastSnapshot",
+    "WxForecastSnapshotHourly",
     "KalshiMarket",
     "KalshiCandle1m",
     "KalshiWsRaw",
