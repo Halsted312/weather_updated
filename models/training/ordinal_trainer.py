@@ -112,11 +112,12 @@ class OrdinalDeltaTrainer(BaseTrainer):
         self.verbose = verbose
         self.catboost_params = catboost_params or {}
 
-        # Thresholds: for delta classes [-2, -1, 0, ..., +10]
-        # We need classifiers for k in {-1, 0, 1, ..., 10} (K-1 = 12 classifiers)
-        # P(delta >= -2) = 1 always, so we don't need that threshold
-        self.thresholds = list(range(min(DELTA_CLASSES) + 1, max(DELTA_CLASSES) + 1))
-        # thresholds = [-1, 0, 1, 2, ..., 10]
+        # Thresholds will be set dynamically during training based on actual data
+        # (Some cities may have delta range [-2, +10], others [-1, +10])
+        self.thresholds: list[int] = []
+        self._min_delta: Optional[int] = None
+        self._max_delta: Optional[int] = None
+        self._delta_classes: Optional[list[int]] = None
 
         self.classifiers: dict[int, Any] = {}
         self._cat_features: list[int] = []
@@ -289,9 +290,18 @@ class OrdinalDeltaTrainer(BaseTrainer):
             Self (the trained model is stored in self.classifiers)
         """
         logger.info(f"Training ordinal model ({self.base_model_type}) on {len(df_train)} samples")
-        logger.info(f"Training {len(self.thresholds)} threshold classifiers")
 
         X_train, y_train = self._prepare_features(df_train)
+
+        # Dynamically compute thresholds from actual training data
+        # This handles cities with different delta ranges (e.g., LA/Miami have no delta=-2)
+        self._min_delta = int(y_train.min())  # -2 for Chicago/Philly, -1 for others
+        self._max_delta = int(y_train.max())  # +10 for all
+        self.thresholds = list(range(self._min_delta + 1, self._max_delta + 1))
+        self._delta_classes = list(range(self._min_delta, self._max_delta + 1))
+
+        logger.info(f"City delta range: [{self._min_delta}, {self._max_delta}]")
+        logger.info(f"Training {len(self.thresholds)} threshold classifiers: {self.thresholds}")
 
         # Get categorical feature indices for CatBoost
         if self.base_model_type == 'catboost':
@@ -318,6 +328,16 @@ class OrdinalDeltaTrainer(BaseTrainer):
 
             # Check class balance
             pos_rate = y_binary.mean()
+
+            # Handle extremely imbalanced thresholds with constant predictor
+            if pos_rate > 0.995 or pos_rate < 0.005:
+                logger.warning(f"Threshold {k}: extreme imbalance (pos_rate={pos_rate:.4f}), using constant predictor")
+                self.classifiers[k] = {
+                    "type": "constant",
+                    "prob": float(pos_rate)
+                }
+                continue
+
             if pos_rate < 0.01 or pos_rate > 0.99:
                 logger.warning(f"Threshold {k}: highly imbalanced ({pos_rate:.1%} positive)")
 
@@ -351,9 +371,12 @@ class OrdinalDeltaTrainer(BaseTrainer):
             "trained_at": pd.Timestamp.now().isoformat(),
             "n_train_samples": len(df_train),
             "n_train_days": df_train["day"].nunique(),
-            "delta_classes": DELTA_CLASSES,
+            "delta_range": [self._min_delta, self._max_delta],  # City-specific range
+            "delta_classes": self._delta_classes,  # City-specific classes
+            "global_delta_classes": DELTA_CLASSES,  # For reference
             "thresholds": self.thresholds,
-            "n_classifiers": len(self.thresholds),
+            "n_classifiers": len(self.classifiers),
+            "n_constant_classifiers": sum(1 for c in self.classifiers.values() if isinstance(c, dict)),
             "base_model": self.base_model_type,
             "n_optuna_trials": self.n_trials,
             "best_params": self.best_params if self.best_params else None,
@@ -369,32 +392,57 @@ class OrdinalDeltaTrainer(BaseTrainer):
             P(delta = k) = P(delta >= k) - P(delta >= k+1)
 
         With monotonicity enforcement to handle classifier inconsistencies.
+        Pads probabilities to global DELTA_CLASSES shape for cities with smaller delta ranges.
 
         Args:
             df: DataFrame with features
 
         Returns:
-            Array of shape (n_samples, n_classes) with probabilities
+            Array of shape (n_samples, n_classes) with probabilities (padded to DELTA_CLASSES)
         """
         if not self.classifiers:
             raise ValueError("Model not trained. Call train() first.")
 
         X, _ = self._prepare_features(df)
         n_samples = len(X)
-        n_classes = len(DELTA_CLASSES)
+
+        # Compute probabilities for city-specific delta classes
+        local_proba = self._compute_local_proba(X)
+
+        # Pad to global DELTA_CLASSES shape
+        global_proba = np.zeros((n_samples, len(DELTA_CLASSES)))
+
+        for i, delta_val in enumerate(self._delta_classes):
+            global_idx = DELTA_CLASSES.index(delta_val)
+            global_proba[:, global_idx] = local_proba[:, i]
+
+        # For missing classes (e.g., delta=-2 in LA/Miami), probability stays 0
+        return global_proba
+
+    def _compute_local_proba(self, X: pd.DataFrame) -> np.ndarray:
+        """Compute probabilities for city-specific delta classes.
+
+        Args:
+            X: Feature DataFrame
+
+        Returns:
+            Array of shape (n_samples, len(self._delta_classes))
+        """
+        n_samples = len(X)
 
         # Get P(delta >= k) for each threshold
         probs_ge = {}
         for k in self.thresholds:
             clf = self.classifiers[k]
 
-            if self.base_model_type == 'catboost':
+            # Handle constant predictors
+            if isinstance(clf, dict) and clf.get("type") == "constant":
+                probs_ge[k] = np.full(n_samples, clf["prob"])
+            elif self.base_model_type == 'catboost':
                 pool = Pool(X, cat_features=self._cat_features)
-                p = clf.predict_proba(pool)[:, 1]  # P(class=1) = P(delta >= k)
+                probs_ge[k] = clf.predict_proba(pool)[:, 1]  # P(class=1) = P(delta >= k)
             else:
-                p = clf.predict_proba(X)[:, 1]
-
-            probs_ge[k] = p
+                probs_ge[k] = clf.predict_proba(X)[:, 1]
 
         # Enforce monotonicity: P(delta >= k) >= P(delta >= k+1)
         # Process from highest threshold to lowest
@@ -407,26 +455,26 @@ class OrdinalDeltaTrainer(BaseTrainer):
 
         # Convert cumulative probs to class probs
         # P(delta = k) = P(delta >= k) - P(delta >= k+1)
-        proba = np.zeros((n_samples, n_classes))
+        local_proba = np.zeros((n_samples, len(self._delta_classes)))
 
-        for i, delta_class in enumerate(DELTA_CLASSES):
-            if delta_class == min(DELTA_CLASSES):  # -2
-                # P(delta = -2) = 1 - P(delta >= -1)
-                proba[:, i] = 1.0 - probs_ge[min(DELTA_CLASSES) + 1]
-            elif delta_class == max(DELTA_CLASSES):  # +10
-                # P(delta = +10) = P(delta >= +10)
-                proba[:, i] = probs_ge[max(DELTA_CLASSES)]
+        for i, delta_val in enumerate(self._delta_classes):
+            if delta_val == self._min_delta:
+                # P(delta = min) = 1 - P(delta >= min+1)
+                local_proba[:, i] = 1.0 - probs_ge.get(delta_val + 1, 0)
+            elif delta_val == self._max_delta:
+                # P(delta = max) = P(delta >= max)
+                local_proba[:, i] = probs_ge.get(delta_val, 1)
             else:
                 # P(delta = k) = P(delta >= k) - P(delta >= k+1)
-                proba[:, i] = probs_ge[delta_class] - probs_ge[delta_class + 1]
+                local_proba[:, i] = probs_ge.get(delta_val, 1) - probs_ge.get(delta_val + 1, 0)
 
         # Clip to valid range and renormalize
-        proba = np.clip(proba, 0, 1)
-        row_sums = proba.sum(axis=1, keepdims=True)
+        local_proba = np.clip(local_proba, 0, 1)
+        row_sums = local_proba.sum(axis=1, keepdims=True)
         row_sums = np.where(row_sums > 0, row_sums, 1)  # Avoid division by zero
-        proba = proba / row_sums
+        local_proba = local_proba / row_sums
 
-        return proba
+        return local_proba
 
     def predict(self, df: pd.DataFrame) -> np.ndarray:
         """Predict delta classes (argmax of probabilities).
@@ -466,8 +514,8 @@ class OrdinalDeltaTrainer(BaseTrainer):
             else:
                 probs_ge[k] = clf.predict_proba(X)[:, 1]
 
-        # Add boundary: P(delta >= -2) = 1.0
-        probs_ge[min(DELTA_CLASSES)] = np.ones(len(X))
+        # Add boundary: P(delta >= min_delta) = 1.0
+        probs_ge[self._min_delta] = np.ones(len(X))
 
         return probs_ge
 
@@ -555,6 +603,17 @@ class OrdinalDeltaTrainer(BaseTrainer):
         self.categorical_cols = save_dict["categorical_cols"]
         self.best_params = save_dict.get("best_params", {})
         self._metadata = save_dict.get("metadata", {})
+
+        # Extract delta range from metadata (for models trained with new code)
+        if "delta_range" in self._metadata:
+            self._min_delta = self._metadata["delta_range"][0]
+            self._max_delta = self._metadata["delta_range"][1]
+            self._delta_classes = self._metadata["delta_classes"]
+        else:
+            # Legacy models: assume full range
+            self._min_delta = min(DELTA_CLASSES)
+            self._max_delta = max(DELTA_CLASSES)
+            self._delta_classes = DELTA_CLASSES
 
         self.model = self
         logger.info(f"Loaded ordinal model from {path}")

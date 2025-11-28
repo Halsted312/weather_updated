@@ -1,0 +1,26 @@
+[Unit]
+Description=Visual Crossing Live Data Polling Daemon
+After=network-online.target postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=halsted
+Group=halsted
+WorkingDirectory=/home/halsted/Python/weather_updated
+Environment="PYTHONPATH=/home/halsted/Python/weather_updated"
+ExecStart=/home/halsted/Python/weather_updated/.venv/bin/python scripts/poll_vc_live_daemon.py
+Restart=always
+RestartSec=10
+
+# Graceful shutdown
+TimeoutStopSec=30
+KillSignal=SIGTERM
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=vc-live-daemon
+
+[Install]
+WantedBy=multi-user.target

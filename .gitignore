@@ -26,6 +26,7 @@ venv/
 ENV/
 env/
 .venv
+docker-comopose.yml 
 
 # IDEs
 .vscode/
