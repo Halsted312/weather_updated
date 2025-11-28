@@ -65,6 +65,30 @@ SNAPSHOT_HOURS = [10, 12, 14, 16, 18, 20, 22, 23]
 # Minimum samples required at a snapshot to include it
 MIN_SAMPLES = 12  # ~1 hour of 5-min data
 
+# Maximum consecutive NaN values to interpolate
+MAX_INTERPOLATE_GAP = 3  # ~15 minutes at 5-min intervals
+
+
+def interpolate_small_gaps(series: pd.Series, max_gap: int = MAX_INTERPOLATE_GAP) -> pd.Series:
+    """Interpolate small gaps in temperature data.
+
+    Uses linear interpolation for gaps up to max_gap consecutive NaN values.
+    Larger gaps are left as NaN.
+
+    Args:
+        series: Temperature series with potential NaN values
+        max_gap: Maximum consecutive NaN values to interpolate (default: 3)
+
+    Returns:
+        Series with small gaps filled via linear interpolation
+    """
+    if series.isna().sum() == 0:
+        return series
+
+    # Use pandas interpolate with limit to only fill small gaps
+    result = series.interpolate(method='linear', limit=max_gap, limit_direction='both')
+    return result
+
 
 def build_snapshot_dataset(
     cities: list[str],
@@ -215,9 +239,14 @@ def build_single_snapshot(
     if len(obs_sofar) < MIN_SAMPLES:
         return None
 
-    # Extract temps and timestamps
-    temps_sofar = obs_sofar["temp_f"].dropna().tolist()
-    timestamps_sofar = obs_sofar["datetime_local"].tolist()
+    # Interpolate small gaps in temperature data (up to 3 consecutive NaN)
+    obs_sofar = obs_sofar.copy()
+    obs_sofar["temp_f"] = interpolate_small_gaps(obs_sofar["temp_f"])
+
+    # Filter to rows with valid temp (after interpolation)
+    valid_mask = obs_sofar["temp_f"].notna()
+    temps_sofar = obs_sofar.loc[valid_mask, "temp_f"].tolist()
+    timestamps_sofar = obs_sofar.loc[valid_mask, "datetime_local"].tolist()
 
     if not temps_sofar:
         return None
