@@ -39,3 +39,15 @@ Kalshi weather trading, they should be routed to `kalshi-weather-quant`. Otherwi
 
 If a task clearly involves weather data, Kalshi APIs, or strategy logic, **defer to** or **invoke**
 the `kalshi-weather-quant` agent instead of guessing domain details.
+
+## Plan Management
+
+Before starting any multi-step task:
+1. Check `.claude/plans/active/` for existing related plans
+2. If continuing work, read the plan's Sign-off Log
+3. Create new plans in `.claude/plans/active/` using the template
+
+When finishing a session:
+1. Update the plan's Sign-off Log with current status
+2. Mark completed tasks with ✅
+3. Document next steps and any blockers
