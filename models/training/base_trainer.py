@@ -33,6 +33,7 @@ import numpy as np
 import pandas as pd
 from sklearn.calibration import CalibratedClassifierCV
 from sklearn.compose import ColumnTransformer
+from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
@@ -92,15 +93,20 @@ class BaseTrainer(ABC):
     def _create_preprocessor(self) -> ColumnTransformer:
         """Create the feature preprocessing pipeline.
 
-        Numeric features: StandardScaler (optional, some models don't need it)
+        Numeric features: Impute NaNs with median, then passthrough
         Categorical features: OneHotEncoder
 
         Returns:
             ColumnTransformer for preprocessing
         """
+        # Numeric pipeline: impute NaNs then passthrough (no scaling for tree models)
+        numeric_pipeline = Pipeline([
+            ("imputer", SimpleImputer(strategy="median")),
+        ])
+
         preprocessor = ColumnTransformer(
             transformers=[
-                ("num", "passthrough", self.numeric_cols),
+                ("num", numeric_pipeline, self.numeric_cols),
                 ("cat", OneHotEncoder(handle_unknown="ignore", sparse_output=False),
                  self.categorical_cols),
             ],
@@ -169,11 +175,13 @@ class BaseTrainer(ABC):
             # Wrap in CalibratedClassifierCV for Platt scaling
             cv = DayGroupedTimeSeriesSplit(n_splits=self.cv_splits)
 
-            # Need to pass df_train for day grouping
+            # Convert generator to list for pickling compatibility
+            cv_splits = list(cv.split(df_train))
+
             calibrated = CalibratedClassifierCV(
                 estimator=pipeline,
                 method="sigmoid",  # Platt scaling
-                cv=cv.split(df_train),
+                cv=cv_splits,
             )
             calibrated.fit(X_train, y_train)
             self.model = calibrated

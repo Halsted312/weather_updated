@@ -197,6 +197,9 @@ def load_historical_forecast_daily(
 
     Used to get "what did VC think yesterday about today's high?"
 
+    Note: Forecasts are stored under 'city' locations (e.g., "Chicago,IL"),
+    not 'station' locations (e.g., "KMDW").
+
     Args:
         session: Database session
         city_id: City identifier
@@ -207,7 +210,8 @@ def load_historical_forecast_daily(
         Dict with forecast fields or None if not found:
             tempmax_f, tempmin_f, temp_f, humidity, precip_in, etc.
     """
-    vc_location_id = get_vc_location_id(session, city_id, "station")
+    # Forecasts are on city locations, not station locations
+    vc_location_id = get_vc_location_id(session, city_id, "city")
 
     if vc_location_id is None:
         return None
@@ -259,6 +263,9 @@ def load_historical_forecast_hourly(
     Returns the full hourly forecast series that was issued on basis_date
     for target_date. Used to compute forecast features.
 
+    Note: Forecasts are stored under 'city' locations (e.g., "Chicago,IL"),
+    not 'station' locations (e.g., "KMDW").
+
     Args:
         session: Database session
         city_id: City identifier
@@ -269,7 +276,8 @@ def load_historical_forecast_hourly(
         DataFrame with hourly forecasts for target_date:
             target_datetime_local, temp_f, humidity, etc.
     """
-    vc_location_id = get_vc_location_id(session, city_id, "station")
+    # Forecasts are on city locations, not station locations
+    vc_location_id = get_vc_location_id(session, city_id, "city")
 
     if vc_location_id is None:
         return pd.DataFrame()

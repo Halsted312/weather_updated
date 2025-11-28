@@ -80,7 +80,6 @@ class LogisticDeltaTrainer(BaseTrainer):
     def _create_base_model(self) -> LogisticRegression:
         """Create the base logistic regression classifier."""
         return LogisticRegression(
-            multi_class="multinomial",
             solver="saga",  # Required for elasticnet penalty
             penalty="elasticnet",
             l1_ratio=self.l1_ratio,

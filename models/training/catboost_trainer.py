@@ -176,6 +176,12 @@ class CatBoostDeltaTrainer(BaseTrainer):
                 X_va = X.iloc[val_idx]
                 y_va = y.iloc[val_idx]
 
+                # Skip folds where validation has classes not in training
+                val_classes = set(y_va.unique())
+                train_classes = set(y_tr.unique())
+                if not val_classes.issubset(train_classes):
+                    continue
+
                 model = CatBoostClassifier(
                     loss_function="MultiClass",
                     eval_metric="MultiClass",
@@ -205,6 +211,9 @@ class CatBoostDeltaTrainer(BaseTrainer):
                 loss = -np.mean(np.log(p))
                 losses.append(loss)
 
+            # Handle case where all folds were skipped
+            if not losses:
+                return float('inf')
             return float(np.mean(losses))
 
         # Run optimization
@@ -311,17 +320,36 @@ class CatBoostCalibratedWrapper:
 
     CatBoost uses Pool objects which aren't directly compatible with
     sklearn's CalibratedClassifierCV. This wrapper handles the conversion.
+
+    Implements sklearn estimator interface (get_params/set_params) for cloning.
     """
+
+    # Tell sklearn this is a classifier
+    _estimator_type = "classifier"
 
     def __init__(
         self,
-        model: "CatBoostClassifier",
-        feature_cols: list[str],
-        cat_features: list[int],
+        model: "CatBoostClassifier" = None,
+        feature_cols: list[str] = None,
+        cat_features: list[int] = None,
     ):
         self.model = model
-        self.feature_cols = feature_cols
-        self.cat_features = cat_features
+        self.feature_cols = feature_cols if feature_cols is not None else []
+        self.cat_features = cat_features if cat_features is not None else []
+
+    def get_params(self, deep: bool = True) -> dict:
+        """Get parameters for this estimator (sklearn interface)."""
+        return {
+            "model": self.model,
+            "feature_cols": self.feature_cols,
+            "cat_features": self.cat_features,
+        }
+
+    def set_params(self, **params) -> "CatBoostCalibratedWrapper":
+        """Set parameters for this estimator (sklearn interface)."""
+        for key, value in params.items():
+            setattr(self, key, value)
+        return self
 
     def fit(self, X, y):
         """Fit the underlying CatBoost model."""
