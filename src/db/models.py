@@ -364,6 +364,9 @@ class VcMinuteWeather(Base):
     stations: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     resolved_address: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
+    # Forward-fill tracking (for when VC returns no temp reading)
+    is_forward_filled: Mapped[bool] = mapped_column(Boolean, default=False, server_default=text("FALSE"))
+
     # Metadata
     source_system: Mapped[str] = mapped_column(Text, default="vc_timeline")
     raw_json: Mapped[Optional[dict]] = mapped_column(JSONB, nullable=True)
