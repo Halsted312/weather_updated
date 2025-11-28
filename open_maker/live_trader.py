@@ -213,20 +213,49 @@ class LiveOpenMakerTrader:
 
     def _get_forecast_at_open(
         self, session, city: str, event_date: date
-    ) -> Optional[float]:
-        """Get forecast for a city/date at market open time."""
-        from sqlalchemy import select
+    ) -> Optional[tuple]:
+        """
+        Get forecast for a city/date at market open time with flexible fallback.
+
+        Returns:
+            (tempmax_fcst_f, basis_date) or None
+        """
+        from sqlalchemy import select, desc
         from src.db.models import WxForecastSnapshot
 
-        basis_date = event_date - timedelta(days=self.params.basis_offset_days)
+        # Try offsets in order of preference: 1 day ago, 2 days ago, same day, 3 days ago
+        offsets_to_try = [self.params.basis_offset_days, 2, 0, 3]
 
-        query = select(WxForecastSnapshot.tempmax_fcst_f).where(
+        for offset in offsets_to_try:
+            basis_date = event_date - timedelta(days=offset)
+            query = select(
+                WxForecastSnapshot.tempmax_fcst_f,
+                WxForecastSnapshot.basis_date,
+            ).where(
+                WxForecastSnapshot.city == city,
+                WxForecastSnapshot.target_date == event_date,
+                WxForecastSnapshot.basis_date == basis_date,
+                WxForecastSnapshot.tempmax_fcst_f > 0,  # Filter out zeros
+            )
+            result = session.execute(query).first()
+            if result:
+                return float(result[0]), result[1]
+
+        # Final fallback: any available forecast for this target_date
+        query = select(
+            WxForecastSnapshot.tempmax_fcst_f,
+            WxForecastSnapshot.basis_date,
+        ).where(
             WxForecastSnapshot.city == city,
             WxForecastSnapshot.target_date == event_date,
-            WxForecastSnapshot.basis_date == basis_date,
-        )
-        result = session.execute(query).scalar_one_or_none()
-        return float(result) if result else None
+            WxForecastSnapshot.tempmax_fcst_f > 0,
+        ).order_by(desc(WxForecastSnapshot.basis_date)).limit(1)
+
+        result = session.execute(query).first()
+        if result:
+            return float(result[0]), result[1]
+
+        return None
 
     def _load_market_data(
         self, session, city: str, event_date: date

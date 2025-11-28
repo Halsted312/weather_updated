@@ -87,6 +87,7 @@ def find_bracket_for_temp(
     markets_df: pd.DataFrame,
     event_date: date,
     temp: float,
+    round_for_trading: bool = True,
 ) -> Optional[Tuple[str, Optional[float], Optional[float]]]:
     """
     Find the bracket containing a temperature.
@@ -94,10 +95,17 @@ def find_bracket_for_temp(
     Priority: between > less/less_or_equal > greater/greater_or_equal
     This ensures we match specific brackets before tail brackets.
 
+    IMPORTANT: Kalshi weather brackets may have 1°F gaps between them (e.g., [43,44], [45,46])
+    but NOAA reports whole-number temperatures, so these gaps never occur in settlement.
+    For trading decisions, we round the temp to the nearest whole number first.
+
+    The subtitle "X° to Y°" means the bracket covers BOTH X and Y (inclusive).
+
     Args:
         markets_df: DataFrame with columns [ticker, event_date, strike_type, floor_strike, cap_strike]
         event_date: The event date to filter markets
         temp: Temperature to find bracket for
+        round_for_trading: If True, round temp to nearest whole number first (default: True)
 
     Returns:
         (ticker, floor_strike, cap_strike) or None if no matching bracket
@@ -107,13 +115,19 @@ def find_bracket_for_temp(
     if day_markets.empty:
         return None
 
+    # For trading decisions, round to nearest whole number since NOAA reports integers
+    if round_for_trading:
+        temp = round(temp)
+
     # First pass: check "between" brackets (the specific temperature ranges)
+    # Use INCLUSIVE cap since subtitle "X° to Y°" means both X and Y are covered
     for _, row in day_markets.iterrows():
         if row["strike_type"] == "between":
             floor_s = row["floor_strike"]
             cap_s = row["cap_strike"]
             # Handle both None and NaN
-            if pd.notna(floor_s) and pd.notna(cap_s) and floor_s <= temp < cap_s:
+            # Inclusive on both ends: floor <= temp <= cap
+            if pd.notna(floor_s) and pd.notna(cap_s) and floor_s <= temp <= cap_s:
                 return row["ticker"], float(floor_s), float(cap_s)
 
     # Second pass: check tail brackets only if no between bracket matched
@@ -123,6 +137,7 @@ def find_bracket_for_temp(
         cap_s = row["cap_strike"]
 
         if strike_type == "less":
+            # Subtitle "X° or below" -> temp <= cap - 1 (since cap is the exclusive boundary)
             if pd.notna(cap_s) and temp < cap_s:
                 return row["ticker"], None, float(cap_s)
         elif strike_type == "less_or_equal":
@@ -135,11 +150,12 @@ def find_bracket_for_temp(
         floor_s = row["floor_strike"]
 
         if strike_type == "greater":
+            # Subtitle "X° or above" -> temp >= floor + 1 (since floor is the exclusive boundary)
             # Only match if cap_strike is NULL/NaN (true tail)
-            if pd.notna(floor_s) and pd.isna(row["cap_strike"]) and temp >= floor_s:
+            if pd.notna(floor_s) and pd.isna(row["cap_strike"]) and temp > floor_s:
                 return row["ticker"], float(floor_s), None
         elif strike_type == "greater_or_equal":
-            if pd.notna(floor_s) and temp > floor_s:
+            if pd.notna(floor_s) and temp >= floor_s:
                 return row["ticker"], float(floor_s), None
 
     return None
