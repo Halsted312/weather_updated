@@ -29,7 +29,7 @@ from datetime import date, datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional
 from zoneinfo import ZoneInfo
 
-from sqlalchemy import select, func
+from sqlalchemy import select, func, update, and_
 from sqlalchemy.dialects.postgresql import insert
 
 # Add src to path
@@ -196,6 +196,7 @@ def parse_vc_minute_to_record(
         "resolved_address": minute_data.get("resolvedAddress"),
         "source_system": "vc_live_daemon",
         "raw_json": minute_data,
+        "is_forward_filled": False,  # Real data from VC
     }
 
     return record
@@ -406,12 +407,17 @@ def parse_vc_daily_forecast(
 
 
 def upsert_vc_minute_weather(session, records: List[Dict[str, Any]]) -> int:
-    """Upsert minute weather records (observations)."""
+    """Upsert minute weather records (observations).
+
+    Only overwrites existing records if the new data has a real (non-forward-filled) temp,
+    OR if the existing record was forward-filled.
+    """
     if not records:
         return 0
 
     stmt = insert(VcMinuteWeather).values(records)
 
+    # Build update columns - exclude key/immutable columns
     update_cols = {
         col.name: stmt.excluded[col.name]
         for col in VcMinuteWeather.__table__.columns
@@ -423,6 +429,57 @@ def upsert_vc_minute_weather(session, records: List[Dict[str, Any]]) -> int:
         index_elements=["vc_location_id", "data_type", "datetime_utc"],
         index_where=VcMinuteWeather.forecast_basis_date.is_(None),
         set_=update_cols,
+    )
+
+    result = session.execute(stmt)
+    return result.rowcount
+
+
+def get_last_known_temp(session, location_id: int) -> Optional[float]:
+    """Get the most recent non-NULL, non-forward-filled temperature for a location."""
+    result = session.execute(
+        select(VcMinuteWeather.temp_f)
+        .where(VcMinuteWeather.vc_location_id == location_id)
+        .where(VcMinuteWeather.data_type == "actual_obs")
+        .where(VcMinuteWeather.temp_f.isnot(None))
+        .where(VcMinuteWeather.is_forward_filled == False)
+        .order_by(VcMinuteWeather.datetime_utc.desc())
+        .limit(1)
+    ).scalar()
+    return result
+
+
+def forward_fill_null_temps(session, location_id: int, since_utc: datetime) -> int:
+    """
+    Forward-fill NULL temps with the last known real temp.
+
+    Args:
+        session: Database session
+        location_id: vc_location_id to forward-fill
+        since_utc: Only update records newer than this time
+
+    Returns:
+        Number of records forward-filled
+    """
+    # Get last known real temp
+    last_temp = get_last_known_temp(session, location_id)
+
+    if last_temp is None:
+        logger.debug(f"Location {location_id}: No historical temp to forward-fill from")
+        return 0
+
+    # Update all NULL temps since the given time
+    stmt = (
+        update(VcMinuteWeather)
+        .where(
+            and_(
+                VcMinuteWeather.vc_location_id == location_id,
+                VcMinuteWeather.data_type == "actual_obs",
+                VcMinuteWeather.datetime_utc >= since_utc,
+                VcMinuteWeather.temp_f.is_(None),
+            )
+        )
+        .values(temp_f=last_temp, is_forward_filled=True)
     )
 
     result = session.execute(stmt)
@@ -575,6 +632,11 @@ class VcLiveDaemon:
                     total_backfilled += rows
                     logger.info(f"{location.city_code}/{location.location_type}: Backfilled {rows} records")
 
+                    # Forward-fill any NULL temps from backfill
+                    ff_count = forward_fill_null_temps(session, location.id, gap_start)
+                    if ff_count > 0:
+                        logger.info(f"{location.city_code}/{location.location_type}: Forward-filled {ff_count} NULL temps during backfill")
+
                 time.sleep(self.api_delay)
 
             except Exception as e:
@@ -587,10 +649,14 @@ class VcLiveDaemon:
         """
         Poll current observations for all locations.
 
+        After upserting, forward-fills any NULL temps with the last known real temp.
         Returns number of records upserted.
         """
         total_records = 0
+        total_forward_filled = 0
         now_utc = datetime.now(timezone.utc)
+        # Forward-fill window: look back 1 hour to catch any recently inserted NULL temps
+        forward_fill_since = now_utc - timedelta(hours=1)
 
         for location in self.locations:
             # Check if enough time has passed since last poll
@@ -624,13 +690,19 @@ class VcLiveDaemon:
                     total_records += rows
                     logger.debug(f"{location.city_code}/{location.location_type}: {rows} obs records")
 
+                # Forward-fill any NULL temps for this location
+                ff_count = forward_fill_null_temps(session, location.id, forward_fill_since)
+                if ff_count > 0:
+                    total_forward_filled += ff_count
+                    logger.info(f"{location.city_code}/{location.location_type}: Forward-filled {ff_count} NULL temps")
+
                 self.last_obs_poll[location.id] = now_utc
                 time.sleep(self.api_delay)
 
             except Exception as e:
                 logger.error(f"Error polling obs for {location.city_code}/{location.location_type}: {e}")
 
-        if total_records > 0:
+        if total_records > 0 or total_forward_filled > 0:
             session.commit()
             self.total_obs_records += total_records
 
