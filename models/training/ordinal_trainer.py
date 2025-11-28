@@ -149,6 +149,16 @@ class OrdinalDeltaTrainer(BaseTrainer):
                 params.update(self.best_params)
             # Override with explicit catboost_params
             params.update(self.catboost_params)
+
+            # Handle bootstrap-specific params (prevent conflicts)
+            bootstrap_type = params.get("bootstrap_type", "Bayesian")
+            if bootstrap_type != "Bayesian":
+                # Remove bagging_temperature if not Bayesian
+                params.pop("bagging_temperature", None)
+            else:
+                # Remove subsample if Bayesian
+                params.pop("subsample", None)
+
             return CatBoostClassifier(**params)
 
         elif self.base_model_type == 'logistic':
@@ -345,6 +355,8 @@ class OrdinalDeltaTrainer(BaseTrainer):
             "thresholds": self.thresholds,
             "n_classifiers": len(self.thresholds),
             "base_model": self.base_model_type,
+            "n_optuna_trials": self.n_trials,
+            "best_params": self.best_params if self.best_params else None,
         }
 
         logger.info(f"Ordinal training complete: {len(self.classifiers)} classifiers")
@@ -509,6 +521,7 @@ class OrdinalDeltaTrainer(BaseTrainer):
             "cat_features": self._cat_features,
             "numeric_cols": self.numeric_cols,
             "categorical_cols": self.categorical_cols,
+            "best_params": self.best_params,
             "metadata": self._metadata,
         }
 
@@ -540,6 +553,7 @@ class OrdinalDeltaTrainer(BaseTrainer):
         self._cat_features = save_dict["cat_features"]
         self.numeric_cols = save_dict["numeric_cols"]
         self.categorical_cols = save_dict["categorical_cols"]
+        self.best_params = save_dict.get("best_params", {})
         self._metadata = save_dict.get("metadata", {})
 
         self.model = self
