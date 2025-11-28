@@ -43,7 +43,8 @@ def compute_delta_metrics(
         y_pred: Predicted delta values
 
     Returns:
-        Dict with delta_accuracy, delta_mae, off_by_1_rate, off_by_2plus_rate
+        Dict with delta_accuracy, delta_mae, off_by_1_rate, off_by_2plus_rate,
+        within_1_rate, within_2_rate
     """
     y_true = np.asarray(y_true)
     y_pred = np.asarray(y_pred)
@@ -51,17 +52,122 @@ def compute_delta_metrics(
     accuracy = accuracy_score(y_true, y_pred)
     mae = mean_absolute_error(y_true, y_pred)
 
-    # Off-by-1 and off-by-2+ rates
+    # Off-by-N and within-N rates (useful for ordinal evaluation)
     diff = np.abs(y_true - y_pred)
     off_by_1 = np.mean(diff == 1)
     off_by_2plus = np.mean(diff >= 2)
+    within_1 = np.mean(diff <= 1)  # Exact or off by 1
+    within_2 = np.mean(diff <= 2)  # Within 2 degrees
 
     return {
         "delta_accuracy": float(accuracy),
         "delta_mae": float(mae),
         "off_by_1_rate": float(off_by_1),
         "off_by_2plus_rate": float(off_by_2plus),
+        "within_1_rate": float(within_1),
+        "within_2_rate": float(within_2),
     }
+
+
+def compute_ordinal_metrics(
+    y_true: np.ndarray,
+    proba: np.ndarray,
+    classes: Optional[np.ndarray] = None,
+) -> dict:
+    """Compute ordinal-specific metrics for models that predict ordered classes.
+
+    These metrics are designed for ordinal regression models that predict
+    cumulative probabilities P(Y >= k).
+
+    Args:
+        y_true: True delta values
+        proba: Predicted probabilities (shape: n_samples x n_classes)
+        classes: Ordered class labels (default: DELTA_CLASSES)
+
+    Returns:
+        Dict with ordinal-specific metrics:
+            - mean_rank_error: Average difference in rank between true and predicted
+            - cumulative_accuracy: Dict of accuracy for P(Y >= k) at each threshold
+            - ordinal_loss: Sum of squared rank differences weighted by probability
+    """
+    if classes is None:
+        classes = np.array(DELTA_CLASSES)
+
+    y_true = np.asarray(y_true)
+    proba = np.asarray(proba)
+    n_samples = len(y_true)
+
+    # Map class values to ranks
+    class_to_rank = {c: i for i, c in enumerate(classes)}
+    true_ranks = np.array([class_to_rank.get(y, 0) for y in y_true])
+    pred_ranks = proba.argmax(axis=1)
+
+    # Mean rank error (similar to MAE but on rank scale)
+    mean_rank_error = np.mean(np.abs(true_ranks - pred_ranks))
+
+    # Ordinal loss: expected squared rank difference
+    # L = sum_k P(Y=k) * (rank(k) - rank(true))^2
+    ranks = np.arange(len(classes))
+    ordinal_loss = 0.0
+    for i in range(n_samples):
+        true_rank = true_ranks[i]
+        expected_sq_diff = np.sum(proba[i] * (ranks - true_rank) ** 2)
+        ordinal_loss += expected_sq_diff
+    ordinal_loss /= n_samples
+
+    # Cumulative accuracy: how often is P(Y >= k) > 0.5 correct?
+    cumulative_accuracy = {}
+    for k_idx, k in enumerate(classes[1:], start=1):  # Skip first class
+        # True: is y_true >= k?
+        y_binary_true = (y_true >= k).astype(int)
+        # Predicted: sum of probs for classes >= k
+        p_ge_k = proba[:, k_idx:].sum(axis=1)
+        y_binary_pred = (p_ge_k >= 0.5).astype(int)
+        acc = np.mean(y_binary_true == y_binary_pred)
+        cumulative_accuracy[f"cum_acc_ge_{k}"] = float(acc)
+
+    return {
+        "mean_rank_error": float(mean_rank_error),
+        "ordinal_loss": float(ordinal_loss),
+        **cumulative_accuracy,
+    }
+
+
+def compute_cumulative_brier_scores(
+    y_true: np.ndarray,
+    proba: np.ndarray,
+    classes: Optional[np.ndarray] = None,
+) -> dict:
+    """Compute Brier scores for cumulative predictions P(Y >= k).
+
+    Useful for ordinal models where we care about threshold predictions.
+
+    Args:
+        y_true: True delta values
+        proba: Predicted probabilities (shape: n_samples x n_classes)
+        classes: Ordered class labels (default: DELTA_CLASSES)
+
+    Returns:
+        Dict mapping threshold k to Brier score for P(Y >= k)
+    """
+    if classes is None:
+        classes = np.array(DELTA_CLASSES)
+
+    y_true = np.asarray(y_true)
+    proba = np.asarray(proba)
+
+    brier_scores = {}
+
+    for k_idx, k in enumerate(classes[1:], start=1):  # Skip first class
+        # True binary outcome: is y_true >= k?
+        y_binary = (y_true >= k).astype(float)
+        # Predicted probability: sum of probs for classes >= k
+        p_ge_k = proba[:, k_idx:].sum(axis=1)
+        # Brier score
+        brier = np.mean((p_ge_k - y_binary) ** 2)
+        brier_scores[f"brier_ge_{k}"] = float(brier)
+
+    return brier_scores
 
 
 def compute_settlement_metrics(

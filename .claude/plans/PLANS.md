@@ -3,11 +3,16 @@
 ## Current Status
 
 ### Active Plans
-*None currently active*
+| Plan | Created | Description |
+|------|---------|-------------|
+| [alternative-model-angles](active/alternative-model-angles.md) | 2025-11-28 | Ordinal regression, forecast residual, hour-stratified models |
+| [historical-forecast-ingestion](active/historical-forecast-ingestion.md) | 2025-11-28 | VC historical forecast backfill (parallel to modeling) |
 
 ### Completed Plans
 | Plan | Completed | Description |
 |------|-----------|-------------|
+| [ml-framework-intraday-delta-models](completed/2025-11-28_ml-framework-intraday-delta-models.md) | 2025-11-28 | ML framework: CatBoost + Logistic delta models, features, evaluation |
+| [fix-historical-forecast-ingestion](completed/2025-11-28_fix-historical-forecast-ingestion.md) | 2025-11-28 | Fix VC historical forecast ingestion issues |
 | [toasty-roaming-boole](completed/2025-11-28_toasty-roaming-boole.md) | 2025-11-28 | Visual Crossing Phase 1 - Schema, models, migration, ingestion scripts |
 
 ---
