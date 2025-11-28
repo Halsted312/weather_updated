@@ -93,5 +93,24 @@ services:
     profiles:
       - daemons
 
+  vc-live-daemon:
+    build: .
+    container_name: kalshi_vc_live_daemon
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://kalshi:kalshi@db:5432/kalshi_weather
+      VC_API_KEY: ${VC_API_KEY}
+      KALSHI_API_KEY: ${KALSHI_API_KEY}
+      KALSHI_PRIVATE_KEY_PATH: /app/weather.pem
+    volumes:
+      - ./weather.pem:/app/weather.pem:ro
+      - ./.env:/app/.env:ro
+    command: python scripts/poll_vc_live_daemon.py
+    restart: unless-stopped
+    profiles:
+      - daemons
+
 volumes:
   kalshi_weather_data:
