@@ -23,6 +23,11 @@ from src.db.models import (
     WxForecastSnapshotHourly,
     WxMinuteObs,
     WxSettlement,
+    # New VC tables
+    VcLocation,
+    VcMinuteWeather,
+    VcForecastDaily,
+    VcForecastHourly,
 )
 
 __all__ = [
@@ -48,4 +53,9 @@ __all__ = [
     "KalshiFill",
     "SimRun",
     "SimTrade",
+    # New VC tables
+    "VcLocation",
+    "VcMinuteWeather",
+    "VcForecastDaily",
+    "VcForecastHourly",
 ]

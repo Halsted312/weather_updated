@@ -1,6 +1,10 @@
 # Permanent doc: Datetime, Timezones & API Reference
 `docs/permanent/DATETIME_AND_API_REFERENCE.md`.
 
+> **Note (Nov 2025):** Script references in this document may use legacy names.
+> Current scripts: `ingest_vc_obs_backfill.py`, `ingest_vc_forecast_snapshot.py`, `ingest_vc_historical_forecast.py`.
+> Legacy scripts archived in `legacy/` folder.
+
 ---
 
 # Datetime, Timezones & API Reference

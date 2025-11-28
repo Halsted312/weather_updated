@@ -17,9 +17,23 @@ services:
       retries: 5
     restart: unless-stopped
 
-  vc-forecast-daemon:
+  # Run migrations (one-shot)
+  migrate:
     build: .
-    container_name: kalshi_vc_forecast_daemon
+    container_name: kalshi_migrate
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://kalshi:kalshi@db:5432/kalshi_weather
+    command: alembic upgrade head
+    profiles:
+      - migrate
+
+  # CLI for running ad-hoc scripts
+  cli:
+    build: .
+    container_name: kalshi_cli
     depends_on:
       db:
         condition: service_healthy
@@ -31,8 +45,34 @@ services:
     volumes:
       - ./weather.pem:/app/weather.pem:ro
       - ./.env:/app/.env:ro
-    command: python scripts/poll_vc_forecast_daemon.py
-    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    profiles:
+      - cli
+
+  # LEGACY: vc-forecast-daemon used the old schema (wx.forecast_snapshot*)
+  # The old daemon has been moved to legacy/poll_vc_forecast_daemon.py
+  # A new daemon for the Phase 1 VC schema (wx.vc_*) will be built later.
+  # For now, use: docker compose run cli python scripts/ingest_vc_forecast_snapshot.py
+  #
+  # vc-forecast-daemon:
+  #   build: .
+  #   container_name: kalshi_vc_forecast_daemon
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
+  #   environment:
+  #     DATABASE_URL: postgresql://kalshi:kalshi@db:5432/kalshi_weather
+  #     VC_API_KEY: ${VC_API_KEY}
+  #     KALSHI_API_KEY: ${KALSHI_API_KEY}
+  #     KALSHI_PRIVATE_KEY_PATH: /app/weather.pem
+  #   volumes:
+  #     - ./weather.pem:/app/weather.pem:ro
+  #     - ./.env:/app/.env:ro
+  #   command: python scripts/poll_vc_forecast_daemon.py
+  #   restart: unless-stopped
+  #   profiles:
+  #     - daemons
 
   kalshi-ws-recorder:
     build: .
@@ -50,6 +90,8 @@ services:
       - ./.env:/app/.env:ro
     command: python scripts/kalshi_ws_recorder.py --no-fills
     restart: unless-stopped
+    profiles:
+      - daemons
 
 volumes:
   kalshi_weather_data:

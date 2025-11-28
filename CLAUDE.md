@@ -177,6 +177,13 @@ Examples:
 
 This project uses a `.claude/` directory to track medium-to-large tasks.
 
+> **CRITICAL**: Always use THIS PROJECT'S `.claude/plans/` folder for all plans.
+> - **USE**: `/home/halsted/Python/weather_updated/.claude/plans/`
+> - **DO NOT USE**: `~/.claude/plans/` (home directory)
+>
+> When Claude Code prompts you to create a plan, write it to the project's `.claude/plans/active/` folder.
+> Project plans must stay with the project for version control and context.
+
 ### 3.1 Directory Layout
 
 ```text

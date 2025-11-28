@@ -80,7 +80,7 @@ You must treat the Timeline API in **three distinct modes**:
    - Timeline API **without** `forecastBasisDate`,
    - using city queries (`"Chicago,IL"`, `"Austin,TX"`, etc.),
    - used by:
-     - nightly forecast snapshot daemon (`poll_vc_forecast_daemon.py`),
+     - nightly forecast snapshot script (`ingest_vc_forecast_snapshot.py`),
      - live trading fallbacks (if DB is missing a snapshot).
 
 Never mix historical forecasts (with `forecastBasisDate`) into **live** logic, and never use
@@ -207,10 +207,16 @@ Every change must respect: **data integrity, time consistency, fee correctness, 
 
 ## Plan Management
 
+> **CRITICAL**: All plans MUST be stored in THIS PROJECT's `.claude/plans/` folder:
+> - **Project plans**: `/home/halsted/Python/weather_updated/.claude/plans/`
+> - **NEVER use**: `~/.claude/plans/` (home directory)
+>
+> Plans must stay with the project for version control and team context.
+
 Before starting any multi-step task:
 1. Check `.claude/plans/active/` for existing related plans
 2. If continuing work, read the plan's Sign-off Log
-3. Create new plans in `.claude/plans/active/` using the template
+3. Create new plans in `.claude/plans/active/` using the template in `CLAUDE.md`
 
 When finishing a session:
 1. Update the plan's Sign-off Log with current status
