@@ -188,7 +188,12 @@ CATEGORICAL_FEATURE_COLS: list[str] = [
 ]
 
 # Delta classes for the Δ-model
-DELTA_CLASSES = [-2, -1, 0, 1, 2]
+# Range [-2, +10] chosen based on data distribution:
+# - Low clip -2: keeps tail ≤15% (2.1% actual in Chicago data)
+# - High clip +10: captures early-morning snapshots where high hasn't occurred
+# - At 10am, deltas can reach +10 (high still to come)
+# - By 4pm+, ~95%+ are within [-2, +2]
+DELTA_CLASSES = list(range(-2, 11))  # -2, -1, 0, ..., +9, +10 (13 classes)
 
 
 def get_feature_columns(

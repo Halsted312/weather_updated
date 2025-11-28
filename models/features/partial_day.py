@@ -101,34 +101,51 @@ def compute_partial_day_features(temps_sofar: list[float]) -> FeatureSet:
     return FeatureSet(name="partial_day", features=features)
 
 
-def compute_delta_target(settle_f: int, vc_max_f_sofar: float) -> dict[str, int]:
+def compute_delta_target(
+    settle_f: int,
+    vc_max_f_sofar: float,
+    clip_range: tuple[int, int] = (-2, 10),
+) -> dict[str, int]:
     """Compute the Δ target for training.
 
     The Δ target is the deviation between the final settlement temperature
     and the baseline (rounded partial-day max). This is what the model
     learns to predict.
 
+    The model predicts discrete delta classes [-2, ..., 0, ..., +10] (13 classes).
+    Low clip at -2 keeps tail ≤15% (2.1% actual). High clip at +10 captures
+    early-morning snapshots where daily high hasn't occurred yet.
+    The raw delta is preserved in 'delta_raw' for analysis.
+
     Args:
         settle_f: Final NWS/Kalshi settlement temperature (integer °F)
         vc_max_f_sofar: Maximum VC temperature observed up to snapshot time
+        clip_range: Min/max delta values (default: [-2, +10])
 
     Returns:
         Dictionary with:
             t_base: Rounded max (baseline)
-            delta: T_settle - t_base (target for model)
-            abs_delta: Absolute value of delta
+            delta: T_settle - t_base, clipped to [-2, +10] (target for model)
+            delta_raw: Raw unclipped delta (for analysis)
+            abs_delta: Absolute value of clipped delta
 
     Example:
         >>> compute_delta_target(settle_f=92, vc_max_f_sofar=91.4)
-        {'t_base': 91, 'delta': 1, 'abs_delta': 1}
+        {'t_base': 91, 'delta': 1, 'delta_raw': 1, 'abs_delta': 1}
+        >>> compute_delta_target(settle_f=87, vc_max_f_sofar=92.2)
+        {'t_base': 92, 'delta': -2, 'delta_raw': -5, 'abs_delta': 2}  # clipped at -2
     """
     t_base = int(round(vc_max_f_sofar))
-    delta = int(settle_f - t_base)
-    abs_delta = abs(delta)
+    delta_raw = int(settle_f - t_base)
+
+    # Clip delta to model's prediction range
+    delta_clipped = max(clip_range[0], min(clip_range[1], delta_raw))
+    abs_delta = abs(delta_clipped)
 
     return {
         "t_base": t_base,
-        "delta": delta,
+        "delta": delta_clipped,
+        "delta_raw": delta_raw,
         "abs_delta": abs_delta,
     }
 
