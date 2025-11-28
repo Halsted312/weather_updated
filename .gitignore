@@ -61,6 +61,15 @@ dmypy.json
 *.key
 *.p12
 *.pfx
+*secret*
+*credential*
+*api_key*
+*.json.OLD
+settings.local.json*
+
+# Config outputs (tuning results)
+config/*best_params*.json
+data/file_inventory.json
 
 # Data directories
 data/raw/
@@ -77,13 +86,27 @@ data/cache/
 *.log
 logs/
 
+# Reports and analysis outputs
+reports/
+analysis/outputs/
+analysis/results/
+*.html
+!docs/**/*.html
+
 # Alembic
 alembic/versions/__pycache__/
 
-# Models
-models/saved/*.pkl
-models/saved/*.joblib
-models/saved/*.h5
+# Models and ML artifacts
+models/saved/*
+models/reports/*
+!models/saved/.gitkeep
+!models/reports/.gitkeep
+catboost_info/
+optuna_studies/
+*.joblib
+*.onnx
+*.pt
+*.pth
 
 # macOS
 .DS_Store
@@ -103,18 +126,8 @@ tmp/
 temp/
 *.tmp
 
-# Archive folder (keep for reference)
-# archive/
-archive/alembic.ini
-archive/api_key.txt
-archive/CLAUDE.md
-archive/NOAA_API_KEY.txt
-archive/old_docker-compose.yml
-archive/old_Makefile
-archive/old_pyproject.toml
-archive/README.md
-archive/secret.txt
-archive/old_alembic/env.py
-archive/old_alembic/README
-migrations/env.py
+# Archive folder (contains old configs and potentially sensitive files)
 archive/
+
+# Alembic env (contains DB connection logic, regenerated)
+migrations/env.py
