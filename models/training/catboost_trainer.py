@@ -101,10 +101,17 @@ class CatBoostDeltaTrainer(BaseTrainer):
     def _create_base_model(self) -> "CatBoostClassifier":
         """Create CatBoost classifier with best params or defaults."""
         params = self.best_params or {
+            # Tree structure defaults
             "depth": 6,
             "learning_rate": 0.1,
             "iterations": 200,
+            # Regularization defaults (conservative to prevent overfitting)
             "l2_leaf_reg": 3.0,
+            "min_data_in_leaf": 5,
+            "random_strength": 0.5,
+            # Sampling defaults
+            "subsample": 0.8,
+            "colsample_bylevel": 0.8,
         }
 
         return CatBoostClassifier(
@@ -158,13 +165,28 @@ class CatBoostDeltaTrainer(BaseTrainer):
         cv = DayGroupedTimeSeriesSplit(n_splits=self.cv_splits)
 
         def objective(trial: "optuna.Trial") -> float:
+            # Choose bootstrap type first (affects other params)
+            bootstrap_type = trial.suggest_categorical("bootstrap_type", ["Bayesian", "Bernoulli"])
+
             params = {
+                # Tree structure
                 "depth": trial.suggest_int("depth", 4, 8),
-                "learning_rate": trial.suggest_float("learning_rate", 0.02, 0.2, log=True),
-                "l2_leaf_reg": trial.suggest_float("l2_leaf_reg", 1.0, 8.0, log=True),
-                "iterations": trial.suggest_int("iterations", 150, 400),
+                "iterations": trial.suggest_int("iterations", 150, 500),
+                "learning_rate": trial.suggest_float("learning_rate", 0.01, 0.2, log=True),
                 "border_count": trial.suggest_int("border_count", 32, 128),
+                # Regularization (critical for preventing overfitting)
+                "l2_leaf_reg": trial.suggest_float("l2_leaf_reg", 1.0, 10.0, log=True),
+                "min_data_in_leaf": trial.suggest_int("min_data_in_leaf", 1, 30),
+                "random_strength": trial.suggest_float("random_strength", 0.0, 2.0),
+                "colsample_bylevel": trial.suggest_float("colsample_bylevel", 0.5, 1.0),
+                "bootstrap_type": bootstrap_type,
             }
+
+            # Bootstrap-specific params
+            if bootstrap_type == "Bayesian":
+                params["bagging_temperature"] = trial.suggest_float("bagging_temperature", 0.0, 1.0)
+            else:  # Bernoulli
+                params["subsample"] = trial.suggest_float("subsample", 0.6, 1.0)
 
             # Get categorical feature indices
             cat_features = [X.columns.get_loc(c) for c in self.categorical_cols if c in X.columns]

@@ -142,45 +142,51 @@ def register_feature_group(name: str):
 # These define which features go into the numeric vs categorical pipelines
 
 NUMERIC_FEATURE_COLS: list[str] = [
-    # Partial day stats
+    # Partial day stats (core features)
     "vc_max_f_sofar", "vc_min_f_sofar", "vc_mean_f_sofar", "vc_std_f_sofar",
     "vc_q10_f_sofar", "vc_q25_f_sofar", "vc_q50_f_sofar",
     "vc_q75_f_sofar", "vc_q90_f_sofar",
     "vc_frac_part_sofar", "num_samples_sofar",
     "t_base",
-    # Shape features
-    "minutes_ge_base", "minutes_ge_base_p1", "minutes_ge_base_m1",
-    "max_run_ge_base", "max_run_ge_base_p1", "max_run_ge_base_m1",
+    # Shape features (removed constant features: minutes_ge_base_p1, max_run_ge_base_p1)
+    "minutes_ge_base", "minutes_ge_base_m1",
+    "max_run_ge_base", "max_run_ge_base_m1",
     "max_minus_second_max",
+    # Time-of-day max features (structural nulls - filled with vc_max_f_sofar)
     "max_morning_f_sofar", "max_afternoon_f_sofar", "max_evening_f_sofar",
     "slope_max_30min_up_sofar", "slope_max_30min_down_sofar",
-    # Rule predictions and errors
-    "pred_max_round_sofar", "pred_max_of_rounded_sofar",
-    "pred_ceil_max_sofar", "pred_floor_max_sofar",
-    "pred_plateau_20min_sofar", "pred_ignore_singletons_sofar",
-    "pred_c_first_sofar",
-    "err_max_round_sofar", "err_max_of_rounded_sofar",
-    "err_ceil_max_sofar", "err_floor_max_sofar",
-    "err_plateau_20min_sofar", "err_ignore_singletons_sofar",
-    "err_c_first_sofar",
-    "range_pred_rules_sofar", "num_distinct_preds_sofar", "disagree_flag_sofar",
-    # Forecast features (when available)
+    # Rule predictions - only keep those that differ from t_base
+    # REMOVED: pred_max_round_sofar, pred_max_of_rounded_sofar (identical to t_base)
+    # REMOVED: pred_c_first_sofar, pred_ignore_singletons_sofar (low differentiation)
+    "pred_ceil_max_sofar",       # differs 50% from t_base
+    "pred_floor_max_sofar",      # differs 44% from t_base
+    "pred_plateau_20min_sofar",  # differs 51% from t_base
+    # Note: err_{rule}_sofar features are EXCLUDED (target leakage)
+    # Note: disagree_flag_sofar EXCLUDED (99.4% constant at 1)
+    "range_pred_rules_sofar", "num_distinct_preds_sofar",
+    # T-1 Forecast features
     "fcst_prev_max_f", "fcst_prev_min_f", "fcst_prev_mean_f", "fcst_prev_std_f",
     "fcst_prev_q10_f", "fcst_prev_q25_f", "fcst_prev_q50_f",
     "fcst_prev_q75_f", "fcst_prev_q90_f",
     "fcst_prev_frac_part", "fcst_prev_hour_of_max", "t_forecast_base",
+    # Forecast vs observation errors (NOT target leakage - compares fcst to obs)
     "err_mean_sofar", "err_std_sofar",
     "err_max_pos_sofar", "err_max_neg_sofar", "err_abs_mean_sofar",
     "err_last1h", "err_last3h_mean",
+    # Derived forecast features (high correlation with delta, no leakage)
+    "obs_fcst_max_gap",       # fcst_max - vc_max_sofar (upside potential)
+    "hours_until_fcst_max",   # fcst_hour_of_max - snapshot_hour
+    "above_fcst_flag",        # 1 if vc_max > fcst_max
+    "day_fraction",           # (snapshot_hour - 6) / 18
     # Calendar features
     "snapshot_hour", "snapshot_hour_sin", "snapshot_hour_cos",
     "doy_sin", "doy_cos", "week_sin", "week_cos",
     "month", "is_weekend",
-    # Lag features
+    # Lag features (small % nulls - median imputation OK)
     "settle_f_lag1", "settle_f_lag2", "settle_f_lag7",
     "vc_max_f_lag1", "vc_max_f_lag7", "delta_vcmax_lag1",
-    # Quality features
-    "missing_fraction_sofar", "max_gap_minutes", "edge_max_flag",
+    # Quality features (removed max_gap_minutes - 99.6% constant at 5)
+    "missing_fraction_sofar", "edge_max_flag",
 ]
 
 CATEGORICAL_FEATURE_COLS: list[str] = [

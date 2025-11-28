@@ -120,12 +120,35 @@ class BaseTrainer(ABC):
     ) -> tuple[pd.DataFrame, pd.Series]:
         """Prepare features and target from DataFrame.
 
+        Handles structural nulls (time-based features) properly before
+        sending to the imputer. Time-based features are filled with
+        vc_max_f_sofar, not median.
+
         Args:
             df: Snapshot DataFrame with features and 'delta' column
 
         Returns:
             Tuple of (X DataFrame, y Series)
         """
+        df = df.copy()
+
+        # Handle structural nulls for time-of-day features
+        # These are null before that time of day, fill with current max
+        time_based_features = ["max_afternoon_f_sofar", "max_evening_f_sofar"]
+        for col in time_based_features:
+            if col in df.columns and "vc_max_f_sofar" in df.columns:
+                df[col] = df[col].fillna(df["vc_max_f_sofar"])
+
+        # Add derived features if not present
+        if "obs_fcst_max_gap" not in df.columns and "fcst_prev_max_f" in df.columns:
+            df["obs_fcst_max_gap"] = df["fcst_prev_max_f"] - df["vc_max_f_sofar"]
+        if "hours_until_fcst_max" not in df.columns and "fcst_prev_hour_of_max" in df.columns:
+            df["hours_until_fcst_max"] = df["fcst_prev_hour_of_max"] - df["snapshot_hour"]
+        if "above_fcst_flag" not in df.columns and "fcst_prev_max_f" in df.columns:
+            df["above_fcst_flag"] = (df["vc_max_f_sofar"] > df["fcst_prev_max_f"]).astype(int)
+        if "day_fraction" not in df.columns:
+            df["day_fraction"] = (df["snapshot_hour"] - 6) / 18
+
         # Ensure all feature columns exist
         all_cols = self.numeric_cols + self.categorical_cols
         missing_cols = [c for c in all_cols if c not in df.columns]

@@ -25,7 +25,11 @@ from typing import Any, Optional
 
 import numpy as np
 import pandas as pd
+from sklearn.compose import ColumnTransformer
+from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import OneHotEncoder, RobustScaler
 
 from models.training.base_trainer import BaseTrainer
 
@@ -88,6 +92,32 @@ class LogisticDeltaTrainer(BaseTrainer):
             n_jobs=-1,
             random_state=42,
         )
+
+    def _create_preprocessor(self) -> ColumnTransformer:
+        """Create preprocessing pipeline with RobustScaler for logistic regression.
+
+        RobustScaler is used instead of StandardScaler because:
+        - Many features are skewed (minutes, runs, etc.)
+        - RobustScaler uses median/IQR, resistant to outliers
+        - Important for L1/L2 regularization to penalize fairly
+
+        Returns:
+            ColumnTransformer with imputation + scaling for numeric features
+        """
+        numeric_pipeline = Pipeline([
+            ("imputer", SimpleImputer(strategy="median")),
+            ("scaler", RobustScaler()),  # Median-centered, IQR-scaled
+        ])
+
+        preprocessor = ColumnTransformer(
+            transformers=[
+                ("num", numeric_pipeline, self.numeric_cols),
+                ("cat", OneHotEncoder(handle_unknown="ignore", sparse_output=False),
+                 self.categorical_cols),
+            ],
+            remainder="drop",
+        )
+        return preprocessor
 
     def get_feature_importance(self) -> Optional[pd.DataFrame]:
         """Extract coefficient magnitudes as feature importance.

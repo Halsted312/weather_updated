@@ -1,0 +1,34 @@
+{
+  "model_type": "catboost",
+  "trained_at": "2025-11-28T08:32:15.605328",
+  "n_train_samples": 2128,
+  "n_train_days": 266,
+  "best_params": {
+    "bootstrap_type": "Bayesian",
+    "depth": 7,
+    "iterations": 466,
+    "learning_rate": 0.10225120013475106,
+    "border_count": 78,
+    "l2_leaf_reg": 3.3726839851816326,
+    "min_data_in_leaf": 19,
+    "random_strength": 0.27056217774375374,
+    "colsample_bylevel": 0.62622241380907,
+    "bagging_temperature": 0.8272553076282274
+  },
+  "delta_classes": [
+    -2,
+    -1,
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "calibrated": true
+}

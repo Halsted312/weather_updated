@@ -1,7 +1,7 @@
 ---
 plan_id: ml-framework-intraday-delta-models
 created: 2025-11-28
-status: in_progress
+status: completed
 priority: high
 agent: kalshi-weather-quant
 ---
@@ -698,6 +698,68 @@ This allows quick comparison of which model performs better and at what times.
 - [ ] Models saved to `models/saved/` with metadata
 
 ## Sign-off Log
+
+### 2025-11-28 Session 3 (Final - Training & Validation Complete)
+**Status**: Completed - Models trained, validated, and saved
+
+**Critical Fixes This Session**:
+- ✅ **Fixed Feature Leakage**: Removed 7 `err_{rule}_sofar` features that used `settle_f` (the target). These had -0.969 correlation with delta and caused CatBoost to achieve 100% "accuracy" via leakage.
+- ✅ **Fixed CatBoost sklearn Interface**: Added `get_params()`, `set_params()`, and `_estimator_type = "classifier"` to `CatBoostCalibratedWrapper` for sklearn compatibility with `CalibratedClassifierCV`.
+- ✅ **Fixed CatBoost Bootstrap Params**: Made `bootstrap_type` a hyperparameter with conditional params (`bagging_temperature` for Bayesian, `subsample` for Bernoulli).
+
+**Feature Engineering Improvements**:
+- ✅ Removed useless features (constant or 99%+ same value):
+  - `minutes_ge_base_p1`, `max_run_ge_base_p1` (constant at 0)
+  - `disagree_flag_sofar` (99.4% constant at 1)
+  - `max_gap_minutes` (99.6% constant at 5)
+- ✅ Removed redundant features:
+  - `pred_max_round_sofar`, `pred_max_of_rounded_sofar` (identical to `t_base`)
+  - `pred_c_first_sofar`, `pred_ignore_singletons_sofar` (low differentiation)
+- ✅ Added 4 new derived features with high correlation to delta (no leakage):
+  - `obs_fcst_max_gap` (0.654 corr) - upside potential
+  - `hours_until_fcst_max` (0.547 corr) - time until expected max
+  - `above_fcst_flag` (-0.562 corr) - already exceeded forecast
+  - `day_fraction` (-0.653 corr) - proportion of day elapsed
+- ✅ Expanded DELTA_CLASSES from [-2, +2] to [-2, +10] (13 classes) to handle early-morning snapshots
+
+**Null Handling & Scaling**:
+- ✅ Structural nulls (time-based features like `max_afternoon_f_sofar`, `max_evening_f_sofar`) now filled with `vc_max_f_sofar` instead of median
+- ✅ Added `RobustScaler` (median/IQR-based) to `LogisticDeltaTrainer` for proper L1/L2 regularization with skewed features
+- ✅ Kept median imputation for random nulls (lag features ~1.4%)
+
+**CatBoost Hyperparameter Expansion** (30 trials):
+- Added: `min_data_in_leaf`, `random_strength`, `colsample_bylevel`
+- Added conditional: `bootstrap_type` with `bagging_temperature` (Bayesian) or `subsample` (Bernoulli)
+
+**Final Model Results (Chicago, train < 2025-06-01)**:
+
+| Model | Accuracy | MAE | ECE | Best For |
+|-------|----------|-----|-----|----------|
+| CatBoost v3 | 53.2% | 1.05 | 0.026 | Most hours, calibration |
+| Logistic v3 | 46.4% | 0.99 | 0.033 | 10am, interpretability |
+
+Best CatBoost params: depth=7, iterations=469, learning_rate=0.032, l2_leaf_reg=1.09, min_data_in_leaf=19, random_strength=1.73, colsample_bylevel=0.96, bootstrap_type=Bayesian, bagging_temperature=0.44
+
+**Files Modified**:
+- `models/features/base.py` - Updated NUMERIC_FEATURE_COLS, DELTA_CLASSES, added comments
+- `models/training/base_trainer.py` - Added structural null handling, derived feature computation
+- `models/training/logistic_trainer.py` - Added RobustScaler, updated imports
+- `models/training/catboost_trainer.py` - Fixed sklearn interface, expanded hyperparameters
+
+**Saved Artifacts**:
+- `models/saved/catboost_chicago_v3.pkl` + `.json` metadata
+- `models/saved/logistic_chicago_v3.pkl` + `.json` metadata
+
+**Decision on Platt Scaling**: Kept Platt scaling - it calibrates raw probabilities into trustworthy probabilities for trading decisions. The probabilities need to be well-calibrated (ECE < 0.03) for bracket probability calculations.
+
+**Next Steps for Future Sessions**:
+1. Train on all 6 cities once data ingestion completes
+2. Build inference pipeline for live predictions
+3. Integrate with open_maker strategies for bracket selection
+4. Add hour-specific models or ensemble approach
+5. Consider ordinal regression (CORN) for better ordinal handling
+
+---
 
 ### 2025-11-28 Session 2 (Completion)
 **Status**: Completed - All core modules implemented
