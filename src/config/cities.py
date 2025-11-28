@@ -23,6 +23,9 @@ class CityConfig:
     city_code: str  # 3-letter code: 'CHI', 'DEN', 'AUS', 'LAX', 'MIA', 'PHL'
     kalshi_code: str  # Kalshi market code: 'CHI', 'DEN', 'AUS', 'LAX', 'MIA', 'PHIL'
     vc_city_query: str  # Visual Crossing city query: 'Chicago,IL', etc.
+    # Station coordinates from NOAA/NCEI (for historical forecast queries)
+    latitude: float  # Station latitude (decimal degrees)
+    longitude: float  # Station longitude (decimal degrees)
 
     @property
     def vc_location(self) -> str:
@@ -33,6 +36,11 @@ class CityConfig:
     def vc_station_query(self) -> str:
         """Visual Crossing station query (alias for vc_location)."""
         return f"stn:{self.icao}"
+
+    @property
+    def vc_latlon_query(self) -> str:
+        """Visual Crossing lat/lon query for historical forecasts anchored at station."""
+        return f"{self.latitude},{self.longitude}"
 
 
 # All supported cities (6 airport stations with excellent VC coverage)
@@ -47,6 +55,8 @@ CITIES: Dict[str, CityConfig] = {
         city_code="CHI",
         kalshi_code="CHI",
         vc_city_query="Chicago,IL",
+        latitude=41.78412,
+        longitude=-87.75514,
     ),
     "austin": CityConfig(
         city_id="austin",
@@ -54,10 +64,12 @@ CITIES: Dict[str, CityConfig] = {
         nws_office="AUS",
         series_ticker="KXHIGHAUS",
         timezone="America/Chicago",
-        ghcnd_station="GHCND:USW00013958",
+        ghcnd_station="GHCND:USW00013904",  # Austin Bergstrom (Kalshi official), NOT Camp Mabry USW00013958
         city_code="AUS",
         kalshi_code="AUS",
         vc_city_query="Austin,TX",
+        latitude=30.18311,
+        longitude=-97.67989,
     ),
     "denver": CityConfig(
         city_id="denver",
@@ -69,6 +81,8 @@ CITIES: Dict[str, CityConfig] = {
         city_code="DEN",
         kalshi_code="DEN",
         vc_city_query="Denver,CO",
+        latitude=39.84657,
+        longitude=-104.65623,
     ),
     "los_angeles": CityConfig(
         city_id="los_angeles",
@@ -80,6 +94,8 @@ CITIES: Dict[str, CityConfig] = {
         city_code="LAX",
         kalshi_code="LAX",
         vc_city_query="Los Angeles,CA",
+        latitude=33.93816,
+        longitude=-118.38660,
     ),
     "miami": CityConfig(
         city_id="miami",
@@ -91,6 +107,8 @@ CITIES: Dict[str, CityConfig] = {
         city_code="MIA",
         kalshi_code="MIA",
         vc_city_query="Miami,FL",
+        latitude=25.78805,
+        longitude=-80.31694,
     ),
     "philadelphia": CityConfig(
         city_id="philadelphia",
@@ -102,6 +120,8 @@ CITIES: Dict[str, CityConfig] = {
         city_code="PHL",
         kalshi_code="PHIL",  # Kalshi uses "PHIL" not "PHL"
         vc_city_query="Philadelphia,PA",
+        latitude=39.87326,
+        longitude=-75.22681,
     ),
 }
 

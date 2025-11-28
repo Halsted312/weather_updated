@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 
 # GHCND station IDs (without the "GHCND:" prefix for v1 API)
 NCEI_STATIONS = {
-    "austin": "USW00013958",
+    "austin": "USW00013904",  # Austin Bergstrom (Kalshi official station, NOT Camp Mabry USW00013958)
     "chicago": "USW00014819",
     "los_angeles": "USW00023174",
     "miami": "USW00012839",
