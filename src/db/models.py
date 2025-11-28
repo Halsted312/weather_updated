@@ -203,6 +203,325 @@ class WxForecastSnapshotHourly(Base):
 
 
 # =============================================================================
+# Schema: wx (Visual Crossing - New Greenfield Tables)
+# =============================================================================
+
+
+class VcLocation(Base):
+    """Visual Crossing location dimension table.
+
+    Tracks both station-locked (e.g., stn:KMDW) and city-aggregate (e.g., Chicago,IL)
+    locations for each Kalshi weather market city.
+
+    - location_type='station': Single airport station, no interpolation
+    - location_type='city': City-aggregate with VC's multi-station interpolation
+    """
+
+    __tablename__ = "vc_location"
+    __table_args__ = (
+        {"schema": "wx"},
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+
+    # City identifiers
+    city_code: Mapped[str] = mapped_column(Text, nullable=False)  # 'CHI', 'DEN', 'AUS', 'LAX', 'MIA', 'PHL'
+    kalshi_code: Mapped[str] = mapped_column(Text, nullable=False)  # 'CHI', 'DEN', 'AUS', 'LAX', 'MIA', 'PHIL'
+    location_type: Mapped[str] = mapped_column(Text, nullable=False)  # 'station' | 'city'
+
+    # Visual Crossing query parameters
+    vc_location_query: Mapped[str] = mapped_column(Text, nullable=False)  # 'stn:KMDW' or 'Chicago,IL'
+    station_id: Mapped[Optional[str]] = mapped_column(Text, nullable=True)  # 'KMDW' (nullable for city type)
+
+    # Timezone
+    iana_timezone: Mapped[str] = mapped_column(Text, nullable=False)  # 'America/Chicago'
+
+    # Location metadata (populated from VC add: fields on first fetch)
+    latitude: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    longitude: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    elevation_m: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=text("NOW()")
+    )
+
+    # Relationships
+    minute_weather: Mapped[list["VcMinuteWeather"]] = relationship(back_populates="location")
+    forecast_daily: Mapped[list["VcForecastDaily"]] = relationship(back_populates="location")
+    forecast_hourly: Mapped[list["VcForecastHourly"]] = relationship(back_populates="location")
+
+
+class VcMinuteWeather(Base):
+    """Visual Crossing minute-level weather data (fact table).
+
+    Stores both observations and forecasts at 5-min (obs) or 15-min (forecast) resolution.
+    Data type classification:
+    - 'actual_obs': Historical observations (forecast_basis_date=NULL)
+    - 'current_snapshot': Current conditions snapshot
+    - 'forecast': Future forecast data
+    - 'historical_forecast': Past forecast (for backtesting)
+
+    Note: Degreeday fields (degreedays, accdegreedays) are daily constructs -
+    at minute resolution they'll be constant per day.
+    """
+
+    __tablename__ = "vc_minute_weather"
+    __table_args__ = (
+        {"schema": "wx"},
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    vc_location_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("wx.vc_location.id"), nullable=False
+    )
+
+    # Classification
+    data_type: Mapped[str] = mapped_column(Text, nullable=False)  # 'actual_obs' | 'current_snapshot' | 'forecast' | 'historical_forecast'
+    forecast_basis_date: Mapped[Optional[date]] = mapped_column(Date, nullable=True)  # NULL for actual_obs
+    forecast_basis_datetime_utc: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    lead_hours: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)  # (target - basis) / 3600
+
+    # Time fields (from VC datetime/datetimeEpoch/timezone/tzoffset)
+    datetime_epoch_utc: Mapped[int] = mapped_column(Integer, nullable=False)  # BIGINT equivalent
+    datetime_utc: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    datetime_local: Mapped[datetime] = mapped_column(DateTime, nullable=False)  # WITHOUT timezone
+    timezone: Mapped[str] = mapped_column(Text, nullable=False)  # 'America/Chicago'
+    tzoffset_minutes: Mapped[int] = mapped_column(SmallInteger, nullable=False)  # e.g., -360 for CST
+
+    # Core weather
+    temp_f: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    tempmax_f: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    tempmin_f: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    feelslike_f: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    feelslikemax_f: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    feelslikemin_f: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    dew_f: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    humidity: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+
+    # Precipitation
+    precip_in: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    precipprob: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    preciptype: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    precipcover: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    snow_in: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    snowdepth_in: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    precipremote: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+
+    # Wind (10m standard)
+    windspeed_mph: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    windgust_mph: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    winddir: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    windspeedmean_mph: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    windspeedmin_mph: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    windspeedmax_mph: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+
+    # Extended wind (50/80/100m)
+    windspeed50_mph: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    winddir50: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    windspeed80_mph: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    winddir80: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    windspeed100_mph: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    winddir100: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+
+    # Atmosphere
+    cloudcover: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    visibility_miles: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    pressure_mb: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+
+    # Solar/Radiation
+    uvindex: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    solarradiation: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    solarenergy: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    dniradiation: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    difradiation: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    ghiradiation: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    gtiradiation: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    sunelevation: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    sunazimuth: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+
+    # Instability/Energy
+    cape: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    cin: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    deltat: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    degreedays: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    accdegreedays: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+
+    # Text/Flags
+    conditions: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    icon: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    stations: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    resolved_address: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+
+    # Metadata
+    source_system: Mapped[str] = mapped_column(Text, default="vc_timeline")
+    raw_json: Mapped[Optional[dict]] = mapped_column(JSONB, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=text("NOW()")
+    )
+
+    # Relationships
+    location: Mapped["VcLocation"] = relationship(back_populates="minute_weather")
+
+
+class VcForecastDaily(Base):
+    """Visual Crossing daily forecast snapshots.
+
+    Stores daily-level forecasts with full extended weather fields.
+    data_type: 'forecast' (current) | 'historical_forecast' (for backtesting)
+    """
+
+    __tablename__ = "vc_forecast_daily"
+    __table_args__ = (
+        {"schema": "wx"},
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    vc_location_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("wx.vc_location.id"), nullable=False
+    )
+
+    # Classification
+    data_type: Mapped[str] = mapped_column(Text, nullable=False)  # 'forecast' | 'historical_forecast'
+    forecast_basis_date: Mapped[date] = mapped_column(Date, nullable=False)
+    forecast_basis_datetime_utc: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+
+    # Target
+    target_date: Mapped[date] = mapped_column(Date, nullable=False)
+    lead_days: Mapped[int] = mapped_column(Integer, nullable=False)  # target_date - forecast_basis_date
+
+    # Daily weather fields
+    tempmax_f: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    tempmin_f: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    temp_f: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    feelslikemax_f: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    feelslikemin_f: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    feelslike_f: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    dew_f: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    humidity: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    precip_in: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    precipprob: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    preciptype: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    precipcover: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    snow_in: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    snowdepth_in: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    windspeed_mph: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    windgust_mph: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    winddir: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    windspeedmean_mph: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    windspeedmin_mph: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    windspeedmax_mph: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    windspeed50_mph: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    winddir50: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    windspeed80_mph: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    winddir80: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    windspeed100_mph: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    winddir100: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    cloudcover: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    visibility_miles: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    pressure_mb: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    uvindex: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    solarradiation: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    solarenergy: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    dniradiation: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    difradiation: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    ghiradiation: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    gtiradiation: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    cape: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    cin: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    deltat: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    degreedays: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    accdegreedays: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    conditions: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    icon: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+
+    # Metadata
+    source_system: Mapped[str] = mapped_column(Text, default="vc_timeline")
+    raw_json: Mapped[Optional[dict]] = mapped_column(JSONB, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=text("NOW()")
+    )
+
+    # Relationships
+    location: Mapped["VcLocation"] = relationship(back_populates="forecast_daily")
+
+
+class VcForecastHourly(Base):
+    """Visual Crossing hourly forecast snapshots.
+
+    Stores hourly-level forecasts with full extended weather fields and time metadata.
+    data_type: 'forecast' (current) | 'historical_forecast' (for backtesting)
+    """
+
+    __tablename__ = "vc_forecast_hourly"
+    __table_args__ = (
+        {"schema": "wx"},
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    vc_location_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("wx.vc_location.id"), nullable=False
+    )
+
+    # Classification
+    data_type: Mapped[str] = mapped_column(Text, nullable=False)  # 'forecast' | 'historical_forecast'
+    forecast_basis_date: Mapped[date] = mapped_column(Date, nullable=False)
+    forecast_basis_datetime_utc: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+
+    # Target time
+    target_datetime_epoch_utc: Mapped[int] = mapped_column(Integer, nullable=False)  # BIGINT equivalent
+    target_datetime_utc: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    target_datetime_local: Mapped[datetime] = mapped_column(DateTime, nullable=False)  # WITHOUT timezone
+    timezone: Mapped[str] = mapped_column(Text, nullable=False)
+    tzoffset_minutes: Mapped[int] = mapped_column(SmallInteger, nullable=False)
+    lead_hours: Mapped[int] = mapped_column(Integer, nullable=False)
+
+    # Hourly weather fields
+    temp_f: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    feelslike_f: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    dew_f: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    humidity: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    precip_in: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    precipprob: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    preciptype: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    snow_in: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    windspeed_mph: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    windgust_mph: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    winddir: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    windspeed50_mph: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    winddir50: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    windspeed80_mph: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    winddir80: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    windspeed100_mph: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    winddir100: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    cloudcover: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    visibility_miles: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    pressure_mb: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    uvindex: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    solarradiation: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    solarenergy: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    dniradiation: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    difradiation: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    ghiradiation: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    gtiradiation: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    sunelevation: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    sunazimuth: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    cape: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    cin: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    conditions: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    icon: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+
+    # Metadata
+    source_system: Mapped[str] = mapped_column(Text, default="vc_timeline")
+    raw_json: Mapped[Optional[dict]] = mapped_column(JSONB, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=text("NOW()")
+    )
+
+    # Relationships
+    location: Mapped["VcLocation"] = relationship(back_populates="forecast_hourly")
+
+
+# =============================================================================
 # Schema: kalshi (Market Data)
 # =============================================================================
 
