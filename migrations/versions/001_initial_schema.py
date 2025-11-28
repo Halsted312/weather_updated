@@ -20,6 +20,11 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
+    # Create schemas
+    op.execute("CREATE SCHEMA IF NOT EXISTS wx")
+    op.execute("CREATE SCHEMA IF NOT EXISTS kalshi")
+    op.execute("CREATE SCHEMA IF NOT EXISTS sim")
+
     # ==========================================================================
     # Schema: wx (Weather/Labels)
     # ==========================================================================
@@ -280,3 +285,8 @@ def downgrade() -> None:
     op.drop_table('forecast_snapshot', schema='wx')
     op.drop_table('minute_obs', schema='wx')
     op.drop_table('settlement', schema='wx')
+
+    # Drop schemas
+    op.execute("DROP SCHEMA IF EXISTS sim CASCADE")
+    op.execute("DROP SCHEMA IF EXISTS kalshi CASCADE")
+    op.execute("DROP SCHEMA IF EXISTS wx CASCADE")

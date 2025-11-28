@@ -1,6 +1,30 @@
 #!/usr/bin/env python3
 """
-Ingest Visual Crossing minute-level weather observations.
+[LEGACY] Ingest Visual Crossing minute-level weather observations.
+
+================================================================================
+DEPRECATION NOTICE
+================================================================================
+This script and the wx.minute_obs table are LEGACY and will be removed in a
+future release. They are superseded by:
+
+  - Table: wx.vc_minute_weather (canonical minute observations + forecasts)
+  - Script: scripts/ingest_vc_obs_backfill.py (5-min observations)
+  - Script: scripts/ingest_vc_forecast_snapshot.py (15-min forecasts)
+  - Script: scripts/ingest_vc_historical_forecast_v2.py (historical forecasts)
+
+The new pipeline provides:
+  - ALL 47+ weather fields (vs ~15 in legacy)
+  - Both station-locked and city-aggregate feeds
+  - Proper datetime/timezone handling from day one
+  - Unified schema for observations + forecasts + historical forecasts
+  - Foreign key relationship to wx.vc_location
+
+Migration path:
+  1. Run new ingest scripts to populate wx.vc_minute_weather
+  2. Update downstream queries to use vc_minute_weather
+  3. Remove wx.minute_obs table and this script
+================================================================================
 
 Fetches 5-minute interval data for all 6 cities and upserts into wx.minute_obs.
 

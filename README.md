@@ -104,10 +104,11 @@ SQLAlchemy models for:
 
 Typical scripts include (names may vary slightly by branch):
 
-- **Visual Crossing**
-  - `ingest_vc_forecast_history.py` – backfill historical daily/hourly forecasts via `forecastBasisDate`.  
-  - `ingest_vc_obs_backfill.py` – backfill 5-minute observations for each station/city.  
-  - `poll_vc_forecast_daemon.py` (or equivalent) – nightly or periodic snapshots of current forecasts.
+- **Visual Crossing** (Phase 1 VC schema - `wx.vc_*` tables)
+  - `ingest_vc_obs_backfill.py` – backfill 5-minute observations for each station/city.
+  - `ingest_vc_forecast_snapshot.py` – nightly current+forecast snapshots.
+  - `ingest_vc_historical_forecast.py` – backfill historical daily/hourly forecasts via `forecastBasisDate`.
+  - *Legacy scripts are in `legacy/` folder (old schema, kept for reference).*
 
 - **NOAA / Settlement**
   - `ingest_settlement_multi.py` – combine NWS sources (CLI, CF6, IEM, NCEI) into a single `wx.settlement` record per date/city.

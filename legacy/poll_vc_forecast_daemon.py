@@ -1,5 +1,21 @@
 #!/usr/bin/env python3
 """
+LEGACY - This script has been superseded by the Phase 1 VC ingestion pipeline.
+
+This daemon was designed for the OLD schema:
+- wx.forecast_snapshot (daily forecasts)
+- wx.forecast_snapshot_hourly (hourly forecasts)
+
+It has been replaced by:
+- scripts/ingest_vc_forecast_snapshot.py (nightly current+forecast snapshots)
+- Future: scripts/poll_vc_daemon.py (built on wx.vc_* tables)
+
+This file is kept in legacy/ for reference only. Do not use in production.
+
+---
+
+Original docstring:
+
 24/7 Visual Crossing forecast polling daemon.
 
 Runs continuously, checking each city at its local midnight (00:00-00:10)

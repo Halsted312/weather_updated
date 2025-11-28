@@ -19,10 +19,19 @@ class CityConfig:
     series_ticker: str  # Kalshi series ticker: 'KXHIGHCHI', etc.
     timezone: str  # IANA timezone: 'America/Chicago', etc.
     ghcnd_station: str  # GHCND station ID for NOAA data
+    # New fields for VC greenfield schema
+    city_code: str  # 3-letter code: 'CHI', 'DEN', 'AUS', 'LAX', 'MIA', 'PHL'
+    kalshi_code: str  # Kalshi market code: 'CHI', 'DEN', 'AUS', 'LAX', 'MIA', 'PHIL'
+    vc_city_query: str  # Visual Crossing city query: 'Chicago,IL', etc.
 
     @property
     def vc_location(self) -> str:
         """Visual Crossing station-pinned location format."""
+        return f"stn:{self.icao}"
+
+    @property
+    def vc_station_query(self) -> str:
+        """Visual Crossing station query (alias for vc_location)."""
         return f"stn:{self.icao}"
 
 
@@ -35,6 +44,9 @@ CITIES: Dict[str, CityConfig] = {
         series_ticker="KXHIGHCHI",
         timezone="America/Chicago",
         ghcnd_station="GHCND:USW00014819",
+        city_code="CHI",
+        kalshi_code="CHI",
+        vc_city_query="Chicago,IL",
     ),
     "austin": CityConfig(
         city_id="austin",
@@ -43,6 +55,9 @@ CITIES: Dict[str, CityConfig] = {
         series_ticker="KXHIGHAUS",
         timezone="America/Chicago",
         ghcnd_station="GHCND:USW00013958",
+        city_code="AUS",
+        kalshi_code="AUS",
+        vc_city_query="Austin,TX",
     ),
     "denver": CityConfig(
         city_id="denver",
@@ -51,6 +66,9 @@ CITIES: Dict[str, CityConfig] = {
         series_ticker="KXHIGHDEN",
         timezone="America/Denver",
         ghcnd_station="GHCND:USW00003017",
+        city_code="DEN",
+        kalshi_code="DEN",
+        vc_city_query="Denver,CO",
     ),
     "los_angeles": CityConfig(
         city_id="los_angeles",
@@ -59,6 +77,9 @@ CITIES: Dict[str, CityConfig] = {
         series_ticker="KXHIGHLAX",
         timezone="America/Los_Angeles",
         ghcnd_station="GHCND:USW00023174",
+        city_code="LAX",
+        kalshi_code="LAX",
+        vc_city_query="Los Angeles,CA",
     ),
     "miami": CityConfig(
         city_id="miami",
@@ -67,6 +88,9 @@ CITIES: Dict[str, CityConfig] = {
         series_ticker="KXHIGHMIA",
         timezone="America/New_York",
         ghcnd_station="GHCND:USW00012839",
+        city_code="MIA",
+        kalshi_code="MIA",
+        vc_city_query="Miami,FL",
     ),
     "philadelphia": CityConfig(
         city_id="philadelphia",
@@ -75,6 +99,9 @@ CITIES: Dict[str, CityConfig] = {
         series_ticker="KXHIGHPHIL",  # Note: Kalshi uses "PHIL" not "PHL"
         timezone="America/New_York",
         ghcnd_station="GHCND:USW00013739",
+        city_code="PHL",
+        kalshi_code="PHIL",  # Kalshi uses "PHIL" not "PHL"
+        vc_city_query="Philadelphia,PA",
     ),
 }
 

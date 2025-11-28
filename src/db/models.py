@@ -7,6 +7,7 @@ from typing import Optional
 from uuid import UUID
 
 from sqlalchemy import (
+    BigInteger,
     Boolean,
     Date,
     DateTime,
@@ -92,7 +93,18 @@ class WxSettlement(Base):
 
 
 class WxMinuteObs(Base):
-    """Visual Crossing 5-minute weather observations (features only, never settlement)."""
+    """[LEGACY] Visual Crossing 5-minute weather observations.
+
+    DEPRECATION NOTICE: This model is superseded by VcMinuteWeather which provides:
+    - ALL 47+ weather fields (vs ~15 in this legacy model)
+    - Both station-locked and city-aggregate feeds
+    - Proper datetime/timezone handling
+    - Unified schema for observations + forecasts + historical forecasts
+    - Foreign key relationship to VcLocation
+
+    Use VcMinuteWeather for all new development. This model will be removed
+    in a future release once migration is complete.
+    """
 
     __tablename__ = "minute_obs"
     __table_args__ = {"schema": "wx"}
@@ -282,7 +294,7 @@ class VcMinuteWeather(Base):
     lead_hours: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)  # (target - basis) / 3600
 
     # Time fields (from VC datetime/datetimeEpoch/timezone/tzoffset)
-    datetime_epoch_utc: Mapped[int] = mapped_column(Integer, nullable=False)  # BIGINT equivalent
+    datetime_epoch_utc: Mapped[int] = mapped_column(BigInteger, nullable=False)
     datetime_utc: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     datetime_local: Mapped[datetime] = mapped_column(DateTime, nullable=False)  # WITHOUT timezone
     timezone: Mapped[str] = mapped_column(Text, nullable=False)  # 'America/Chicago'
@@ -468,7 +480,7 @@ class VcForecastHourly(Base):
     forecast_basis_datetime_utc: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
 
     # Target time
-    target_datetime_epoch_utc: Mapped[int] = mapped_column(Integer, nullable=False)  # BIGINT equivalent
+    target_datetime_epoch_utc: Mapped[int] = mapped_column(BigInteger, nullable=False)
     target_datetime_utc: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     target_datetime_local: Mapped[datetime] = mapped_column(DateTime, nullable=False)  # WITHOUT timezone
     timezone: Mapped[str] = mapped_column(Text, nullable=False)

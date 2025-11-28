@@ -4,6 +4,13 @@ A comprehensive guide to all Python files in the Kalshi Weather Trading project.
 
 **Last Updated:** 2025-11-27
 
+> **Note (Nov 2025):** Some script entries below reference the legacy VC ingestion pipeline.
+> Scripts moved to `legacy/` folder:
+> - `ingest_vc_minutes.py` → replaced by `ingest_vc_obs_backfill.py`
+> - `ingest_vc_forecast_history.py` → replaced by `ingest_vc_historical_forecast.py`
+> - `ingest_vc_forecast_hourly.py` → replaced by `ingest_vc_historical_forecast.py`
+> - `poll_vc_forecast_daemon.py` → replaced by `ingest_vc_forecast_snapshot.py`
+
 ---
 
 ## Table of Contents

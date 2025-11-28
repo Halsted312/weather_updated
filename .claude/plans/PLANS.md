@@ -1,5 +1,17 @@
 # Plan Management Instructions
 
+## Current Status
+
+### Active Plans
+*None currently active*
+
+### Completed Plans
+| Plan | Completed | Description |
+|------|-----------|-------------|
+| [toasty-roaming-boole](completed/2025-11-28_toasty-roaming-boole.md) | 2025-11-28 | Visual Crossing Phase 1 - Schema, models, migration, ingestion scripts |
+
+---
+
 ## Plan Lifecycle
 
 1. **Active Plans**: Store in `.claude/plans/active/`

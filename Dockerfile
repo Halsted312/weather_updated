@@ -8,12 +8,18 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
+# Copy requirements first for better caching
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
 # Copy project files
 COPY pyproject.toml .
 COPY src/ src/
 COPY scripts/ scripts/
+COPY migrations/ migrations/
+COPY alembic.ini .
 
-# Install Python dependencies
+# Install project in editable mode (for entry points)
 RUN pip install --no-cache-dir -e .
 
 # Default command (overridden by docker-compose)

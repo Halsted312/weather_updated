@@ -1,5 +1,32 @@
 # Plan: Visual Crossing Data Enhancement - Full Implementation
 
+---
+plan_id: toasty-roaming-boole
+created: 2025-11-27
+completed: 2025-11-28
+status: completed
+priority: high
+agent: kalshi-weather-quant
+---
+
+## Completion Summary
+
+**Phase 1 completed on 2025-11-28:**
+- ✅ Migration 007 applied - all 4 new tables created (`wx.vc_location`, `wx.vc_minute_weather`, `wx.vc_forecast_daily`, `wx.vc_forecast_hourly`)
+- ✅ Partial unique indexes for idempotent upserts
+- ✅ 12 seed locations (6 cities × 2 types)
+- ✅ ORM models in `src/db/models.py`
+- ✅ Elements config in `src/config/vc_elements.py`
+- ✅ Visual Crossing client extended with new methods
+- ✅ Ingestion scripts created and tested:
+  - `scripts/ingest_vc_obs_backfill.py`
+  - `scripts/ingest_vc_forecast_snapshot.py`
+  - `scripts/ingest_vc_historical_forecast.py`
+- ✅ Legacy scripts archived to `legacy/` folder
+- ✅ Documentation updated
+
+---
+
 ## User Request
 - Greenfield Visual Crossing schema redesign
 - 5-min observations, 15-min forecast minutes

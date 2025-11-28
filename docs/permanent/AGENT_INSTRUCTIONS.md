@@ -1,7 +1,15 @@
 # Agent Instructions – Weather Trading Project
 
-This document describes **how an AI coding agent should work in this repository**.  
+This document describes **how an AI coding agent should work in this repository**.
 The goal is to keep the codebase correct, consistent, and extensible while supporting systematic trading on Kalshi weather markets.
+
+> **Note (Nov 2025):** Script names in this document reference the legacy VC ingestion pipeline.
+> The current Phase 1 pipeline uses:
+> - `scripts/ingest_vc_obs_backfill.py` (replaces `ingest_vc_minutes.py`)
+> - `scripts/ingest_vc_forecast_snapshot.py` (replaces `poll_vc_forecast_daemon.py`)
+> - `scripts/ingest_vc_historical_forecast.py` (replaces `ingest_vc_forecast_history.py` and `_hourly.py`)
+>
+> Legacy scripts are archived in `legacy/` folder.
 
 ---
 

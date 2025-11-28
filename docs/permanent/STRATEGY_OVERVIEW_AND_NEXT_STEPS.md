@@ -3,6 +3,16 @@
 
 ---
 
+> **Note (Nov 2025):** Script names in this document reference the legacy VC ingestion pipeline.
+> The current Phase 1 pipeline uses:
+> - `scripts/ingest_vc_obs_backfill.py` (replaces `ingest_vc_minutes.py`)
+> - `scripts/ingest_vc_forecast_snapshot.py` (replaces `poll_vc_forecast_daemon.py`)
+> - `scripts/ingest_vc_historical_forecast.py` (replaces `ingest_vc_forecast_history.py` and `ingest_vc_forecast_hourly.py`)
+>
+> Legacy scripts are archived in `legacy/` folder for reference.
+
+---
+
 # Kalshi Weather Trading – Strategy & Data Flow Overview
 
 This document is the high‑level reference for **how data flows** through the system and **how the main strategies work**. It’s meant for any coding agent (or human) who needs to understand:
