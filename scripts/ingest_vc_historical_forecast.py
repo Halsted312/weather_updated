@@ -400,8 +400,12 @@ def main():
         base_url=settings.vc_base_url,
     )
 
-    # Query locations from database
+    # Process each location and basis date
+    totals = {"daily": 0, "hourly": 0}
+    total_basis_dates = (end_basis_date - start_basis_date).days + 1
+
     with get_db_session() as session:
+        # Query locations from database (inside the session context)
         query = select(VcLocation)
 
         if args.location_type:
@@ -411,24 +415,19 @@ def main():
 
         locations = list(session.execute(query).scalars().all())
 
-    if not locations:
-        logger.error("No locations found matching criteria")
-        return
+        if not locations:
+            logger.error("No locations found matching criteria")
+            return
 
-    logger.info(f"Found {len(locations)} locations to process")
+        logger.info(f"Found {len(locations)} locations to process")
 
-    if args.dry_run:
-        logger.info("DRY RUN - would fetch but not write to database")
-        for loc in locations:
-            logger.info(f"  Would fetch: {loc.city_code}/{loc.location_type}")
-        logger.info(f"Basis dates: {start_basis_date} to {end_basis_date}")
-        return
+        if args.dry_run:
+            logger.info("DRY RUN - would fetch but not write to database")
+            for loc in locations:
+                logger.info(f"  Would fetch: {loc.city_code}/{loc.location_type}")
+            logger.info(f"Basis dates: {start_basis_date} to {end_basis_date}")
+            return
 
-    # Process each location and basis date
-    totals = {"daily": 0, "hourly": 0}
-    total_basis_dates = (end_basis_date - start_basis_date).days + 1
-
-    with get_db_session() as session:
         for location in locations:
             checkpoint = None
             checkpoint_key = f"{location.city_code}_{location.location_type}"

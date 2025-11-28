@@ -35,7 +35,7 @@ SETTLEMENT_STATIONS = {
     "austin": {
         "icao": "KAUS",
         "issuedby": "AUS",
-        "ghcnd": "GHCND:USW00013958",
+        "ghcnd": "GHCND:USW00013904",  # Austin Bergstrom (Kalshi official station)
     },
     "chicago": {
         "icao": "KMDW",

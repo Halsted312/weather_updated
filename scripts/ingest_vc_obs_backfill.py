@@ -67,13 +67,15 @@ def parse_vc_minute_to_record(
     # Parse datetime
     dt_utc = datetime.fromtimestamp(epoch, tz=timezone.utc)
 
-    # Get timezone offset (VC returns hours, we store minutes)
-    tzoffset_hours = minute_data.get("tzoffset", 0) or 0
-    tzoffset_minutes = int(tzoffset_hours * 60)
+    # Convert to local time using IANA timezone (DON'T rely on VC's tzoffset - it may be 0 or missing)
+    from zoneinfo import ZoneInfo
+    tz_local = ZoneInfo(iana_timezone)
+    dt_local_aware = dt_utc.astimezone(tz_local)
+    dt_local_naive = dt_local_aware.replace(tzinfo=None)
 
-    # Calculate local datetime
-    dt_local = dt_utc + timedelta(minutes=tzoffset_minutes)
-    dt_local_naive = dt_local.replace(tzinfo=None)
+    # Calculate actual offset in minutes for storage
+    offset_seconds = dt_local_aware.utcoffset().total_seconds()
+    tzoffset_minutes = int(offset_seconds / 60)
 
     record = {
         "vc_location_id": vc_location_id,
