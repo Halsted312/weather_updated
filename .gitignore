@@ -132,3 +132,7 @@ archive/
 
 # Alembic env (contains DB connection logic, regenerated)
 migrations/env.py
+
+# Other
+docker-compose.override.yml
+docker-comopose.yml
