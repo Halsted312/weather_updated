@@ -136,3 +136,4 @@ migrations/env.py
 # Other
 docker-compose.override.yml
 docker-comopose.yml
+docker-compose.yml
