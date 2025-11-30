@@ -25,8 +25,7 @@ MANIFEST
 venv/
 ENV/
 env/
-.venv
-docker-comopose.yml 
+.venv/
 
 # IDEs
 .vscode/
@@ -52,19 +51,25 @@ dmypy.json
 .ipynb_checkpoints/
 *.ipynb
 
-# Environment variables
+# Environment variables - NEVER commit real .env files
 .env
 .env.local
 .env.*.local
+.env.*
+!.env.example
 
-# Secrets & Keys
+# Secrets & Keys - NEVER commit these
 *.pem
 *.key
 *.p12
 *.pfx
+*.secrets
+*.credentials
 *secret*
 *credential*
 *api_key*
+*password*
+*token*
 *.json.OLD
 settings.local.json*
 
@@ -133,31 +138,5 @@ archive/
 # Alembic env (contains DB connection logic, regenerated)
 migrations/env.py
 
-# Other
+# Docker local overrides (docker-compose.yml is tracked)
 docker-compose.override.yml
-docker-comopose.yml
-docker-compose.yml
-docs
-/docs
-docs/
-
-# Ignore Jupyter Notebook checkpoints
-.ipynb_checkpoints/
-# Ignore VSCode settings
-.vscode/
-.idea/
-# Ignore PyCharm settings
-.idea/
-*.iml   
-# Ignore Spyder project settings
-.spyproject/
-
-# Ignore coverage reports
-htmlcov/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-

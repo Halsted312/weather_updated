@@ -3,15 +3,15 @@ services:
     image: timescale/timescaledb:latest-pg16
     container_name: kalshi_weather_db
     environment:
-      POSTGRES_USER: kalshi
-      POSTGRES_PASSWORD: kalshi
-      POSTGRES_DB: kalshi_weather
+      POSTGRES_USER: ${DB_USER:-kalshi}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-kalshi}
+      POSTGRES_DB: ${DB_NAME:-kalshi_weather}
     ports:
-      - "5434:5432"
+      - "${DB_PORT:-5434}:5432"
     volumes:
       - kalshi_weather_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U kalshi -d kalshi_weather"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-kalshi} -d ${DB_NAME:-kalshi_weather}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -25,7 +25,7 @@ services:
       db:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql://kalshi:kalshi@db:5432/kalshi_weather
+      DATABASE_URL: postgresql://${DB_USER:-kalshi}:${DB_PASSWORD:-kalshi}@db:5432/${DB_NAME:-kalshi_weather}
     command: alembic upgrade head
     profiles:
       - migrate
@@ -38,7 +38,7 @@ services:
       db:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql://kalshi:kalshi@db:5432/kalshi_weather
+      DATABASE_URL: postgresql://${DB_USER:-kalshi}:${DB_PASSWORD:-kalshi}@db:5432/${DB_NAME:-kalshi_weather}
       VC_API_KEY: ${VC_API_KEY}
       KALSHI_API_KEY: ${KALSHI_API_KEY}
       KALSHI_PRIVATE_KEY_PATH: /app/weather.pem
@@ -81,7 +81,7 @@ services:
       db:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql://kalshi:kalshi@db:5432/kalshi_weather
+      DATABASE_URL: postgresql://${DB_USER:-kalshi}:${DB_PASSWORD:-kalshi}@db:5432/${DB_NAME:-kalshi_weather}
       KALSHI_API_KEY: ${KALSHI_API_KEY}
       KALSHI_PRIVATE_KEY_PATH: /app/weather.pem
       VC_API_KEY: ${VC_API_KEY}
@@ -100,7 +100,7 @@ services:
       db:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql://kalshi:kalshi@db:5432/kalshi_weather
+      DATABASE_URL: postgresql://${DB_USER:-kalshi}:${DB_PASSWORD:-kalshi}@db:5432/${DB_NAME:-kalshi_weather}
       VC_API_KEY: ${VC_API_KEY}
       KALSHI_API_KEY: ${KALSHI_API_KEY}
       KALSHI_PRIVATE_KEY_PATH: /app/weather.pem
