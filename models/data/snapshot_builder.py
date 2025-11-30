@@ -356,9 +356,10 @@ def build_single_snapshot(
 def build_snapshot_for_inference(
     city: str,
     day: date,
-    snapshot_hour: int,
     temps_sofar: list[float],
     timestamps_sofar: list[datetime],
+    cutoff_time: Optional[datetime] = None,
+    snapshot_hour: Optional[int] = None,
     fcst_daily: Optional[dict] = None,
     fcst_hourly_df: Optional[pd.DataFrame] = None,
 ) -> dict:
@@ -367,19 +368,31 @@ def build_snapshot_for_inference(
     Similar to build_single_snapshot but:
     - Doesn't require settlement (we're predicting it)
     - Returns dict suitable for model input
+    - Supports both legacy snapshot_hour and new cutoff_time for tod_v1
 
     Args:
         city: City identifier
         day: Target date
-        snapshot_hour: Local hour
         temps_sofar: Observed temperatures up to now
         timestamps_sofar: Corresponding timestamps
+        cutoff_time: Full datetime for snapshot (tod_v1 models) - PRIMARY
+        snapshot_hour: Legacy integer hour (baseline models) - DEPRECATED
         fcst_daily: T-1 forecast dict
         fcst_hourly_df: T-1 hourly forecast DataFrame
 
     Returns:
         Feature dictionary ready for model inference
     """
+    # Backward compatibility: support old snapshot_hour parameter
+    if cutoff_time is None and snapshot_hour is not None:
+        cutoff_time = datetime.combine(day, datetime.min.time()).replace(hour=snapshot_hour, minute=0)
+    elif cutoff_time is None:
+        raise ValueError("Must provide either cutoff_time or snapshot_hour")
+
+    # Extract snapshot_hour for backward compat (some features may still use it)
+    if snapshot_hour is None:
+        snapshot_hour = cutoff_time.hour
+
     if not temps_sofar:
         raise ValueError("No temperature observations provided")
 
@@ -389,9 +402,9 @@ def build_snapshot_for_inference(
 
     shape_fs = compute_shape_features(temps_sofar, timestamps_sofar, t_base)
     rules_fs = compute_rule_features(temps_sofar, settle_f=None)  # No settlement
-    calendar_fs = compute_calendar_features(day, snapshot_hour)
+    calendar_fs = compute_calendar_features(day, cutoff_time=cutoff_time)
 
-    expected_samples = estimate_expected_samples(snapshot_hour)
+    expected_samples = estimate_expected_samples(cutoff_time=cutoff_time)
     quality_fs = compute_quality_features(temps_sofar, timestamps_sofar, expected_samples)
 
     row = {

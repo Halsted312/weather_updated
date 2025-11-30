@@ -178,8 +178,13 @@ NUMERIC_FEATURE_COLS: list[str] = [
     "hours_until_fcst_max",   # fcst_hour_of_max - snapshot_hour
     "above_fcst_flag",        # 1 if vc_max > fcst_max
     "day_fraction",           # (snapshot_hour - 6) / 18
-    # Calendar features
-    "snapshot_hour", "snapshot_hour_sin", "snapshot_hour_cos",
+    # Calendar features (time-of-day)
+    "snapshot_hour", "snapshot_hour_sin", "snapshot_hour_cos",  # Legacy
+    # New time-of-day features (tod_v1)
+    "hour", "minute", "minutes_since_midnight",
+    "hour_sin", "hour_cos", "minute_sin", "minute_cos",
+    "time_of_day_sin", "time_of_day_cos",
+    # Day-level features
     "doy_sin", "doy_cos", "week_sin", "week_cos",
     "month", "is_weekend",
     # Lag features (small % nulls - median imputation OK)

@@ -23,7 +23,7 @@ Features computed:
 """
 
 import math
-from datetime import date
+from datetime import date, datetime
 from typing import Optional
 
 import pandas as pd
@@ -32,28 +32,45 @@ from models.features.base import FeatureSet, register_feature_group
 
 
 @register_feature_group("calendar")
-def compute_calendar_features(day: date, snapshot_hour: int) -> FeatureSet:
+def compute_calendar_features(
+    day: date,
+    cutoff_time: Optional[datetime] = None,
+    snapshot_hour: Optional[int] = None,
+) -> FeatureSet:
     """Compute calendar and time encoding features.
 
     These features capture temporal patterns in temperature settlements.
     Cyclical encoding (sin/cos) preserves the circular nature of time
     features, so hour 23 is recognized as close to hour 0.
 
+    Supports both legacy snapshot_hour (integer) and new cutoff_time (datetime)
+    for time-of-day aware models.
+
     Args:
         day: The target date for settlement
-        snapshot_hour: Local hour of the snapshot (0-23)
+        cutoff_time: Full datetime for snapshot (tod_v1 models)
+        snapshot_hour: Legacy integer hour (baseline models) - DEPRECATED
 
     Returns:
         FeatureSet with calendar and time features
 
     Example:
-        >>> from datetime import date
-        >>> fs = compute_calendar_features(date(2024, 7, 15), 14)
-        >>> fs['month']
-        7
-        >>> fs['is_weekend']
-        0
+        >>> from datetime import date, datetime
+        >>> # Legacy usage (backward compat)
+        >>> fs = compute_calendar_features(date(2024, 7, 15), snapshot_hour=14)
+        >>> # New usage (tod_v1)
+        >>> fs = compute_calendar_features(date(2024, 7, 15), cutoff_time=datetime(2024,7,15,14,30))
     """
+    # Backward compatibility: if only snapshot_hour provided, construct cutoff_time
+    if cutoff_time is None and snapshot_hour is not None:
+        cutoff_time = datetime.combine(day, datetime.min.time()).replace(hour=snapshot_hour, minute=0)
+    elif cutoff_time is None and snapshot_hour is None:
+        raise ValueError("Must provide either cutoff_time or snapshot_hour")
+
+    # Extract time components
+    hour = cutoff_time.hour
+    minute = cutoff_time.minute
+    minutes_since_midnight = hour * 60 + minute
     # Day of year (1-366)
     doy = day.timetuple().tm_yday
 
@@ -68,9 +85,18 @@ def compute_calendar_features(day: date, snapshot_hour: int) -> FeatureSet:
 
     # Cyclical encodings using sin/cos
     # This ensures that e.g., hour 23 is close to hour 0
-    snapshot_hour_sin = math.sin(2 * math.pi * snapshot_hour / 24.0)
-    snapshot_hour_cos = math.cos(2 * math.pi * snapshot_hour / 24.0)
+    snapshot_hour_sin = math.sin(2 * math.pi * hour / 24.0)
+    snapshot_hour_cos = math.cos(2 * math.pi * hour / 24.0)
 
+    # New time-of-day features (tod_v1)
+    hour_sin = math.sin(2 * math.pi * hour / 24.0)
+    hour_cos = math.cos(2 * math.pi * hour / 24.0)
+    minute_sin = math.sin(2 * math.pi * minute / 60.0)
+    minute_cos = math.cos(2 * math.pi * minute / 60.0)
+    time_of_day_sin = math.sin(2 * math.pi * minutes_since_midnight / (24.0 * 60.0))
+    time_of_day_cos = math.cos(2 * math.pi * minutes_since_midnight / (24.0 * 60.0))
+
+    # Day-level cyclical encodings
     doy_sin = math.sin(2 * math.pi * doy / 365.25)
     doy_cos = math.cos(2 * math.pi * doy / 365.25)
 
@@ -78,9 +104,23 @@ def compute_calendar_features(day: date, snapshot_hour: int) -> FeatureSet:
     week_cos = math.cos(2 * math.pi * week / 52.0)
 
     features = {
-        "snapshot_hour": snapshot_hour,
+        # Legacy features (backward compatibility)
+        "snapshot_hour": hour,  # Keep for baseline models
         "snapshot_hour_sin": snapshot_hour_sin,
         "snapshot_hour_cos": snapshot_hour_cos,
+
+        # New time-of-day features (tod_v1 models)
+        "hour": hour,
+        "minute": minute,
+        "minutes_since_midnight": minutes_since_midnight,
+        "hour_sin": hour_sin,
+        "hour_cos": hour_cos,
+        "minute_sin": minute_sin,
+        "minute_cos": minute_cos,
+        "time_of_day_sin": time_of_day_sin,
+        "time_of_day_cos": time_of_day_cos,
+
+        # Day-level features (unchanged)
         "doy_sin": doy_sin,
         "doy_cos": doy_cos,
         "week_sin": week_sin,

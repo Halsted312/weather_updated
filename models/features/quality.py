@@ -131,28 +131,43 @@ def compute_coverage_features(
 
 
 def estimate_expected_samples(
-    snapshot_hour: int,
+    cutoff_time: Optional['datetime'] = None,
+    snapshot_hour: Optional[int] = None,
     day_start_hour: int = 6,
     step_minutes: int = 5,
 ) -> int:
-    """Estimate how many samples we should have by snapshot_hour.
+    """Estimate how many samples we should have by cutoff time.
 
     Assumes data collection starts at day_start_hour and runs continuously
     at step_minutes intervals.
 
     Args:
-        snapshot_hour: Current hour (0-23)
+        cutoff_time: Full datetime for snapshot (tod_v1 models)
+        snapshot_hour: Legacy integer hour (baseline models) - DEPRECATED
         day_start_hour: When observation window starts
         step_minutes: Interval between samples
 
     Returns:
         Expected number of samples
     """
-    if snapshot_hour <= day_start_hour:
-        return 0
+    # Backward compatibility
+    if cutoff_time is None and snapshot_hour is not None:
+        # Legacy: use integer hour
+        if snapshot_hour <= day_start_hour:
+            return 0
+        hours_elapsed = snapshot_hour - day_start_hour
+        minutes_elapsed = hours_elapsed * 60
+    elif cutoff_time is not None:
+        # Tod_v1: use exact datetime
+        current_minute = cutoff_time.hour * 60 + cutoff_time.minute
+        day_start_minute = day_start_hour * 60
 
-    hours_elapsed = snapshot_hour - day_start_hour
-    minutes_elapsed = hours_elapsed * 60
+        if current_minute <= day_start_minute:
+            return 0
+
+        minutes_elapsed = current_minute - day_start_minute
+    else:
+        raise ValueError("Must provide either cutoff_time or snapshot_hour")
+
     expected = minutes_elapsed // step_minutes
-
     return expected
