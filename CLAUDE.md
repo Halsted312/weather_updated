@@ -1,6 +1,7 @@
 # CLAUDE.md – Kalshi Weather Trading System
 
-> **Location**: Project root  
+> **Location**: Project root
+> **Last Updated**: 2025-12-02
 
 ---
 
@@ -17,32 +18,37 @@ This repository is a **quantitative research and trading system** for **Kalshi w
 
 The system:
 
-1. **Ingests weather data**  
-   - Visual Crossing Timeline API (historical observations, current conditions, and forecasts – both historical via `forecastBasisDate` and live).  
+1. **Ingests weather data**
+   - Visual Crossing Timeline API (historical observations, current conditions, and forecasts – both historical via `forecastBasisDate` and live).
    - NOAA / NWS / IEM / NCEI data for daily TMAX and settlement.
 
-2. **Ingests Kalshi data**  
-   - Market metadata (events, brackets, strikes).  
+2. **Ingests Kalshi data**
+   - Market metadata (events, brackets, strikes).
    - 1-minute candles and live order book data over WebSockets.
 
-3. **Runs strategies and backtests**  
-   - `open_maker_base` – enter a bracket at open and hold.  
-   - `open_maker_next_over` – potentially exit up one bracket intraday based on forecast + intraday prices.  
-   - `open_maker_curve_gap` – more advanced curve / obs vs forecast logic (in progress).  
+3. **Runs strategies and backtests**
+   - `open_maker_base` – enter a bracket at open and hold.
+   - `open_maker_next_over` – potentially exit up one bracket intraday based on forecast + intraday prices.
+   - `open_maker_curve_gap` – more advanced curve / obs vs forecast logic (in progress).
    - Optuna tuning for systematic parameter search.
 
-4. **Executes live or manual trades**  
-   - Live trader listening to Kalshi lifecycle events.  
-   - Manual CLI to inspect forecasts and place discretionary trades.  
+4. **Trains ML models** (Δ-models)
+   - CatBoost and logistic regression models predicting temperature settlement deviations.
+   - Ordinal regression for probabilistic bracket predictions.
+   - Feature engineering from partial-day observations (shape, slope, forecast errors).
+
+5. **Executes live or manual trades**
+   - Live trader listening to Kalshi lifecycle events (`live_ws_trader.py`, `live_midnight_trader.py`).
+   - Manual CLI to inspect forecasts and place discretionary trades.
    - Always prefer **dry-run / paper trading** unless explicitly and consciously enabled.
 
 **Tech stack (high level)**
 
-- Python 3.11+, Poetry / pip
-- PostgreSQL
+- Python 3.11+, pip / pyproject.toml
+- PostgreSQL (TimescaleDB via Docker)
 - SQLAlchemy + Alembic
-- pytest
-- Optuna
+- pytest, black, ruff
+- CatBoost, scikit-learn, Optuna
 - WebSockets (Kalshi)
 
 Treat the **database** as the primary source of truth for research: Visual Crossing → `wx.*` tables, NOAA/NWS → `wx.settlement`, Kalshi → `kalshi.*`, simulations → `sim.*`.
@@ -73,14 +79,21 @@ Claude Code should operate in one of three roles. At the start of a session (or 
   - Market metadata, bracket structures, candles, order submission.  
   - Ensuring we respect Kalshi’s fee structure and contract semantics.
 
-- Strategy behavior  
-  - `open_maker_base`, `open_maker_next_over`, `open_maker_curve_gap`.  
-  - How forecasts feed into bracket selection and exits.  
-  - Simulation P&L accounting and Sharpe calculations.  
+- Strategy behavior
+  - `open_maker_base`, `open_maker_next_over`, `open_maker_curve_gap`.
+  - How forecasts feed into bracket selection and exits.
+  - Simulation P&L accounting and Sharpe calculations.
 
-- Research & tuning  
-  - Designing backtests that respect information timing.  
-  - Optuna studies that tune strategy parameters without leakage.  
+- ML models (Δ-models)
+  - CatBoost and logistic regression trainers in `models/training/`.
+  - Feature engineering in `models/features/` (partial-day, shape, forecast, calendar).
+  - Ordinal regression for probabilistic bracket predictions.
+  - Time-of-day (TOD) models for intraday decision-making.
+
+- Research & tuning
+  - Designing backtests that respect information timing.
+  - Optuna studies that tune strategy parameters without leakage.
+  - Train/test splits using `DayGroupedTimeSeriesSplit` to prevent lookahead.  
 
 - Live & manual trading  
   - Reading current state of forecast and markets.  
@@ -178,11 +191,12 @@ Examples:
 This project uses a `.claude/` directory to track medium-to-large tasks.
 
 > **CRITICAL**: Always use THIS PROJECT'S `.claude/plans/` folder for all plans.
-> - **USE**: `/home/halsted/Python/weather_updated/.claude/plans/`
+> - **USE**: `<project_root>/.claude/plans/`
 > - **DO NOT USE**: `~/.claude/plans/` (home directory)
 >
 > When Claude Code prompts you to create a plan, write it to the project's `.claude/plans/active/` folder.
 > Project plans must stay with the project for version control and context.
+> See `.claude/plans/PLANS.md` for current active/completed plans and the plan lifecycle.
 
 ### 3.1 Directory Layout
 
@@ -382,21 +396,72 @@ Whenever you update ingestion:
 
 These may evolve, but in general:
 
-| Purpose                | Path / Notes                                   |
-| ---------------------- | ---------------------------------------------- |
-| Project docs           | `docs/permanent/`                              |
-| Planning notes         | `docs/planning_next_steps.md` and siblings     |
-| File structure guide   | `docs/permanent/FILE_DICTIONARY_GUIDE.md`      |
-| Datetime/API reference | `docs/permanent/DATETIME_AND_API_REFERENCE.md` |
-| Database models        | `src/db/models.py`                             |
-| Visual Crossing client | `src/weather/visual_crossing.py`               |
-| Kalshi client          | `src/kalshi/`                                  |
-| Strategies             | `open_maker/`                                  |
-| Ingestion scripts      | `scripts/ingest_*`, `scripts/backfill_*`       |
-| Config (cities, VC)    | `src/config/`                                  |
-| Active plans           | `.claude/plans/active/`                        |
+| Purpose                  | Path / Notes                                       |
+| ------------------------ | -------------------------------------------------- |
+| Project docs             | `docs/permanent/`                                  |
+| Planning notes           | `docs/planning_next_steps.md` and siblings         |
+| File structure guide     | `docs/permanent/FILE_DICTIONARY_GUIDE.md`          |
+| Datetime/API reference   | `docs/permanent/DATETIME_AND_API_REFERENCE.md`     |
+| Ordinal model guide      | `docs/permanent/ORDINAL_CATBOOST_VALIDATION_GUIDE.md` |
+| Database models          | `src/db/models.py`                                 |
+| Visual Crossing client   | `src/weather/visual_crossing.py`                   |
+| Kalshi client            | `src/kalshi/`                                      |
+| Strategies               | `open_maker/`                                      |
+| **ML Framework**         | `models/` (see Section 5.1 below)                  |
+| **Analysis tools**       | `analysis/` (temperature rounding, research)       |
+| Ingestion scripts        | `scripts/ingest_*`, `scripts/backfill_*`           |
+| Training scripts         | `scripts/train_*.py`                               |
+| Live trading scripts     | `scripts/live_*.py`                                |
+| Config (cities, VC)      | `src/config/`                                      |
+| Tuned parameters         | `config/live_trader_config.py`                     |
+| Active plans             | `.claude/plans/active/`                            |
+| Saved models             | `models/saved/*.json`                              |
+| Legacy scripts           | `legacy/` (old VC ingestion, reference only)       |
 
 If in doubt about where something should live, check `FILE_DICTIONARY_GUIDE.md` first.
+
+### 5.1 ML Framework (`models/`)
+
+The `models/` package implements the Δ-model framework for predicting temperature settlement deviations:
+
+```text
+models/
+├── __init__.py           # Package doc, version
+├── data/                 # Dataset building
+│   ├── loader.py         # Load raw data from DB
+│   ├── splits.py         # DayGroupedTimeSeriesSplit for CV
+│   ├── snapshot_builder.py  # Build training snapshots
+│   └── tod_dataset_builder.py  # Time-of-day datasets
+├── features/             # Feature engineering (pure functions)
+│   ├── base.py           # FeatureSet, DELTA_CLASSES, compose_features
+│   ├── partial_day.py    # Stats from VC temps up to snapshot time
+│   ├── shape.py          # Plateau, spike, slope features
+│   ├── forecast.py       # T-1 forecast error features
+│   ├── calendar.py       # Day-of-week, month encoding
+│   ├── rules.py          # Rule-based meta-features
+│   └── quality.py        # Data quality indicators
+├── training/             # Model trainers
+│   ├── base_trainer.py   # BaseTrainer ABC
+│   ├── logistic_trainer.py   # Logistic regression Δ-model
+│   ├── catboost_trainer.py   # CatBoost with Optuna tuning
+│   └── ordinal_trainer.py    # Ordinal regression
+├── evaluation/           # Metrics and reports
+│   ├── metrics.py        # Accuracy, calibration, Brier
+│   ├── evaluator.py      # Cross-validation evaluator
+│   └── reports.py        # Generate markdown reports
+├── inference/            # Live prediction
+│   ├── predictor.py      # DeltaPredictor class
+│   ├── probability.py    # Convert Δ to bracket probs
+│   └── live_engine.py    # Real-time inference
+└── saved/                # Serialized models (JSON)
+```
+
+**Key concepts:**
+
+- **Δ (delta) classes**: Buckets for settlement deviation from forecast (-2, -1, 0, +1, +2).
+- **Features**: Computed identically for training (historical) and inference (live).
+- **Time-of-day (TOD)**: Models that predict settlement from partial-day observations.
+- **Ordinal regression**: Predicts probability distribution over Δ classes respecting order.
 
 ---
 
@@ -417,35 +482,218 @@ If in doubt about where something should live, check `FILE_DICTIONARY_GUIDE.md` 
 
 ## 7. Quick Reference Commands
 
+### Development Setup
+
 ```bash
-# Syntax-check a file
-python3 -m py_compile src/path/to/file.py
+# Install production dependencies
+make install
+# or: pip install -e .
 
+# Install dev dependencies (pytest, black, ruff, mypy)
+make dev
+# or: pip install -e ".[dev]"
+```
+
+### Database
+
+```bash
+# Start TimescaleDB container
+make db-up
+
+# Stop container
+make db-down
+
+# Reset database (destroy & recreate)
+make db-reset
+
+# Open psql shell
+make db-shell
+
+# Run Alembic migrations
+make migrate
+# or: alembic upgrade head
+
+# Create new migration
+alembic revision --autogenerate -m "describe-change"
+```
+
+### Testing & Code Quality
+
+```bash
 # Run all tests
-pytest
+make test
+# or: pytest tests/ -v
 
-# Run a specific test file
+# Run specific test file
 pytest tests/test_something.py -v
 
-# Generate Alembic migration (after updating models)
-alembic revision --autogenerate -m "describe-change"
+# Lint code
+make lint
+# or: ruff check src/ scripts/ tests/
 
-# Apply migrations
-alembic upgrade head
+# Format code
+make format
+# or: black src/ scripts/ tests/
 
-# (If present) regenerate file inventory
+# Syntax-check a file
+python3 -m py_compile src/path/to/file.py
+```
+
+### Ingestion
+
+```bash
+# Backfill Kalshi markets
+make ingest-markets
+
+# Backfill Kalshi candles
+make ingest-candles
+
+# Backfill VC observations
+python scripts/ingest_vc_obs_backfill.py --city Chicago --start 2024-01-01 --end 2024-06-01
+
+# Backfill VC historical forecasts
+python scripts/ingest_vc_historical_forecast_parallel.py --city Chicago
+
+# Ingest NWS settlements
+python scripts/ingest_settlement_multi.py --city Chicago
+```
+
+### Training ML Models
+
+```bash
+# Train all cities (hourly snapshots)
+python scripts/train_all_cities_hourly.py
+
+# Train ordinal models
+python scripts/train_all_cities_ordinal.py
+
+# Train TOD v1 models
+python scripts/train_tod_v1_all_cities.py
+
+# Test inference on all cities
+python scripts/test_inference_all_cities.py
+```
+
+### Backtesting
+
+```bash
+# Run backtest with base strategy
+python -m open_maker.core --strategy open_maker_base --all-cities --days 180
+
+# Run Optuna tuning
+python -m open_maker.optuna_tuner --strategy open_maker_base --trials 100
+```
+
+### Live Trading (use with caution)
+
+```bash
+# WebSocket-based live trader
+python scripts/live_ws_trader.py --dry-run
+
+# Midnight heuristic trader
+python scripts/live_midnight_trader.py --dry-run
+```
+
+### Utilities
+
+```bash
+# Check data freshness
+python scripts/check_data_freshness.py
+
+# Check data state
+python scripts/check_data_state.py
+
+# Regenerate file inventory
 python tools/file_inventory.py
 ```
 
 ---
 
-## 8. Keeping CLAUDE.md Up to Date
+## 8. Full Directory Structure
+
+```text
+weather_updated/
+├── .claude/                 # Agent plans and settings
+│   ├── plans/
+│   │   ├── active/          # In-progress plans
+│   │   ├── completed/       # Archived plans
+│   │   ├── templates/       # Plan templates
+│   │   └── PLANS.md         # Plan index and lifecycle
+│   └── agents/              # Persona notes (optional)
+├── analysis/                # Research/analysis tools (NOT production)
+│   └── temperature/         # Temperature rounding studies
+├── backtest/                # Midnight heuristic backtester
+│   ├── midnight_heuristic.py
+│   └── optuna_tuning.py
+├── config/                  # Tuned parameters (JSON/Python)
+│   └── live_trader_config.py
+├── docs/                    # Documentation
+│   └── permanent/           # Stable reference docs
+│       ├── FILE_DICTIONARY_GUIDE.md
+│       ├── DATETIME_AND_API_REFERENCE.md
+│       ├── ORDINAL_CATBOOST_VALIDATION_GUIDE.md
+│       ├── QUERYING_VISUAL_CROSSING.md
+│       └── how-tos/         # Step-by-step guides
+├── legacy/                  # Old scripts (reference only)
+├── migrations/              # Alembic migrations
+│   └── versions/
+├── models/                  # ML framework (see Section 5.1)
+│   ├── data/                # Dataset building
+│   ├── features/            # Feature engineering
+│   ├── training/            # Model trainers
+│   ├── evaluation/          # Metrics and reports
+│   ├── inference/           # Live prediction
+│   └── saved/               # Serialized models
+├── open_maker/              # Trading strategies
+│   ├── strategies/          # Strategy implementations
+│   ├── core.py              # Backtest engine
+│   ├── utils.py             # Bracket selection, fees
+│   ├── live_trader.py       # Live WS trader
+│   ├── manual_trade.py      # Manual CLI
+│   ├── optuna_tuner.py      # Parameter optimization
+│   └── reporting.py         # Results reporting
+├── reports/                 # Generated reports
+├── scripts/                 # Ingestion, training, live trading
+│   ├── ingest_*.py          # Data ingestion
+│   ├── backfill_*.py        # Historical backfill
+│   ├── train_*.py           # Model training
+│   ├── live_*.py            # Live trading
+│   └── check_*.py           # Data checks
+├── src/                     # Core infrastructure
+│   ├── config/              # Settings, cities, VC elements
+│   ├── db/                  # SQLAlchemy models, connection
+│   ├── ingest/              # Ingestion utilities
+│   ├── kalshi/              # Kalshi REST/WS client
+│   ├── trading/             # Fees, risk
+│   ├── utils/               # Rate limiting, retry
+│   └── weather/             # Weather API clients (VC, NWS, IEM)
+├── systemd/                 # Systemd service files
+├── tests/                   # pytest tests
+├── tools/                   # Developer utilities
+│   ├── file_inventory.py
+│   └── adhoc/               # One-off scripts
+├── CLAUDE.md                # This file
+├── README.md                # Project overview
+├── Makefile                 # Common commands
+├── pyproject.toml           # Package config
+├── alembic.ini              # Alembic config
+├── docker-compose.yml       # TimescaleDB setup
+└── requirements.txt         # Pip requirements
+```
+
+---
+
+## 9. Keeping CLAUDE.md Up to Date
 
 If you notice that this file is inaccurate or missing important context:
 
 1. Note the issue and proposed change in the **Sign-off Log** of your current plan.
 2. Draft the updated section of CLAUDE.md as part of that plan.
-3. Once there is agreement (or you’re confident it’s correct and aligned with reality), update this file and mention the change in the plan’s final sign-off.
+3. Once there is agreement (or you're confident it's correct and aligned with reality), update this file and mention the change in the plan's final sign-off.
 
 **This file should always reflect how Claude Code is *actually* supposed to work in this repo, not wishful thinking.**
+
+---
+
+*Last updated: 2025-12-02*
 
