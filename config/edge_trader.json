@@ -1,0 +1,31 @@
+{
+  "_comment": "Edge-based live trading configuration for Kalshi weather markets",
+  "_description": "Conservative default config for Chicago deployment",
+
+  "aggressiveness": 0.3,
+
+  "max_bet_per_trade_usd": 20.0,
+  "max_daily_loss_usd": 200.0,
+  "max_positions_per_city": 4,
+  "max_total_positions": 20,
+
+  "edge_confidence_threshold_base": 0.5,
+  "edge_threshold_degf": 1.5,
+
+  "maker_timeout_base_seconds": 120,
+  "volume_timeout_multiplier": 1.5,
+  "volume_lookback_minutes": 30,
+
+  "bankroll_usd": 10000.0,
+  "kelly_fraction_base": 0.25,
+
+  "enabled_cities": ["chicago"],
+
+  "maker_fee_pct": 0.0,
+  "taker_fee_pct": 0.07,
+
+  "min_ev_per_contract_cents": 3.0,
+  "min_bracket_prob": 0.35,
+
+  "inference_cooldown_sec": 30
+}

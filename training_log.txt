@@ -1,0 +1,46 @@
+2025-12-01 00:46:47,973 - __main__ - INFO - ================================================================================
+2025-12-01 00:46:47,973 - __main__ - INFO - TRAINING MARKET-CLOCK TOD V1 GLOBAL MODEL
+2025-12-01 00:46:47,973 - __main__ - INFO - ================================================================================
+2025-12-01 00:46:47,973 - __main__ - INFO - Input: data/market_clock_chicago.parquet
+2025-12-01 00:46:47,973 - __main__ - INFO - Test days: 30
+2025-12-01 00:46:47,973 - __main__ - INFO - Optuna: True (trials=150)
+2025-12-01 00:46:47,973 - __main__ - INFO - Output: models/saved/market_clock_tod_v1
+2025-12-01 00:46:47,973 - __main__ - INFO - ================================================================================
+2025-12-01 00:46:48,009 - __main__ - INFO - Loaded 314798 rows, 112 columns
+2025-12-01 00:46:48,078 - __main__ - INFO - 
+Train: 301268 rows (668 days)
+2025-12-01 00:46:48,078 - __main__ - INFO - Test: 13530 rows (30 days)
+2025-12-01 00:46:48,078 - __main__ - INFO - 
+City breakdown (train):
+2025-12-01 00:46:48,108 - __main__ - INFO -   chicago: 301,268 rows
+2025-12-01 00:46:48,108 - __main__ - INFO - Training market-clock ordinal model on 301268 samples
+2025-12-01 00:46:48,108 - __main__ - INFO - Using 88 features
+2025-12-01 00:46:48,192 - __main__ - INFO - Delta range in training data: [-2, 10]
+2025-12-01 00:46:48,192 - __main__ - INFO - Training 12 threshold classifiers
+2025-12-01 00:46:48,192 - __main__ - INFO - Starting Optuna tuning with 150 trials
+2025-12-01 01:00:43,455 - __main__ - INFO - Best params: {'bootstrap_type': 'Bernoulli', 'depth': 4, 'iterations': 1083, 'learning_rate': 0.08385649236701538, 'border_count': 122, 'l2_leaf_reg': 7.478754962656867, 'min_data_in_leaf': 35, 'random_strength': 0.26843269093916144, 'colsample_bylevel': 0.964702759047404, 'subsample': 0.848825452747522}
+2025-12-01 01:00:43,455 - __main__ - INFO - Best AUC: 0.9531
+2025-12-01 01:00:58,704 - __main__ - INFO - Trained 12 classifiers
+2025-12-01 01:00:58,705 - __main__ - INFO - 
+================================================================================
+2025-12-01 01:00:58,705 - __main__ - INFO - EVALUATION
+2025-12-01 01:00:58,705 - __main__ - INFO - ================================================================================
+2025-12-01 01:00:58,785 - __main__ - INFO - 
+Test Metrics:
+2025-12-01 01:00:58,785 - __main__ - INFO -   Accuracy: 30.4%
+2025-12-01 01:00:58,785 - __main__ - INFO -   MAE: 1.427
+2025-12-01 01:00:58,785 - __main__ - INFO -   Within-1: 59.6%
+2025-12-01 01:00:58,785 - __main__ - INFO -   Within-2: 78.4%
+2025-12-01 01:00:58,785 - __main__ - INFO -   Ordinal Loss: 8.8953
+2025-12-01 01:00:58,785 - __main__ - INFO - 
+================================================================================
+2025-12-01 01:00:58,785 - __main__ - INFO - SAVING MODEL
+2025-12-01 01:00:58,785 - __main__ - INFO - ================================================================================
+2025-12-01 01:00:58,853 - __main__ - INFO - Model saved to models/saved/market_clock_tod_v1/ordinal_catboost_market_clock_tod_v1.pkl
+2025-12-01 01:00:58,859 - __main__ - INFO - Saved metadata to models/saved/market_clock_tod_v1/training_metadata.json
+2025-12-01 01:00:58,859 - __main__ - INFO - Saved feature columns to models/saved/market_clock_tod_v1/feature_columns.txt
+2025-12-01 01:00:59,128 - __main__ - INFO - Saved train/test data to models/saved/market_clock_tod_v1
+2025-12-01 01:00:59,128 - __main__ - INFO - 
+================================================================================
+2025-12-01 01:00:59,128 - __main__ - INFO - TRAINING COMPLETE!
+2025-12-01 01:00:59,128 - __main__ - INFO - ================================================================================

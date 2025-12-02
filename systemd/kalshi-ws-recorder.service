@@ -1,0 +1,26 @@
+[Unit]
+Description=Kalshi WebSocket Recorder Daemon
+After=network-online.target postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=halsted
+Group=halsted
+WorkingDirectory=/home/halsted/Python/weather_updated
+Environment="PYTHONPATH=/home/halsted/Python/weather_updated"
+ExecStart=/home/halsted/Python/weather_updated/.venv/bin/python scripts/kalshi_ws_recorder.py
+Restart=always
+RestartSec=10
+
+# Graceful shutdown
+TimeoutStopSec=30
+KillSignal=SIGTERM
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=kalshi-ws-recorder
+
+[Install]
+WantedBy=multi-user.target

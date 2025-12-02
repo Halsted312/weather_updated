@@ -1,0 +1,26 @@
+[Unit]
+Description=Kalshi Candlestick Polling Daemon
+After=network-online.target postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=halsted
+Group=halsted
+WorkingDirectory=/home/halsted/Python/weather_updated
+Environment="PYTHONPATH=/home/halsted/Python/weather_updated"
+ExecStart=/home/halsted/Python/weather_updated/.venv/bin/python scripts/poll_kalshi_candles.py --interval 60 --lookback 10
+Restart=always
+RestartSec=10
+
+# Graceful shutdown
+TimeoutStopSec=30
+KillSignal=SIGTERM
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=kalshi-candle-poller
+
+[Install]
+WantedBy=multi-user.target
