@@ -11,6 +11,7 @@ Requires:
 import argparse
 import logging
 import sys
+from pathlib import Path
 
 # Add project root to path
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -44,7 +45,7 @@ def main():
         "--optuna-metric",
         type=str,
         default="filtered_precision",
-        choices=["auc", "filtered_precision", "f1"],
+        choices=["auc", "filtered_precision", "f1", "mean_pnl", "sharpe"],
         help="Optuna objective metric",
     )
     parser.add_argument(
@@ -52,6 +53,12 @@ def main():
         type=int,
         default=10,
         help="Minimum trades when optimizing precision/F1",
+    )
+    parser.add_argument(
+        "--cv-splits",
+        type=int,
+        default=5,
+        help="Number of CV splits for DayGroupedTimeSeriesSplit (default: 5)",
     )
     parser.add_argument(
         "--no-threshold-tuning",
@@ -87,6 +94,8 @@ def main():
         args.optuna_metric,
         "--min-trades-for-metric",
         str(args.min_trades_for_metric),
+        "--cv-splits",
+        str(args.cv_splits),
     ]
     if args.regenerate:
         cli_args.append("--regenerate")

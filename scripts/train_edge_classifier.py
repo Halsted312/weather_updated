@@ -622,7 +622,7 @@ def main():
         "--optuna-metric",
         type=str,
         default="filtered_precision",
-        choices=["auc", "filtered_precision", "f1"],
+        choices=["auc", "filtered_precision", "f1", "mean_pnl", "sharpe"],
         help="Optuna objective metric (default: filtered_precision)",
     )
     parser.add_argument(
@@ -630,6 +630,12 @@ def main():
         type=int,
         default=10,
         help="Minimum trades when optimizing precision/F1",
+    )
+    parser.add_argument(
+        "--cv-splits",
+        type=int,
+        default=5,
+        help="Number of CV splits for DayGroupedTimeSeriesSplit (default: 5)",
     )
     parser.add_argument(
         "--no-threshold-tuning",
@@ -733,8 +739,9 @@ def main():
     metrics = classifier.train(
         df_signals,
         target_col="pnl",
-        shuffle=True,
+        shuffle=False,  # CRITICAL: Must be False to prevent leakage!
         tune_threshold=not args.no_threshold_tuning,
+        cv_splits=args.cv_splits,
     )
 
     # Print results
@@ -761,7 +768,7 @@ def main():
 
     # Save model
     save_path = Path(f"models/saved/{args.city}/edge_classifier")
-    classifier.save(save_path)
+    classifier.save(save_path, city=args.city)
     print(f"Model saved to: {save_path}")
 
     return 0
