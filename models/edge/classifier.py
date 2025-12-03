@@ -38,6 +38,30 @@ from models.data.splits import DayGroupedTimeSeriesSplit
 logger = logging.getLogger(__name__)
 
 
+# Helper class for CalibratedClassifierCV with day-grouped splits
+# Must be at module level to be picklable
+class DayAwareCV:
+    """Custom CV that uses DayGroupedTimeSeriesSplit.
+
+    Wraps DayGroupedTimeSeriesSplit for use with CalibratedClassifierCV.
+    Must be at module level (not nested in a method) to be picklable.
+    """
+
+    def __init__(self, df_reference: pd.DataFrame, n_splits: int = 3):
+        """Initialize with reference DataFrame containing 'day' column."""
+        self.cv = DayGroupedTimeSeriesSplit(n_splits=n_splits)
+        self.df_reference = df_reference
+
+    def split(self, X, y=None, groups=None):
+        """Generate train/val splits using day grouping."""
+        for train_idx, val_idx in self.cv.split(self.df_reference):
+            yield train_idx, val_idx
+
+    def get_n_splits(self, X=None, y=None, groups=None):
+        """Return number of splits."""
+        return self.cv.n_splits
+
+
 class EdgeClassifier:
     """Binary classifier for edge quality prediction.
 
@@ -176,7 +200,8 @@ class EdgeClassifier:
             # --- NEW: Decision threshold for trading metrics ---
             trial_threshold = None
             if self.optimize_metric in {"filtered_precision", "f1", "mean_pnl", "sharpe"}:
-                trial_threshold = trial.suggest_float("decision_threshold", 0.5, 0.99)
+                # Constrain to reasonable range to prevent extreme thresholds
+                trial_threshold = trial.suggest_float("decision_threshold", 0.55, 0.85)
 
             # --- Build model + calibrator ---
             base_model = CatBoostClassifier(**params)
@@ -195,33 +220,17 @@ class EdgeClassifier:
                 )
 
             # Fit on training data
-            # Note: CalibratedClassifierCV.fit() expects (X, y) arrays but cv.split() expects DataFrame
-            # We'll handle this by fitting with arrays and using a custom CV that ignores groups
             if calibration_method == "none":
                 model.fit(X_train, y_train)
             else:
-                # For calibration, we need to pass the full training data with day column
-                # Create a simple wrapper CV that uses DayGroupedTimeSeriesSplit
-                class DayAwareCV:
-                    def __init__(self, n_splits=3):
-                        self.cv = DayGroupedTimeSeriesSplit(n_splits=n_splits)
-
-                    def split(self, X, y=None, groups=None):
-                        # X is the numeric features, but we need the day column
-                        # Reconstruct the day column from df_train using indices
-                        for train_idx, val_idx in self.cv.split(df_train):
-                            yield train_idx, val_idx
-
-                    def get_n_splits(self, X=None, y=None, groups=None):
-                        return 3
-
-                model_cal = CalibratedClassifierCV(
+                # Use module-level DayAwareCV (picklable!)
+                cv = DayAwareCV(df_reference=df_train, n_splits=3)
+                model = CalibratedClassifierCV(
                     estimator=base_model,
                     method=calibration_method,
-                    cv=DayAwareCV(n_splits=3),
+                    cv=cv,
                 )
-                model_cal.fit(X_train, y_train)
-                model = model_cal
+                model.fit(X_train, y_train)
 
             # Predict probabilities on validation set
             y_pred_proba = model.predict_proba(X_val)[:, 1]
@@ -239,6 +248,10 @@ class EdgeClassifier:
                 if trades < self.min_trades_for_metric:
                     return -1e6
                 precision = float(y_val[mask].mean()) if trades > 0 else 0.0
+                # Penalize if too few trades even if precision is good
+                # Encourage more trades by penalizing extreme selectivity
+                if trades < 50:
+                    precision *= (trades / 50.0)  # Soft penalty
                 return precision
 
             if metric == "f1":
@@ -497,23 +510,12 @@ class EdgeClassifier:
         if calib_method == "none":
             self.model = base_model
         else:
-            # Use DayGroupedTimeSeriesSplit for calibration CV
-            class DayAwareCV:
-                def __init__(self, n_splits=3):
-                    self.cv = DayGroupedTimeSeriesSplit(n_splits=n_splits)
-
-                def split(self, X, y=None, groups=None):
-                    # Use df_trainval for day grouping
-                    for train_idx, val_idx in self.cv.split(df_trainval):
-                        yield train_idx, val_idx
-
-                def get_n_splits(self, X=None, y=None, groups=None):
-                    return 3
-
+            # Use module-level DayAwareCV (picklable!)
+            cv = DayAwareCV(df_reference=df_trainval, n_splits=3)
             self.model = CalibratedClassifierCV(
                 estimator=base_model,
                 method=calib_method,
-                cv=DayAwareCV(n_splits=3),
+                cv=cv,
             )
 
         # Fit final model on train+val (still only pre-test data)

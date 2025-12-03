@@ -49,17 +49,18 @@ class MarketImpliedResult:
 
 
 def compute_forecast_implied_temp(
-    delta_probs: Dict[int, float],
+    delta_probs,  # Can be Dict[int, float] or np.ndarray
     base_temp: float,
     delta_classes: Optional[list] = None,
 ) -> ForecastImpliedResult:
     """Compute forecast-implied temperature from ordinal model delta probabilities.
 
     Args:
-        delta_probs: Dict mapping delta class → probability
-                     e.g. {-2: 0.01, -1: 0.05, 0: 0.80, 1: 0.12, 2: 0.02}
+        delta_probs: Either:
+                     - Dict mapping delta class → probability (e.g., {-2: 0.01, 0: 0.80, ...})
+                     - np.ndarray of probabilities aligned with DELTA_CLASSES
         base_temp: Base temperature (typically round(max_temp_observed_so_far))
-        delta_classes: List of all possible delta classes (default: [-10, ..., 10])
+        delta_classes: List of all possible delta classes (default: DELTA_CLASSES from base.py)
 
     Returns:
         ForecastImpliedResult with:
@@ -72,13 +73,28 @@ def compute_forecast_implied_temp(
         >>> delta_probs = {-1: 0.1, 0: 0.7, 1: 0.2}
         >>> result = compute_forecast_implied_temp(delta_probs, base_temp=85.0)
         >>> result.implied_temp  # 85.1°F
-        >>> result.uncertainty   # 0.5°F
     """
     if delta_classes is None:
-        delta_classes = list(range(-10, 11))  # [-10, -9, ..., 9, 10]
+        # Use global DELTA_CLASSES from models.features.base
+        from models.features.base import DELTA_CLASSES
+        delta_classes = DELTA_CLASSES
+
+    # Handle both dict and numpy array inputs
+    if isinstance(delta_probs, dict):
+        # Dict format: {delta: prob}
+        probs_array = np.array([delta_probs.get(d, 0.0) for d in delta_classes])
+    elif isinstance(delta_probs, np.ndarray):
+        # Array format: probabilities aligned with delta_classes
+        if len(delta_probs) != len(delta_classes):
+            raise ValueError(
+                f"delta_probs array length ({len(delta_probs)}) must match "
+                f"delta_classes length ({len(delta_classes)})"
+            )
+        probs_array = delta_probs
+    else:
+        raise TypeError(f"delta_probs must be dict or ndarray, got {type(delta_probs)}")
 
     # Ensure probabilities sum to 1 (handle rounding errors)
-    probs_array = np.array([delta_probs.get(d, 0.0) for d in delta_classes])
     probs_array = probs_array / probs_array.sum()  # Normalize
 
     # Compute expected value: E[delta] = sum(delta * P(delta))

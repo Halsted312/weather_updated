@@ -368,11 +368,25 @@ def get_candles_from_cache(
     """Get bracket candles for a specific day/time from pre-loaded cache."""
     bracket_candles = {}
 
-    # Ensure snapshot_time is comparable (make timezone-naive for comparison)
-    if hasattr(snapshot_time, 'tzinfo') and snapshot_time.tzinfo is not None:
-        snapshot_ts = pd.Timestamp(snapshot_time).tz_convert(None)
-    else:
-        snapshot_ts = pd.Timestamp(snapshot_time)
+    # CRITICAL: snapshot_time is in LOCAL time (naive), candles are in UTC
+    # Need to convert snapshot to UTC for comparison
+    snapshot_ts = pd.Timestamp(snapshot_time)
+
+    # If snapshot is naive, assume it's in local time and convert to UTC
+    if snapshot_ts.tz is None:
+        try:
+            # Localize to city timezone (handle DST transitions)
+            # ambiguous='infer': For fall-back, infer from context
+            # nonexistent='shift_forward': For spring-forward, shift to next valid time
+            snapshot_ts = snapshot_ts.tz_localize("America/Chicago", ambiguous='infer', nonexistent='shift_forward')
+            # Convert to UTC for comparison with candles
+            snapshot_ts = snapshot_ts.tz_convert("UTC")
+        except Exception:
+            # DST transition edge case - return empty (happens ~6 days/year)
+            return {}
+
+    # Make naive for comparison (both are now in UTC)
+    snapshot_ts = snapshot_ts.tz_convert(None) if snapshot_ts.tz else snapshot_ts
 
     # Find all entries for this day
     for (d, label), df in candle_cache.items():
