@@ -413,10 +413,14 @@ class OrdinalDeltaTrainer(BaseTrainer):
         global_proba = np.zeros((n_samples, len(DELTA_CLASSES)))
 
         for i, delta_val in enumerate(self._delta_classes):
-            global_idx = DELTA_CLASSES.index(delta_val)
-            global_proba[:, global_idx] = local_proba[:, i]
+            # Only map if delta exists in global DELTA_CLASSES
+            if delta_val in DELTA_CLASSES:
+                global_idx = DELTA_CLASSES.index(delta_val)
+                global_proba[:, global_idx] = local_proba[:, i]
+            # Else: probability for this delta stays 0 (outside expected range)
 
-        # For missing classes (e.g., delta=-2 in LA/Miami), probability stays 0
+        # For missing classes (e.g., delta=-2 in LA/Miami or delta=-10 in wider models),
+        # probability stays 0
         return global_proba
 
     def _compute_local_proba(self, X: pd.DataFrame) -> np.ndarray:

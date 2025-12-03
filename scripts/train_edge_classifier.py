@@ -256,41 +256,58 @@ def load_all_candles_batch(city: str, dates: list) -> dict:
     prefix = config["ticker_prefix"]
     old_prefix = prefix.replace("KXHIGH", "HIGH")  # Remove "KX" for old format
 
-    # Build ticker patterns for all dates (BOTH old and new formats)
-    ticker_patterns = []
+    # Build date suffix mapping
     date_to_suffix = {}
     for d in dates:
         suffix = d.strftime("%y%b%d").upper()
         date_to_suffix[suffix] = d
-        # Add both new format (KXHIGHAUS-) and old format (HIGHAUS-)
-        ticker_patterns.append(f"{prefix}-{suffix}%")
-        ticker_patterns.append(f"{old_prefix}-{suffix}%")
 
     logger.info(f"Loading candles for {len(dates)} days (checking both old and new ticker formats)...")
 
+    # CRITICAL FIX: Batch queries to avoid PostgreSQL query size limits
+    # With 1062 days × 2 formats = 2124 patterns = 42KB query (too large!)
+    # Process in chunks of 200 days = 400 patterns per query
+    BATCH_SIZE = 200
+    all_rows = []
+
     with get_db_session() as session:
-        # Use ANY for multiple LIKE patterns (PostgreSQL)
-        patterns_sql = ",".join([f"'{p}'" for p in ticker_patterns])
-        query = text(f"""
-            SELECT
-                ticker,
-                bucket_start,
-                yes_bid_close,
-                yes_ask_close,
-                volume,
-                open_interest
-            FROM kalshi.candles_1m_dense
-            WHERE ticker LIKE ANY (ARRAY[{patterns_sql}])
-            ORDER BY ticker, bucket_start
-        """)
+        for batch_start in range(0, len(dates), BATCH_SIZE):
+            batch_dates = dates[batch_start:batch_start + BATCH_SIZE]
+            ticker_patterns = []
 
-        result = session.execute(query)
-        rows = result.fetchall()
+            for d in batch_dates:
+                suffix = d.strftime("%y%b%d").upper()
+                # Add both formats
+                ticker_patterns.append(f"{prefix}-{suffix}%")
+                ticker_patterns.append(f"{old_prefix}-{suffix}%")
 
-    if not rows:
+            patterns_sql = ",".join([f"'{p}'" for p in ticker_patterns])
+            query = text(f"""
+                SELECT
+                    ticker,
+                    bucket_start,
+                    yes_bid_close,
+                    yes_ask_close,
+                    volume,
+                    open_interest
+                FROM kalshi.candles_1m_dense
+                WHERE ticker LIKE ANY (ARRAY[{patterns_sql}])
+                ORDER BY ticker, bucket_start
+            """)
+
+            result = session.execute(query)
+            batch_rows = result.fetchall()
+            all_rows.extend(batch_rows)
+
+            if batch_rows:
+                logger.info(f"  Batch {batch_start//BATCH_SIZE + 1}: Loaded {len(batch_rows):,} candles")
+
+    if not all_rows:
+        logger.error("No candles loaded from database!")
         return {}
 
-    logger.info(f"Loaded {len(rows):,} candle rows")
+    logger.info(f"Total loaded: {len(all_rows):,} candle rows")
+    rows = all_rows
 
     df = pd.DataFrame(
         rows,
@@ -427,6 +444,8 @@ def _process_single_day(
         # Get market-implied temp from cache (NO DB QUERY!)
         bracket_candles = get_candles_from_cache(candle_cache, day, snapshot_time)
         if not bracket_candles:
+            # DEBUG: This is likely where it's failing
+            # logger.warning(f"No bracket candles for {day} at {snapshot_time}")
             continue
 
         market_result = compute_market_implied_temp(
@@ -434,6 +453,8 @@ def _process_single_day(
             snapshot_time=snapshot_time,
         )
         if not market_result.valid:
+            # DEBUG: Market implied temp calculation failed
+            # logger.warning(f"Invalid market result for {day} at {snapshot_time}")
             continue
 
         # Detect edge
@@ -534,6 +555,15 @@ def generate_edge_data(
     # Batch load ALL candles (1 query - the big optimization!)
     logger.info("Batch loading ALL candles (this may take a moment)...")
     candle_cache = load_all_candles_batch(city, days_with_settlement)
+    logger.info(f"Candle cache built: {len(candle_cache)} (day, bracket) entries")
+
+    if not candle_cache:
+        logger.error("Candle cache is EMPTY! No candles loaded.")
+        return pd.DataFrame()
+
+    # Show sample cache keys
+    sample_keys = list(candle_cache.keys())[:5]
+    logger.info(f"Sample cache keys: {sample_keys}")
 
     # Prepare day data
     day_data = []
