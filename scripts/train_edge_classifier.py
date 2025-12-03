@@ -112,14 +112,21 @@ def load_bracket_candles_for_event(
     event_date: date,
     snapshot_time,
 ) -> dict[str, pd.DataFrame]:
-    """Load bracket candles for all brackets of an event up to snapshot time."""
+    """Load bracket candles for all brackets of an event up to snapshot time.
+
+    Handles both old format (HIGHAUS-) and new format (KXHIGHAUS-) tickers.
+    """
     config = CITY_CONFIG.get(city)
     if not config:
         return {}
 
     prefix = config["ticker_prefix"]
     event_suffix = event_date.strftime("%y%b%d").upper()
-    ticker_pattern = f"{prefix}-{event_suffix}%"
+
+    # Query for BOTH old and new ticker formats
+    # Old: HIGHAUS-23AUG01-...
+    # New: KXHIGHAUS-24DEC01-...
+    old_prefix = prefix.replace("KXHIGH", "HIGH")  # Remove "KX"
 
     query = text("""
         SELECT
@@ -130,7 +137,7 @@ def load_bracket_candles_for_event(
             volume,
             open_interest
         FROM kalshi.candles_1m_dense
-        WHERE ticker LIKE :ticker_pattern
+        WHERE (ticker LIKE :new_pattern OR ticker LIKE :old_pattern)
           AND bucket_start <= :snapshot_time
         ORDER BY ticker, bucket_start
     """)
@@ -138,7 +145,8 @@ def load_bracket_candles_for_event(
     result = session.execute(
         query,
         {
-            "ticker_pattern": ticker_pattern,
+            "new_pattern": f"{prefix}-{event_suffix}%",
+            "old_pattern": f"{old_prefix}-{event_suffix}%",
             "snapshot_time": snapshot_time,
         },
     )
@@ -180,8 +188,8 @@ def load_bracket_candles_for_event(
             elif bracket_part.startswith("B"):
                 strike = bracket_part[1:]
                 try:
-                    strike_val = int(strike)
-                    label = f"{strike_val}-{strike_val + 1}"
+                    strike_val = float(strike)  # Handle decimal strikes (e.g., 86.5)
+                    label = f"{strike_val:g}-{strike_val + 1:g}"  # Format: "86.5-87.5" or "86-87"
                 except ValueError:
                     label = bracket_part
             else:
@@ -246,16 +254,19 @@ def load_all_candles_batch(city: str, dates: list) -> dict:
         return {}
 
     prefix = config["ticker_prefix"]
+    old_prefix = prefix.replace("KXHIGH", "HIGH")  # Remove "KX" for old format
 
-    # Build ticker patterns for all dates
+    # Build ticker patterns for all dates (BOTH old and new formats)
     ticker_patterns = []
     date_to_suffix = {}
     for d in dates:
         suffix = d.strftime("%y%b%d").upper()
         date_to_suffix[suffix] = d
+        # Add both new format (KXHIGHAUS-) and old format (HIGHAUS-)
         ticker_patterns.append(f"{prefix}-{suffix}%")
+        ticker_patterns.append(f"{old_prefix}-{suffix}%")
 
-    logger.info(f"Loading candles for {len(dates)} days...")
+    logger.info(f"Loading candles for {len(dates)} days (checking both old and new ticker formats)...")
 
     with get_db_session() as session:
         # Use ANY for multiple LIKE patterns (PostgreSQL)
@@ -321,8 +332,8 @@ def load_all_candles_batch(city: str, dates: list) -> dict:
             elif bracket_part.startswith("B"):
                 strike = bracket_part[1:]
                 try:
-                    strike_val = int(strike)
-                    label = f"{strike_val}-{strike_val + 1}"
+                    strike_val = float(strike)  # Handle decimal strikes (e.g., 86.5)
+                    label = f"{strike_val:g}-{strike_val + 1:g}"  # Format: "86.5-87.5" or "86-87"
                 except ValueError:
                     label = bracket_part
             else:
