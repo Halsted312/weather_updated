@@ -363,26 +363,44 @@ def load_all_candles_batch(city: str, dates: list) -> dict:
 
 
 def get_candles_from_cache(
-    candle_cache: dict, day: date, snapshot_time
+    candle_cache: dict, day: date, snapshot_time, city: str
 ) -> dict[str, pd.DataFrame]:
-    """Get bracket candles for a specific day/time from pre-loaded cache."""
+    """Get bracket candles for a specific day/time from pre-loaded cache.
+
+    Args:
+        candle_cache: Pre-loaded cache of (day, bracket) -> DataFrame
+        day: Event date
+        snapshot_time: Snapshot timestamp (naive local time)
+        city: City name (for timezone lookup)
+
+    Returns:
+        Dict of bracket_label -> DataFrame of candles up to snapshot_time
+    """
     bracket_candles = {}
 
     # CRITICAL: snapshot_time is in LOCAL time (naive), candles are in UTC
     # Need to convert snapshot to UTC for comparison
     snapshot_ts = pd.Timestamp(snapshot_time)
 
-    # If snapshot is naive, assume it's in local time and convert to UTC
+    # Get city-specific timezone from CITY_CONFIG
+    city_tz = CITY_CONFIG.get(city, {}).get("tz", "America/Chicago")
+
+    # If snapshot is naive, localize to city timezone and convert to UTC
     if snapshot_ts.tz is None:
         try:
             # Localize to city timezone (handle DST transitions)
-            # ambiguous='infer': For fall-back, infer from context
+            # ambiguous='NaT': Skip ambiguous times during fall-back (~2-4 hours/year)
             # nonexistent='shift_forward': For spring-forward, shift to next valid time
-            snapshot_ts = snapshot_ts.tz_localize("America/Chicago", ambiguous='infer', nonexistent='shift_forward')
+            snapshot_ts = snapshot_ts.tz_localize(city_tz, ambiguous='NaT', nonexistent='shift_forward')
+
+            # Check if resulted in NaT (ambiguous time)
+            if pd.isna(snapshot_ts):
+                return {}
+
             # Convert to UTC for comparison with candles
             snapshot_ts = snapshot_ts.tz_convert("UTC")
         except Exception:
-            # DST transition edge case - return empty (happens ~6 days/year)
+            # DST transition edge case - return empty
             return {}
 
     # Make naive for comparison (both are now in UTC)
@@ -411,6 +429,7 @@ def _process_single_day(
     settlement: float,
     edge_threshold: float,
     sample_rate: int,
+    city: str,
 ) -> list:
     """Process a single day's edge data - runs in thread with shared memory.
 
@@ -456,7 +475,7 @@ def _process_single_day(
             continue
 
         # Get market-implied temp from cache (NO DB QUERY!)
-        bracket_candles = get_candles_from_cache(candle_cache, day, snapshot_time)
+        bracket_candles = get_candles_from_cache(candle_cache, day, snapshot_time, city)
         if not bracket_candles:
             # DEBUG: This is likely where it's failing
             # logger.warning(f"No bracket candles for {day} at {snapshot_time}")
@@ -606,6 +625,7 @@ def generate_edge_data(
                 settlement,
                 edge_threshold,
                 sample_rate,
+                city,  # Pass city for timezone lookup
             ): day
             for day, day_df, settlement in day_data
         }

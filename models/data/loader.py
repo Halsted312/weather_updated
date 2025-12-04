@@ -318,6 +318,119 @@ def load_historical_forecast_hourly(
     return df
 
 
+def load_historical_forecast_daily_multi(
+    session: Session,
+    city_id: str,
+    target_date: date,
+    max_lead_days: int = 6,
+) -> pd.DataFrame:
+    """Load multi-lead daily forecasts for a specific target date.
+
+    Returns forecasts from multiple lead times (T-0, T-1, T-2, ..., T-6)
+    for the same target date. Used for computing forecast drift features.
+
+    Args:
+        session: Database session
+        city_id: City identifier
+        target_date: The day we're predicting
+        max_lead_days: Maximum lead days to include (default 6)
+
+    Returns:
+        DataFrame with columns: lead_days, tempmax_f, tempmin_f, humidity, cloudcover
+        One row per lead_day that exists in the database.
+    """
+    # Forecasts are on city locations
+    vc_location_id = get_vc_location_id(session, city_id, "city")
+
+    if vc_location_id is None:
+        return pd.DataFrame()
+
+    query = text("""
+        SELECT
+            lead_days,
+            tempmax_f,
+            tempmin_f,
+            humidity,
+            cloudcover
+        FROM wx.vc_forecast_daily
+        WHERE vc_location_id = :vc_location_id
+          AND data_type = 'historical_forecast'
+          AND target_date = :target_date
+          AND lead_days <= :max_lead
+        ORDER BY lead_days ASC
+    """)
+
+    result = session.execute(query, {
+        "vc_location_id": vc_location_id,
+        "target_date": target_date,
+        "max_lead": max_lead_days,
+    })
+
+    df = pd.DataFrame(result.fetchall(), columns=[
+        "lead_days", "tempmax_f", "tempmin_f", "humidity", "cloudcover"
+    ])
+
+    return df
+
+
+def load_historical_forecast_15min(
+    session: Session,
+    city_id: str,
+    target_date: date,
+    basis_date: date,
+    location_type: str = "station",
+) -> pd.DataFrame:
+    """Load T-1 15-min forecast series for a day.
+
+    Returns minute-level forecast data (15-min resolution) from Visual Crossing.
+    Used for computing detailed multivar features from forecast curves.
+
+    Note: Cloudcover is NOT available in minute-level API. Use hourly
+    data for cloudcover features.
+
+    Args:
+        session: Database session
+        city_id: City identifier
+        target_date: The day we're predicting
+        basis_date: When the forecast was issued (typically target_date - 1)
+        location_type: 'station' or 'city'
+
+    Returns:
+        DataFrame with columns: datetime_local, temp_f, humidity, dew_f, cloudcover
+    """
+    vc_location_id = get_vc_location_id(session, city_id, location_type)
+
+    if vc_location_id is None:
+        return pd.DataFrame()
+
+    query = text("""
+        SELECT
+            datetime_local,
+            temp_f,
+            humidity,
+            dew_f,
+            cloudcover
+        FROM wx.vc_minute_weather
+        WHERE vc_location_id = :vc_location_id
+          AND data_type = 'historical_forecast'
+          AND forecast_basis_date = :basis_date
+          AND DATE(datetime_local) = :target_date
+        ORDER BY datetime_local
+    """)
+
+    result = session.execute(query, {
+        "vc_location_id": vc_location_id,
+        "basis_date": basis_date,
+        "target_date": target_date,
+    })
+
+    df = pd.DataFrame(result.fetchall(), columns=[
+        "datetime_local", "temp_f", "humidity", "dew_f", "cloudcover"
+    ])
+
+    return df
+
+
 def load_training_data(
     cities: list[str],
     start_date: date,

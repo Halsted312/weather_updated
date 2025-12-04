@@ -76,6 +76,9 @@ def compute_forecast_static_features(
             "fcst_prev_q75_f": None,
             "fcst_prev_q90_f": None,
             "fcst_prev_frac_part": None,
+            # Feature Group 1
+            "fcst_prev_distance_to_int": None,
+            "fcst_prev_near_boundary_flag": None,
             "fcst_prev_hour_of_max": None,
             "t_forecast_base": None,
         })
@@ -91,8 +94,16 @@ def compute_forecast_static_features(
     # Percentiles
     q10, q25, q50, q75, q90 = np.percentile(arr, [10, 25, 50, 75, 90])
 
-    # Fractional part of max
+    # Fractional part of max (original: can be negative)
     frac_part = max_f - round(max_f)
+
+    # === Feature Group 1: Integer boundary features ===
+    # Raw fractional part in [0, 1)
+    raw_frac = max_f - np.floor(max_f)
+    # Distance to nearest integer (0 = on boundary, 0.5 = equidistant)
+    distance_to_int = min(raw_frac, 1.0 - raw_frac)
+    # Near boundary flag (within 0.25°F of integer)
+    near_boundary_flag = float(distance_to_int < 0.25)
 
     # Hour of max (index in the series)
     hour_of_max = int(np.argmax(arr))
@@ -111,6 +122,9 @@ def compute_forecast_static_features(
         "fcst_prev_q75_f": float(q75),
         "fcst_prev_q90_f": float(q90),
         "fcst_prev_frac_part": frac_part,
+        # Feature Group 1
+        "fcst_prev_distance_to_int": distance_to_int,
+        "fcst_prev_near_boundary_flag": near_boundary_flag,
         "fcst_prev_hour_of_max": hour_of_max,
         "t_forecast_base": t_forecast_base,
     }
@@ -272,3 +286,250 @@ def compute_forecast_delta_features(
     }
 
     return FeatureSet(name="forecast_delta", features=features)
+
+
+# =============================================================================
+# Feature Group 2: Peak Window Features
+# =============================================================================
+
+@register_feature_group("forecast_peak_window")
+def compute_forecast_peak_window_features(
+    temps_f: list[float],
+    timestamps: list[datetime],
+    step_minutes: int = 60,
+    peak_band_width_f: float = 1.0,
+) -> FeatureSet:
+    """Compress forecast curve (hourly or 15-min) into peak-timing features.
+
+    Extracts information about when the peak occurs and how long it lasts.
+
+    Args:
+        temps_f: List of forecast temperatures (hourly or 15-min)
+        timestamps: List of corresponding datetime objects
+        step_minutes: Time between samples (15 or 60)
+        peak_band_width_f: Width of "near peak" band in °F (default 1.0)
+
+    Returns:
+        FeatureSet with:
+            fcst_peak_temp_f: Max temp from forecast curve
+            fcst_peak_hour_float: Hour of max as float (14.25 = 2:15pm)
+            fcst_peak_band_width_min: Duration within 1°F of max (plateau detection)
+            fcst_peak_step_minutes: Resolution of input curve (15 or 60)
+    """
+    null_features = {
+        "fcst_peak_temp_f": None,
+        "fcst_peak_hour_float": None,
+        "fcst_peak_band_width_min": None,
+        "fcst_peak_step_minutes": None,
+    }
+
+    if not temps_f or not timestamps or len(temps_f) != len(timestamps):
+        return FeatureSet(name="forecast_peak_window", features=null_features)
+
+    arr = np.asarray(temps_f, dtype=np.float64)
+    tmax = float(arr.max())
+    idx_max = int(np.argmax(arr))
+    ts_max = timestamps[idx_max]
+
+    # Hour as float (14.25 = 2:15pm)
+    minutes_since_midnight = ts_max.hour * 60 + ts_max.minute + ts_max.second / 60.0
+    hour_of_max_float = minutes_since_midnight / 60.0
+
+    # Peak band duration (how long within peak_band_width_f of max)
+    within_band = np.where(arr >= tmax - peak_band_width_f)[0]
+    if within_band.size > 0:
+        duration_minutes = (within_band[-1] - within_band[0] + 1) * step_minutes
+    else:
+        duration_minutes = step_minutes
+
+    features = {
+        "fcst_peak_temp_f": tmax,
+        "fcst_peak_hour_float": hour_of_max_float,
+        "fcst_peak_band_width_min": float(duration_minutes),
+        "fcst_peak_step_minutes": float(step_minutes),
+    }
+
+    return FeatureSet(name="forecast_peak_window", features=features)
+
+
+# =============================================================================
+# Feature Group 3: Forecast Drift Features
+# =============================================================================
+
+@register_feature_group("forecast_drift")
+def compute_forecast_drift_features(
+    daily_multi_df: pd.DataFrame,
+) -> FeatureSet:
+    """Compress multi-lead daily highs into drift/volatility features.
+
+    Measures how the forecast for a given day has changed across
+    different lead times (T-6, T-5, ..., T-1, T-0). High volatility
+    suggests uncertain forecasts.
+
+    Args:
+        daily_multi_df: DataFrame with columns ['lead_days', 'tempmax_f']
+                        from multiple forecast leads for the same target date
+
+    Returns:
+        FeatureSet with:
+            fcst_drift_num_leads: Number of lead forecasts available
+            fcst_drift_std_f: Standard deviation of forecast highs across leads
+            fcst_drift_max_upside_f: Max positive deviation from T-1 forecast
+            fcst_drift_max_downside_f: Max negative deviation from T-1 forecast
+            fcst_drift_mean_delta_f: Mean deviation from T-1 forecast
+            fcst_drift_slope_f_per_lead: Linear trend (°F per lead day)
+    """
+    null_features = {
+        "fcst_drift_num_leads": None,
+        "fcst_drift_std_f": None,
+        "fcst_drift_max_upside_f": None,
+        "fcst_drift_max_downside_f": None,
+        "fcst_drift_mean_delta_f": None,
+        "fcst_drift_slope_f_per_lead": None,
+    }
+
+    if daily_multi_df is None or daily_multi_df.empty:
+        return FeatureSet(name="forecast_drift", features=null_features)
+
+    df = daily_multi_df.dropna(subset=["tempmax_f"]).copy()
+    if df.empty:
+        return FeatureSet(name="forecast_drift", features=null_features)
+
+    df = df.sort_values("lead_days")
+    leads = df["lead_days"].to_numpy(dtype=np.float64)
+    highs = df["tempmax_f"].to_numpy(dtype=np.float64)
+
+    # Anchor at T-1 (lead=1) if present, else closest-in lead
+    mask_t1 = df["lead_days"] == 1
+    if mask_t1.any():
+        anchor_high = float(df.loc[mask_t1, "tempmax_f"].iloc[0])
+    else:
+        # Use the smallest lead (closest to target)
+        anchor_high = float(highs[0])
+
+    deltas = highs - anchor_high
+
+    features = {
+        "fcst_drift_num_leads": float(len(highs)),
+        "fcst_drift_std_f": float(np.std(highs, ddof=1)) if len(highs) > 1 else 0.0,
+        "fcst_drift_max_upside_f": float(np.max(highs) - anchor_high),
+        "fcst_drift_max_downside_f": float(anchor_high - np.min(highs)),
+        "fcst_drift_mean_delta_f": float(np.mean(deltas)),
+    }
+
+    # Linear slope (negative slope = forecasts decreasing as we get closer)
+    if len(highs) >= 2:
+        slope, _ = np.polyfit(leads, highs, deg=1)
+        features["fcst_drift_slope_f_per_lead"] = float(slope)
+    else:
+        features["fcst_drift_slope_f_per_lead"] = 0.0
+
+    return FeatureSet(name="forecast_drift", features=features)
+
+
+# =============================================================================
+# Feature Group 4: Multivar Static Features
+# =============================================================================
+
+@register_feature_group("forecast_multivar_static")
+def compute_forecast_multivar_static_features(
+    minute_df: pd.DataFrame,
+) -> FeatureSet:
+    """Day-level aggregates for humidity, cloudcover, dewpoint from forecast.
+
+    Computes simple statistics from the 15-min or hourly forecast curve
+    for multivariate weather features (not just temperature).
+
+    Note: Cloudcover is NOT available in minute-level API, so pass hourly
+    data if cloudcover features are needed.
+
+    Args:
+        minute_df: DataFrame with columns including:
+            datetime_local, temp_f, humidity, dew_f, cloudcover
+
+    Returns:
+        FeatureSet with aggregated multivar features
+    """
+    null_features = {
+        "fcst_humidity_mean": None,
+        "fcst_humidity_min": None,
+        "fcst_humidity_max": None,
+        "fcst_humidity_range": None,
+        "fcst_cloudcover_mean": None,
+        "fcst_cloudcover_min": None,
+        "fcst_cloudcover_max": None,
+        "fcst_cloudcover_range": None,
+        "fcst_dewpoint_mean": None,
+        "fcst_dewpoint_min": None,
+        "fcst_dewpoint_max": None,
+        "fcst_dewpoint_range": None,
+        "fcst_humidity_morning_mean": None,
+        "fcst_humidity_afternoon_mean": None,
+    }
+
+    if minute_df is None or minute_df.empty:
+        return FeatureSet(name="forecast_multivar_static", features=null_features)
+
+    df = minute_df.copy()
+
+    # Ensure datetime_local is datetime type
+    if "datetime_local" in df.columns:
+        df["datetime_local"] = pd.to_datetime(df["datetime_local"])
+        df["hour"] = df["datetime_local"].dt.hour
+    elif "target_datetime_local" in df.columns:
+        # Support hourly forecast format
+        df["datetime_local"] = pd.to_datetime(df["target_datetime_local"])
+        df["hour"] = df["datetime_local"].dt.hour
+    else:
+        # No datetime column, can't compute AM/PM
+        df["hour"] = None
+
+    def _stats(series: pd.Series):
+        """Compute mean, min, max, range for a series."""
+        s = series.dropna()
+        if s.empty:
+            return None, None, None, None
+        return float(s.mean()), float(s.min()), float(s.max()), float(s.max() - s.min())
+
+    # Get series with fallback for missing columns
+    humidity_series = df.get("humidity", pd.Series(dtype=float))
+    cloudcover_series = df.get("cloudcover", pd.Series(dtype=float))
+    dew_series = df.get("dew_f", pd.Series(dtype=float))
+
+    hum_mean, hum_min, hum_max, hum_range = _stats(humidity_series)
+    cc_mean, cc_min, cc_max, cc_range = _stats(cloudcover_series)
+    dew_mean, dew_min, dew_max, dew_range = _stats(dew_series)
+
+    # Morning vs afternoon humidity
+    am_hum_mean = None
+    pm_hum_mean = None
+    if df["hour"] is not None and "humidity" in df.columns:
+        am = df[df["hour"].between(6, 11)]
+        pm = df[df["hour"].between(12, 18)]
+        if not am.empty and "humidity" in am.columns:
+            am_hum = am["humidity"].dropna()
+            if not am_hum.empty:
+                am_hum_mean = float(am_hum.mean())
+        if not pm.empty and "humidity" in pm.columns:
+            pm_hum = pm["humidity"].dropna()
+            if not pm_hum.empty:
+                pm_hum_mean = float(pm_hum.mean())
+
+    features = {
+        "fcst_humidity_mean": hum_mean,
+        "fcst_humidity_min": hum_min,
+        "fcst_humidity_max": hum_max,
+        "fcst_humidity_range": hum_range,
+        "fcst_cloudcover_mean": cc_mean,
+        "fcst_cloudcover_min": cc_min,
+        "fcst_cloudcover_max": cc_max,
+        "fcst_cloudcover_range": cc_range,
+        "fcst_dewpoint_mean": dew_mean,
+        "fcst_dewpoint_min": dew_min,
+        "fcst_dewpoint_max": dew_max,
+        "fcst_dewpoint_range": dew_range,
+        "fcst_humidity_morning_mean": am_hum_mean,
+        "fcst_humidity_afternoon_mean": pm_hum_mean,
+    }
+
+    return FeatureSet(name="forecast_multivar_static", features=features)

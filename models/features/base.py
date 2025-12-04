@@ -169,6 +169,20 @@ NUMERIC_FEATURE_COLS: list[str] = [
     "fcst_prev_q10_f", "fcst_prev_q25_f", "fcst_prev_q50_f",
     "fcst_prev_q75_f", "fcst_prev_q90_f",
     "fcst_prev_frac_part", "fcst_prev_hour_of_max", "t_forecast_base",
+    # Feature Group 1: Integer boundary features
+    "fcst_prev_distance_to_int", "fcst_prev_near_boundary_flag",
+    # Feature Group 2: Peak window features (from hourly/15-min curve)
+    "fcst_peak_temp_f", "fcst_peak_hour_float",
+    "fcst_peak_band_width_min", "fcst_peak_step_minutes",
+    # Feature Group 3: Forecast drift features (multi-lead)
+    "fcst_drift_num_leads", "fcst_drift_std_f",
+    "fcst_drift_max_upside_f", "fcst_drift_max_downside_f",
+    "fcst_drift_mean_delta_f", "fcst_drift_slope_f_per_lead",
+    # Feature Group 4: Multivar static features (humidity, cloudcover, dewpoint)
+    "fcst_humidity_mean", "fcst_humidity_min", "fcst_humidity_max", "fcst_humidity_range",
+    "fcst_cloudcover_mean", "fcst_cloudcover_min", "fcst_cloudcover_max", "fcst_cloudcover_range",
+    "fcst_dewpoint_mean", "fcst_dewpoint_min", "fcst_dewpoint_max", "fcst_dewpoint_range",
+    "fcst_humidity_morning_mean", "fcst_humidity_afternoon_mean",
     # Forecast vs observation errors (NOT target leakage - compares fcst to obs)
     "err_mean_sofar", "err_std_sofar",
     "err_max_pos_sofar", "err_max_neg_sofar", "err_abs_mean_sofar",
@@ -228,6 +242,21 @@ def get_feature_columns(
             "fcst_prev_std_f", "fcst_prev_q10_f", "fcst_prev_q25_f",
             "fcst_prev_q50_f", "fcst_prev_q75_f", "fcst_prev_q90_f",
             "fcst_prev_frac_part", "fcst_prev_hour_of_max", "t_forecast_base",
+            # Feature Group 1
+            "fcst_prev_distance_to_int", "fcst_prev_near_boundary_flag",
+            # Feature Group 2
+            "fcst_peak_temp_f", "fcst_peak_hour_float",
+            "fcst_peak_band_width_min", "fcst_peak_step_minutes",
+            # Feature Group 3
+            "fcst_drift_num_leads", "fcst_drift_std_f",
+            "fcst_drift_max_upside_f", "fcst_drift_max_downside_f",
+            "fcst_drift_mean_delta_f", "fcst_drift_slope_f_per_lead",
+            # Feature Group 4
+            "fcst_humidity_mean", "fcst_humidity_min", "fcst_humidity_max", "fcst_humidity_range",
+            "fcst_cloudcover_mean", "fcst_cloudcover_min", "fcst_cloudcover_max", "fcst_cloudcover_range",
+            "fcst_dewpoint_mean", "fcst_dewpoint_min", "fcst_dewpoint_max", "fcst_dewpoint_range",
+            "fcst_humidity_morning_mean", "fcst_humidity_afternoon_mean",
+            # Error features
             "err_mean_sofar", "err_std_sofar", "err_max_pos_sofar",
             "err_max_neg_sofar", "err_abs_mean_sofar", "err_last1h",
             "err_last3h_mean",

@@ -43,6 +43,8 @@ from models.data.loader import (
     load_settlements,
     load_historical_forecast_daily,
     load_historical_forecast_hourly,
+    load_historical_forecast_daily_multi,
+    load_historical_forecast_15min,
 )
 from models.features.partial_day import compute_partial_day_features, compute_delta_target
 from models.features.shape import compute_shape_features
@@ -54,8 +56,11 @@ from models.features.forecast import (
     compute_forecast_error_features,
     compute_forecast_delta_features,
     align_forecast_to_observations,
+    compute_forecast_peak_window_features,
+    compute_forecast_drift_features,
+    compute_forecast_multivar_static_features,
 )
-from models.features.base import compose_features
+from models.features.base import compose_features, FeatureSet
 
 logger = logging.getLogger(__name__)
 
@@ -157,10 +162,34 @@ def build_snapshot_dataset(
             basis_date = day - timedelta(days=1)
             fcst_daily = None
             fcst_hourly_df = None
+            fcst_peak_fs = None
+            fcst_drift_fs = None
+            fcst_multivar_fs = None
 
             if include_forecast_features:
                 fcst_daily = load_historical_forecast_daily(session, city_id, day, basis_date)
                 fcst_hourly_df = load_historical_forecast_hourly(session, city_id, day, basis_date)
+
+                # Compute per-day forecast features (reused across all snapshots)
+
+                # Feature Group 2: Peak window (from hourly curve)
+                if fcst_hourly_df is not None and not fcst_hourly_df.empty:
+                    tmp = fcst_hourly_df.sort_values("target_datetime_local").copy()
+                    temps = tmp["temp_f"].dropna().tolist()
+                    times = pd.to_datetime(tmp["target_datetime_local"]).tolist()
+                    step_min = int((times[1] - times[0]).total_seconds() / 60) if len(times) > 1 else 60
+                    fcst_peak_fs = compute_forecast_peak_window_features(temps, times, step_min)
+
+                # Feature Group 3: Forecast drift (from multi-lead daily)
+                fcst_daily_multi = load_historical_forecast_daily_multi(session, city_id, day, max_lead_days=6)
+                fcst_drift_fs = compute_forecast_drift_features(fcst_daily_multi)
+
+                # Feature Group 4: Multivar static (from hourly data - has cloudcover)
+                # Note: Minute data does NOT have cloudcover, so we use hourly
+                if fcst_hourly_df is not None and not fcst_hourly_df.empty:
+                    fcst_multivar_fs = compute_forecast_multivar_static_features(fcst_hourly_df)
+                else:
+                    fcst_multivar_fs = None
 
             # Build snapshot for each hour
             for snapshot_hour in snapshot_hours:
@@ -173,6 +202,9 @@ def build_snapshot_dataset(
                     fcst_daily=fcst_daily,
                     fcst_hourly_df=fcst_hourly_df,
                     include_forecast=include_forecast_features,
+                    fcst_peak_fs=fcst_peak_fs,
+                    fcst_drift_fs=fcst_drift_fs,
+                    fcst_multivar_fs=fcst_multivar_fs,
                 )
 
                 if row is not None:
@@ -212,6 +244,9 @@ def build_single_snapshot(
     fcst_daily: Optional[dict] = None,
     fcst_hourly_df: Optional[pd.DataFrame] = None,
     include_forecast: bool = True,
+    fcst_peak_fs: Optional[FeatureSet] = None,
+    fcst_drift_fs: Optional[FeatureSet] = None,
+    fcst_multivar_fs: Optional[FeatureSet] = None,
 ) -> Optional[dict]:
     """Build feature row for one snapshot.
 
@@ -224,6 +259,9 @@ def build_single_snapshot(
         fcst_daily: T-1 daily forecast dict (optional)
         fcst_hourly_df: T-1 hourly forecast DataFrame (optional)
         include_forecast: Whether to compute forecast features
+        fcst_peak_fs: Feature Group 2 - peak window features (optional)
+        fcst_drift_fs: Feature Group 3 - forecast drift features (optional)
+        fcst_multivar_fs: Feature Group 4 - multivar static features (optional)
 
     Returns:
         Dictionary with all features, or None if insufficient data
@@ -269,10 +307,10 @@ def build_single_snapshot(
     rules_fs = compute_rule_features(temps_sofar, settle_f)
 
     # Compute calendar features
-    calendar_fs = compute_calendar_features(day, snapshot_hour)
+    calendar_fs = compute_calendar_features(day, snapshot_hour=snapshot_hour)
 
     # Compute quality features
-    expected_samples = estimate_expected_samples(snapshot_hour)
+    expected_samples = estimate_expected_samples(snapshot_hour=snapshot_hour)
     quality_fs = compute_quality_features(temps_sofar, timestamps_sofar, expected_samples)
 
     # Start building the row
@@ -336,6 +374,13 @@ def build_single_snapshot(
                 "delta_vcmax_fcstmax_sofar": None,
                 "fcst_remaining_potential": None,
             })
+        # Add new feature groups (2, 3, 4)
+        if fcst_peak_fs is not None:
+            row.update(fcst_peak_fs.to_dict())
+        if fcst_drift_fs is not None:
+            row.update(fcst_drift_fs.to_dict())
+        if fcst_multivar_fs is not None:
+            row.update(fcst_multivar_fs.to_dict())
     else:
         # Fill forecast columns with None if not including
         forecast_cols = [
@@ -343,9 +388,24 @@ def build_single_snapshot(
             "fcst_prev_q10_f", "fcst_prev_q25_f", "fcst_prev_q50_f",
             "fcst_prev_q75_f", "fcst_prev_q90_f",
             "fcst_prev_frac_part", "fcst_prev_hour_of_max", "t_forecast_base",
+            # Feature Group 1 (integer boundary)
+            "fcst_prev_distance_to_int", "fcst_prev_near_boundary_flag",
+            # Error features
             "err_mean_sofar", "err_std_sofar", "err_max_pos_sofar", "err_max_neg_sofar",
             "err_abs_mean_sofar", "err_last1h", "err_last3h_mean",
             "delta_vcmax_fcstmax_sofar", "fcst_remaining_potential",
+            # Feature Group 2 (peak window)
+            "fcst_peak_temp_f", "fcst_peak_hour_float",
+            "fcst_peak_band_width_min", "fcst_peak_step_minutes",
+            # Feature Group 3 (forecast drift)
+            "fcst_drift_num_leads", "fcst_drift_std_f",
+            "fcst_drift_max_upside_f", "fcst_drift_max_downside_f",
+            "fcst_drift_mean_delta_f", "fcst_drift_slope_f_per_lead",
+            # Feature Group 4 (multivar static)
+            "fcst_humidity_mean", "fcst_humidity_min", "fcst_humidity_max", "fcst_humidity_range",
+            "fcst_cloudcover_mean", "fcst_cloudcover_min", "fcst_cloudcover_max", "fcst_cloudcover_range",
+            "fcst_dewpoint_mean", "fcst_dewpoint_min", "fcst_dewpoint_max", "fcst_dewpoint_range",
+            "fcst_humidity_morning_mean", "fcst_humidity_afternoon_mean",
         ]
         for col in forecast_cols:
             row[col] = None
@@ -362,6 +422,9 @@ def build_snapshot_for_inference(
     snapshot_hour: Optional[int] = None,
     fcst_daily: Optional[dict] = None,
     fcst_hourly_df: Optional[pd.DataFrame] = None,
+    fcst_peak_fs: Optional[FeatureSet] = None,
+    fcst_drift_fs: Optional[FeatureSet] = None,
+    fcst_multivar_fs: Optional[FeatureSet] = None,
 ) -> dict:
     """Build a single snapshot row for inference (no settle_f needed).
 
@@ -379,6 +442,9 @@ def build_snapshot_for_inference(
         snapshot_hour: Legacy integer hour (baseline models) - DEPRECATED
         fcst_daily: T-1 forecast dict
         fcst_hourly_df: T-1 hourly forecast DataFrame
+        fcst_peak_fs: Feature Group 2 - peak window features (optional)
+        fcst_drift_fs: Feature Group 3 - forecast drift features (optional)
+        fcst_multivar_fs: Feature Group 4 - multivar static features (optional)
 
     Returns:
         Feature dictionary ready for model inference
@@ -435,5 +501,13 @@ def build_snapshot_for_inference(
             fcst_max_f, partial_day_fs["vc_max_f_sofar"]
         )
         row.update(fcst_delta_fs.to_dict())
+
+    # Add new feature groups (2, 3, 4)
+    if fcst_peak_fs is not None:
+        row.update(fcst_peak_fs.to_dict())
+    if fcst_drift_fs is not None:
+        row.update(fcst_drift_fs.to_dict())
+    if fcst_multivar_fs is not None:
+        row.update(fcst_multivar_fs.to_dict())
 
     return row
