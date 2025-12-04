@@ -60,6 +60,9 @@ class BaseTrainer(ABC):
         self,
         include_forecast: bool = True,
         include_lags: bool = True,
+        include_market: bool = True,
+        include_momentum: bool = True,
+        include_meteo: bool = True,
         calibrate: bool = True,
         cv_splits: int = 5,
     ):
@@ -68,17 +71,26 @@ class BaseTrainer(ABC):
         Args:
             include_forecast: Whether to use forecast features
             include_lags: Whether to use lag features
+            include_market: Whether to use Kalshi market features (bid/ask, volume)
+            include_momentum: Whether to use temperature momentum features (rate, ema, std)
+            include_meteo: Whether to use weather obs features (humidity, wind, cloud)
             calibrate: Whether to apply Platt scaling calibration
             cv_splits: Number of CV splits for calibration
         """
         self.include_forecast = include_forecast
         self.include_lags = include_lags
+        self.include_market = include_market
+        self.include_momentum = include_momentum
+        self.include_meteo = include_meteo
         self.calibrate = calibrate
         self.cv_splits = cv_splits
 
         self.numeric_cols, self.categorical_cols = get_feature_columns(
             include_forecast=include_forecast,
             include_lags=include_lags,
+            include_market=include_market,
+            include_momentum=include_momentum,
+            include_meteo=include_meteo,
         )
 
         self.model = None

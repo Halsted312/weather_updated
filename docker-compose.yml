@@ -2,7 +2,7 @@ services:
   db:
     image: timescale/timescaledb:latest-pg16
     container_name: kalshi_weather_db
-    shm_size: "16g"  # Match PostgreSQL shared_buffers for parallel query support
+    shm_size: "3g"  # Match PostgreSQL shared_buffers for parallel query support
     environment:
       POSTGRES_USER: ${DB_USER:-kalshi}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-kalshi}

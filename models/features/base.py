@@ -179,9 +179,9 @@ NUMERIC_FEATURE_COLS: list[str] = [
     "fcst_drift_max_upside_f", "fcst_drift_max_downside_f",
     "fcst_drift_mean_delta_f", "fcst_drift_slope_f_per_lead",
     # Multi-horizon features (T-1 to T-6 forecast evolution)
-    "fcst_multi_mean", "fcst_multi_median", "fcst_multi_ema",
+    "fcst_multi_mean", "fcst_multi_ema",
     "fcst_multi_std", "fcst_multi_range",
-    "fcst_multi_t1_t2_diff", "fcst_multi_drift",
+    "fcst_multi_drift",
     # Feature Group 4: Multivar static features (humidity, cloudcover, dewpoint)
     "fcst_humidity_mean", "fcst_humidity_min", "fcst_humidity_max", "fcst_humidity_range",
     "fcst_cloudcover_mean", "fcst_cloudcover_min", "fcst_cloudcover_max", "fcst_cloudcover_range",
@@ -197,7 +197,6 @@ NUMERIC_FEATURE_COLS: list[str] = [
     "above_fcst_flag",        # 1 if vc_max > fcst_max
     "day_fraction",           # (snapshot_hour - 6) / 18
     # Calendar features (time-of-day)
-    "snapshot_hour", "snapshot_hour_sin", "snapshot_hour_cos",  # Legacy
     # New time-of-day features (tod_v1)
     "hour", "minute", "minutes_since_midnight",
     "hour_sin", "hour_cos", "minute_sin", "minute_cos",
@@ -219,23 +218,35 @@ NUMERIC_FEATURE_COLS: list[str] = [
     "temp_mean_last_120min", "temp_std_last_120min",
     "temp_rate_last_30min", "temp_rate_last_60min", "temp_acceleration",
     "temp_ema_30min", "temp_ema_60min",
-    "temp_volatility_30min", "temp_volatility_60min",
-    "intraday_range_sofar", "temp_cv_sofar",
+    "intraday_range_sofar",
     "minutes_since_max_observed",
     # Meteo observations (humidity, wind, cloud)
     "humidity_last_obs", "humidity_mean_last_60min", "humidity_std_last_60min", "high_humidity_flag",
     "windspeed_last_obs", "windspeed_max_last_60min", "windgust_max_last_60min", "strong_wind_flag",
     "cloudcover_last_obs", "cloudcover_mean_last_60min", "clear_sky_flag", "high_cloud_flag",
+    # Advanced meteo features (wet bulb, wind chill, cloud dynamics)
+    "wetbulb_last_obs", "wetbulb_mean_last_60min", "wetbulb_depression",
+    "wetbulb_depression_mean_60min", "high_wetbulb_flag", "wetbulb_rate_last_30min",
+    "windchill_last_obs", "windchill_depression", "windchill_mean_last_60min",
+    "strong_windchill_flag", "windchill_warming_rate",
+    "cloudcover_rate_last_30min", "cloudcover_volatility_60min",
+    "clearing_trend_flag", "clouding_trend_flag", "cloud_regime", "cloud_stability_score",
+    # Engineered features (transforms and interactions)
+    "log_abs_obs_fcst_gap", "log_temp_std_last_60min", "log_intraday_range",
+    "log_expected_delta_uncertainty", "temp_rate_last_30min_squared",
+    "err_mean_sofar_squared", "obs_fcst_gap_squared", "fcst_multi_cv",
+    "fcst_multi_range_pct", "humidity_x_temp_rate", "cloudcover_x_hour",
+    "temp_ema_x_day_fraction", "station_city_gap_x_fcst_gap",
     # Quality and interaction features
     "confidence_weighted_gap", "remaining_upside", "expected_delta_uncertainty",
-    "fcst_obs_ratio", "fcst_obs_diff_squared", "delta_vcmax_fcstmax_sofar",
-    "gap_x_hours_remaining", "obs_confidence", "fcst_remaining_potential", "fcst_importance_weight",
+    "fcst_obs_ratio",
+    "gap_x_hours_remaining", "obs_confidence", "fcst_remaining_potential",
     # Time context
-    "hours_since_market_open", "minutes_since_market_open",
-    "hours_to_event_close", "log_hours_to_close", "log_minutes_since_open",
+    "hours_since_market_open",
+    "log_hours_to_close", "log_minutes_since_open",
     # Phase indicators
     "is_heating_phase", "is_cooling_phase", "is_plateau_phase",
-    "is_d_minus_1", "is_event_day",
+    "is_event_day",
 ]
 
 # Market features (included by default, can be excluded with include_market=False)
@@ -263,12 +274,18 @@ DELTA_CLASSES = list(range(-12, 13))  # -12, -11, ..., 0, ..., +11, +12 (25 clas
 def get_feature_columns(
     include_forecast: bool = True,
     include_lags: bool = True,
+    include_market: bool = True,
+    include_momentum: bool = True,
+    include_meteo: bool = True,
 ) -> tuple[list[str], list[str]]:
     """Get lists of numeric and categorical feature columns.
 
     Args:
         include_forecast: Whether to include forecast-related features
         include_lags: Whether to include lag features
+        include_market: Whether to include Kalshi market features (bid/ask, volume)
+        include_momentum: Whether to include temperature momentum features (rate, ema, std)
+        include_meteo: Whether to include weather obs features (humidity, wind, cloud)
 
     Returns:
         Tuple of (numeric_cols, categorical_cols)
@@ -308,5 +325,29 @@ def get_feature_columns(
             "vc_max_f_lag1", "vc_max_f_lag7", "delta_vcmax_lag1",
         ]
         num_cols = [c for c in num_cols if c not in lag_cols]
+
+    if not include_market:
+        # Remove all market features from MARKET_FEATURE_COLS
+        num_cols = [c for c in num_cols if c not in MARKET_FEATURE_COLS]
+
+    if not include_momentum:
+        # Remove temperature momentum features
+        momentum_keywords = [
+            'temp_mean_last', 'temp_std_last', 'temp_max_last',
+            'temp_rate_', 'temp_acceleration', 'temp_ema_',
+            'intraday_range', 'minutes_since_max_observed'
+        ]
+        num_cols = [c for c in num_cols if not any(kw in c for kw in momentum_keywords)]
+
+    if not include_meteo:
+        # Remove meteorological observation features
+        meteo_keywords = [
+            'humidity_', 'windspeed_', 'windgust_', 'cloudcover_',
+            'wetbulb_', 'windchill_', 'cloud_regime', 'cloud_stability',
+            'clearing_trend', 'clouding_trend', 'high_wetbulb',
+            'strong_windchill', 'high_cloud_flag', 'clear_sky_flag',
+            'high_humidity_flag', 'strong_wind_flag'
+        ]
+        num_cols = [c for c in num_cols if not any(kw in c for kw in meteo_keywords)]
 
     return num_cols, CATEGORICAL_FEATURE_COLS.copy()

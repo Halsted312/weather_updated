@@ -54,6 +54,8 @@ from models.features.interactions import (
 )
 from models.features.station_city import compute_station_city_features
 from models.features.meteo import compute_meteo_features
+from models.features.meteo_advanced import compute_meteo_advanced_features
+from models.features.engineered import compute_engineered_features
 from models.features.market import compute_market_features
 
 from models.features.imputation import (
@@ -61,6 +63,8 @@ from models.features.imputation import (
     fill_market_nulls,
     fill_station_city_nulls,
     fill_meteo_nulls,
+    fill_meteo_advanced_nulls,
+    fill_engineered_nulls,
     fill_regime_nulls,
     fill_interaction_nulls,
     fill_derived_nulls,
@@ -600,6 +604,22 @@ def compute_snapshot_features(
         features.update(meteo_fs.to_dict())
     else:
         fill_meteo_nulls(features)
+
+    # ==========================================================================
+    # 16b. Advanced meteo features (wet bulb, wind chill, cloud dynamics)
+    # ==========================================================================
+    if ctx.obs_df is not None and _has_meteo_columns(ctx.obs_df):
+        meteo_adv_fs = compute_meteo_advanced_features(ctx.obs_df, ctx.cutoff_time)
+        features.update(meteo_adv_fs.to_dict())
+    else:
+        fill_meteo_advanced_nulls(features)
+
+    # ==========================================================================
+    # 16c. Engineered features (transforms and interactions)
+    # ==========================================================================
+    engineered_fs = compute_engineered_features(features)
+    features.update(engineered_fs.to_dict())
+    # No null-filling needed here since engineered features handle None gracefully
 
     # ==========================================================================
     # 17. Labels (training only)

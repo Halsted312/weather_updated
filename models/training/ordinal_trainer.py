@@ -203,26 +203,56 @@ class OrdinalDeltaTrainer(BaseTrainer):
 
         cv = DayGroupedTimeSeriesSplit(n_splits=self.cv_splits)
 
-        # Use middle threshold for tuning (delta >= 1 is representative)
-        tuning_threshold = 1
-        y_binary = (y >= tuning_threshold).astype(int)
+        # For within-2 optimization, we'll train a simplified ordinal model during tuning
+        # to get actual delta predictions (not just binary threshold predictions)
 
         def objective(trial: "optuna.Trial") -> float:
+            # Feature group selection (NEW: let Optuna decide which groups to include)
+            include_market = trial.suggest_categorical("include_market", [True, False])
+            include_momentum = trial.suggest_categorical("include_momentum", [True, False])
+            include_meteo = trial.suggest_categorical("include_meteo", [True, False])
+
+            # Filter features based on selected groups
+            from models.features.base import get_feature_columns
+            num_cols_trial, cat_cols_trial = get_feature_columns(
+                include_forecast=True,      # Always include (core signal)
+                include_lags=True,          # Always include (temporal context)
+                include_market=include_market,
+                include_momentum=include_momentum,
+                include_meteo=include_meteo,
+            )
+
+            # Filter X to selected features
+            all_cols_trial = num_cols_trial + cat_cols_trial
+            X_filtered = X[all_cols_trial]
+
+            # Update cat_features indices for filtered features
+            cat_features_trial = [
+                X_filtered.columns.get_loc(c)
+                for c in cat_cols_trial
+                if c in X_filtered.columns
+            ]
+
             # Choose bootstrap type first (affects other params)
             bootstrap_type = trial.suggest_categorical("bootstrap_type", ["Bayesian", "Bernoulli"])
 
+            # Feature sampling method (rsm and colsample_bylevel are synonyms - choose one)
+            use_rsm = trial.suggest_categorical("use_rsm", [True, False])
+
             params = {
-                # Tree structure
-                "depth": trial.suggest_int("depth", 4, 8),
-                "iterations": trial.suggest_int("iterations", 150, 400),
-                "learning_rate": trial.suggest_float("learning_rate", 0.01, 0.15, log=True),
-                "border_count": trial.suggest_int("border_count", 32, 128),
-                # Regularization
-                "l2_leaf_reg": trial.suggest_float("l2_leaf_reg", 1.0, 10.0, log=True),
-                "min_data_in_leaf": trial.suggest_int("min_data_in_leaf", 5, 30),
+                # Tree structure (EXPANDED RANGES)
+                "depth": trial.suggest_int("depth", 4, 10),  # Increased from 8 to 10
+                "iterations": trial.suggest_int("iterations", 200, 600),  # Increased from 150-400 to 200-600
+                "learning_rate": trial.suggest_float("learning_rate", 0.01, 0.3, log=True),  # Increased from 0.15 to 0.3
+                "border_count": trial.suggest_int("border_count", 32, 255),  # Increased from 128 to 255
+                # Regularization (EXPANDED RANGES)
+                "l2_leaf_reg": trial.suggest_float("l2_leaf_reg", 0.1, 10.0, log=True),  # Lowered min from 1.0 to 0.1
+                "min_data_in_leaf": trial.suggest_int("min_data_in_leaf", 1, 50),  # Expanded from 5-30 to 1-50
                 "random_strength": trial.suggest_float("random_strength", 0.0, 2.0),
-                "colsample_bylevel": trial.suggest_float("colsample_bylevel", 0.5, 1.0),
                 "bootstrap_type": bootstrap_type,
+                # NEW PARAMETERS
+                "grow_policy": trial.suggest_categorical("grow_policy", ["SymmetricTree", "Depthwise", "Lossguide"]),
+                "boosting_type": trial.suggest_categorical("boosting_type", ["Ordered", "Plain"]),
                 # Fixed params
                 "loss_function": "Logloss",
                 "eval_metric": "AUC",
@@ -230,40 +260,79 @@ class OrdinalDeltaTrainer(BaseTrainer):
                 "verbose": False,
             }
 
+            # Add either rsm or colsample_bylevel (not both - they're synonyms)
+            if use_rsm:
+                params["rsm"] = trial.suggest_float("rsm", 0.5, 1.0)
+            else:
+                params["colsample_bylevel"] = trial.suggest_float("colsample_bylevel", 0.3, 1.0)
+
             # Bootstrap-specific params
             if bootstrap_type == "Bayesian":
                 params["bagging_temperature"] = trial.suggest_float("bagging_temperature", 0.0, 1.0)
             else:  # Bernoulli
                 params["subsample"] = trial.suggest_float("subsample", 0.6, 1.0)
 
-            auc_scores = []
+            within_2_scores = []
             for train_idx, val_idx in cv.split(df):
-                X_tr = X.iloc[train_idx]
-                y_tr = y_binary.iloc[train_idx]
-                X_va = X.iloc[val_idx]
-                y_va = y_binary.iloc[val_idx]
+                X_tr = X_filtered.iloc[train_idx]
+                y_tr_delta = y.iloc[train_idx]  # Actual delta values
+                X_va = X_filtered.iloc[val_idx]
+                y_va_delta = y.iloc[val_idx]    # Actual delta values
 
-                # Skip if validation has only one class
-                if len(y_va.unique()) < 2:
-                    continue
+                # Train a quick ordinal model with a subset of thresholds (for speed)
+                # Use every 3rd threshold to keep it fast
+                quick_thresholds = self.thresholds[::3]  # e.g., [-11, -8, -5, -2, 1, 4, 7, 10]
 
-                model = CatBoostClassifier(**params)
-                train_pool = Pool(X_tr, y_tr, cat_features=self._cat_features)
-                val_pool = Pool(X_va, y_va, cat_features=self._cat_features)
+                classifiers = {}
+                for k in quick_thresholds:
+                    y_tr_binary = (y_tr_delta >= k).astype(int)
 
-                model.fit(train_pool, eval_set=val_pool, early_stopping_rounds=30)
+                    # Skip if only one class
+                    if len(np.unique(y_tr_binary)) < 2:
+                        continue
 
-                # Use AUC as metric (higher is better)
-                from sklearn.metrics import roc_auc_score
-                proba = model.predict_proba(val_pool)[:, 1]
-                auc = roc_auc_score(y_va, proba)
-                auc_scores.append(auc)
+                    model_k = CatBoostClassifier(**params)
+                    train_pool = Pool(X_tr, y_tr_binary, cat_features=cat_features_trial)
+                    model_k.fit(train_pool, verbose=False)
+                    classifiers[k] = model_k
 
-            if not auc_scores:
+                if not classifiers:
+                    continue  # Skip this fold if no valid classifiers
+
+                # Predict delta for validation set
+                val_pool = Pool(X_va, cat_features=cat_features_trial)
+                y_pred_delta = []
+
+                for i in range(len(X_va)):
+                    # Get probability that delta >= k for each threshold k
+                    probs = {}
+                    for k in sorted(classifiers.keys()):
+                        row_pool = Pool(X_va.iloc[[i]], cat_features=cat_features_trial)
+                        prob_k = classifiers[k].predict_proba(row_pool)[0, 1]  # P(delta >= k)
+                        probs[k] = prob_k
+
+                    # Estimate delta from threshold probabilities
+                    # Find the threshold where P(delta >= k) crosses 0.5
+                    pred_delta = self._delta_classes[0]  # Default to min
+                    for k in sorted(probs.keys()):
+                        if probs[k] >= 0.5:
+                            pred_delta = k
+                        else:
+                            break
+                    y_pred_delta.append(pred_delta)
+
+                y_pred_delta = np.array(y_pred_delta)
+
+                # Calculate within-2 accuracy
+                within_2 = np.abs(y_va_delta - y_pred_delta) <= 2
+                within_2_rate = np.mean(within_2)
+                within_2_scores.append(within_2_rate)
+
+            if not within_2_scores:
                 return 0.0
-            return float(np.mean(auc_scores))
+            return float(np.mean(within_2_scores))
 
-        # Run optimization (maximize AUC)
+        # Run optimization (maximize within-2 accuracy)
         self.study = optuna.create_study(direction="maximize")
         self.study.optimize(
             objective,
@@ -273,7 +342,7 @@ class OrdinalDeltaTrainer(BaseTrainer):
 
         self.best_params = self.study.best_params
         logger.info(f"Best params: {self.best_params}")
-        logger.info(f"Best AUC: {self.study.best_value:.4f}")
+        logger.info(f"Best within-2 accuracy: {self.study.best_value:.4f}")
 
     def train(
         self,

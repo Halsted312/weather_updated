@@ -149,6 +149,53 @@ def fill_meteo_nulls(row: dict[str, Any]) -> None:
 
 
 # =============================================================================
+# Advanced Meteo Feature Null-Filling
+# =============================================================================
+
+METEO_ADVANCED_COLS = [
+    # Wet bulb
+    "wetbulb_last_obs", "wetbulb_mean_last_60min", "wetbulb_depression",
+    "wetbulb_depression_mean_60min", "high_wetbulb_flag", "wetbulb_rate_last_30min",
+    # Wind chill
+    "windchill_last_obs", "windchill_depression", "windchill_mean_last_60min",
+    "strong_windchill_flag", "windchill_warming_rate",
+    # Cloud dynamics
+    "cloudcover_rate_last_30min", "cloudcover_volatility_60min",
+    "clearing_trend_flag", "clouding_trend_flag", "cloud_regime", "cloud_stability_score",
+]
+
+
+def fill_meteo_advanced_nulls(row: dict[str, Any]) -> None:
+    """Fill advanced meteorological features with None.
+
+    These include wet bulb, wind chill, and cloud dynamics features.
+    """
+    for col in METEO_ADVANCED_COLS:
+        if col not in row:
+            row[col] = None
+
+
+# =============================================================================
+# Engineered Feature Null-Filling
+# =============================================================================
+
+ENGINEERED_COLS = [
+    "log_abs_obs_fcst_gap", "log_temp_std_last_60min", "log_intraday_range",
+    "log_expected_delta_uncertainty", "temp_rate_last_30min_squared",
+    "err_mean_sofar_squared", "obs_fcst_gap_squared", "fcst_multi_cv",
+    "fcst_multi_range_pct", "humidity_x_temp_rate", "cloudcover_x_hour",
+    "temp_ema_x_day_fraction", "station_city_gap_x_fcst_gap",
+]
+
+
+def fill_engineered_nulls(row: dict[str, Any]) -> None:
+    """Fill engineered transform and interaction features with None."""
+    for col in ENGINEERED_COLS:
+        if col not in row:
+            row[col] = None
+
+
+# =============================================================================
 # Regime Feature Null-Filling
 # =============================================================================
 
