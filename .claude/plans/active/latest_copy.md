@@ -1,27 +1,66 @@
-# Run in background with output logging
-nohup PYTHONPATH=. python3 scripts/train_city_ordinal_optuna.py \
+✅ Code fixed! Delta range now -10 to +10 for all cities. Copy these commands to your faster computer:
+# ============================================================
+# AUSTIN TRAINING - 100 TRIALS (18 WORKERS)
+# ============================================================
+
+# 1. Kill any existing training
+pkill -f "train_city_ordinal_optuna.py.*austin"
+
+# 2. Navigate to project
+cd /mnt/slow_weather_updated
+
+# 3. Activate venv
+source .venv/bin/activate
+
+# 4. Create logs directory
+mkdir -p logs
+
+# 5. Start training in background
+PYTHONPATH=. nohup python3 scripts/train_city_ordinal_optuna.py \
   --city austin \
   --trials 100 \
   --cv-splits 4 \
+  --workers 18 \
   --use-cached \
-  > logs/austin_training_100trials.log 2>&1 &
+  > logs/austin_100trials.log 2>&1 &
 
-# Save the process ID
+# 6. Save PID
 echo $! > /tmp/training_pid.txt
 echo "Training started! PID: $(cat /tmp/training_pid.txt)"
-To monitor progress:
-# Watch trial progress (updates live)
-tail -f logs/austin_training_100trials.log | grep -E "Trial|Best|Accuracy|MAE"
 
-# Check which trial number (look for "Trial X" in output)
-grep "Trial" logs/austin_training_100trials.log | tail -5
+# ============================================================
+# MONITORING COMMANDS
+# ============================================================
 
-# Check if still running
+# Watch trial progress (live)
+tail -f logs/austin_100trials.log | grep --line-buffered -E "Trial|Best value|Accuracy|MAE"
+
+# Check current trial number
+grep -oP "Best trial: \K\d+" logs/austin_100trials.log | tail -1
+
+# Check if process is running
 ps -p $(cat /tmp/training_pid.txt) -o pid,etime,%cpu,%mem,cmd
 
-# Quick status check
-tail -20 logs/austin_training_100trials.log
-Expected completion time: ~2-3 hours (100 trials with 130K training samples) Let me know when it completes!
+# Quick status (last 30 lines)
+tail -30 logs/austin_100trials.log
+
+# ============================================================
+# TO KILL TRAINING
+# ============================================================
+kill $(cat /tmp/training_pid.txt)
+# OR
+pkill -f "train_city_ordinal_optuna.py.*austin"
+Key changes made:
+✅ Delta range: -10 to +10 (21 symmetric classes)
+✅ Workers: 18 (for faster computer)
+✅ Trials: 100
+✅ CV splits: 4
+Expected time: ~1-2 hours on faster computer with 18 workers
+
+
+
+
+
 
 
 

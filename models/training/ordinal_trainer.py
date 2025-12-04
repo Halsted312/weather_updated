@@ -295,8 +295,10 @@ class OrdinalDeltaTrainer(BaseTrainer):
 
         # Dynamically compute thresholds from actual training data
         # This handles cities with different delta ranges (e.g., LA/Miami have no delta=-2)
-        self._min_delta = int(y_train.min())  # -2 for Chicago/Philly, -1 for others
-        self._max_delta = int(y_train.max())  # +10 for all
+        self._min_delta = -10  # Fixed for all cities
+        self._max_delta = 10   # Fixed for all cities
+        self._min_delta = -10  # Fixed for all cities
+        self._max_delta = 10   # Fixed for all cities
         self.thresholds = list(range(self._min_delta + 1, self._max_delta + 1))
         self._delta_classes = list(range(self._min_delta, self._max_delta + 1))
 
