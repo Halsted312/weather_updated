@@ -560,7 +560,7 @@ def compute_multi_horizon_features(
             fcst_multi_std: Std dev across T-1 to T-14
             fcst_multi_range: Max - Min (forecast uncertainty range)
             fcst_multi_t1_t2_diff: T-1 minus T-2 (most recent change)
-            fcst_multi_drift: T-1 minus T-14 (long-term trend)
+            fcst_multi_drift: T-1 minus T-6 (long-term trend)
     """
     null_features = {
         "fcst_multi_mean": None,
@@ -608,10 +608,10 @@ def compute_multi_horizon_features(
     # Group 3: Evolution
     t1_val = fcst_multi.get(1, {}).get("tempmax_f") if fcst_multi.get(1) else None
     t2_val = fcst_multi.get(2, {}).get("tempmax_f") if fcst_multi.get(2) else None
-    t14_val = fcst_multi.get(14, {}).get("tempmax_f") if fcst_multi.get(14) else None
+    t6_val = fcst_multi.get(6, {}).get("tempmax_f") if fcst_multi.get(6) else None
 
     t1_t2_diff = (t1_val - t2_val) if (t1_val is not None and t2_val is not None) else None
-    drift = (t1_val - t14_val) if (t1_val is not None and t14_val is not None) else None
+    drift = (t1_val - t6_val) if (t1_val is not None and t6_val is not None) else None
 
     features = {
         "fcst_multi_mean": mean_val,

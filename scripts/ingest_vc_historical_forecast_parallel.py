@@ -269,8 +269,8 @@ def process_chunk(
             current_basis, datetime.min.time()
         ).replace(tzinfo=timezone.utc, hour=12)
 
-        target_start = current_basis
-        target_end = current_basis + timedelta(days=horizon_days - 1)
+        target_start = current_basis + timedelta(days=1)  # Targets start AFTER basis date
+        target_end = current_basis + timedelta(days=horizon_days)
 
         # Build URL
         if location_type == "station":

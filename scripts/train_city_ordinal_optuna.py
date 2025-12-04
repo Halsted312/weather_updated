@@ -309,7 +309,6 @@ def main():
         base_model="catboost",
         n_trials=args.trials,
         cv_splits=args.cv_splits,
-        include_market=True,
         verbose=True,
     )
     trainer.train(df_train, df_val=df_test)

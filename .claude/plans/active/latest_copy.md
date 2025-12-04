@@ -1,3 +1,31 @@
+# Run in background with output logging
+nohup PYTHONPATH=. python3 scripts/train_city_ordinal_optuna.py \
+  --city austin \
+  --trials 100 \
+  --cv-splits 4 \
+  --use-cached \
+  > logs/austin_training_100trials.log 2>&1 &
+
+# Save the process ID
+echo $! > /tmp/training_pid.txt
+echo "Training started! PID: $(cat /tmp/training_pid.txt)"
+To monitor progress:
+# Watch trial progress (updates live)
+tail -f logs/austin_training_100trials.log | grep -E "Trial|Best|Accuracy|MAE"
+
+# Check which trial number (look for "Trial X" in output)
+grep "Trial" logs/austin_training_100trials.log | tail -5
+
+# Check if still running
+ps -p $(cat /tmp/training_pid.txt) -o pid,etime,%cpu,%mem,cmd
+
+# Quick status check
+tail -20 logs/austin_training_100trials.log
+Expected completion time: ~2-3 hours (100 trials with 130K training samples) Let me know when it completes!
+
+
+
+
 PYTHONPATH=. python scripts/train_edge_classifier.py \
   --city austin \
   --trials 20 \
