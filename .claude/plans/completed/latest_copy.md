@@ -1,11 +1,135 @@
+
+
+To see the last 30 lines (best trial, metrics, etc.):
+tail -30 logs/austin_WORKING_177feat_delta12.log
+To monitor in real-time with just key info:
+tail -f logs/austin_WORKING_177feat_delta12.log | grep --line-buffered -E "Best trial|Best value|delta_accuracy|delta_mae|within"
+To see full final results when it completes:
+# Check if still running
+ps -p $(cat /tmp/training_pid.txt)
+
+# Once done, see final metrics
+tail -50 logs/austin_WORKING_177feat_delta12.log
+To see current best trial number:
+grep "Best trial:" logs/austin_WORKING_177feat_delta12.log | tail -1
+
+
+
+(.venv) (base) halsted@halsted:/mnt/slow_weather_updated$ PYTHONPATH=. nohup python3 scripts/train_city_ordinal_optuna.py \
+  --city austin \
+  --trials 110 \
+  --cv-splits 5 \
+  --workers 20 \
+  --use-cached \
+  > logs/austin_WORKING_177feat_delta12.log 2>&1 &
+
+echo $! > /tmp/training_pid.txt
+echo "Training FIXED! PID: $(cat /tmp/training_pid.txt)"
+[1]+  Terminated              PYTHONPATH=. nohup python3 scripts/train_city_ordinal_optuna.py --city austin --trials 110 --cv-splits 5 --workers 18 --use-cached > logs/austin_FINAL_177features.log 2>&1
+[1] 3703006
+Training FIXED! PID: 3703006
+(.venv) (base) halsted@halsted:/mnt/slow_weather_updated$ tail -f logs/austin_WORKING_177feat_delta12.log | grep -E "delta range|threshold classifiers"
+15:25:07 [INFO] models.training.ordinal_trainer: City delta range: [-12, 12]
+15:25:07 [INFO] models.training.ordinal_trainer: Training 24 threshold classifiers: [-11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
+# Kill broken training
+pkill -f "train_city_ordinal_optuna.py.*austin"
+
+# Restart with working code
+cd /mnt/slow_weather_updated
+source .venv/bin/activate
+
+PYTHONPATH=. nohup python3 scripts/train_city_ordinal_optuna.py \
+  --city austin \
+  --trials 110 \
+  --cv-splits 5 \
+  --workers 20 \
+  --use-cached \
+  > logs/austin_WORKING_177feat_delta12.log 2>&1 &
+
+echo $! > /tmp/training_pid.txt
+echo "Training FIXED! PID: $(cat /tmp/training_pid.txt)"
+
+# Verify proper initialization
+tail -f logs/austin_WORKING_177feat_delta12.log | grep -E "delta range|threshold classifiers"
+Expected log:
+City delta range: [-12, 12]
+Training 24 threshold classifiers: [-11, -10, -9, ..., +11, +12]
+
+
+
+
+(.venv) (base) halsted@halsted:/mnt/slow_weather_updated$ tail -30 logs/austin_FINAL_177features.log
+15:18:38 [INFO] __main__: 
+Training samples: 129,928
+15:18:38 [INFO] __main__: Training days: 855
+15:18:38 [INFO] __main__: Test samples: 32,376
+15:18:38 [INFO] __main__: Test days: 213
+15:18:38 [INFO] __main__: 
+Station-city features: ['station_city_temp_gap', 'station_city_max_gap_sofar', 'station_city_mean_gap_sofar', 'station_city_gap_std', 'station_city_gap_trend']
+15:18:38 [INFO] __main__:   station_city_temp_gap: 129,896/129,928 non-null (100.0%)
+15:18:38 [INFO] __main__:   station_city_max_gap_sofar: 129,896/129,928 non-null (100.0%)
+15:18:38 [INFO] __main__:   station_city_mean_gap_sofar: 129,896/129,928 non-null (100.0%)
+15:18:38 [INFO] __main__:   station_city_gap_std: 129,896/129,928 non-null (100.0%)
+15:18:38 [INFO] __main__:   station_city_gap_trend: 129,894/129,928 non-null (100.0%)
+15:18:38 [INFO] __main__: 
+Multi-horizon features: ['fcst_multi_mean', 'fcst_multi_median', 'fcst_multi_ema', 'fcst_multi_std', 'fcst_multi_range', 'fcst_multi_t1_t2_diff', 'fcst_multi_drift']
+15:18:38 [INFO] __main__:   fcst_multi_mean: 129,928/129,928 non-null (100.0%)
+15:18:38 [INFO] __main__:   fcst_multi_median: 129,928/129,928 non-null (100.0%)
+15:18:38 [INFO] __main__:   fcst_multi_ema: 129,928/129,928 non-null (100.0%)
+15:18:38 [INFO] __main__:   fcst_multi_std: 129,928/129,928 non-null (100.0%)
+15:18:38 [INFO] __main__:   fcst_multi_range: 129,928/129,928 non-null (100.0%)
+15:18:38 [INFO] __main__:   fcst_multi_t1_t2_diff: 129,928/129,928 non-null (100.0%)
+15:18:38 [INFO] __main__:   fcst_multi_drift: 129,928/129,928 non-null (100.0%)
+15:18:40 [INFO] models.training.ordinal_trainer: Training ordinal model (catboost) on 129928 samples
+15:18:40 [INFO] models.training.ordinal_trainer: City delta range: [-12, 12]
+15:18:40 [INFO] models.training.ordinal_trainer: Training 0 threshold classifiers: []
+15:18:40 [INFO] models.training.ordinal_trainer: Starting Optuna tuning with 110 trials
+
+============================================================
+OPTUNA TRAINING (110 trials)
+============================================================
+Best trial: 3. Best value: 0.90656:  18%|█▊        | 20/110 [01:58<09:24,  6.27s/it](.venv) (base) halsted@halsted:/mnt/slow_weather_updated$ tail -30 logs/austin_FINAL_177features.log
+15:18:38 [INFO] __main__: 
+Training samples: 129,928
+15:18:38 [INFO] __main__: Training days: 855
+15:18:38 [INFO] __main__: Test samples: 32,376
+15:18:38 [INFO] __main__: Test days: 213
+15:18:38 [INFO] __main__: 
+Station-city features: ['station_city_temp_gap', 'station_city_max_gap_sofar', 'station_city_mean_gap_sofar', 'station_city_gap_std', 'station_city_gap_trend']
+15:18:38 [INFO] __main__:   station_city_temp_gap: 129,896/129,928 non-null (100.0%)
+15:18:38 [INFO] __main__:   station_city_max_gap_sofar: 129,896/129,928 non-null (100.0%)
+15:18:38 [INFO] __main__:   station_city_mean_gap_sofar: 129,896/129,928 non-null (100.0%)
+15:18:38 [INFO] __main__:   station_city_gap_std: 129,896/129,928 non-null (100.0%)
+15:18:38 [INFO] __main__:   station_city_gap_trend: 129,894/129,928 non-null (100.0%)
+15:18:38 [INFO] __main__: 
+Multi-horizon features: ['fcst_multi_mean', 'fcst_multi_median', 'fcst_multi_ema', 'fcst_multi_std', 'fcst_multi_range', 'fcst_multi_t1_t2_diff', 'fcst_multi_drift']
+15:18:38 [INFO] __main__:   fcst_multi_mean: 129,928/129,928 non-null (100.0%)
+15:18:38 [INFO] __main__:   fcst_multi_median: 129,928/129,928 non-null (100.0%)
+15:18:38 [INFO] __main__:   fcst_multi_ema: 129,928/129,928 non-null (100.0%)
+15:18:38 [INFO] __main__:   fcst_multi_std: 129,928/129,928 non-null (100.0%)
+15:18:38 [INFO] __main__:   fcst_multi_range: 129,928/129,928 non-null (100.0%)
+15:18:38 [INFO] __main__:   fcst_multi_t1_t2_diff: 129,928/129,928 non-null (100.0%)
+15:18:38 [INFO] __main__:   fcst_multi_drift: 129,928/129,928 non-null (100.0%)
+15:18:40 [INFO] models.training.ordinal_trainer: Training ordinal model (catboost) on 129928 samples
+15:18:40 [INFO] models.training.ordinal_trainer: City delta range: [-12, 12]
+15:18:40 [INFO] models.training.ordinal_trainer: Training 0 threshold classifiers: []
+15:18:40 [INFO] models.training.ordinal_trainer: Starting Optuna tuning with 110 trials
+
+============================================================
+OPTUNA TRAINING (110 trials)
+============================================================
+Best trial: 23. Best value: 0.906952:  24%|██▎       | 26/110 [02:36<08:52,  6.33s/it](.venv) (base) halsted@halsted:/mnt/slow_weather_updated$ 
+
+
 cd /mnt/slow_weather_updated
 source .venv/bin/activate
 
 # Run with ALL fixes (177 features, -12 to +12 delta range)
 PYTHONPATH=. nohup python3 scripts/train_city_ordinal_optuna.py \
   --city austin \
-  --trials 100 \
-  --cv-splits 4 \
+  --trials 110 \
+  --cv-splits 5 \
   --workers 18 \
   --use-cached \
   > logs/austin_FINAL_177features.log 2>&1 &
@@ -158,7 +282,7 @@ grep -oP "Best trial: \K\d+" logs/austin_150trials.log | tail -1
 ps -p $(cat /tmp/training_pid.txt) -o pid,etime,%cpu,%mem,cmd
 
 # Quick status (last 30 lines)
-tail -30 logs/austin_150trials.log
+tail -30 logs/austin_FINAL_177features.log
 
 # ============================================================
 # TO KILL TRAINING

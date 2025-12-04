@@ -297,6 +297,8 @@ class OrdinalDeltaTrainer(BaseTrainer):
         # Covers 90.4% of data, handles both cooling and warming patterns
         self._min_delta = -12  # Fixed for all cities
         self._max_delta = 12   # Fixed for all cities
+        self.thresholds = list(range(self._min_delta + 1, self._max_delta + 1))
+        self._delta_classes = list(range(self._min_delta, self._max_delta + 1))
 
         logger.info(f"City delta range: [{self._min_delta}, {self._max_delta}]")
         logger.info(f"Training {len(self.thresholds)} threshold classifiers: {self.thresholds}")
