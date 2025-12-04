@@ -178,6 +178,10 @@ NUMERIC_FEATURE_COLS: list[str] = [
     "fcst_drift_num_leads", "fcst_drift_std_f",
     "fcst_drift_max_upside_f", "fcst_drift_max_downside_f",
     "fcst_drift_mean_delta_f", "fcst_drift_slope_f_per_lead",
+    # Multi-horizon features (T-1 to T-6 forecast evolution)
+    "fcst_multi_mean", "fcst_multi_median", "fcst_multi_ema",
+    "fcst_multi_std", "fcst_multi_range",
+    "fcst_multi_t1_t2_diff", "fcst_multi_drift",
     # Feature Group 4: Multivar static features (humidity, cloudcover, dewpoint)
     "fcst_humidity_mean", "fcst_humidity_min", "fcst_humidity_max", "fcst_humidity_range",
     "fcst_cloudcover_mean", "fcst_cloudcover_min", "fcst_cloudcover_max", "fcst_cloudcover_range",
@@ -206,6 +210,41 @@ NUMERIC_FEATURE_COLS: list[str] = [
     "vc_max_f_lag1", "vc_max_f_lag7", "delta_vcmax_lag1",
     # Quality features (removed max_gap_minutes - 99.6% constant at 5)
     "missing_fraction_sofar", "edge_max_flag",
+    # Station-city gap features
+    "station_city_temp_gap", "station_city_max_gap_sofar",
+    "station_city_mean_gap_sofar", "station_city_gap_std", "station_city_gap_trend",
+    # Temperature momentum and volatility
+    "temp_mean_last_30min", "temp_std_last_30min", "temp_max_last_30min",
+    "temp_mean_last_60min", "temp_std_last_60min", "temp_max_last_60min",
+    "temp_mean_last_120min", "temp_std_last_120min",
+    "temp_rate_last_30min", "temp_rate_last_60min", "temp_acceleration",
+    "temp_ema_30min", "temp_ema_60min",
+    "temp_volatility_30min", "temp_volatility_60min",
+    "intraday_range_sofar", "temp_cv_sofar",
+    "minutes_since_max_observed",
+    # Meteo observations (humidity, wind, cloud)
+    "humidity_last_obs", "humidity_mean_last_60min", "humidity_std_last_60min", "high_humidity_flag",
+    "windspeed_last_obs", "windspeed_max_last_60min", "windgust_max_last_60min", "strong_wind_flag",
+    "cloudcover_last_obs", "cloudcover_mean_last_60min", "clear_sky_flag", "high_cloud_flag",
+    # Quality and interaction features
+    "confidence_weighted_gap", "remaining_upside", "expected_delta_uncertainty",
+    "fcst_obs_ratio", "fcst_obs_diff_squared", "delta_vcmax_fcstmax_sofar",
+    "gap_x_hours_remaining", "obs_confidence", "fcst_remaining_potential", "fcst_importance_weight",
+    # Time context
+    "hours_since_market_open", "minutes_since_market_open",
+    "hours_to_event_close", "log_hours_to_close", "log_minutes_since_open",
+    # Phase indicators
+    "is_heating_phase", "is_cooling_phase", "is_plateau_phase",
+    "is_d_minus_1", "is_event_day",
+]
+
+# Market features (included by default, can be excluded with include_market=False)
+MARKET_FEATURE_COLS: list[str] = [
+    "market_yes_bid", "market_yes_ask",
+    "market_bid_ask_spread", "market_mid_price",
+    "bid_change_last_30min", "bid_change_last_60min", "bid_momentum_30min",
+    "volume_last_30min", "volume_last_60min", "cumulative_volume_today",
+    "has_recent_trade", "open_interest",
 ]
 
 CATEGORICAL_FEATURE_COLS: list[str] = [
@@ -213,12 +252,12 @@ CATEGORICAL_FEATURE_COLS: list[str] = [
 ]
 
 # Delta classes for the Δ-model
-# Range [-2, +10] chosen based on data distribution:
-# - Low clip -2: keeps tail ≤15% (2.1% actual in Chicago data)
-# - High clip +10: captures early-morning snapshots where high hasn't occurred
-# - At 10am, deltas can reach +10 (high still to come)
-# - By 4pm+, ~95%+ are within [-2, +2]
-DELTA_CLASSES = list(range(-2, 11))  # -2, -1, 0, ..., +9, +10 (13 classes)
+# Range [-12, +12] chosen for 38-hour market-clock window:
+# - Covers 90.4% of data (clips 5.2% below, 4.4% above)
+# - Symmetric range handles overnight cooling and daytime warming
+# - Extreme events (< -12 or > +12) are clipped to boundaries
+# - 25 ordinal classes with good representation across range
+DELTA_CLASSES = list(range(-12, 13))  # -12, -11, ..., 0, ..., +11, +12 (25 classes)
 
 
 def get_feature_columns(

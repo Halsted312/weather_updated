@@ -293,14 +293,10 @@ class OrdinalDeltaTrainer(BaseTrainer):
 
         X_train, y_train = self._prepare_features(df_train)
 
-        # Dynamically compute thresholds from actual training data
-        # This handles cities with different delta ranges (e.g., LA/Miami have no delta=-2)
-        self._min_delta = -10  # Fixed for all cities
-        self._max_delta = 10   # Fixed for all cities
-        self._min_delta = -10  # Fixed for all cities
-        self._max_delta = 10   # Fixed for all cities
-        self.thresholds = list(range(self._min_delta + 1, self._max_delta + 1))
-        self._delta_classes = list(range(self._min_delta, self._max_delta + 1))
+        # Fixed symmetric delta range for 38-hour window (overnight + daytime)
+        # Covers 90.4% of data, handles both cooling and warming patterns
+        self._min_delta = -12  # Fixed for all cities
+        self._max_delta = 12   # Fixed for all cities
 
         logger.info(f"City delta range: [{self._min_delta}, {self._max_delta}]")
         logger.info(f"Training {len(self.thresholds)} threshold classifiers: {self.thresholds}")
@@ -536,11 +532,15 @@ class OrdinalDeltaTrainer(BaseTrainer):
         if not self.classifiers or self.base_model_type != 'catboost':
             return None
 
-        # Aggregate importance across classifiers
+        # Aggregate importance across classifiers (skip constant predictors)
         all_importances = []
         for k, clf in self.classifiers.items():
-            imp = clf.get_feature_importance()
-            all_importances.append(imp)
+            # Skip constant classifiers (stored as dicts, not models)
+            if isinstance(clf, dict):
+                continue
+            if hasattr(clf, 'get_feature_importance'):
+                imp = clf.get_feature_importance()
+                all_importances.append(imp)
 
         # Average across classifiers
         avg_importance = np.mean(all_importances, axis=0)
