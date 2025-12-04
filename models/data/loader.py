@@ -431,6 +431,119 @@ def load_historical_forecast_15min(
     return df
 
 
+def load_multi_horizon_forecasts(
+    session: Session,
+    city_id: str,
+    target_date: date,
+    lead_days: list[int] = None,
+) -> dict[int, Optional[dict]]:
+    """Load forecasts from multiple lead times for a single target date.
+
+    Returns a dictionary mapping lead_day → forecast_dict, where each
+    forecast_dict contains 'tempmax_f', 'tempmin_f', etc.
+
+    Used by the unified pipeline to compute multi-horizon features that
+    capture forecast drift/evolution.
+
+    Args:
+        session: Database session
+        city_id: City identifier
+        target_date: The day we're predicting
+        lead_days: List of lead days to fetch (default [1,2,3,4,5,6])
+
+    Returns:
+        Dict mapping lead_day → forecast_dict or None if not available
+    """
+    if lead_days is None:
+        lead_days = [1, 2, 3, 4, 5, 6]
+
+    result = {}
+    for lead in lead_days:
+        basis_date = target_date - timedelta(days=lead)
+        fcst = load_historical_forecast_daily(session, city_id, target_date, basis_date)
+        result[lead] = fcst
+
+    return result
+
+
+def batch_load_multi_horizon_forecasts(
+    session: Session,
+    city_id: str,
+    start_date: date,
+    end_date: date,
+    lead_days: list[int] = None,
+) -> dict[tuple[date, int], Optional[dict]]:
+    """Load multi-horizon forecasts for ALL target dates at once (batch mode).
+
+    Instead of making 14 queries per day, this makes 14 queries total
+    for the entire date range, dramatically reducing database overhead.
+
+    Args:
+        session: Database session
+        city_id: City identifier
+        start_date: First target date
+        end_date: Last target date
+        lead_days: List of lead days to fetch (default [1,2,3,4,5,6])
+
+    Returns:
+        Dict mapping (target_date, lead_day) → forecast_dict or None
+        Example: {(date(2025,4,1), 1): {'tempmax_f': 85.0, ...}, ...}
+    """
+    if lead_days is None:
+        lead_days = [1, 2, 3, 4, 5, 6]
+
+    # Get location ID
+    vc_location_id = get_vc_location_id(session, city_id, "city")
+    if vc_location_id is None:
+        logger.warning(f"No vc_location found for {city_id}")
+        return {}
+
+    all_forecasts = {}
+
+    # Query once per lead_day for ALL target dates
+    for lead in lead_days:
+        query = text("""
+            SELECT
+                target_date,
+                tempmax_f, tempmin_f, temp_f,
+                humidity, precip_in, precipprob,
+                windspeed_mph, windgust_mph,
+                cloudcover, conditions
+            FROM wx.vc_forecast_daily
+            WHERE vc_location_id = :vc_location_id
+              AND target_date BETWEEN :start_date AND :end_date
+              AND lead_days = :lead_day
+              AND data_type = 'historical_forecast'
+            ORDER BY target_date
+        """)
+
+        rows = session.execute(query, {
+            "vc_location_id": vc_location_id,
+            "start_date": start_date,
+            "end_date": end_date,
+            "lead_day": lead,
+        }).fetchall()
+
+        # Store each forecast by (target_date, lead_day) key
+        for row in rows:
+            target_date = row.target_date
+            all_forecasts[(target_date, lead)] = {
+                "tempmax_f": float(row.tempmax_f) if row.tempmax_f is not None else None,
+                "tempmin_f": float(row.tempmin_f) if row.tempmin_f is not None else None,
+                "temp_f": float(row.temp_f) if row.temp_f is not None else None,
+                "humidity": float(row.humidity) if row.humidity is not None else None,
+                "precip_in": float(row.precip_in) if row.precip_in is not None else None,
+                "precipprob": float(row.precipprob) if row.precipprob is not None else None,
+                "windspeed_mph": float(row.windspeed_mph) if row.windspeed_mph is not None else None,
+                "windgust_mph": float(row.windgust_mph) if row.windgust_mph is not None else None,
+                "cloudcover": float(row.cloudcover) if row.cloudcover is not None else None,
+                "conditions": row.conditions,
+            }
+
+    logger.info(f"Batch-loaded {len(all_forecasts)} multi-horizon forecasts for {city_id}")
+    return all_forecasts
+
+
 def load_training_data(
     cities: list[str],
     start_date: date,

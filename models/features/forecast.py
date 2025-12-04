@@ -533,3 +533,94 @@ def compute_forecast_multivar_static_features(
     }
 
     return FeatureSet(name="forecast_multivar_static", features=features)
+
+
+# =============================================================================
+# Multi-Horizon Features (from load_multi_horizon_forecasts)
+# =============================================================================
+
+@register_feature_group("forecast_multi_horizon")
+def compute_multi_horizon_features(
+    fcst_multi: dict[int, Optional[dict]],
+) -> FeatureSet:
+    """Compute features from multi-lead forecasts (T-1 to T-14).
+
+    Captures forecast evolution, stability, and trend by comparing forecasts
+    from different lead times for the same target day.
+
+    Args:
+        fcst_multi: Dict mapping lead_day → forecast_dict
+                    Each forecast_dict has 'tempmax_f', etc.
+
+    Returns:
+        FeatureSet with 7 features:
+            fcst_multi_mean: Simple average of tmax across T-1 to T-14
+            fcst_multi_median: Median (robust to outliers)
+            fcst_multi_ema: Exponential moving average weighted toward T-1
+            fcst_multi_std: Std dev across T-1 to T-14
+            fcst_multi_range: Max - Min (forecast uncertainty range)
+            fcst_multi_t1_t2_diff: T-1 minus T-2 (most recent change)
+            fcst_multi_drift: T-1 minus T-14 (long-term trend)
+    """
+    null_features = {
+        "fcst_multi_mean": None,
+        "fcst_multi_median": None,
+        "fcst_multi_ema": None,
+        "fcst_multi_std": None,
+        "fcst_multi_range": None,
+        "fcst_multi_t1_t2_diff": None,
+        "fcst_multi_drift": None,
+    }
+
+    if not fcst_multi:
+        return FeatureSet(name="forecast_multi_horizon", features=null_features)
+
+    # Extract tempmax_f values from each lead (sorted)
+    highs = []
+    for lead in sorted(fcst_multi.keys()):
+        fcst = fcst_multi[lead]
+        if fcst is not None and fcst.get("tempmax_f") is not None:
+            highs.append(fcst["tempmax_f"])
+
+    if not highs:
+        return FeatureSet(name="forecast_multi_horizon", features=null_features)
+
+    arr = np.asarray(highs, dtype=np.float64)
+
+    # Group 1: Central tendency
+    mean_val = float(arr.mean())
+    median_val = float(np.median(arr))
+
+    # Exponential moving average (weighted toward T-1)
+    leads_present = sorted([k for k in fcst_multi.keys() if fcst_multi[k] is not None and fcst_multi[k].get("tempmax_f") is not None])
+    if leads_present:
+        weights = np.exp(-0.15 * (np.array(leads_present) - 1))
+        weights /= weights.sum()
+        values = np.array([fcst_multi[k]["tempmax_f"] for k in leads_present])
+        ema_val = float(np.sum(weights * values))
+    else:
+        ema_val = None
+
+    # Group 2: Dispersion
+    std_val = float(arr.std(ddof=1)) if len(arr) > 1 else 0.0
+    range_val = float(arr.max() - arr.min())
+
+    # Group 3: Evolution
+    t1_val = fcst_multi.get(1, {}).get("tempmax_f") if fcst_multi.get(1) else None
+    t2_val = fcst_multi.get(2, {}).get("tempmax_f") if fcst_multi.get(2) else None
+    t14_val = fcst_multi.get(14, {}).get("tempmax_f") if fcst_multi.get(14) else None
+
+    t1_t2_diff = (t1_val - t2_val) if (t1_val is not None and t2_val is not None) else None
+    drift = (t1_val - t14_val) if (t1_val is not None and t14_val is not None) else None
+
+    features = {
+        "fcst_multi_mean": mean_val,
+        "fcst_multi_median": median_val,
+        "fcst_multi_ema": ema_val,
+        "fcst_multi_std": std_val,
+        "fcst_multi_range": range_val,
+        "fcst_multi_t1_t2_diff": t1_t2_diff,
+        "fcst_multi_drift": drift,
+    }
+
+    return FeatureSet(name="forecast_multi_horizon", features=features)

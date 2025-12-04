@@ -40,6 +40,10 @@ from models.features.forecast import (
     compute_forecast_delta_features,
     compute_multi_horizon_features,
     align_forecast_to_observations,
+    # Feature Groups 2-4
+    compute_forecast_peak_window_features,
+    compute_forecast_drift_features,
+    compute_forecast_multivar_static_features,
 )
 from models.features.momentum import compute_momentum_features, compute_volatility_features
 from models.features.interactions import (
@@ -436,6 +440,86 @@ def compute_snapshot_features(
         features["fcst_multi_std"] = None
         features["fcst_multi_mean"] = None
         features["fcst_multi_drift"] = None
+
+    # ==========================================================================
+    # 9c. Peak window features (Feature Group 2: timing and duration of forecast peak)
+    # ==========================================================================
+    if ctx.fcst_hourly_df is not None and not ctx.fcst_hourly_df.empty:
+        temps_f = ctx.fcst_hourly_df["temp_f"].dropna().tolist()
+        # Get timestamps from target_datetime_local
+        ts_col = "target_datetime_local"
+        if ts_col in ctx.fcst_hourly_df.columns:
+            timestamps = pd.to_datetime(ctx.fcst_hourly_df[ts_col]).tolist()
+            step_minutes = 60  # Hourly data
+            peak_fs = compute_forecast_peak_window_features(temps_f, timestamps, step_minutes)
+            features.update(peak_fs.to_dict())
+        else:
+            features["fcst_peak_temp_f"] = None
+            features["fcst_peak_hour_float"] = None
+            features["fcst_peak_band_width_min"] = None
+            features["fcst_peak_step_minutes"] = None
+    else:
+        features["fcst_peak_temp_f"] = None
+        features["fcst_peak_hour_float"] = None
+        features["fcst_peak_band_width_min"] = None
+        features["fcst_peak_step_minutes"] = None
+
+    # ==========================================================================
+    # 9d. Forecast drift features (Feature Group 3: how forecast evolved over leads)
+    # ==========================================================================
+    if ctx.fcst_multi:
+        # Convert fcst_multi dict to DataFrame format expected by drift features
+        drift_rows = []
+        for lead_day, fcst in ctx.fcst_multi.items():
+            if fcst is not None and fcst.get("tempmax_f") is not None:
+                drift_rows.append({
+                    "lead_days": lead_day,
+                    "tempmax_f": fcst.get("tempmax_f"),
+                    "tempmin_f": fcst.get("tempmin_f"),
+                    "humidity": fcst.get("humidity"),
+                    "cloudcover": fcst.get("cloudcover"),
+                })
+        if drift_rows:
+            drift_df = pd.DataFrame(drift_rows)
+            drift_fs = compute_forecast_drift_features(drift_df)
+            features.update(drift_fs.to_dict())
+        else:
+            features["fcst_drift_num_leads"] = None
+            features["fcst_drift_std_f"] = None
+            features["fcst_drift_max_upside_f"] = None
+            features["fcst_drift_max_downside_f"] = None
+            features["fcst_drift_mean_delta_f"] = None
+            features["fcst_drift_slope_f_per_lead"] = None
+    else:
+        features["fcst_drift_num_leads"] = None
+        features["fcst_drift_std_f"] = None
+        features["fcst_drift_max_upside_f"] = None
+        features["fcst_drift_max_downside_f"] = None
+        features["fcst_drift_mean_delta_f"] = None
+        features["fcst_drift_slope_f_per_lead"] = None
+
+    # ==========================================================================
+    # 9e. Multivar static features (Feature Group 4: humidity/cloudcover/dewpoint)
+    # ==========================================================================
+    if ctx.fcst_hourly_df is not None and not ctx.fcst_hourly_df.empty:
+        # Use hourly data for multivar (has cloudcover, unlike minute data)
+        multivar_fs = compute_forecast_multivar_static_features(ctx.fcst_hourly_df)
+        features.update(multivar_fs.to_dict())
+    else:
+        features["fcst_humidity_mean"] = None
+        features["fcst_humidity_min"] = None
+        features["fcst_humidity_max"] = None
+        features["fcst_humidity_range"] = None
+        features["fcst_cloudcover_mean"] = None
+        features["fcst_cloudcover_min"] = None
+        features["fcst_cloudcover_max"] = None
+        features["fcst_cloudcover_range"] = None
+        features["fcst_dewpoint_mean"] = None
+        features["fcst_dewpoint_min"] = None
+        features["fcst_dewpoint_max"] = None
+        features["fcst_dewpoint_range"] = None
+        features["fcst_humidity_morning_mean"] = None
+        features["fcst_humidity_afternoon_mean"] = None
 
     # ==========================================================================
     # 10. Momentum features (temperature trajectory)
