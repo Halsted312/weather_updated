@@ -21,8 +21,8 @@ from scripts.train_city_ordinal_optuna import (
     build_dataset_parallel,
     VALID_CITIES,
 )
-from src.db.connection import get_engine
-from sqlalchemy import text
+from src.db import get_db_session
+from models.data.loader import get_available_date_range
 
 logging.basicConfig(
     level=logging.INFO,
@@ -30,28 +30,6 @@ logging.basicConfig(
     datefmt="%H:%M:%S",
 )
 logger = logging.getLogger(__name__)
-
-
-def get_data_range(city: str) -> tuple[date, date]:
-    """Get available data range for a city from database."""
-    engine = get_engine()
-
-    query = text("""
-        SELECT
-            MIN(date_local) as min_date,
-            MAX(date_local) as max_date
-        FROM wx.settlement
-        WHERE city = :city
-          AND settle_f IS NOT NULL
-    """)
-
-    with engine.connect() as conn:
-        result = conn.execute(query, {"city": city}).fetchone()
-
-    if not result or not result.min_date:
-        raise ValueError(f"No settlement data found for {city}")
-
-    return result.min_date, result.max_date
 
 
 def main():
@@ -72,8 +50,21 @@ def main():
         logger.info("="*80)
 
         try:
-            # Get available data range
-            min_date, max_date = get_data_range(city)
+            # Get available data range (same logic as train_city_ordinal_optuna.py)
+            from src.db import get_db_session
+            with get_db_session() as session:
+                db_min_date, max_date = get_available_date_range(session, city)
+
+            if db_min_date is None or max_date is None:
+                logger.error(f"No data available for {city}")
+                continue
+
+            # Enforce minimum date of 2023-01-01 to ensure lag features have history
+            min_date = max(db_min_date, date(2023, 1, 1))
+
+            if min_date != db_min_date:
+                logger.info(f"Enforcing min date: {db_min_date} → {min_date} (need lag history)")
+
             total_days = (max_date - min_date).days + 1
             logger.info(f"Date range: {min_date} to {max_date} ({total_days} days)")
 

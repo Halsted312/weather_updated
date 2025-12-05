@@ -55,7 +55,7 @@ def get_data_range(city: str) -> tuple[date, date]:
             MAX(date_local) as max_date
         FROM wx.settlement
         WHERE city = :city
-          AND settle_f IS NOT NULL
+          AND tmax_final IS NOT NULL
     """)
 
     with engine.connect() as conn:

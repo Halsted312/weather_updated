@@ -148,6 +148,13 @@ def build_snapshot_dataset(
         # Add date column to observations
         obs_df["day"] = pd.to_datetime(obs_df["datetime_local"]).dt.date
 
+        # Load hourly forecast for cloudcover interpolation
+        # (cloudcover not available in 5-min obs, only in hourly forecasts)
+        from models.features.interpolation import interpolate_cloudcover_from_hourly
+
+        # We'll interpolate cloudcover per day when we have fcst_hourly_df
+        # (see below in the daily loop after loading fcst_hourly_df)
+
         # Process each day
         for _, settle_row in settlements_df.iterrows():
             day = settle_row["date_local"]
@@ -169,6 +176,11 @@ def build_snapshot_dataset(
             if include_forecast_features:
                 fcst_daily = load_historical_forecast_daily(session, city_id, day, basis_date)
                 fcst_hourly_df = load_historical_forecast_hourly(session, city_id, day, basis_date)
+
+                # Interpolate cloudcover from hourly forecast to observation timestamps
+                # (cloudcover only available hourly, not in 5-min observations)
+                if fcst_hourly_df is not None and not fcst_hourly_df.empty:
+                    day_obs = interpolate_cloudcover_from_hourly(day_obs, fcst_hourly_df)
 
                 # Compute per-day forecast features (reused across all snapshots)
 
