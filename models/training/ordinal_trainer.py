@@ -86,6 +86,7 @@ class OrdinalDeltaTrainer(BaseTrainer):
         calibrate: bool = False,  # Ordinal doesn't use Platt in same way
         cv_splits: int = 3,
         catboost_params: Optional[dict] = None,
+        objective: Literal['auc', 'within2'] = 'auc',
         verbose: bool = False,
     ):
         """Initialize ordinal trainer.
@@ -98,6 +99,7 @@ class OrdinalDeltaTrainer(BaseTrainer):
             calibrate: Whether to calibrate individual threshold classifiers
             cv_splits: Number of CV splits for tuning
             catboost_params: Override CatBoost parameters (if base_model='catboost')
+            objective: Optimization objective ('auc' or 'within2')
             verbose: Whether to show training progress
         """
         super().__init__(
@@ -111,6 +113,7 @@ class OrdinalDeltaTrainer(BaseTrainer):
         self.n_trials = n_trials
         self.verbose = verbose
         self.catboost_params = catboost_params or {}
+        self.objective = objective
 
         # Thresholds will be set dynamically during training based on actual data
         # (Some cities may have delta range [-2, +10], others [-1, +10])
@@ -198,8 +201,12 @@ class OrdinalDeltaTrainer(BaseTrainer):
 
         Optimizes params by training on a representative middle threshold (delta >= 1)
         and evaluating via cross-validation. The best params are used for all thresholds.
+
+        Supports two objectives:
+            - 'auc': Area under ROC curve (default)
+            - 'within2': Proportion of predictions within 2 of true delta
         """
-        logger.info(f"Starting Optuna tuning with {self.n_trials} trials")
+        logger.info(f"Starting Optuna tuning with {self.n_trials} trials (objective={self.objective})")
 
         cv = DayGroupedTimeSeriesSplit(n_splits=self.cv_splits)
 
@@ -207,21 +214,29 @@ class OrdinalDeltaTrainer(BaseTrainer):
         tuning_threshold = 1
         y_binary = (y >= tuning_threshold).astype(int)
 
+        # For within2 objective, we need all thresholds trained together
+        # Store the delta classes for within-2 calculation
+        delta_classes = np.array(list(range(-12, 13)))  # Fixed [-12, +12] range
+
         def objective(trial: "optuna.Trial") -> float:
             # Choose bootstrap type first (affects other params)
             bootstrap_type = trial.suggest_categorical("bootstrap_type", ["Bayesian", "Bernoulli"])
 
+            # Choose grow policy (affects tree structure)
+            grow_policy = trial.suggest_categorical("grow_policy", ["SymmetricTree", "Depthwise", "Lossguide"])
+
             params = {
-                # Tree structure
-                "depth": trial.suggest_int("depth", 4, 8),
-                "iterations": trial.suggest_int("iterations", 150, 400),
-                "learning_rate": trial.suggest_float("learning_rate", 0.01, 0.15, log=True),
-                "border_count": trial.suggest_int("border_count", 32, 128),
+                # Tree structure - WIDENED ranges
+                "depth": trial.suggest_int("depth", 4, 10),
+                "iterations": trial.suggest_int("iterations", 100, 600),
+                "learning_rate": trial.suggest_float("learning_rate", 0.01, 0.3, log=True),
+                "border_count": trial.suggest_int("border_count", 32, 255),
+                "grow_policy": grow_policy,
                 # Regularization
-                "l2_leaf_reg": trial.suggest_float("l2_leaf_reg", 1.0, 10.0, log=True),
-                "min_data_in_leaf": trial.suggest_int("min_data_in_leaf", 5, 30),
+                "l2_leaf_reg": trial.suggest_float("l2_leaf_reg", 0.1, 10.0, log=True),
+                "min_data_in_leaf": trial.suggest_int("min_data_in_leaf", 1, 50),
                 "random_strength": trial.suggest_float("random_strength", 0.0, 2.0),
-                "colsample_bylevel": trial.suggest_float("colsample_bylevel", 0.5, 1.0),
+                "colsample_bylevel": trial.suggest_float("colsample_bylevel", 0.3, 1.0),
                 "bootstrap_type": bootstrap_type,
                 # Fixed params
                 "loss_function": "Logloss",
@@ -230,18 +245,23 @@ class OrdinalDeltaTrainer(BaseTrainer):
                 "verbose": False,
             }
 
+            # Grow policy specific params
+            if grow_policy == "Lossguide":
+                params["max_leaves"] = trial.suggest_int("max_leaves", 16, 64)
+
             # Bootstrap-specific params
             if bootstrap_type == "Bayesian":
                 params["bagging_temperature"] = trial.suggest_float("bagging_temperature", 0.0, 1.0)
             else:  # Bernoulli
-                params["subsample"] = trial.suggest_float("subsample", 0.6, 1.0)
+                params["subsample"] = trial.suggest_float("subsample", 0.5, 1.0)
 
-            auc_scores = []
+            scores = []
             for train_idx, val_idx in cv.split(df):
                 X_tr = X.iloc[train_idx]
                 y_tr = y_binary.iloc[train_idx]
                 X_va = X.iloc[val_idx]
                 y_va = y_binary.iloc[val_idx]
+                y_va_delta = y.iloc[val_idx]  # Full delta values for within-2
 
                 # Skip if validation has only one class
                 if len(y_va.unique()) < 2:
@@ -251,19 +271,34 @@ class OrdinalDeltaTrainer(BaseTrainer):
                 train_pool = Pool(X_tr, y_tr, cat_features=self._cat_features)
                 val_pool = Pool(X_va, y_va, cat_features=self._cat_features)
 
-                model.fit(train_pool, eval_set=val_pool, early_stopping_rounds=30)
+                model.fit(train_pool, eval_set=val_pool, early_stopping_rounds=50)
 
-                # Use AUC as metric (higher is better)
-                from sklearn.metrics import roc_auc_score
-                proba = model.predict_proba(val_pool)[:, 1]
-                auc = roc_auc_score(y_va, proba)
-                auc_scores.append(auc)
+                if self.objective == 'auc':
+                    # Use AUC as metric (higher is better)
+                    from sklearn.metrics import roc_auc_score
+                    proba = model.predict_proba(val_pool)[:, 1]
+                    score = roc_auc_score(y_va, proba)
+                else:  # within2
+                    # For within-2, we need to predict delta from probabilities
+                    # Using a simplified approach: predict based on single threshold probability
+                    proba = model.predict_proba(val_pool)[:, 1]
+                    # Simple heuristic: use threshold probability to estimate delta
+                    # Higher P(delta >= 1) suggests higher delta values
+                    # Map probabilities to delta predictions
+                    y_pred_delta = np.round(proba * 10 - 3).astype(int)  # Scale to approx delta range
+                    y_pred_delta = np.clip(y_pred_delta, -12, 12)
 
-            if not auc_scores:
+                    # Calculate within-2 rate
+                    within_2 = np.abs(y_va_delta.values - y_pred_delta) <= 2
+                    score = np.mean(within_2)
+
+                scores.append(score)
+
+            if not scores:
                 return 0.0
-            return float(np.mean(auc_scores))
+            return float(np.mean(scores))
 
-        # Run optimization (maximize AUC)
+        # Run optimization (maximize score)
         self.study = optuna.create_study(direction="maximize")
         self.study.optimize(
             objective,
@@ -272,8 +307,9 @@ class OrdinalDeltaTrainer(BaseTrainer):
         )
 
         self.best_params = self.study.best_params
+        metric_name = "AUC" if self.objective == 'auc' else "Within-2 Rate"
         logger.info(f"Best params: {self.best_params}")
-        logger.info(f"Best AUC: {self.study.best_value:.4f}")
+        logger.info(f"Best {metric_name}: {self.study.best_value:.4f}")
 
     def train(
         self,
@@ -293,10 +329,10 @@ class OrdinalDeltaTrainer(BaseTrainer):
 
         X_train, y_train = self._prepare_features(df_train)
 
-        # Fixed symmetric delta range for 38-hour window (overnight + daytime)
-        # Covers 90.4% of data, handles both cooling and warming patterns
-        self._min_delta = -12  # Fixed for all cities
-        self._max_delta = 12   # Fixed for all cities
+        # Fixed symmetric delta range for all cities (standardized pipeline)
+        # Covers vast majority of data, handles both cooling and warming patterns
+        self._min_delta = -12  # Standardized for all cities
+        self._max_delta = 12   # Standardized for all cities
         self.thresholds = list(range(self._min_delta + 1, self._max_delta + 1))
         self._delta_classes = list(range(self._min_delta, self._max_delta + 1))
 

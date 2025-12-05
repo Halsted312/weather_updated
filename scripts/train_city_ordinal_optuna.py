@@ -212,6 +212,14 @@ def main():
                         help='Holdout percentage for test set (default 0.20 = 20%%)')
     parser.add_argument('--no-station-city', action='store_true',
                         help='Disable station-city features')
+    parser.add_argument('--start-date', type=str, default=None,
+                        help='Training start date (YYYY-MM-DD). Default: use all available data')
+    parser.add_argument('--end-date', type=str, default=None,
+                        help='Training end date (YYYY-MM-DD). Default: use all available data')
+    parser.add_argument('--objective', type=str, default='auc', choices=['auc', 'within2'],
+                        help='Optuna optimization objective: auc or within2')
+    parser.add_argument('--cache-dir', type=str, default='data/training_cache',
+                        help='Directory containing cached parquet files (full.parquet per city)')
     args = parser.parse_args()
 
     city = args.city
@@ -219,44 +227,110 @@ def main():
 
     logger.info("=" * 60)
     logger.info(f"{city.upper()} Optuna Training ({args.trials} trials)")
+    logger.info(f"Optimization objective: {args.objective}")
     logger.info("=" * 60)
 
     # Create output directory
     output_dir = Path(f"models/saved/{city}")
     output_dir.mkdir(parents=True, exist_ok=True)
 
+    # Check for cached parquet in training_cache directory
+    cache_path = Path(args.cache_dir) / city / "full.parquet"
     train_parquet = output_dir / "train_data_full.parquet"
     test_parquet = output_dir / "test_data_full.parquet"
 
-    # Get date range for this city
-    from src.db import get_db_session
-    from models.data.loader import get_available_date_range
+    # Try to load from training cache first (preferred - has all new features)
+    if cache_path.exists():
+        logger.info(f"Loading from training cache: {cache_path}")
+        df_full = pd.read_parquet(cache_path)
+        logger.info(f"Loaded {len(df_full):,} rows, {len(df_full.columns)} columns")
 
-    with get_db_session() as session:
-        min_date, max_date = get_available_date_range(session, city)
+        # Determine the date column (event_date or day)
+        date_col = 'event_date' if 'event_date' in df_full.columns else 'day'
+        df_full[date_col] = pd.to_datetime(df_full[date_col]).dt.date
 
-    if min_date is None or max_date is None:
-        logger.error(f"No data available for {city}")
-        return 1
+        # Apply date filtering if specified
+        if args.start_date:
+            start = datetime.strptime(args.start_date, '%Y-%m-%d').date()
+            df_full = df_full[df_full[date_col] >= start]
+            logger.info(f"Filtered to start_date >= {start}")
+        if args.end_date:
+            end = datetime.strptime(args.end_date, '%Y-%m-%d').date()
+            df_full = df_full[df_full[date_col] <= end]
+            logger.info(f"Filtered to end_date <= {end}")
 
-    logger.info(f"Available data: {min_date} to {max_date}")
+        # Get actual date range after filtering
+        min_date = df_full[date_col].min()
+        max_date = df_full[date_col].max()
+        logger.info(f"Data range after filtering: {min_date} to {max_date}")
 
-    # Calculate train/test split (80/20 by days)
-    total_days = (max_date - min_date).days + 1
-    holdout_days = int(total_days * args.holdout_pct)
-    test_start = max_date - timedelta(days=holdout_days)
+        # Calculate train/test split (80/20 by days)
+        unique_days = sorted(df_full[date_col].unique())
+        total_days = len(unique_days)
+        holdout_days = int(total_days * args.holdout_pct)
+        test_start_idx = total_days - holdout_days
+        test_start_day = unique_days[test_start_idx]
 
-    logger.info(f"Total days: {total_days}")
-    logger.info(f"Training: {min_date} to {test_start - timedelta(days=1)} ({total_days - holdout_days} days)")
-    logger.info(f"Testing:  {test_start} to {max_date} ({holdout_days} days)")
+        df_train = df_full[df_full[date_col] < test_start_day].copy().reset_index(drop=True)
+        df_test = df_full[df_full[date_col] >= test_start_day].copy().reset_index(drop=True)
 
-    # Build or load datasets
-    if args.use_cached and train_parquet.exists() and test_parquet.exists():
-        logger.info("Loading cached datasets...")
+        # Ensure 'day' column exists for downstream compatibility
+        if date_col == 'event_date' and 'day' not in df_train.columns:
+            df_train['day'] = df_train['event_date']
+            df_test['day'] = df_test['event_date']
+
+        test_start = test_start_day
+        logger.info(f"Total days: {total_days}")
+        logger.info(f"Training: {min_date} to {unique_days[test_start_idx - 1]} ({total_days - holdout_days} days)")
+        logger.info(f"Testing:  {test_start} to {max_date} ({holdout_days} days)")
+
+    elif args.use_cached and train_parquet.exists() and test_parquet.exists():
+        # Fall back to previously split train/test parquets
+        logger.info("Loading cached train/test datasets...")
         df_train = pd.read_parquet(train_parquet)
         df_test = pd.read_parquet(test_parquet)
         logger.info(f"Loaded train: {len(df_train):,} rows, test: {len(df_test):,} rows")
+
+        # Get date range from data
+        from src.db import get_db_session
+        from models.data.loader import get_available_date_range
+        with get_db_session() as session:
+            min_date, max_date = get_available_date_range(session, city)
+        total_days = (max_date - min_date).days + 1
+        holdout_days = int(total_days * args.holdout_pct)
+        test_start = max_date - timedelta(days=holdout_days)
+
     else:
+        # Build from database (original behavior)
+        from src.db import get_db_session
+        from models.data.loader import get_available_date_range
+
+        with get_db_session() as session:
+            min_date, max_date = get_available_date_range(session, city)
+
+        if min_date is None or max_date is None:
+            logger.error(f"No data available for {city}")
+            return 1
+
+        # Apply date filtering if specified
+        if args.start_date:
+            start = datetime.strptime(args.start_date, '%Y-%m-%d').date()
+            min_date = max(min_date, start)
+        if args.end_date:
+            end = datetime.strptime(args.end_date, '%Y-%m-%d').date()
+            max_date = min(max_date, end)
+
+        logger.info(f"Available data: {min_date} to {max_date}")
+
+        # Calculate train/test split (80/20 by days)
+        total_days = (max_date - min_date).days + 1
+        holdout_days = int(total_days * args.holdout_pct)
+        test_start = max_date - timedelta(days=holdout_days)
+
+        logger.info(f"Total days: {total_days}")
+        logger.info(f"Training: {min_date} to {test_start - timedelta(days=1)} ({total_days - holdout_days} days)")
+        logger.info(f"Testing:  {test_start} to {max_date} ({holdout_days} days)")
+
         logger.info("\nBuilding training dataset...")
         df_train = build_dataset_parallel(
             city, min_date, test_start - timedelta(days=1),
@@ -302,13 +376,14 @@ def main():
     from models.evaluation.metrics import compute_delta_metrics
 
     print("\n" + "=" * 60)
-    print(f"OPTUNA TRAINING ({args.trials} trials)")
+    print(f"OPTUNA TRAINING ({args.trials} trials, objective={args.objective})")
     print("=" * 60)
 
     trainer = OrdinalDeltaTrainer(
         base_model="catboost",
         n_trials=args.trials,
         cv_splits=args.cv_splits,
+        objective=args.objective,
         verbose=True,
     )
     trainer.train(df_train, df_val=df_test)

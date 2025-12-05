@@ -247,9 +247,19 @@ NUMERIC_FEATURE_COLS: list[str] = [
     # Phase indicators
     "is_heating_phase", "is_cooling_phase", "is_plateau_phase",
     "is_event_day",
+    # Market features (bid/ask, volume, momentum) - toggled via include_market
+    "market_yes_bid", "market_yes_ask",
+    "market_bid_ask_spread", "market_mid_price",
+    "bid_change_last_30min", "bid_change_last_60min", "bid_momentum_30min",
+    "volume_last_30min", "volume_last_60min", "cumulative_volume_today",
+    "has_recent_trade", "open_interest",
+    # Additional engineered features from parquet
+    "city_warmer_flag", "fcst_importance_weight",
+    "fcst_multi_median", "fcst_multi_t1_t2_diff",
+    "temp_cv_sofar", "temp_x_day_fraction", "temp_x_hours_remaining", "temp_zscore_vs_forecast",
 ]
 
-# Market features (included by default, can be excluded with include_market=False)
+# Market features list (for toggle logic in get_feature_columns)
 MARKET_FEATURE_COLS: list[str] = [
     "market_yes_bid", "market_yes_ask",
     "market_bid_ask_spread", "market_mid_price",
