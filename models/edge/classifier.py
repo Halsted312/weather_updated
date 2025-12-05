@@ -353,9 +353,13 @@ class EdgeClassifier:
             sort_cols.append("snapshot_time")
         df_valid = df_valid.sort_values(sort_cols).reset_index(drop=True)
 
-        # Detect feature columns (exclude metadata)
+        # Detect feature columns (exclude metadata and non-numeric columns)
         exclude_cols = {"day", "snapshot_time", "pnl", "signal", "settlement_temp",
-                       "tmax_final", "city", "event_date", "cutoff_time"}
+                       "tmax_final", "city", "event_date", "cutoff_time",
+                       # Exclude realistic P&L metadata columns (strings and booleans)
+                       "pnl_gross", "fee_usd", "entry_price_cents", "trade_role",
+                       "trade_side", "trade_action", "target_bracket", "bracket_won",
+                       "trade_won", "ev_cents"}
         self.feature_cols = [c for c in df_valid.columns if c not in exclude_cols]
 
         logger.info(f"Using {len(self.feature_cols)} features: {self.feature_cols[:5]}...")

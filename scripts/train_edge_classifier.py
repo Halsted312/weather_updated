@@ -20,7 +20,7 @@ import warnings
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Tuple
 
 import numpy as np
 import pandas as pd
@@ -39,6 +39,13 @@ from models.edge.implied_temp import (
 )
 from models.edge.detector import detect_edge, EdgeSignal
 from models.edge.classifier import EdgeClassifier
+from src.trading.fees import (
+    taker_fee_total,
+    maker_fee_total,
+    compute_ev_per_contract,
+    find_best_trade,
+)
+from src.trading.risk import PositionSizer
 
 # Suppress warnings during training
 warnings.filterwarnings("ignore", category=UserWarning)
@@ -59,6 +66,261 @@ CITY_CONFIG = {
     "miami": {"ticker_prefix": "KXHIGHMIA", "tz": "America/New_York"},
     "philadelphia": {"ticker_prefix": "KXHIGHPHI", "tz": "America/New_York"},
 }
+
+
+def parse_bracket_label(label: str) -> Tuple[Optional[float], Optional[float]]:
+    """Parse bracket label to get floor and cap strikes.
+
+    Args:
+        label: Bracket label like "82-83", "<80", ">90"
+
+    Returns:
+        (floor, cap) tuple. None means unbounded.
+    """
+    if label.startswith("<"):
+        # Below bracket: <80 means floor=None, cap=80
+        cap = float(label[1:])
+        return (None, cap)
+    elif label.startswith(">"):
+        # Above bracket: >90 means floor=90, cap=None
+        floor = float(label[1:])
+        return (floor, None)
+    elif "-" in label:
+        # Range bracket: 82-83 means floor=82, cap=83
+        parts = label.split("-")
+        floor = float(parts[0])
+        cap = float(parts[1])
+        return (floor, cap)
+    else:
+        # Unknown format
+        return (None, None)
+
+
+def is_settlement_in_bracket(settlement: float, floor: Optional[float], cap: Optional[float]) -> bool:
+    """Check if settlement temperature falls in bracket.
+
+    Kalshi brackets are typically "floor <= T < cap" for middle brackets.
+    Edge brackets: "<X" means T < X, ">X" means T >= X.
+
+    Args:
+        settlement: Settlement temperature
+        floor: Floor strike (None = no lower bound)
+        cap: Cap strike (None = no upper bound)
+
+    Returns:
+        True if settlement is in bracket
+    """
+    if floor is None and cap is None:
+        return False
+
+    if floor is None:
+        # Below bracket: T < cap
+        return settlement < cap
+    elif cap is None:
+        # Above bracket: T >= floor
+        return settlement >= floor
+    else:
+        # Range bracket: floor <= T < cap
+        return floor <= settlement < cap
+
+
+def select_best_bracket_for_trade(
+    signal: EdgeSignal,
+    forecast_implied: float,
+    market_implied: float,
+    bracket_candles: dict,
+    model_probs: Optional[dict] = None,
+    maker_fill_prob: float = 0.4,
+    min_ev_cents: float = 3.0,
+) -> Optional[dict]:
+    """Select the best bracket to trade based on edge signal and EV.
+
+    Uses find_best_trade() to evaluate all brackets and select the one
+    with highest expected value, supporting both YES and NO bets.
+
+    Args:
+        signal: Edge signal (BUY_HIGH or BUY_LOW)
+        forecast_implied: Forecast-implied temperature
+        market_implied: Market-implied temperature
+        bracket_candles: Dict of bracket_label -> candle DataFrame
+        model_probs: Optional dict of bracket_label -> model probability
+        maker_fill_prob: Probability maker order fills (0-1)
+        min_ev_cents: Minimum EV to consider trade
+
+    Returns:
+        Dict with best trade info, or None if no good trade found
+    """
+    if signal == EdgeSignal.NO_TRADE:
+        return None
+
+    candidates = []
+
+    for label, candle_df in bracket_candles.items():
+        if candle_df.empty:
+            continue
+
+        # Get latest bid/ask
+        latest = candle_df.iloc[-1]
+        yes_bid = int(latest.get("yes_bid_close", 0) or 0)
+        yes_ask = int(latest.get("yes_ask_close", 100) or 100)
+
+        # Skip invalid quotes
+        if yes_bid <= 0 or yes_ask >= 100 or yes_ask <= yes_bid:
+            continue
+
+        # Parse bracket
+        floor, cap = parse_bracket_label(label)
+        if floor is None and cap is None:
+            continue
+
+        # Estimate model probability for this bracket
+        # Simple heuristic: distance from forecast_implied to bracket center
+        if floor is None:
+            bracket_center = cap - 2  # Below bracket
+        elif cap is None:
+            bracket_center = floor + 2  # Above bracket
+        else:
+            bracket_center = (floor + cap) / 2
+
+        # Convert distance to probability estimate
+        # Closer to forecast = higher probability
+        distance = abs(forecast_implied - bracket_center)
+
+        # Rough probability: exponential decay from forecast
+        # P ~ exp(-distance / scale), normalized
+        scale = 3.0  # Degrees F
+        raw_prob = np.exp(-distance / scale)
+
+        # Adjust based on signal direction
+        if signal == EdgeSignal.BUY_HIGH:
+            # Forecast is higher than market - we expect temp to be higher
+            # Increase prob for brackets above forecast_implied
+            if bracket_center > forecast_implied:
+                raw_prob *= 0.3  # Lower prob for brackets above forecast
+            # Market is underestimating - good to buy YES on forecast's bracket
+        else:  # BUY_LOW
+            # Forecast is lower than market - we expect temp to be lower
+            if bracket_center < forecast_implied:
+                raw_prob *= 0.3
+
+        # Normalize to reasonable range [0.1, 0.9]
+        model_prob = min(0.9, max(0.1, raw_prob))
+
+        # Use model_probs if provided
+        if model_probs and label in model_probs:
+            model_prob = model_probs[label]
+
+        # Find best trade for this bracket
+        side, action, price, ev, role = find_best_trade(
+            model_prob=model_prob,
+            yes_bid=yes_bid,
+            yes_ask=yes_ask,
+            min_ev_cents=min_ev_cents,
+            maker_fill_prob=maker_fill_prob,
+        )
+
+        if side is not None and ev >= min_ev_cents:
+            candidates.append({
+                "label": label,
+                "floor": floor,
+                "cap": cap,
+                "side": side,
+                "action": action,
+                "price": price,
+                "ev_cents": ev,
+                "role": role,
+                "yes_bid": yes_bid,
+                "yes_ask": yes_ask,
+                "model_prob": model_prob,
+            })
+
+    if not candidates:
+        return None
+
+    # Return bracket with highest EV
+    best = max(candidates, key=lambda x: x["ev_cents"])
+    return best
+
+
+def calculate_realistic_pnl(
+    trade: dict,
+    settlement: float,
+    num_contracts: int = 1,
+) -> dict:
+    """Calculate realistic P&L for a trade.
+
+    Args:
+        trade: Trade dict from select_best_bracket_for_trade()
+        settlement: Settlement temperature
+        num_contracts: Number of contracts
+
+    Returns:
+        Dict with P&L details
+    """
+    floor = trade["floor"]
+    cap = trade["cap"]
+    price = trade["price"]
+    side = trade["side"]
+    action = trade["action"]
+    role = trade["role"]
+
+    # Check if bracket won
+    bracket_won = is_settlement_in_bracket(settlement, floor, cap)
+
+    # Calculate fee
+    if role == "maker":
+        fee_cents = maker_fee_total(price, num_contracts)
+    else:  # taker
+        fee_cents = taker_fee_total(price, num_contracts)
+    fee_usd = fee_cents / 100.0
+
+    # Calculate P&L based on side and action
+    price_usd = price / 100.0
+
+    if side == "yes" and action == "buy":
+        # Long YES: win if bracket_won
+        if bracket_won:
+            pnl_gross = num_contracts * (1.0 - price_usd)  # Receive $1, paid price
+        else:
+            pnl_gross = -num_contracts * price_usd  # Contract worthless
+
+    elif side == "yes" and action == "sell":
+        # Short YES (= Long NO): win if NOT bracket_won
+        if not bracket_won:
+            pnl_gross = num_contracts * price_usd  # Keep premium, no payout
+        else:
+            pnl_gross = -num_contracts * (1.0 - price_usd)  # Pay $1, received price
+
+    elif side == "no" and action == "buy":
+        # Long NO: win if NOT bracket_won
+        if not bracket_won:
+            pnl_gross = num_contracts * (1.0 - price_usd)
+        else:
+            pnl_gross = -num_contracts * price_usd
+
+    else:  # side == "no" and action == "sell"
+        # Short NO: win if bracket_won
+        if bracket_won:
+            pnl_gross = num_contracts * price_usd
+        else:
+            pnl_gross = -num_contracts * (1.0 - price_usd)
+
+    pnl_net = pnl_gross - fee_usd
+
+    # Determine if we "won" the trade
+    trade_won = pnl_net > 0
+
+    return {
+        "pnl_gross": pnl_gross,
+        "pnl_net": pnl_net,
+        "fee_usd": fee_usd,
+        "bracket_won": bracket_won,
+        "trade_won": trade_won,
+        "entry_price_cents": price,
+        "role": role,
+        "side": side,
+        "action": action,
+    }
 
 
 def load_combined_data(city: str) -> pd.DataFrame:
@@ -430,6 +692,8 @@ def _process_single_day(
     edge_threshold: float,
     sample_rate: int,
     city: str,
+    maker_fill_prob: float = 0.4,
+    use_realistic_pnl: bool = True,
 ) -> list:
     """Process a single day's edge data - runs in thread with shared memory.
 
@@ -441,6 +705,9 @@ def _process_single_day(
         settlement: Settlement temperature
         edge_threshold: Threshold for edge detection
         sample_rate: Sample every Nth snapshot
+        city: City name for timezone lookup
+        maker_fill_prob: Probability maker order fills (0-1)
+        use_realistic_pnl: Use realistic P&L with fees (True) or simplified binary (False)
 
     Returns:
         List of result dictionaries for this day
@@ -499,13 +766,60 @@ def _process_single_day(
             threshold=edge_threshold,
         )
 
-        # Compute P&L
+        # Compute P&L - REALISTIC with fees or simplified binary
         pnl = None
+        pnl_gross = None
+        fee_usd = 0.0
+        entry_price_cents = None
+        trade_role = None
+        trade_side = None
+        trade_action = None
+        target_bracket_label = None
+        bracket_won = None
+        trade_won = None
+        ev_cents = None
+
         if edge_result.signal != EdgeSignal.NO_TRADE:
-            if edge_result.signal == EdgeSignal.BUY_HIGH:
-                pnl = 1.0 if settlement > market_result.implied_temp else -1.0
+            if use_realistic_pnl:
+                # ENHANCED: Use EV-based bracket selection with fees
+                best_trade = select_best_bracket_for_trade(
+                    signal=edge_result.signal,
+                    forecast_implied=forecast_result.implied_temp,
+                    market_implied=market_result.implied_temp,
+                    bracket_candles=bracket_candles,
+                    model_probs=None,  # TODO: could use ordinal model probs
+                    maker_fill_prob=maker_fill_prob,
+                    min_ev_cents=2.0,  # Lower threshold for training data collection
+                )
+
+                if best_trade is not None:
+                    # Calculate realistic P&L
+                    pnl_result = calculate_realistic_pnl(
+                        trade=best_trade,
+                        settlement=settlement,
+                        num_contracts=1,  # Normalize to 1 contract
+                    )
+
+                    pnl = pnl_result["pnl_net"]
+                    pnl_gross = pnl_result["pnl_gross"]
+                    fee_usd = pnl_result["fee_usd"]
+                    entry_price_cents = pnl_result["entry_price_cents"]
+                    trade_role = pnl_result["role"]
+                    trade_side = pnl_result["side"]
+                    trade_action = pnl_result["action"]
+                    target_bracket_label = best_trade["label"]
+                    bracket_won = pnl_result["bracket_won"]
+                    trade_won = pnl_result["trade_won"]
+                    ev_cents = best_trade["ev_cents"]
+                else:
+                    # No valid trade found - mark as no-trade
+                    pnl = None
             else:
-                pnl = 1.0 if settlement < market_result.implied_temp else -1.0
+                # SIMPLIFIED: Binary P&L (+1/-1) - legacy mode
+                if edge_result.signal == EdgeSignal.BUY_HIGH:
+                    pnl = 1.0 if settlement > market_result.implied_temp else -1.0
+                else:
+                    pnl = 1.0 if settlement < market_result.implied_temp else -1.0
 
         # Extract features from original data
         row_data = {
@@ -522,6 +836,17 @@ def _process_single_day(
             "predicted_delta": forecast_result.predicted_delta,
             "settlement_temp": settlement,
             "pnl": pnl,
+            # NEW: Realistic P&L details
+            "pnl_gross": pnl_gross,
+            "fee_usd": fee_usd,
+            "entry_price_cents": entry_price_cents,
+            "trade_role": trade_role,
+            "trade_side": trade_side,
+            "trade_action": trade_action,
+            "target_bracket": target_bracket_label,
+            "bracket_won": bracket_won,
+            "trade_won": trade_won,
+            "ev_cents": ev_cents,
         }
 
         # Add context features from original data
@@ -549,6 +874,8 @@ def generate_edge_data(
     edge_threshold: float = 1.5,
     sample_rate: int = 12,
     max_workers: int = 14,
+    maker_fill_prob: float = 0.4,
+    use_realistic_pnl: bool = True,
 ) -> pd.DataFrame:
     """Generate edge detection data using parallel processing.
 
@@ -562,6 +889,8 @@ def generate_edge_data(
         edge_threshold: Threshold for edge detection
         sample_rate: Sample every Nth snapshot per day (1 = all)
         max_workers: Number of parallel workers
+        maker_fill_prob: Probability maker order fills (0-1) for EV calculation
+        use_realistic_pnl: Use realistic P&L with fees (True) or simplified binary (False)
 
     Returns:
         DataFrame with edge features and outcomes
@@ -626,6 +955,8 @@ def generate_edge_data(
                 edge_threshold,
                 sample_rate,
                 city,  # Pass city for timezone lookup
+                maker_fill_prob,  # For EV calculation
+                use_realistic_pnl,  # Realistic vs simplified P&L
             ): day
             for day, day_df, settlement in day_data
         }
@@ -728,22 +1059,51 @@ def main():
         default=None,
         help="Limit to first N days (for testing)",
     )
+    parser.add_argument(
+        "--model-path",
+        type=str,
+        default=None,
+        help="Path to ordinal model. Default: models/saved/{city}/ordinal_catboost_optuna.pkl",
+    )
+    parser.add_argument(
+        "--maker-fill-prob",
+        type=float,
+        default=0.4,
+        help="Maker order fill probability for EV calculation (default: 0.4)",
+    )
+    parser.add_argument(
+        "--no-realistic-pnl",
+        action="store_true",
+        help="Use simplified binary P&L (+1/-1) instead of realistic P&L with fees",
+    )
     args = parser.parse_args()
+
+    use_realistic_pnl = not args.no_realistic_pnl
 
     print("=" * 60)
     print("ML EDGE CLASSIFIER TRAINING")
     print("=" * 60)
     print(f"City: {args.city}")
     print(f"Optuna trials: {args.trials}")
+    print(f"Optuna metric: {args.optuna_metric}")
     print(f"Workers: {args.workers}")
     print(f"Edge threshold: {args.threshold}°F")
     print(f"Sample rate: every {args.sample_rate}th snapshot")
+    print(f"P&L mode: {'REALISTIC (with fees)' if use_realistic_pnl else 'SIMPLIFIED (binary)'}")
+    if use_realistic_pnl:
+        print(f"Maker fill probability: {args.maker_fill_prob:.1%}")
+    if args.model_path:
+        print(f"Ordinal model: {args.model_path}")
+    else:
+        print(f"Ordinal model: models/saved/{args.city}/ordinal_catboost_optuna.pkl (default)")
     if args.max_days:
         print(f"Max days: {args.max_days}")
     print()
 
     # Check for cached edge data (skip cache if max_days is set - test mode)
-    cache_path = Path(f"models/saved/{args.city}/edge_training_data.parquet")
+    # Use different cache files for realistic vs simplified P&L
+    pnl_suffix = "realistic" if use_realistic_pnl else "simplified"
+    cache_path = Path(f"models/saved/{args.city}/edge_training_data_{pnl_suffix}.parquet")
     use_cache = cache_path.exists() and not args.regenerate and not args.max_days
 
     if use_cache:
@@ -751,7 +1111,10 @@ def main():
         df_edge = pd.read_parquet(cache_path)
     else:
         # Load ordinal model path (model loaded in workers)
-        model_path = Path(f"models/saved/{args.city}/ordinal_catboost_optuna.pkl")
+        if args.model_path:
+            model_path = Path(args.model_path)
+        else:
+            model_path = Path(f"models/saved/{args.city}/ordinal_catboost_optuna.pkl")
         if not model_path.exists():
             logger.error(f"Model not found: {model_path}")
             return 1
@@ -776,6 +1139,8 @@ def main():
             edge_threshold=args.threshold,
             sample_rate=args.sample_rate,
             max_workers=args.workers,
+            maker_fill_prob=args.maker_fill_prob,
+            use_realistic_pnl=use_realistic_pnl,
         )
 
         if df_edge.empty:
@@ -796,6 +1161,33 @@ def main():
     n_wins = (df_signals["pnl"] > 0).sum()
     n_total = df_signals["pnl"].notna().sum()
     print(f"\nClass balance: {n_wins}/{n_total} wins ({n_wins/n_total:.1%})")
+
+    # Enhanced statistics for realistic P&L
+    if use_realistic_pnl and "pnl_gross" in df_signals.columns:
+        valid_pnl = df_signals[df_signals["pnl"].notna()]
+        print("\n--- REALISTIC P&L STATISTICS ---")
+        print(f"Total samples with valid trades: {len(valid_pnl):,}")
+        print(f"Average P&L per trade: ${valid_pnl['pnl'].mean():.4f}")
+        print(f"Std P&L per trade: ${valid_pnl['pnl'].std():.4f}")
+        print(f"Total gross P&L: ${valid_pnl['pnl_gross'].sum():.2f}")
+        print(f"Total fees paid: ${valid_pnl['fee_usd'].sum():.2f}")
+        print(f"Total net P&L: ${valid_pnl['pnl'].sum():.2f}")
+
+        if "trade_role" in valid_pnl.columns:
+            role_counts = valid_pnl["trade_role"].value_counts()
+            print(f"\nTrade roles: {dict(role_counts)}")
+
+        if "trade_side" in valid_pnl.columns:
+            side_counts = valid_pnl["trade_side"].value_counts()
+            print(f"Trade sides: {dict(side_counts)}")
+
+        if "trade_action" in valid_pnl.columns:
+            action_counts = valid_pnl["trade_action"].value_counts()
+            print(f"Trade actions: {dict(action_counts)}")
+
+        if "entry_price_cents" in valid_pnl.columns:
+            print(f"\nEntry price range: {valid_pnl['entry_price_cents'].min():.0f}¢ - {valid_pnl['entry_price_cents'].max():.0f}¢")
+            print(f"Average entry price: {valid_pnl['entry_price_cents'].mean():.1f}¢")
     print()
 
     # Train EdgeClassifier

@@ -43,9 +43,15 @@ services:
       VC_API_KEY: ${VC_API_KEY}
       KALSHI_API_KEY: ${KALSHI_API_KEY}
       KALSHI_PRIVATE_KEY_PATH: /app/weather.pem
+      TEMPEST_API_KEY: ${TEMPEST_API_KEY}
     volumes:
       - ./weather.pem:/app/weather.pem:ro
       - ./.env:/app/.env:ro
+      - ./models:/app/models  # Persist trained models AND ML code
+      - ./tempest:/app/tempest
+      - ./scripts:/app/scripts  # Mount scripts for live development
+      - ./src:/app/src  # Mount src for live development
+      - ./live_trading:/app/live_trading  # Mount live trading for development
     stdin_open: true
     tty: true
     profiles:
