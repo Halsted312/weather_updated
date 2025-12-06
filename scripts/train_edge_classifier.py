@@ -624,6 +624,106 @@ def load_all_candles_batch(city: str, dates: list) -> dict:
     return candle_cache
 
 
+def load_all_candles_from_parquet(city: str, parquet_path: Path, dates: list) -> dict:
+    """Load candle data from a parquet file instead of DB.
+
+    This is much faster than DB queries and allows training without DB access.
+    Use scripts/export_kalshi_candles.py to create the parquet file.
+
+    Args:
+        city: City name
+        parquet_path: Path to parquet file with candle data
+        dates: List of dates to load candles for
+
+    Returns:
+        Dictionary mapping (day, label) -> DataFrame of candles
+    """
+    if not dates:
+        return {}
+
+    logger.info(f"Loading candles from parquet: {parquet_path}")
+
+    if not parquet_path.exists():
+        logger.error(f"Parquet file not found: {parquet_path}")
+        return {}
+
+    df = pd.read_parquet(parquet_path)
+    logger.info(f"Loaded {len(df):,} candle rows from parquet")
+
+    config = CITY_CONFIG.get(city)
+    if not config:
+        return {}
+
+    prefix = config["ticker_prefix"]
+    old_prefix = prefix.replace("KXHIGH", "HIGH")
+
+    # Build date suffix mapping
+    date_to_suffix = {}
+    valid_suffixes = set()
+    for d in dates:
+        suffix = d.strftime("%y%b%d").upper()
+        date_to_suffix[suffix] = d
+        valid_suffixes.add(suffix)
+
+    # Filter to relevant tickers (matching city prefix and dates)
+    def extract_suffix(ticker):
+        parts = ticker.split("-")
+        return parts[1] if len(parts) >= 2 else None
+
+    df["date_suffix"] = df["ticker"].apply(extract_suffix)
+    df = df[df["date_suffix"].isin(valid_suffixes)].copy()
+    logger.info(f"Filtered to {len(df):,} rows for requested dates")
+
+    # Rename columns to match DB schema expected by rest of code
+    # Export uses yes_bid/yes_ask, DB query uses yes_bid_close/yes_ask_close
+    column_mapping = {
+        "yes_bid": "yes_bid_close",
+        "yes_ask": "yes_ask_close",
+    }
+    for old_col, new_col in column_mapping.items():
+        if old_col in df.columns and new_col not in df.columns:
+            df[new_col] = df[old_col]
+
+    # Organize by (day, label) for fast lookup
+    candle_cache = {}
+    for ticker in df["ticker"].unique():
+        ticker_df = df[df["ticker"] == ticker].copy()
+        parts = ticker.split("-")
+        if len(parts) >= 3:
+            date_suffix = parts[1]
+            day = date_to_suffix.get(date_suffix)
+            if day is None:
+                continue
+
+            bracket_part = parts[-1]
+            if bracket_part.startswith("T"):
+                strike = bracket_part[1:].replace("LO", "").replace("HI", "")
+                try:
+                    strike_val = int(strike)
+                    if "LO" in bracket_part:
+                        label = f"<{strike_val}"
+                    elif "HI" in bracket_part:
+                        label = f">{strike_val}"
+                    else:
+                        label = f"{strike_val}-{strike_val + 1}"
+                except ValueError:
+                    label = bracket_part
+            elif bracket_part.startswith("B"):
+                strike = bracket_part[1:]
+                try:
+                    strike_val = float(strike)
+                    label = f"{strike_val:g}-{strike_val + 1:g}"
+                except ValueError:
+                    label = bracket_part
+            else:
+                label = bracket_part
+
+            candle_cache[(day, label)] = ticker_df
+
+    logger.info(f"Organized into {len(candle_cache):,} (day, bracket) entries from parquet")
+    return candle_cache
+
+
 def get_candles_from_cache(
     candle_cache: dict, day: date, snapshot_time, city: str
 ) -> dict[str, pd.DataFrame]:
@@ -683,6 +783,10 @@ def get_candles_from_cache(
     return bracket_candles
 
 
+# Multiple maker_fill_prob values for Optuna tuning
+MULTI_MFP_VALUES = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7]
+
+
 def _process_single_day(
     day: date,
     day_df: pd.DataFrame,
@@ -694,6 +798,7 @@ def _process_single_day(
     city: str,
     maker_fill_prob: float = 0.4,
     use_realistic_pnl: bool = True,
+    multi_mfp_mode: bool = False,
 ) -> list:
     """Process a single day's edge data - runs in thread with shared memory.
 
@@ -706,8 +811,10 @@ def _process_single_day(
         edge_threshold: Threshold for edge detection
         sample_rate: Sample every Nth snapshot
         city: City name for timezone lookup
-        maker_fill_prob: Probability maker order fills (0-1)
+        maker_fill_prob: Probability maker order fills (0-1) - used if multi_mfp_mode=False
         use_realistic_pnl: Use realistic P&L with fees (True) or simplified binary (False)
+        multi_mfp_mode: If True, compute P&L for multiple maker_fill_prob values
+                       (columns: pnl_mfp_20, pnl_mfp_30, etc.) for Optuna tuning
 
     Returns:
         List of result dictionaries for this day
@@ -779,41 +886,96 @@ def _process_single_day(
         trade_won = None
         ev_cents = None
 
+        # Multi-MFP mode: compute P&L for multiple maker_fill_prob values
+        multi_mfp_pnl = {}  # Will store pnl_mfp_20, pnl_mfp_30, etc.
+
         if edge_result.signal != EdgeSignal.NO_TRADE:
             if use_realistic_pnl:
-                # ENHANCED: Use EV-based bracket selection with fees
-                best_trade = select_best_bracket_for_trade(
-                    signal=edge_result.signal,
-                    forecast_implied=forecast_result.implied_temp,
-                    market_implied=market_result.implied_temp,
-                    bracket_candles=bracket_candles,
-                    model_probs=None,  # TODO: could use ordinal model probs
-                    maker_fill_prob=maker_fill_prob,
-                    min_ev_cents=2.0,  # Lower threshold for training data collection
-                )
+                if multi_mfp_mode:
+                    # MULTI-MFP MODE: Compute P&L for each maker_fill_prob value
+                    for mfp_val in MULTI_MFP_VALUES:
+                        mfp_key = f"pnl_mfp_{int(mfp_val * 100):02d}"
+                        best_trade_mfp = select_best_bracket_for_trade(
+                            signal=edge_result.signal,
+                            forecast_implied=forecast_result.implied_temp,
+                            market_implied=market_result.implied_temp,
+                            bracket_candles=bracket_candles,
+                            model_probs=None,
+                            maker_fill_prob=mfp_val,
+                            min_ev_cents=2.0,
+                        )
+                        if best_trade_mfp is not None:
+                            pnl_result_mfp = calculate_realistic_pnl(
+                                trade=best_trade_mfp,
+                                settlement=settlement,
+                                num_contracts=1,
+                            )
+                            multi_mfp_pnl[mfp_key] = pnl_result_mfp["pnl_net"]
+                        else:
+                            multi_mfp_pnl[mfp_key] = None
 
-                if best_trade is not None:
-                    # Calculate realistic P&L
-                    pnl_result = calculate_realistic_pnl(
-                        trade=best_trade,
-                        settlement=settlement,
-                        num_contracts=1,  # Normalize to 1 contract
+                    # Use default maker_fill_prob for the main "pnl" column
+                    default_mfp_key = f"pnl_mfp_{int(maker_fill_prob * 100):02d}"
+                    pnl = multi_mfp_pnl.get(default_mfp_key)
+
+                    # Also compute primary trade details using the default mfp
+                    best_trade = select_best_bracket_for_trade(
+                        signal=edge_result.signal,
+                        forecast_implied=forecast_result.implied_temp,
+                        market_implied=market_result.implied_temp,
+                        bracket_candles=bracket_candles,
+                        model_probs=None,
+                        maker_fill_prob=maker_fill_prob,
+                        min_ev_cents=2.0,
+                    )
+                    if best_trade is not None:
+                        pnl_result = calculate_realistic_pnl(
+                            trade=best_trade,
+                            settlement=settlement,
+                            num_contracts=1,
+                        )
+                        pnl_gross = pnl_result["pnl_gross"]
+                        fee_usd = pnl_result["fee_usd"]
+                        entry_price_cents = pnl_result["entry_price_cents"]
+                        trade_role = pnl_result["role"]
+                        trade_side = pnl_result["side"]
+                        trade_action = pnl_result["action"]
+                        target_bracket_label = best_trade["label"]
+                        bracket_won = pnl_result["bracket_won"]
+                        trade_won = pnl_result["trade_won"]
+                        ev_cents = best_trade["ev_cents"]
+                else:
+                    # SINGLE-MFP MODE: Use only the specified maker_fill_prob
+                    best_trade = select_best_bracket_for_trade(
+                        signal=edge_result.signal,
+                        forecast_implied=forecast_result.implied_temp,
+                        market_implied=market_result.implied_temp,
+                        bracket_candles=bracket_candles,
+                        model_probs=None,
+                        maker_fill_prob=maker_fill_prob,
+                        min_ev_cents=2.0,
                     )
 
-                    pnl = pnl_result["pnl_net"]
-                    pnl_gross = pnl_result["pnl_gross"]
-                    fee_usd = pnl_result["fee_usd"]
-                    entry_price_cents = pnl_result["entry_price_cents"]
-                    trade_role = pnl_result["role"]
-                    trade_side = pnl_result["side"]
-                    trade_action = pnl_result["action"]
-                    target_bracket_label = best_trade["label"]
-                    bracket_won = pnl_result["bracket_won"]
-                    trade_won = pnl_result["trade_won"]
-                    ev_cents = best_trade["ev_cents"]
-                else:
-                    # No valid trade found - mark as no-trade
-                    pnl = None
+                    if best_trade is not None:
+                        pnl_result = calculate_realistic_pnl(
+                            trade=best_trade,
+                            settlement=settlement,
+                            num_contracts=1,
+                        )
+
+                        pnl = pnl_result["pnl_net"]
+                        pnl_gross = pnl_result["pnl_gross"]
+                        fee_usd = pnl_result["fee_usd"]
+                        entry_price_cents = pnl_result["entry_price_cents"]
+                        trade_role = pnl_result["role"]
+                        trade_side = pnl_result["side"]
+                        trade_action = pnl_result["action"]
+                        target_bracket_label = best_trade["label"]
+                        bracket_won = pnl_result["bracket_won"]
+                        trade_won = pnl_result["trade_won"]
+                        ev_cents = best_trade["ev_cents"]
+                    else:
+                        pnl = None
             else:
                 # SIMPLIFIED: Binary P&L (+1/-1) - legacy mode
                 if edge_result.signal == EdgeSignal.BUY_HIGH:
@@ -849,6 +1011,10 @@ def _process_single_day(
             "ev_cents": ev_cents,
         }
 
+        # Add multi-MFP P&L columns if in multi-MFP mode
+        if multi_mfp_mode:
+            row_data.update(multi_mfp_pnl)
+
         # Add context features from original data
         for col in [
             "snapshot_hour",
@@ -876,6 +1042,8 @@ def generate_edge_data(
     max_workers: int = 14,
     maker_fill_prob: float = 0.4,
     use_realistic_pnl: bool = True,
+    multi_mfp_mode: bool = False,
+    candle_parquet: Optional[Path] = None,
 ) -> pd.DataFrame:
     """Generate edge detection data using parallel processing.
 
@@ -890,7 +1058,9 @@ def generate_edge_data(
         sample_rate: Sample every Nth snapshot per day (1 = all)
         max_workers: Number of parallel workers
         maker_fill_prob: Probability maker order fills (0-1) for EV calculation
+        multi_mfp_mode: Compute P&L for multiple maker_fill_prob values (for Optuna tuning)
         use_realistic_pnl: Use realistic P&L with fees (True) or simplified binary (False)
+        candle_parquet: Optional path to parquet file with candle data (instead of DB)
 
     Returns:
         DataFrame with edge features and outcomes
@@ -914,9 +1084,13 @@ def generate_edge_data(
     days_with_settlement = [d for d in unique_days if d in settlements]
     logger.info(f"Days with settlement data: {len(days_with_settlement)}")
 
-    # Batch load ALL candles (1 query - the big optimization!)
-    logger.info("Batch loading ALL candles (this may take a moment)...")
-    candle_cache = load_all_candles_batch(city, days_with_settlement)
+    # Batch load ALL candles (DB query OR parquet file)
+    if candle_parquet:
+        logger.info(f"Loading candles from parquet: {candle_parquet}")
+        candle_cache = load_all_candles_from_parquet(city, candle_parquet, days_with_settlement)
+    else:
+        logger.info("Batch loading ALL candles from database (this may take a moment)...")
+        candle_cache = load_all_candles_batch(city, days_with_settlement)
     logger.info(f"Candle cache built: {len(candle_cache)} (day, bracket) entries")
 
     if not candle_cache:
@@ -957,6 +1131,7 @@ def generate_edge_data(
                 city,  # Pass city for timezone lookup
                 maker_fill_prob,  # For EV calculation
                 use_realistic_pnl,  # Realistic vs simplified P&L
+                multi_mfp_mode,  # Compute P&L for multiple maker_fill_prob values
             ): day
             for day, day_df, settlement in day_data
         }
@@ -1076,7 +1251,31 @@ def main():
         action="store_true",
         help="Use simplified binary P&L (+1/-1) instead of realistic P&L with fees",
     )
+    parser.add_argument(
+        "--multi-mfp",
+        action="store_true",
+        help="Compute P&L for multiple maker_fill_prob values (enables Optuna tuning of mfp)",
+    )
+    parser.add_argument(
+        "--tune-mfp",
+        action="store_true",
+        help="Add maker_fill_prob to Optuna search space (requires --multi-mfp cached data)",
+    )
+    parser.add_argument(
+        "--candle-parquet",
+        type=str,
+        default=None,
+        help="Path to parquet file with candle data (use instead of database). "
+             "Create with: python scripts/export_kalshi_candles.py --city {city}",
+    )
     args = parser.parse_args()
+
+    # Auto-detect candle parquet if not specified
+    if args.candle_parquet is None:
+        default_parquet = Path(f"models/candles/candles_{args.city}.parquet")
+        if default_parquet.exists():
+            args.candle_parquet = str(default_parquet)
+            logger.info(f"Auto-detected candle parquet: {default_parquet}")
 
     use_realistic_pnl = not args.no_realistic_pnl
 
@@ -1092,17 +1291,28 @@ def main():
     print(f"P&L mode: {'REALISTIC (with fees)' if use_realistic_pnl else 'SIMPLIFIED (binary)'}")
     if use_realistic_pnl:
         print(f"Maker fill probability: {args.maker_fill_prob:.1%}")
+    if args.multi_mfp:
+        print(f"Multi-MFP mode: ENABLED (computing P&L for {len(MULTI_MFP_VALUES)} mfp values)")
+    if args.tune_mfp:
+        print(f"Tune MFP: ENABLED (Optuna will search maker_fill_prob)")
     if args.model_path:
         print(f"Ordinal model: {args.model_path}")
     else:
         print(f"Ordinal model: models/saved/{args.city}/ordinal_catboost_optuna.pkl (default)")
     if args.max_days:
         print(f"Max days: {args.max_days}")
+    if args.candle_parquet:
+        print(f"Candle source: parquet ({args.candle_parquet})")
+    else:
+        print("Candle source: database")
     print()
 
     # Check for cached edge data (skip cache if max_days is set - test mode)
-    # Use different cache files for realistic vs simplified P&L
-    pnl_suffix = "realistic" if use_realistic_pnl else "simplified"
+    # Use different cache files for realistic vs simplified P&L, and for multi-MFP mode
+    if args.multi_mfp:
+        pnl_suffix = "realistic_multi_mfp"
+    else:
+        pnl_suffix = "realistic" if use_realistic_pnl else "simplified"
     cache_path = Path(f"models/saved/{args.city}/edge_training_data_{pnl_suffix}.parquet")
     use_cache = cache_path.exists() and not args.regenerate and not args.max_days
 
@@ -1141,6 +1351,8 @@ def main():
             max_workers=args.workers,
             maker_fill_prob=args.maker_fill_prob,
             use_realistic_pnl=use_realistic_pnl,
+            multi_mfp_mode=args.multi_mfp,
+            candle_parquet=Path(args.candle_parquet) if args.candle_parquet else None,
         )
 
         if df_edge.empty:
@@ -1201,6 +1413,7 @@ def main():
         decision_threshold=args.decision_threshold,
         optimize_metric=args.optuna_metric,
         min_trades_for_metric=args.min_trades_for_metric,
+        tune_mfp=args.tune_mfp,
     )
 
     metrics = classifier.train(

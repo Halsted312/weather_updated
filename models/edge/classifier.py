@@ -62,6 +62,10 @@ class DayAwareCV:
         return self.cv.n_splits
 
 
+# Available maker_fill_prob values for Optuna tuning
+MULTI_MFP_VALUES = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7]
+
+
 class EdgeClassifier:
     """Binary classifier for edge quality prediction.
 
@@ -84,6 +88,7 @@ class EdgeClassifier:
         n_jobs: int = -1,
         random_state: int = 42,
         decision_threshold: float = 0.5,
+        tune_mfp: bool = False,
     ):
         """Initialize EdgeClassifier.
 
@@ -99,6 +104,7 @@ class EdgeClassifier:
             n_jobs: Number of parallel jobs (-1 = all cores)
             random_state: Random seed for reproducibility
             decision_threshold: Initial decision threshold (may be overridden by Optuna)
+            tune_mfp: Whether to tune maker_fill_prob via Optuna (requires multi-MFP cached data)
 
         Note:
             If optimize_metric is a trading metric (sharpe, mean_pnl, filtered_precision, f1),
@@ -110,12 +116,14 @@ class EdgeClassifier:
         self.min_trades_for_metric = min_trades_for_metric
         self.n_jobs = n_jobs
         self.random_state = random_state
+        self.tune_mfp = tune_mfp
 
         # Model and metadata (populated during training)
         self.model = None
         self.feature_cols = None
         self.best_params = {}
         self.decision_threshold = decision_threshold
+        self.best_maker_fill_prob = 0.4  # Default, may be tuned
         self.train_metrics = {}
 
     def prepare_features(self, df: pd.DataFrame) -> pd.DataFrame:
@@ -140,6 +148,7 @@ class EdgeClassifier:
         df_train: pd.DataFrame,
         df_val: pd.DataFrame,
         pnl_val: Optional[np.ndarray] = None,
+        multi_mfp_pnl_val: Optional[Dict[float, np.ndarray]] = None,
     ):
         """Create Optuna objective function for hyperparameter tuning.
 
@@ -151,12 +160,27 @@ class EdgeClassifier:
             df_train: Training DataFrame with 'day' column
             df_val: Validation DataFrame with 'day' column
             pnl_val: Validation PnL values (for Sharpe/mean_pnl objectives)
+            multi_mfp_pnl_val: Dict mapping maker_fill_prob -> validation PnL array
+                               (for tune_mfp mode)
 
         Returns:
             Objective function for Optuna
         """
 
         def objective(trial: optuna.Trial) -> float:
+            # --- Maker fill prob hyperparameter (if tuning) ---
+            if self.tune_mfp and multi_mfp_pnl_val:
+                mfp_idx = trial.suggest_int("maker_fill_prob_idx", 0, len(MULTI_MFP_VALUES) - 1)
+                selected_mfp = MULTI_MFP_VALUES[mfp_idx]
+                pnl_vector_for_trial = multi_mfp_pnl_val[selected_mfp]
+                y_train_for_trial = (pnl_vector_for_trial > 0).astype(int)
+                # Use Y from the selected mfp's P&L column for validation
+                y_val_for_eval = y_val  # Features don't change, only target interpretation
+                pnl_val_for_eval = pnl_vector_for_trial
+            else:
+                y_train_for_trial = y_train
+                y_val_for_eval = y_val
+                pnl_val_for_eval = pnl_val
             # --- CatBoost hyperparameters ---
             bootstrap_type = trial.suggest_categorical(
                 "bootstrap_type", ["Bayesian", "Bernoulli", "MVS"]
@@ -240,14 +264,14 @@ class EdgeClassifier:
 
             if metric == "auc":
                 # Classic model diagnostic
-                return float(roc_auc_score(y_val, y_pred_proba))
+                return float(roc_auc_score(y_val_for_eval, y_pred_proba))
 
             if metric == "filtered_precision":
                 mask = y_pred_proba >= trial_threshold
                 trades = int(mask.sum())
                 if trades < self.min_trades_for_metric:
                     return -1e6
-                precision = float(y_val[mask].mean()) if trades > 0 else 0.0
+                precision = float(y_val_for_eval[mask].mean()) if trades > 0 else 0.0
                 # Penalize if too few trades even if precision is good
                 # Encourage more trades by penalizing extreme selectivity
                 if trades < 50:
@@ -256,14 +280,14 @@ class EdgeClassifier:
 
             if metric == "f1":
                 preds = (y_pred_proba >= trial_threshold).astype(int)
-                return float(f1_score(y_val, preds, zero_division=0.0))
+                return float(f1_score(y_val_for_eval, preds, zero_division=0.0))
 
             if metric in {"mean_pnl", "sharpe"}:
-                if pnl_val is None:
+                if pnl_val_for_eval is None:
                     # Fallback: approximate pnl as +1/-1 using y_val
-                    pnl_vector = (2 * y_val - 1).astype(float)
+                    pnl_vector = (2 * y_val_for_eval - 1).astype(float)
                 else:
-                    pnl_vector = pnl_val.astype(float)
+                    pnl_vector = pnl_val_for_eval.astype(float)
 
                 mask = y_pred_proba >= trial_threshold
                 trades = int(mask.sum())
@@ -287,7 +311,7 @@ class EdgeClassifier:
                 return sharpe
 
             # Default fallback = AUC
-            return float(roc_auc_score(y_val, y_pred_proba))
+            return float(roc_auc_score(y_val_for_eval, y_pred_proba))
 
         return objective
 
@@ -467,6 +491,23 @@ class EdgeClassifier:
         if not OPTUNA_AVAILABLE:
             raise ImportError("Optuna is required for hyperparameter tuning")
 
+        # Extract multi-MFP P&L columns if they exist and tune_mfp is enabled
+        multi_mfp_pnl_val = None
+        if self.tune_mfp:
+            multi_mfp_pnl_val = {}
+            for mfp_val in MULTI_MFP_VALUES:
+                col_name = f"pnl_mfp_{int(mfp_val * 100):02d}"
+                if col_name in df_val.columns:
+                    multi_mfp_pnl_val[mfp_val] = df_val[col_name].fillna(0).astype(float).values
+                else:
+                    logger.warning(f"Missing column {col_name} for tune_mfp mode")
+            if not multi_mfp_pnl_val:
+                logger.error("No multi-MFP P&L columns found! Use --multi-mfp to generate them first.")
+                self.tune_mfp = False
+                multi_mfp_pnl_val = None
+            else:
+                logger.info(f"Loaded {len(multi_mfp_pnl_val)} maker_fill_prob P&L columns for tuning")
+
         study = optuna.create_study(
             direction="maximize",
             sampler=optuna.samplers.TPESampler(seed=self.random_state),
@@ -474,7 +515,9 @@ class EdgeClassifier:
         )
 
         objective = self._create_optuna_objective(
-            X_train, y_train, X_val, y_val, df_train, df_val, pnl_val=pnl_val
+            X_train, y_train, X_val, y_val, df_train, df_val,
+            pnl_val=pnl_val,
+            multi_mfp_pnl_val=multi_mfp_pnl_val,
         )
 
         optuna.logging.set_verbosity(optuna.logging.WARNING)
@@ -494,11 +537,17 @@ class EdgeClassifier:
         if "decision_threshold" in self.best_params:
             self.decision_threshold = float(self.best_params["decision_threshold"])
 
+        # Extract maker_fill_prob (if tuned)
+        if "maker_fill_prob_idx" in self.best_params:
+            mfp_idx = self.best_params["maker_fill_prob_idx"]
+            self.best_maker_fill_prob = MULTI_MFP_VALUES[mfp_idx]
+            logger.info(f"Best maker_fill_prob: {self.best_maker_fill_prob:.1%}")
+
         calib_method = self.best_params.get("calibration_method", "none")
         catboost_params = {
             k: v
             for k, v in self.best_params.items()
-            if k not in {"decision_threshold", "calibration_method"}
+            if k not in {"decision_threshold", "calibration_method", "maker_fill_prob_idx"}
         }
 
         base_params = {

@@ -52,6 +52,8 @@ services:
       - ./scripts:/app/scripts  # Mount scripts for live development
       - ./src:/app/src  # Mount src for live development
       - ./live_trading:/app/live_trading  # Mount live trading for development
+      - ./analysis:/app/analysis  # Analysis tools (temperature rules)
+      - ./config:/app/config  # Config files
     stdin_open: true
     tty: true
     profiles:
