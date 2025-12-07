@@ -24,7 +24,7 @@ Example:
 
 import logging
 from datetime import date, datetime, timedelta
-from typing import Optional
+from typing import Optional, Dict, Any
 
 import pandas as pd
 from sqlalchemy import text
@@ -734,3 +734,103 @@ def get_available_date_range(
     max_date = min(obs_max, settle_max)
 
     return min_date, max_date
+
+
+def load_weather_more_apis_guidance(
+    session: Session,
+    city_id: str,
+    target_date: date,
+    snapshot_time_utc: Optional[datetime] = None,
+) -> Dict[str, Dict[str, Any]]:
+    """
+    Load NOAA model guidance (NBM, HRRR, NDFD) for snapshot context.
+
+    Returns: {'nbm': {'latest_run': {...}, 'prev_run': {...}}, ...}
+
+    Args:
+        session: Database session
+        city_id: City ID
+        target_date: Target date (local)
+        snapshot_time_utc: Cutoff (None = all runs)
+
+    Returns:
+        Nested dict with latest/prev run per model
+    """
+    from src.db.models import WeatherMoreApisGuidance
+
+    result = {
+        "nbm": {"latest_run": None, "prev_run": None},
+        "hrrr": {"latest_run": None, "prev_run": None},
+        "ndfd": {"latest_run": None, "prev_run": None},
+    }
+
+    for model in ["nbm", "hrrr", "ndfd"]:
+        query = session.query(WeatherMoreApisGuidance).filter(
+            WeatherMoreApisGuidance.city_id == city_id,
+            WeatherMoreApisGuidance.target_date == target_date,
+            WeatherMoreApisGuidance.model == model,
+        )
+
+        if snapshot_time_utc:
+            query = query.filter(WeatherMoreApisGuidance.run_datetime_utc <= snapshot_time_utc)
+
+        runs = query.order_by(WeatherMoreApisGuidance.run_datetime_utc.desc()).limit(2).all()
+
+        if runs:
+            result[model]["latest_run"] = {
+                "run_datetime_utc": runs[0].run_datetime_utc,
+                "peak_window_max_f": float(runs[0].peak_window_max_f) if runs[0].peak_window_max_f else None,
+            }
+        if len(runs) >= 2:
+            result[model]["prev_run"] = {
+                "run_datetime_utc": runs[1].run_datetime_utc,
+                "peak_window_max_f": float(runs[1].peak_window_max_f) if runs[1].peak_window_max_f else None,
+            }
+
+    return result
+
+
+def load_obs_t15_stats_30d(
+    session: Session,
+    city_id: str,
+    target_date: date,
+    lookback_days: int = 30,
+) -> tuple[Optional[float], Optional[float]]:
+    """
+    Compute rolling mean/std of observed temp at 15:00 local over previous N days.
+
+    For z-score normalization of NOAA guidance features.
+
+    Args:
+        session: Database session
+        city_id: City identifier
+        target_date: Target date (stats computed for days BEFORE this)
+        lookback_days: Lookback window (default: 30)
+
+    Returns:
+        (mean_f, std_f) or (None, None) if insufficient data
+    """
+    start_date = target_date - timedelta(days=lookback_days)
+    end_date = target_date - timedelta(days=1)
+
+    obs_df = load_vc_observations(session, city_id, start_date, end_date)
+
+    if obs_df is None or obs_df.empty:
+        return (None, None)
+
+    # Filter to 15:00 local (±15 min window)
+    obs_df['hour'] = obs_df['datetime_local'].dt.hour
+    obs_df['minute'] = obs_df['datetime_local'].dt.minute
+
+    t15_obs = obs_df[(obs_df['hour'] == 15) & (obs_df['minute'] <= 15)].copy()
+
+    if len(t15_obs) < 10:
+        return (None, None)
+
+    # One temp per day (first obs near 15:00)
+    daily_t15 = t15_obs.groupby(t15_obs['datetime_local'].dt.date)['temp_f'].first()
+
+    if len(daily_t15) < 10:
+        return (None, None)
+
+    return (float(daily_t15.mean()), float(daily_t15.std(ddof=0)))

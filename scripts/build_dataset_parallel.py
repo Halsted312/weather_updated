@@ -55,6 +55,7 @@ def process_chunk(
     end_date: date,
     include_forecast: bool = True,
     include_market: bool = False,
+    include_station_city: bool = True,
 ) -> ChunkResult:
     """Process a chunk of dates. Each worker creates its own DB connection."""
     try:
@@ -67,7 +68,7 @@ def process_chunk(
             snapshot_interval_min=5,
             include_forecast=include_forecast,
             include_market=include_market,
-            include_station_city=False,
+            include_station_city=include_station_city,
             include_meteo=True,
         )
 
@@ -123,6 +124,7 @@ def main():
     parser.add_argument('--output', type=str, required=True, help='Output parquet path')
     parser.add_argument('--workers', type=int, default=20, help='Number of parallel workers')
     parser.add_argument('--include-market', action='store_true', help='Include market candle data')
+    parser.add_argument('--no-station-city', action='store_true', help='Disable station-city features')
 
     args = parser.parse_args()
 
@@ -155,6 +157,7 @@ def main():
                 chunk_end,
                 include_forecast=True,
                 include_market=args.include_market,
+                include_station_city=not args.no_station_city,
             ): i
             for i, (chunk_start, chunk_end) in enumerate(chunks)
         }

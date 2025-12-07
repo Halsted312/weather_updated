@@ -191,20 +191,20 @@ class EdgeClassifier:
                 "eval_metric": "AUC",
                 "random_seed": self.random_state,
                 "verbose": False,
-                # Tree structure
-                "depth": trial.suggest_int("depth", 3, 8),
-                "iterations": trial.suggest_int("iterations", 50, 300),
-                # Learning
+                # Tree structure - optimized for edge dataset (~10k-50k rows, ~100-200 features)
+                "depth": trial.suggest_int("depth", 4, 8),
+                "iterations": trial.suggest_int("iterations", 200, 1000),
+                # Learning - narrower range for stability on noisy P&L labels
                 "learning_rate": trial.suggest_float(
-                    "learning_rate", 0.01, 0.3, log=True
+                    "learning_rate", 0.02, 0.15, log=True
                 ),
+                # Regularization - stronger for noisy labels
                 "l2_leaf_reg": trial.suggest_float(
-                    "l2_leaf_reg", 0.1, 10.0, log=True
+                    "l2_leaf_reg", 1.0, 30.0, log=True
                 ),
-                # Regularization
-                "min_data_in_leaf": trial.suggest_int("min_data_in_leaf", 1, 30),
-                "random_strength": trial.suggest_float("random_strength", 0.0, 3.0),
-                "colsample_bylevel": trial.suggest_float("colsample_bylevel", 0.3, 1.0),
+                "min_data_in_leaf": trial.suggest_int("min_data_in_leaf", 10, 100),
+                "random_strength": trial.suggest_float("random_strength", 0.0, 2.0),
+                "colsample_bylevel": trial.suggest_float("colsample_bylevel", 0.4, 0.9),
                 # Bootstrap
                 "bootstrap_type": bootstrap_type,
             }

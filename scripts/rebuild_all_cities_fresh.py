@@ -2,7 +2,7 @@
 """
 Rebuild all 6 cities with fresh datasets including new features.
 
-Saves each city's dataset as parquet in data/training_cache/{city}/full.parquet
+Saves each city's dataset as parquet in models/saved/{city}/full.parquet
 
 Usage:
     nohup python scripts/rebuild_all_cities_fresh.py > logs/rebuild_all_cities.log 2>&1 &
@@ -40,7 +40,7 @@ def main():
     logger.info("Workers per city: 20")
     logger.info("")
 
-    base_dir = Path("data/training_cache")
+    base_dir = Path("models/saved")
     all_stats = []
     total_start = datetime.now()
 

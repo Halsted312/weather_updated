@@ -88,6 +88,7 @@ def process_chunk(
             include_market=True,
             include_station_city=include_station_city,  # ENABLED
             include_meteo=True,
+            include_more_apis=True,  # NOAA guidance (NBM, HRRR, NDFD)
         )
 
         with db_conn.get_db_session() as session:
@@ -216,14 +217,17 @@ def main():
                         help='Training start date (YYYY-MM-DD). Default: use all available data')
     parser.add_argument('--end-date', type=str, default=None,
                         help='Training end date (YYYY-MM-DD). Default: use all available data')
-    parser.add_argument('--objective', type=str, default='auc', choices=['auc', 'within2'],
-                        help='Optuna optimization objective: auc or within2')
-    parser.add_argument('--cache-dir', type=str, default='data/training_cache',
-                        help='Directory containing cached parquet files (full.parquet per city)')
+    parser.add_argument('--objective', type=str, default='weighted_auc',
+                        choices=['auc', 'within2', 'weighted_auc'],
+                        help='Optuna optimization objective (default: weighted_auc)')
+    parser.add_argument('--cache-dir', type=str, default='models/saved',
+                        help='Directory containing cached parquet files (train_data_full.parquet + test_data_full.parquet per city)')
     args = parser.parse_args()
 
     city = args.city
     include_station_city = not args.no_station_city
+    start_date = datetime.strptime(args.start_date, '%Y-%m-%d').date() if args.start_date else None
+    end_date = datetime.strptime(args.end_date, '%Y-%m-%d').date() if args.end_date else None
 
     logger.info("=" * 60)
     logger.info(f"{city.upper()} Optuna Training ({args.trials} trials)")
@@ -234,71 +238,92 @@ def main():
     output_dir = Path(f"models/saved/{city}")
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    # Check for cached parquet in training_cache directory
-    cache_path = Path(args.cache_dir) / city / "full.parquet"
-    train_parquet = output_dir / "train_data_full.parquet"
-    test_parquet = output_dir / "test_data_full.parquet"
+    # Paths for pre-split parquets
+    cache_dir = Path(args.cache_dir)
+    train_parquet = cache_dir / city / "train_data_full.parquet"
+    test_parquet = cache_dir / city / "test_data_full.parquet"
 
-    # Try to load from training cache first (preferred - has all new features)
-    if cache_path.exists():
-        logger.info(f"Loading from training cache: {cache_path}")
-        df_full = pd.read_parquet(cache_path)
-        logger.info(f"Loaded {len(df_full):,} rows, {len(df_full.columns)} columns")
+    # Load from pre-split parquets if --use-cached and files exist
+    if args.use_cached and train_parquet.exists() and test_parquet.exists():
+        logger.info(f"Loading cached train/test datasets from: {cache_dir / city}")
+        logger.info(f"  Train: {train_parquet}")
+        logger.info(f"  Test:  {test_parquet}")
 
-        # Determine the date column (event_date or day)
-        date_col = 'event_date' if 'event_date' in df_full.columns else 'day'
-        df_full[date_col] = pd.to_datetime(df_full[date_col]).dt.date
-
-        # Apply date filtering if specified
-        if args.start_date:
-            start = datetime.strptime(args.start_date, '%Y-%m-%d').date()
-            df_full = df_full[df_full[date_col] >= start]
-            logger.info(f"Filtered to start_date >= {start}")
-        if args.end_date:
-            end = datetime.strptime(args.end_date, '%Y-%m-%d').date()
-            df_full = df_full[df_full[date_col] <= end]
-            logger.info(f"Filtered to end_date <= {end}")
-
-        # Get actual date range after filtering
-        min_date = df_full[date_col].min()
-        max_date = df_full[date_col].max()
-        logger.info(f"Data range after filtering: {min_date} to {max_date}")
-
-        # Calculate train/test split (80/20 by days)
-        unique_days = sorted(df_full[date_col].unique())
-        total_days = len(unique_days)
-        holdout_days = int(total_days * args.holdout_pct)
-        test_start_idx = total_days - holdout_days
-        test_start_day = unique_days[test_start_idx]
-
-        df_train = df_full[df_full[date_col] < test_start_day].copy().reset_index(drop=True)
-        df_test = df_full[df_full[date_col] >= test_start_day].copy().reset_index(drop=True)
-
-        # Ensure 'day' column exists for downstream compatibility
-        if date_col == 'event_date' and 'day' not in df_train.columns:
-            df_train['day'] = df_train['event_date']
-            df_test['day'] = df_test['event_date']
-
-        test_start = test_start_day
-        logger.info(f"Total days: {total_days}")
-        logger.info(f"Training: {min_date} to {unique_days[test_start_idx - 1]} ({total_days - holdout_days} days)")
-        logger.info(f"Testing:  {test_start} to {max_date} ({holdout_days} days)")
-
-    elif args.use_cached and train_parquet.exists() and test_parquet.exists():
-        # Fall back to previously split train/test parquets
-        logger.info("Loading cached train/test datasets...")
         df_train = pd.read_parquet(train_parquet)
         df_test = pd.read_parquet(test_parquet)
-        logger.info(f"Loaded train: {len(df_train):,} rows, test: {len(df_test):,} rows")
 
-        # Get date range from data
-        from src.db import get_db_session
-        from models.data.loader import get_available_date_range
-        with get_db_session() as session:
-            min_date, max_date = get_available_date_range(session, city)
-        total_days = (max_date - min_date).days + 1
-        holdout_days = int(total_days * args.holdout_pct)
-        test_start = max_date - timedelta(days=holdout_days)
+        logger.info(f"Loaded train: {len(df_train):,} rows, {len(df_train.columns)} columns")
+        logger.info(f"Loaded test:  {len(df_test):,} rows, {len(df_test.columns)} columns")
+
+        # Debug: Check for NOAA feature columns
+        noaa_cols = [
+            "nbm_peak_window_max_f", "hrrr_peak_window_max_f",
+            "nbm_t15_z_30d_f", "hrrr_t15_z_30d_f", "hrrr_minus_nbm_t15_z_30d_f",
+        ]
+        logger.info("\nNOAA feature columns check:")
+        for col in noaa_cols:
+            if col in df_train.columns:
+                non_null = df_train[col].notna().sum()
+                pct = 100.0 * non_null / len(df_train)
+                logger.info(f"  ✓ {col}: {non_null:,}/{len(df_train):,} non-null ({pct:.1f}%)")
+            else:
+                logger.warning(f"  ✗ {col}: MISSING from parquet")
+
+        # Ensure 'day' column exists
+        date_col = 'event_date' if 'event_date' in df_train.columns else 'day'
+        if date_col == 'event_date' and 'day' not in df_train.columns:
+            df_train['day'] = pd.to_datetime(df_train['event_date']).dt.date
+            df_test['day'] = pd.to_datetime(df_test['event_date']).dt.date
+        elif 'day' in df_train.columns:
+            df_train['day'] = pd.to_datetime(df_train['day']).dt.date
+            df_test['day'] = pd.to_datetime(df_test['day']).dt.date
+
+        # Apply requested date filters to cached data and re-split if needed
+        if start_date or end_date:
+            logger.info("Applying date filters to cached datasets")
+            logger.info(f"  start_date: {start_date}, end_date: {end_date}")
+            df_all = pd.concat([df_train, df_test], ignore_index=True)
+            if start_date:
+                df_all = df_all[df_all['day'] >= start_date]
+            if end_date:
+                df_all = df_all[df_all['day'] <= end_date]
+
+            if df_all.empty:
+                logger.error("No data remaining after applying date filters to cached parquets")
+                return 1
+
+            # Recompute split so cached path honors holdout pct and date bounds
+            min_date = df_all['day'].min()
+            max_date = df_all['day'].max()
+            total_days = (max_date - min_date).days + 1
+            holdout_days = int(total_days * args.holdout_pct)
+            test_start = max_date - timedelta(days=holdout_days)
+
+            df_train = df_all[df_all['day'] < test_start].reset_index(drop=True)
+            df_test = df_all[df_all['day'] >= test_start].reset_index(drop=True)
+
+            if df_train.empty or df_test.empty:
+                logger.error("Insufficient data after splitting cached parquets with requested date range")
+                logger.error(f"  Train rows: {len(df_train)}, Test rows: {len(df_test)}")
+                return 1
+
+        min_date = df_train['day'].min()
+        max_date = df_test['day'].max()
+        holdout_days = df_test['day'].nunique()
+        total_days = df_train['day'].nunique() + holdout_days
+        test_start = df_test['day'].min()
+
+        logger.info(f"\nData range: {min_date} to {max_date}")
+        logger.info(f"Training: {df_train['day'].min()} to {df_train['day'].max()} ({df_train['day'].nunique()} days)")
+        logger.info(f"Testing:  {test_start} to {max_date} ({holdout_days} days)")
+
+    elif args.use_cached:
+        # --use-cached was specified but files don't exist
+        logger.error(f"--use-cached specified but parquet files not found:")
+        logger.error(f"  Expected: {train_parquet}")
+        logger.error(f"  Expected: {test_parquet}")
+        logger.error("Either build the dataset first or remove --use-cached to rebuild from DB")
+        return 1
 
     else:
         # Build from database (original behavior)
@@ -313,12 +338,10 @@ def main():
             return 1
 
         # Apply date filtering if specified
-        if args.start_date:
-            start = datetime.strptime(args.start_date, '%Y-%m-%d').date()
-            min_date = max(min_date, start)
-        if args.end_date:
-            end = datetime.strptime(args.end_date, '%Y-%m-%d').date()
-            max_date = min(max_date, end)
+        if start_date:
+            min_date = max(min_date, start_date)
+        if end_date:
+            max_date = min(max_date, end_date)
 
         logger.info(f"Available data: {min_date} to {max_date}")
 
@@ -345,18 +368,19 @@ def main():
             include_station_city=include_station_city,
         )
 
-        # Cache datasets
+        # Cache datasets to cache_dir
+        train_parquet.parent.mkdir(parents=True, exist_ok=True)
         df_train.to_parquet(train_parquet, index=False)
         df_test.to_parquet(test_parquet, index=False)
-        logger.info(f"Cached datasets to {output_dir}")
+        logger.info(f"Cached datasets to {cache_dir / city}")
 
     logger.info(f"\nTraining samples: {len(df_train):,}")
     logger.info(f"Training days: {df_train['day'].nunique()}")
     logger.info(f"Test samples: {len(df_test):,}")
     logger.info(f"Test days: {df_test['day'].nunique()}")
 
-    # Verify station-city features
-    sc_cols = [c for c in df_train.columns if "station_city" in c]
+    # Verify station-city features (includes city_warmer_flag)
+    sc_cols = [c for c in df_train.columns if "station_city" in c or c == "city_warmer_flag"]
     logger.info(f"\nStation-city features: {sc_cols}")
     for col in sc_cols:
         non_null = df_train[col].notna().sum()

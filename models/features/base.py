@@ -257,6 +257,16 @@ NUMERIC_FEATURE_COLS: list[str] = [
     "city_warmer_flag", "fcst_importance_weight",
     "fcst_multi_median", "fcst_multi_t1_t2_diff",
     "temp_cv_sofar", "temp_x_day_fraction", "temp_x_hours_remaining", "temp_zscore_vs_forecast",
+    # NOAA model guidance features (NBM, HRRR, NDFD)
+    "nbm_peak_window_max_f", "nbm_peak_window_revision_1h_f",
+    "hrrr_peak_window_max_f", "hrrr_peak_window_revision_1h_f",
+    "ndfd_tmax_T1_f", "ndfd_drift_T2_to_T1_f",
+    "hrrr_minus_nbm_peak_window_max_f", "ndfd_minus_vc_T1_f",
+    # Z-score features (dimensionless, normalized by 30d obs at 15:00)
+    "nbm_t15_z_30d_f", "hrrr_t15_z_30d_f", "hrrr_minus_nbm_t15_z_30d_f",
+    # Candle microstructure features (logit-based, 15-min window)
+    "c_logit_mid_last", "c_logit_mom_15m", "c_logit_vol_15m", "c_logit_surprise_15m",
+    "c_spread_pct_mean_15m", "c_mid_range_pct_15m", "c_trade_frac_15m", "c_synth_frac_15m",
 ]
 
 # Market features list (for toggle logic in get_feature_columns)

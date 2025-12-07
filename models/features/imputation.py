@@ -256,6 +256,52 @@ def fill_derived_nulls(row: dict[str, Any]) -> None:
 
 
 # =============================================================================
+# NOAA Model Guidance Null-Filling
+# =============================================================================
+
+MORE_APIS_COLS = [
+    # Raw temp features
+    "nbm_peak_window_max_f",
+    "nbm_peak_window_revision_1h_f",
+    "hrrr_peak_window_max_f",
+    "hrrr_peak_window_revision_1h_f",
+    "ndfd_tmax_T1_f",
+    "ndfd_drift_T2_to_T1_f",
+    "hrrr_minus_nbm_peak_window_max_f",
+    "ndfd_minus_vc_T1_f",
+    # Z-score features (dimensionless)
+    "nbm_t15_z_30d_f",
+    "hrrr_t15_z_30d_f",
+    "hrrr_minus_nbm_t15_z_30d_f",
+]
+
+CANDLES_MICRO_COLS = [
+    "c_logit_mid_last",
+    "c_logit_mom_15m",
+    "c_logit_vol_15m",
+    "c_logit_surprise_15m",
+    "c_spread_pct_mean_15m",
+    "c_mid_range_pct_15m",
+    "c_trade_frac_15m",
+    "c_synth_frac_15m",
+]
+
+
+def fill_more_apis_nulls(row: dict[str, Any]) -> None:
+    """Fill NOAA guidance features with None."""
+    for col in MORE_APIS_COLS:
+        if col not in row:
+            row[col] = None
+
+
+def fill_candles_micro_nulls(row: dict[str, Any]) -> None:
+    """Fill candle microstructure features with None."""
+    for col in CANDLES_MICRO_COLS:
+        if col not in row:
+            row[col] = None
+
+
+# =============================================================================
 # Master Imputation Function
 # =============================================================================
 
@@ -277,6 +323,8 @@ def apply_imputation(row: dict[str, Any]) -> None:
     fill_regime_nulls(row)
     fill_interaction_nulls(row)
     fill_derived_nulls(row)
+    fill_more_apis_nulls(row)
+    fill_candles_micro_nulls(row)
 
 
 # =============================================================================

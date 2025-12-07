@@ -215,7 +215,7 @@ def main():
     logger.info("PATCHING CLOUDCOVER FOR ALL CITIES")
     logger.info("="*80)
 
-    base_dir = Path("data/training_cache")
+    base_dir = Path("models/saved")
 
     for i, city in enumerate(CITIES, 1):
         logger.info(f"\n[{i}/6] Processing {city}...")

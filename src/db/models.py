@@ -536,6 +536,37 @@ class VcForecastHourly(Base):
     location: Mapped["VcLocation"] = relationship(back_populates="forecast_hourly")
 
 
+class WeatherMoreApisGuidance(Base):
+    """NOAA model guidance (NBM, HRRR, NDFD) - scalar summaries per run.
+
+    Stores peak window (13-18 local) max temps from NOAA forecast models.
+    Enables ML features comparing multiple forecast sources.
+
+    Table design:
+    - One row per (city, target_date, model, run_datetime_utc)
+    - Scalar summaries only (no minute-level explosion)
+    - Idempotent upserts via unique constraint
+    """
+
+    __tablename__ = "weather_more_apis_guidance"
+    __table_args__ = {"schema": "wx"}
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    city_id: Mapped[str] = mapped_column(String(20), nullable=False)
+    target_date: Mapped[date] = mapped_column(Date, nullable=False)
+    model: Mapped[str] = mapped_column(String(10), nullable=False)  # 'nbm', 'hrrr', 'ndfd'
+    run_datetime_utc: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+    # Scalar temperature summary (°F)
+    peak_window_max_f: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+
+    # Metadata
+    timezone: Mapped[str] = mapped_column(String(50), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=text("NOW()")
+    )
+
+
 # =============================================================================
 # Schema: kalshi (Market Data)
 # =============================================================================

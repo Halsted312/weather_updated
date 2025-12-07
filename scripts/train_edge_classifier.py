@@ -473,12 +473,13 @@ def get_settlement_temp(session, city: str, event_date: date) -> Optional[float]
     return float(row[0]) if row else None
 
 
-def load_all_settlements(city: str, dates: list) -> dict:
-    """Batch load all settlements in one query.
+def load_all_settlements(city: str, dates: list, settlements_parquet: Optional[Path] = None) -> dict:
+    """Batch load all settlements (from parquet or DB).
 
     Args:
         city: City name
         dates: List of dates to load
+        settlements_parquet: Optional path to settlements parquet file (bypasses DB)
 
     Returns:
         Dictionary mapping date -> settlement temperature
@@ -486,6 +487,23 @@ def load_all_settlements(city: str, dates: list) -> dict:
     if not dates:
         return {}
 
+    # Use parquet if provided
+    if settlements_parquet is not None:
+        logger.info(f"Loading settlements from parquet: {settlements_parquet}")
+        if not settlements_parquet.exists():
+            logger.error(f"Settlements parquet not found: {settlements_parquet}")
+            return {}
+
+        df = pd.read_parquet(settlements_parquet)
+        # Normalize date column to date objects
+        df['date_local'] = pd.to_datetime(df['date_local']).dt.date
+        date_set = set(dates)
+        df_filtered = df[df['date_local'].isin(date_set)]
+        # Filter out null tmax_final
+        df_filtered = df_filtered[df_filtered['tmax_final'].notna()]
+        return {row.date_local: float(row.tmax_final) for _, row in df_filtered.iterrows()}
+
+    # Otherwise use DB
     with get_db_session() as session:
         # Build date list for SQL
         date_strs = [f"'{d}'" for d in dates]
@@ -1044,6 +1062,7 @@ def generate_edge_data(
     use_realistic_pnl: bool = True,
     multi_mfp_mode: bool = False,
     candle_parquet: Optional[Path] = None,
+    settlements_parquet: Optional[Path] = None,
 ) -> pd.DataFrame:
     """Generate edge detection data using parallel processing.
 
@@ -1075,9 +1094,9 @@ def generate_edge_data(
     model = OrdinalDeltaTrainer()
     model.load(model_path)
 
-    # Batch load all settlements (1 query)
+    # Batch load all settlements (from parquet or 1 query)
     logger.info("Batch loading settlements...")
-    settlements = load_all_settlements(city, unique_days)
+    settlements = load_all_settlements(city, unique_days, settlements_parquet=settlements_parquet)
     logger.info(f"Loaded {len(settlements)} settlements")
 
     # Filter to days with settlements
@@ -1184,8 +1203,8 @@ def main():
     parser.add_argument(
         "--threshold",
         type=float,
-        default=1.5,
-        help="Edge threshold in degrees F",
+        default=None,
+        help="Edge threshold in degrees F (default: from config/edge_thresholds.py)",
     )
     parser.add_argument(
         "--sample-rate",
@@ -1209,8 +1228,8 @@ def main():
     parser.add_argument(
         "--min-trades-for-metric",
         type=int,
-        default=10,
-        help="Minimum trades when optimizing precision/F1",
+        default=50,
+        help="Minimum trades for P&L/Sharpe metrics stability (default: 50)",
     )
     parser.add_argument(
         "--cv-splits",
@@ -1268,7 +1287,25 @@ def main():
         help="Path to parquet file with candle data (use instead of database). "
              "Create with: python scripts/export_kalshi_candles.py --city {city}",
     )
+    parser.add_argument(
+        "--regenerate-only",
+        action="store_true",
+        help="Generate edge data parquet and exit (no training). Use on slow machine with DB.",
+    )
+    parser.add_argument(
+        "--from-parquet",
+        action="store_true",
+        help="Load settlements and candles from parquet files (no DB required). "
+             "Auto-detects: models/raw_data/{city}/settlements.parquet and "
+             "models/candles/candles_{city}.parquet",
+    )
     args = parser.parse_args()
+
+    # Resolve edge threshold from config if not specified
+    if args.threshold is None:
+        from config.edge_thresholds import get_min_edge_threshold
+        args.threshold = get_min_edge_threshold(args.city)
+        logger.info(f"Using threshold from config: {args.threshold}°F")
 
     # Auto-detect candle parquet if not specified
     if args.candle_parquet is None:
@@ -1276,6 +1313,16 @@ def main():
         if default_parquet.exists():
             args.candle_parquet = str(default_parquet)
             logger.info(f"Auto-detected candle parquet: {default_parquet}")
+
+    # Auto-detect settlements parquet when --from-parquet is set
+    args.settlements_parquet = None
+    if args.from_parquet:
+        settlements_parquet = Path(f"models/raw_data/{args.city}/settlements.parquet")
+        if settlements_parquet.exists():
+            args.settlements_parquet = settlements_parquet
+            logger.info(f"Auto-detected settlements parquet: {settlements_parquet}")
+        else:
+            logger.warning(f"--from-parquet set but settlements parquet not found: {settlements_parquet}")
 
     use_realistic_pnl = not args.no_realistic_pnl
 
@@ -1305,6 +1352,12 @@ def main():
         print(f"Candle source: parquet ({args.candle_parquet})")
     else:
         print("Candle source: database")
+    if args.settlements_parquet:
+        print(f"Settlement source: parquet ({args.settlements_parquet})")
+    else:
+        print("Settlement source: database")
+    if args.from_parquet:
+        print("Mode: PARQUET-ONLY (no DB required)")
     print()
 
     # Check for cached edge data (skip cache if max_days is set - test mode)
@@ -1353,6 +1406,7 @@ def main():
             use_realistic_pnl=use_realistic_pnl,
             multi_mfp_mode=args.multi_mfp,
             candle_parquet=Path(args.candle_parquet) if args.candle_parquet else None,
+            settlements_parquet=args.settlements_parquet,
         )
 
         if df_edge.empty:
@@ -1362,8 +1416,43 @@ def main():
         # Cache for future runs (only if not in test mode)
         if not args.max_days:
             cache_path.parent.mkdir(parents=True, exist_ok=True)
-            df_edge.to_parquet(cache_path, index=False)
-            logger.info(f"Cached edge data to {cache_path}")
+
+            # Handle existing file with wrong permissions
+            if cache_path.exists():
+                try:
+                    cache_path.unlink()  # Remove existing file
+                except PermissionError:
+                    # File owned by root or another user - write to alternate location
+                    alt_path = cache_path.with_suffix(".new.parquet")
+                    logger.warning(f"Cannot overwrite {cache_path} (permission denied)")
+                    logger.warning(f"Writing to alternate path: {alt_path}")
+                    df_edge.to_parquet(alt_path, index=False)
+                    logger.info(f"Cached edge data to {alt_path}")
+                    logger.info(f"To fix: sudo rm {cache_path} && mv {alt_path} {cache_path}")
+                    cache_path = alt_path  # Update for later references
+                else:
+                    df_edge.to_parquet(cache_path, index=False)
+                    logger.info(f"Cached edge data to {cache_path}")
+            else:
+                df_edge.to_parquet(cache_path, index=False)
+                logger.info(f"Cached edge data to {cache_path}")
+
+    # Early exit if --regenerate-only (for slow machine with DB)
+    if args.regenerate_only:
+        print("\n" + "=" * 60)
+        print("EDGE DATA GENERATION COMPLETE (--regenerate-only)")
+        print("=" * 60)
+        print(f"Output: {cache_path}")
+        print(f"Rows: {len(df_edge):,}")
+        n_signals = (df_edge["signal"] != "no_trade").sum()
+        n_valid_pnl = df_edge["pnl"].notna().sum()
+        print(f"Signals (non-no_trade): {n_signals:,}")
+        print(f"Valid P&L rows: {n_valid_pnl:,}")
+        if n_valid_pnl > 0:
+            mean_pnl = df_edge["pnl"].mean()
+            print(f"Mean P&L: ${mean_pnl:.4f}")
+        print("\nCopy this file to fast machine for training/sweeps.")
+        return 0
 
     # Filter to signals only (exclude no_trade for training)
     df_signals = df_edge[df_edge["signal"] != "no_trade"].copy()

@@ -86,7 +86,7 @@ class OrdinalDeltaTrainer(BaseTrainer):
         calibrate: bool = False,  # Ordinal doesn't use Platt in same way
         cv_splits: int = 3,
         catboost_params: Optional[dict] = None,
-        objective: Literal['auc', 'within2'] = 'auc',
+        objective: Literal['auc', 'within2', 'weighted_auc'] = 'weighted_auc',
         verbose: bool = False,
     ):
         """Initialize ordinal trainer.
@@ -99,7 +99,7 @@ class OrdinalDeltaTrainer(BaseTrainer):
             calibrate: Whether to calibrate individual threshold classifiers
             cv_splits: Number of CV splits for tuning
             catboost_params: Override CatBoost parameters (if base_model='catboost')
-            objective: Optimization objective ('auc' or 'within2')
+            objective: Optimization objective ('auc', 'within2', or 'weighted_auc')
             verbose: Whether to show training progress
         """
         super().__init__(
@@ -133,7 +133,7 @@ class OrdinalDeltaTrainer(BaseTrainer):
     def _create_base_model(self) -> Any:
         """Create base binary classifier for one threshold."""
         if self.base_model_type == 'catboost':
-            # Default params tuned for binary classification
+            # Default params tuned for binary classification (CPU mode)
             params = {
                 "loss_function": "Logloss",
                 "eval_metric": "AUC",
@@ -143,8 +143,9 @@ class OrdinalDeltaTrainer(BaseTrainer):
                 "l2_leaf_reg": 3.0,
                 "min_data_in_leaf": 10,
                 "random_strength": 0.5,
-                "bootstrap_type": "Bayesian",
-                "bagging_temperature": 0.5,
+                "bootstrap_type": "Bernoulli",  # CPU-compatible bootstrap
+                "task_type": "CPU",  # Use CPU (more stable than GPU)
+                "thread_count": -1,  # Use all available threads
                 "random_seed": 42,
                 "verbose": False,
             }
@@ -155,13 +156,13 @@ class OrdinalDeltaTrainer(BaseTrainer):
             params.update(self.catboost_params)
 
             # Handle bootstrap-specific params (prevent conflicts)
-            bootstrap_type = params.get("bootstrap_type", "Bayesian")
-            if bootstrap_type != "Bayesian":
-                # Remove bagging_temperature if not Bayesian
-                params.pop("bagging_temperature", None)
-            else:
-                # Remove subsample if Bayesian
+            bootstrap_type = params.get("bootstrap_type", "MVS")
+            if bootstrap_type == "Bayesian":
+                # Bayesian uses bagging_temperature, not subsample
                 params.pop("subsample", None)
+            elif bootstrap_type in ("MVS", "Bernoulli", "Poisson"):
+                # These use subsample, not bagging_temperature
+                params.pop("bagging_temperature", None)
 
             return CatBoostClassifier(**params)
 
@@ -202,42 +203,55 @@ class OrdinalDeltaTrainer(BaseTrainer):
         Optimizes params by training on a representative middle threshold (delta >= 1)
         and evaluating via cross-validation. The best params are used for all thresholds.
 
-        Supports two objectives:
-            - 'auc': Area under ROC curve (default)
+        Supports three objectives:
+            - 'auc': Area under ROC curve for delta >= 1 threshold
             - 'within2': Proportion of predictions within 2 of true delta
+            - 'weighted_auc': Weighted average of AUCs across multiple thresholds
         """
         logger.info(f"Starting Optuna tuning with {self.n_trials} trials (objective={self.objective})")
 
         cv = DayGroupedTimeSeriesSplit(n_splits=self.cv_splits)
 
-        # Use middle threshold for tuning (delta >= 1 is representative)
-        tuning_threshold = 1
-        y_binary = (y >= tuning_threshold).astype(int)
-
-        # For within2 objective, we need all thresholds trained together
-        # Store the delta classes for within-2 calculation
-        delta_classes = np.array(list(range(-12, 13)))  # Fixed [-12, +12] range
+        # For weighted_auc: precompute threshold weights based on class balance
+        if self.objective == 'weighted_auc':
+            candidate_thresholds = [-1, 0, 1, 2]
+            threshold_weights = {}
+            for k in candidate_thresholds:
+                p_k = (y >= k).mean()
+                # Weight by p * (1-p): thresholds near 50/50 count more
+                threshold_weights[k] = p_k * (1 - p_k)
+            logger.info(f"Weighted AUC thresholds: {candidate_thresholds}")
+            logger.info(f"Threshold weights: {threshold_weights}")
+        else:
+            # Single threshold for auc/within2
+            candidate_thresholds = [1]
+            threshold_weights = {1: 1.0}
 
         def objective(trial: "optuna.Trial") -> float:
-            # Choose bootstrap type first (affects other params)
-            bootstrap_type = trial.suggest_categorical("bootstrap_type", ["Bayesian", "Bernoulli"])
+            # CPU-optimized search space (stable, no memory leaks)
 
             # Choose grow policy (affects tree structure)
-            grow_policy = trial.suggest_categorical("grow_policy", ["SymmetricTree", "Depthwise", "Lossguide"])
+            grow_policy = trial.suggest_categorical("grow_policy", ["SymmetricTree", "Lossguide", "Depthwise"])
 
+            # Updated search space for ~500k rows, ~250 features (CPU mode)
             params = {
-                # Tree structure - WIDENED ranges
-                "depth": trial.suggest_int("depth", 4, 10),
-                "iterations": trial.suggest_int("iterations", 100, 600),
-                "learning_rate": trial.suggest_float("learning_rate", 0.01, 0.3, log=True),
-                "border_count": trial.suggest_int("border_count", 32, 255),
+                # CPU settings (stable, uses all threads)
+                "task_type": "CPU",
+                "thread_count": -1,
+                # Tree structure
+                "depth": trial.suggest_int("depth", 5, 8),
+                "iterations": trial.suggest_int("iterations", 400, 1500),
+                "learning_rate": trial.suggest_float("learning_rate", 0.02, 0.10, log=True),
+                "border_count": trial.suggest_int("border_count", 64, 255),
                 "grow_policy": grow_policy,
-                # Regularization
-                "l2_leaf_reg": trial.suggest_float("l2_leaf_reg", 0.1, 10.0, log=True),
-                "min_data_in_leaf": trial.suggest_int("min_data_in_leaf", 1, 50),
-                "random_strength": trial.suggest_float("random_strength", 0.0, 2.0),
-                "colsample_bylevel": trial.suggest_float("colsample_bylevel", 0.3, 1.0),
-                "bootstrap_type": bootstrap_type,
+                # Regularization - stronger for wide feature space
+                "l2_leaf_reg": trial.suggest_float("l2_leaf_reg", 3.0, 40.0, log=True),
+                "min_data_in_leaf": trial.suggest_int("min_data_in_leaf", 30, 150),
+                "random_strength": trial.suggest_float("random_strength", 0.1, 1.5),
+                "colsample_bylevel": trial.suggest_float("colsample_bylevel", 0.5, 0.9),
+                # Bernoulli bootstrap (CPU-compatible)
+                "bootstrap_type": "Bernoulli",
+                "subsample": trial.suggest_float("subsample", 0.6, 0.95),
                 # Fixed params
                 "loss_function": "Logloss",
                 "eval_metric": "AUC",
@@ -249,54 +263,85 @@ class OrdinalDeltaTrainer(BaseTrainer):
             if grow_policy == "Lossguide":
                 params["max_leaves"] = trial.suggest_int("max_leaves", 16, 64)
 
-            # Bootstrap-specific params
-            if bootstrap_type == "Bayesian":
-                params["bagging_temperature"] = trial.suggest_float("bagging_temperature", 0.0, 1.0)
-            else:  # Bernoulli
-                params["subsample"] = trial.suggest_float("subsample", 0.5, 1.0)
-
-            scores = []
+            fold_scores = []
             for train_idx, val_idx in cv.split(df):
                 X_tr = X.iloc[train_idx]
-                y_tr = y_binary.iloc[train_idx]
                 X_va = X.iloc[val_idx]
-                y_va = y_binary.iloc[val_idx]
-                y_va_delta = y.iloc[val_idx]  # Full delta values for within-2
+                y_va_delta = y.iloc[val_idx]  # Full delta values
 
-                # Skip if validation has only one class
-                if len(y_va.unique()) < 2:
-                    continue
+                if self.objective == 'weighted_auc':
+                    # Compute weighted AUC across multiple thresholds
+                    threshold_aucs = {}
+                    total_weight = 0.0
 
-                model = CatBoostClassifier(**params)
-                train_pool = Pool(X_tr, y_tr, cat_features=self._cat_features)
-                val_pool = Pool(X_va, y_va, cat_features=self._cat_features)
+                    for k in candidate_thresholds:
+                        y_tr_k = (y.iloc[train_idx] >= k).astype(int)
+                        y_va_k = (y_va_delta >= k).astype(int)
 
-                model.fit(train_pool, eval_set=val_pool, early_stopping_rounds=50)
+                        # Skip if validation has only one class
+                        if len(y_va_k.unique()) < 2:
+                            continue
 
-                if self.objective == 'auc':
-                    # Use AUC as metric (higher is better)
+                        model = CatBoostClassifier(**params)
+                        train_pool = Pool(X_tr, y_tr_k, cat_features=self._cat_features)
+                        val_pool = Pool(X_va, y_va_k, cat_features=self._cat_features)
+                        model.fit(train_pool, eval_set=val_pool, early_stopping_rounds=50)
+
+                        from sklearn.metrics import roc_auc_score
+                        proba = model.predict_proba(val_pool)[:, 1]
+                        auc_k = roc_auc_score(y_va_k, proba)
+                        w_k = threshold_weights[k]
+                        threshold_aucs[k] = auc_k * w_k
+                        total_weight += w_k
+
+                    if total_weight > 0:
+                        fold_score = sum(threshold_aucs.values()) / total_weight
+                    else:
+                        fold_score = 0.0
+
+                elif self.objective == 'auc':
+                    # Single threshold AUC (delta >= 1)
+                    y_tr_binary = (y.iloc[train_idx] >= 1).astype(int)
+                    y_va_binary = (y_va_delta >= 1).astype(int)
+
+                    if len(y_va_binary.unique()) < 2:
+                        continue
+
+                    model = CatBoostClassifier(**params)
+                    train_pool = Pool(X_tr, y_tr_binary, cat_features=self._cat_features)
+                    val_pool = Pool(X_va, y_va_binary, cat_features=self._cat_features)
+                    model.fit(train_pool, eval_set=val_pool, early_stopping_rounds=50)
+
                     from sklearn.metrics import roc_auc_score
                     proba = model.predict_proba(val_pool)[:, 1]
-                    score = roc_auc_score(y_va, proba)
+                    fold_score = roc_auc_score(y_va_binary, proba)
+
                 else:  # within2
-                    # For within-2, we need to predict delta from probabilities
-                    # Using a simplified approach: predict based on single threshold probability
+                    # Train on delta >= 1, then map to delta prediction
+                    y_tr_binary = (y.iloc[train_idx] >= 1).astype(int)
+                    y_va_binary = (y_va_delta >= 1).astype(int)
+
+                    if len(y_va_binary.unique()) < 2:
+                        continue
+
+                    model = CatBoostClassifier(**params)
+                    train_pool = Pool(X_tr, y_tr_binary, cat_features=self._cat_features)
+                    val_pool = Pool(X_va, y_va_binary, cat_features=self._cat_features)
+                    model.fit(train_pool, eval_set=val_pool, early_stopping_rounds=50)
+
                     proba = model.predict_proba(val_pool)[:, 1]
-                    # Simple heuristic: use threshold probability to estimate delta
-                    # Higher P(delta >= 1) suggests higher delta values
-                    # Map probabilities to delta predictions
-                    y_pred_delta = np.round(proba * 10 - 3).astype(int)  # Scale to approx delta range
+                    # Heuristic mapping: probability to delta estimate
+                    y_pred_delta = np.round(proba * 10 - 3).astype(int)
                     y_pred_delta = np.clip(y_pred_delta, -12, 12)
 
-                    # Calculate within-2 rate
                     within_2 = np.abs(y_va_delta.values - y_pred_delta) <= 2
-                    score = np.mean(within_2)
+                    fold_score = np.mean(within_2)
 
-                scores.append(score)
+                fold_scores.append(fold_score)
 
-            if not scores:
+            if not fold_scores:
                 return 0.0
-            return float(np.mean(scores))
+            return float(np.mean(fold_scores))
 
         # Run optimization (maximize score)
         self.study = optuna.create_study(direction="maximize")
@@ -307,7 +352,8 @@ class OrdinalDeltaTrainer(BaseTrainer):
         )
 
         self.best_params = self.study.best_params
-        metric_name = "AUC" if self.objective == 'auc' else "Within-2 Rate"
+        metric_names = {'auc': 'AUC', 'within2': 'Within-2 Rate', 'weighted_auc': 'Weighted AUC'}
+        metric_name = metric_names.get(self.objective, self.objective)
         logger.info(f"Best params: {self.best_params}")
         logger.info(f"Best {metric_name}: {self.study.best_value:.4f}")
 

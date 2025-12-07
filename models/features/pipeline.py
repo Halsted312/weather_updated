@@ -123,6 +123,13 @@ class SnapshotContext:
     # Station-city comparison (optional)
     city_obs_df: Optional[pd.DataFrame] = None
 
+    # NOAA model guidance (NBM, HRRR, NDFD) - optional
+    more_apis: Optional[dict[str, dict[str, Any]]] = None
+
+    # 30-day obs stats at 15:00 local (for z-score normalization)
+    obs_t15_mean_30d_f: Optional[float] = None
+    obs_t15_std_30d_f: Optional[float] = None
+
     # Labels (training only)
     settle_f: Optional[int] = None
 
@@ -582,8 +589,15 @@ def compute_snapshot_features(
     if ctx.candles_df is not None and not ctx.candles_df.empty:
         market_fs = compute_market_features(ctx.candles_df, ctx.cutoff_time)
         features.update(market_fs.to_dict())
+
+        # 14b. Candle microstructure (logit-based, 15-min aggregates)
+        from models.features.candles_micro import compute_candles_micro_features
+        candles_micro_fs = compute_candles_micro_features(ctx.candles_df, ctx.cutoff_time)
+        features.update(candles_micro_fs.to_dict())
     else:
         fill_market_nulls(features)
+        from models.features.imputation import fill_candles_micro_nulls
+        fill_candles_micro_nulls(features)
 
     # ==========================================================================
     # 15. Station-city features (comparing station vs city aggregate)
@@ -620,6 +634,19 @@ def compute_snapshot_features(
     engineered_fs = compute_engineered_features(features)
     features.update(engineered_fs.to_dict())
     # No null-filling needed here since engineered features handle None gracefully
+
+    # ==========================================================================
+    # 16d. NOAA model guidance (NBM, HRRR, NDFD)
+    # ==========================================================================
+    from models.features.more_apis import compute_more_apis_features
+    vc_t1_tempmax = ctx.fcst_daily.get("tempmax_f") if ctx.fcst_daily else None
+    more_apis_fs = compute_more_apis_features(
+        ctx.more_apis,
+        vc_t1_tempmax,
+        ctx.obs_t15_mean_30d_f,
+        ctx.obs_t15_std_30d_f
+    )
+    features.update(more_apis_fs.to_dict())
 
     # ==========================================================================
     # 17. Labels (training only)
