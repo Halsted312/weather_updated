@@ -4,7 +4,7 @@ Database connection management.
 
 import logging
 from contextlib import contextmanager
-from typing import Generator
+from typing import Generator, Optional
 
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine import Engine
@@ -15,8 +15,8 @@ from src.config.settings import get_settings
 logger = logging.getLogger(__name__)
 
 # Global engine and session factory
-_engine: Engine | None = None
-_SessionLocal: sessionmaker | None = None
+_engine: Optional[Engine] = None  # Python 3.9+ compatible (was: Engine | None)
+_SessionLocal: Optional[sessionmaker] = None  # Python 3.9+ compatible
 
 
 def get_engine() -> Engine:

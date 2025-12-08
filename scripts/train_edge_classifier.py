@@ -32,7 +32,8 @@ from tqdm import tqdm
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from src.db import get_db_session
+# NOTE: DB import moved to functions that need it (for DB-free operation on fast computer)
+# from src.db import get_db_session  # Only import when actually needed
 from models.training.ordinal_trainer import OrdinalDeltaTrainer
 from models.edge.implied_temp import (
     compute_market_implied_temp,
@@ -616,6 +617,7 @@ def load_all_settlements(city: str, dates: list, settlements_parquet: Optional[P
         return {row.date_local: float(row.tmax_final) for _, row in df_filtered.iterrows()}
 
     # Otherwise use DB
+    from src.db import get_db_session  # Lazy import (only when DB actually needed)
     with get_db_session() as session:
         # Build date list for SQL
         date_strs = [f"'{d}'" for d in dates]
@@ -662,6 +664,7 @@ def load_all_candles_batch(city: str, dates: list) -> dict:
     BATCH_SIZE = 200
     all_rows = []
 
+    from src.db import get_db_session  # Lazy import (only when DB actually needed)
     with get_db_session() as session:
         for batch_start in range(0, len(dates), BATCH_SIZE):
             batch_dates = dates[batch_start:batch_start + BATCH_SIZE]
@@ -750,7 +753,8 @@ def load_all_candles_batch(city: str, dates: list) -> dict:
 
             candle_cache[(day, label)] = ticker_df
 
-    logger.info(f"Organized into {len(candle_cache):,} (day, bracket) entries")
+    logger.info(f"✅ Organized into {len(candle_cache):,} (day, bracket) entries from parquet")
+    logger.info(f"Sample cache keys: {list(candle_cache.keys())[:5]}")
     return candle_cache
 
 
@@ -803,6 +807,10 @@ def load_all_candles_from_parquet(city: str, parquet_path: Path, dates: list) ->
     df["date_suffix"] = df["ticker"].apply(extract_suffix)
     df = df[df["date_suffix"].isin(valid_suffixes)].copy()
     logger.info(f"Filtered to {len(df):,} rows for requested dates")
+
+    # Next: Organize into (day, bracket) cache - this can take 10-20 min for large datasets
+    logger.info(f"Organizing {len(df):,} candle rows by (day, bracket)...")
+    logger.info(f"  (This may take 10-20 minutes for 10M+ rows - please wait)")
 
     # Rename columns to match DB schema expected by rest of code
     # Export uses yes_bid/yes_ask, DB query uses yes_bid_close/yes_ask_close
