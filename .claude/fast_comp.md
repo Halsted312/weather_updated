@@ -4,7 +4,7 @@ python scripts/build_dataset_from_parquets.py --city chicago --workers 14
 
 # 2. Train ordinal (~2 hours, 150 trials)
 python scripts/train_city_ordinal_optuna.py \
-    --city chicago --use-cached --trials 150 --workers 14
+    --city chicago --use-cached --trials 100 --workers 28
 
 # 3. Generate edge data (~1-2 hours)
 python scripts/train_edge_classifier.py \
@@ -21,7 +21,50 @@ python scripts/sweep_min_edge_threshold.py --city chicago --metric sharpe
 
 
 
+(.venv) (base) halsted@halsted:~/slow_weather_updated$ python scripts/train_edge_classifier.py \
+    --city chicago --threshold 0.5 --sample-rate 4 --regenerate-only --workers 20
+12:36:04 [INFO] __main__: Auto-detected candle parquet: models/candles/candles_chicago.parquet
+============================================================
+ML EDGE CLASSIFIER TRAINING
+============================================================
+City: chicago
+Optuna trials: 30
+Optuna metric: filtered_precision
+Workers: 20
+Edge threshold: 0.5°F
+Sample rate: every 4th snapshot
+P&L mode: REALISTIC (with fees)
+Maker fill probability: 40.0%
+Ordinal model: models/saved/chicago/ordinal_catboost_optuna.pkl (default)
+Candle source: parquet (models/candles/candles_chicago.parquet)
+Settlement source: database
 
+12:36:04 [INFO] __main__: ⚠️  Regenerating: cached edge data not found
+12:36:04 [INFO] __main__: Using ordinal model: models/saved/chicago/ordinal_catboost_optuna.pkl
+12:36:05 [INFO] __main__: Loaded train data: 389,712 rows
+12:36:05 [INFO] __main__: Loaded test data: 97,128 rows
+/home/halsted/slow_weather_updated/scripts/train_edge_classifier.py:474: FutureWarning: The behavior of DataFrame concatenation with empty or all-NA entries is deprecated. In a future version, this will no longer exclude empty or all-NA columns when determining the result dtypes. To retain the old behavior, exclude the relevant entries before the concat operation.
+  df_combined = pd.concat(dfs, ignore_index=True)
+12:36:07 [INFO] __main__: Combined data: 486,840 rows
+12:36:07 [INFO] __main__: Generating edge data for chicago with 20 workers...
+12:36:07 [INFO] __main__: Processing 1068 unique days
+12:36:07 [INFO] __main__: Loading model from models/saved/chicago/ordinal_catboost_optuna.pkl...
+12:36:08 [INFO] models.training.ordinal_trainer: Loaded ordinal model from models/saved/chicago/ordinal_catboost_optuna.pkl
+12:36:08 [INFO] __main__: Batch loading settlements...
+12:36:08 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+12:36:08 [INFO] __main__: Loaded 1062 settlements
+12:36:08 [INFO] __main__: Days with settlement data: 1062
+12:36:08 [INFO] __main__: Loading candles from parquet: models/candles/candles_chicago.parquet
+12:36:08 [INFO] __main__: Loading candles from parquet: models/candles/candles_chicago.parquet
+12:36:09 [INFO] __main__: Loaded 14,795,744 candle rows from parquet
+12:36:12 [INFO] __main__: Filtered to 12,188,481 rows for requested dates
+12:36:12 [INFO] __main__: Organizing 12,188,481 candle rows by (day, bracket)...
+12:36:12 [INFO] __main__:   (This may take 10-20 minutes for 10M+ rows - please wait)
+12:55:20 [INFO] __main__: Organized into 6,365 (day, bracket) entries from parquet
+12:55:20 [INFO] __main__: Candle cache built: 6365 (day, bracket) entries
+12:55:20 [INFO] __main__: Sample cache keys: [(datetime.date(2023, 4, 1), '50.5-51.5'), (datetime.date(2023, 4, 1), '52.5-53.5'), (datetime.date(2023, 4, 1), '54.5-55.5'), (datetime.date(2023, 4, 1), '56.5-57.5'), (datetime.date(2023, 4, 1), '50-51')]
+12:55:28 [INFO] __main__: Processing 1062 days with 20 threads...
+Processing days:   2%|███▋                                                                                                                                                                                                 | 20/1062 [01:38<12:01,  1.44i
 
 
 

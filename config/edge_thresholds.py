@@ -27,7 +27,7 @@ from typing import Dict
 EDGE_MIN_THRESHOLD_F: Dict[str, float] = {
     "austin": 1.5,        # Default - update after sweep
     "chicago": 1.5,       # Default - update after sweep
-    "denver": 1.5,        # Default - update after sweep
+    "denver": 10.0,        # Default - update after sweep
     "los_angeles": 1.5,   # Default - update after sweep
     "miami": 7.5,         # Updated 2025-12-07: Sweep found 7.5°F optimal (1,955 trades, 56% win, Sharpe 0.48)
     "philadelphia": 1.5,  # Default - update after sweep
