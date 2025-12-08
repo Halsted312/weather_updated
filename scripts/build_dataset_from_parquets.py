@@ -497,6 +497,22 @@ def main():
         default=5,
         help="Snapshot interval in minutes (default: 5)",
     )
+    parser.add_argument(
+        "--start",
+        type=str,
+        help="Start date (YYYY-MM-DD) - filter to this date range",
+    )
+    parser.add_argument(
+        "--end",
+        type=str,
+        help="End date (YYYY-MM-DD) - filter to this date range",
+    )
+    parser.add_argument(
+        "--strict",
+        action="store_true",
+        default=True,
+        help="Fail immediately if required parquets are missing (default: True)",
+    )
     args = parser.parse_args()
 
     city = args.city
@@ -515,6 +531,20 @@ def main():
     all_days = sorted(raw_data.settlements['date_local'].unique())
     logger.info(f"\nFound {len(all_days)} days with settlements")
     logger.info(f"Date range: {all_days[0]} to {all_days[-1]}")
+
+    # Apply date filtering if provided (CRITICAL FOR OCT 2025 TESTING)
+    if args.start:
+        start_date = pd.to_datetime(args.start).date()
+        all_days = [d for d in all_days if d >= start_date]
+        logger.info(f"Filtered start >= {start_date}")
+
+    if args.end:
+        end_date = pd.to_datetime(args.end).date()
+        all_days = [d for d in all_days if d <= end_date]
+        logger.info(f"Filtered end <= {end_date}")
+
+    if args.start or args.end:
+        logger.info(f"After filtering: {len(all_days)} days ({all_days[0]} to {all_days[-1]})")
 
     # Split into train/test
     n_days = len(all_days)
@@ -552,7 +582,7 @@ def main():
     logger.info(f"Test samples: {len(df_test):,}")
 
     # Add lag features
-    from models.features.lags import add_lag_features_to_dataframe
+    from models.features.calendar import add_lag_features_to_dataframe
 
     logger.info("\n--- Adding lag features ---")
     if len(df_train) > 0 and "settle_f" in df_train.columns:

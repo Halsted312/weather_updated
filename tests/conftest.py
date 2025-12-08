@@ -43,3 +43,30 @@ def settings():
     from src.config.settings import get_settings
 
     return get_settings()
+
+
+# ============================================================================
+# Denver Oct 2025 Smoke Test Fixtures
+# ============================================================================
+
+@pytest.fixture
+def project_root():
+    """Return project root directory."""
+    from pathlib import Path
+    return Path(__file__).parent.parent
+
+
+@pytest.fixture
+def models_dir(project_root):
+    """Return models directory."""
+    return project_root / "models"
+
+
+# Cities available for testing
+CITIES = ["denver", "los_angeles", "miami", "philadelphia", "chicago", "austin"]
+
+
+@pytest.fixture(params=CITIES)
+def all_cities(request):
+    """Parametrize tests across all cities."""
+    return request.param

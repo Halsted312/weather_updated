@@ -14,11 +14,12 @@ Usage:
 """
 
 import argparse
+import json
 import logging
 import sys
 import warnings
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 from typing import Optional, Tuple
 
@@ -56,6 +57,117 @@ logging.basicConfig(
     datefmt="%H:%M:%S",
 )
 logger = logging.getLogger(__name__)
+
+
+def should_regenerate_edge_data(
+    cache_path: Path,
+    ordinal_model_path: Path,
+    candle_parquet_path: Path,
+    threshold: float,
+    sample_rate: int,
+    pnl_mode: str,
+) -> bool:
+    """Check if edge data cache is still valid or needs regeneration.
+
+    Args:
+        cache_path: Path to edge_training_data_*.parquet cache file
+        ordinal_model_path: Path to ordinal model
+        candle_parquet_path: Path to candle parquet
+        threshold: Edge detection threshold
+        sample_rate: Sampling rate for training
+        pnl_mode: P&L mode (realistic/simplified)
+
+    Returns:
+        True if cache should be regenerated, False if cache can be reused
+    """
+    if not cache_path.exists():
+        logger.info("⚠️  Regenerating: cached edge data not found")
+        return True
+
+    meta_path = cache_path.with_suffix('.meta.json')
+    if not meta_path.exists():
+        logger.warning("⚠️  Regenerating: cache metadata missing (old cache format)")
+        return True
+
+    try:
+        with open(meta_path) as f:
+            cached_meta = json.load(f)
+    except (json.JSONDecodeError, IOError) as e:
+        logger.warning(f"⚠️  Regenerating: cannot read cache metadata ({e})")
+        return True
+
+    # Check if ordinal model changed
+    if ordinal_model_path.exists():
+        current_model_mtime = ordinal_model_path.stat().st_mtime
+        if cached_meta.get('ordinal_model_mtime') != current_model_mtime:
+            logger.info("⚠️  Regenerating: ordinal model changed")
+            logger.info(f"   Cached: {cached_meta.get('ordinal_model_mtime')}")
+            logger.info(f"   Current: {current_model_mtime}")
+            return True
+
+    # Check if candle data changed
+    if candle_parquet_path and candle_parquet_path.exists():
+        current_candle_mtime = candle_parquet_path.stat().st_mtime
+        if cached_meta.get('candles_mtime') != current_candle_mtime:
+            logger.info("⚠️  Regenerating: candle data changed")
+            logger.info(f"   Cached: {cached_meta.get('candles_mtime')}")
+            logger.info(f"   Current: {current_candle_mtime}")
+            return True
+
+    # Check if parameters changed
+    if cached_meta.get('threshold') != threshold:
+        logger.info(f"⚠️  Regenerating: threshold changed ({cached_meta.get('threshold')} → {threshold})")
+        return True
+
+    if cached_meta.get('sample_rate') != sample_rate:
+        logger.info(f"⚠️  Regenerating: sample_rate changed ({cached_meta.get('sample_rate')} → {sample_rate})")
+        return True
+
+    if cached_meta.get('pnl_mode') != pnl_mode:
+        logger.info(f"⚠️  Regenerating: pnl_mode changed ({cached_meta.get('pnl_mode')} → {pnl_mode})")
+        return True
+
+    # Cache is valid
+    logger.info(f"✅ Using cached edge data: {cache_path}")
+    logger.info(f"   Generated: {cached_meta.get('generated_at', 'unknown')}")
+    logger.info(f"   Ordinal model: {cached_meta.get('ordinal_model_path')}")
+    logger.info(f"   Threshold: {threshold}, Sample rate: {sample_rate}, P&L mode: {pnl_mode}")
+    return False
+
+
+def save_edge_data_metadata(
+    cache_path: Path,
+    city: str,
+    ordinal_model_path: Path,
+    candle_parquet_path: Optional[Path],
+    threshold: float,
+    sample_rate: int,
+    pnl_mode: str,
+):
+    """Save metadata alongside edge training data cache.
+
+    This enables smart cache invalidation - we can reuse cache when inputs haven't changed.
+    """
+    meta = {
+        'city': city,
+        'ordinal_model_path': str(ordinal_model_path),
+        'ordinal_model_mtime': ordinal_model_path.stat().st_mtime if ordinal_model_path.exists() else None,
+        'candles_parquet_path': str(candle_parquet_path) if candle_parquet_path else None,
+        'candles_mtime': candle_parquet_path.stat().st_mtime if (candle_parquet_path and candle_parquet_path.exists()) else None,
+        'threshold': threshold,
+        'sample_rate': sample_rate,
+        'pnl_mode': pnl_mode,
+        'generated_at': datetime.now().isoformat(),
+    }
+
+    meta_path = cache_path.with_suffix('.meta.json')
+    try:
+        with open(meta_path, 'w') as f:
+            json.dump(meta, f, indent=2)
+        logger.info(f"Saved cache metadata: {meta_path}")
+    except Exception as e:
+        logger.warning(f"Could not save cache metadata: {e}")
+
 
 # City configurations
 CITY_CONFIG = {
@@ -1367,19 +1479,44 @@ def main():
     else:
         pnl_suffix = "realistic" if use_realistic_pnl else "simplified"
     cache_path = Path(f"models/saved/{args.city}/edge_training_data_{pnl_suffix}.parquet")
-    use_cache = cache_path.exists() and not args.regenerate and not args.max_days
+
+    # Determine ordinal model path early (needed for cache validation)
+    if args.model_path:
+        model_path = Path(args.model_path)
+    else:
+        model_path = Path(f"models/saved/{args.city}/ordinal_catboost_optuna.pkl")
+
+    # Determine candle path early (needed for cache validation)
+    if args.candle_parquet:
+        candle_path = Path(args.candle_parquet)
+    else:
+        candle_path = Path(f"models/candles/candles_{args.city}.parquet")
+
+    # Smart cache invalidation with metadata tracking
+    if args.regenerate or args.max_days:
+        use_cache = False
+        if args.regenerate:
+            logger.info("⚠️  Regenerating: --regenerate flag set")
+        if args.max_days:
+            logger.info(f"⚠️  Regenerating: --max-days={args.max_days} (test mode)")
+    else:
+        use_cache = not should_regenerate_edge_data(
+            cache_path=cache_path,
+            ordinal_model_path=model_path,
+            candle_parquet_path=candle_path,
+            threshold=args.threshold,
+            sample_rate=args.sample_rate,
+            pnl_mode=pnl_suffix,
+        )
 
     if use_cache:
-        logger.info(f"Loading cached edge data from {cache_path}")
         df_edge = pd.read_parquet(cache_path)
     else:
-        # Load ordinal model path (model loaded in workers)
-        if args.model_path:
-            model_path = Path(args.model_path)
-        else:
-            model_path = Path(f"models/saved/{args.city}/ordinal_catboost_optuna.pkl")
+        # Validate ordinal model exists
         if not model_path.exists():
-            logger.error(f"Model not found: {model_path}")
+            logger.error(f"❌ Ordinal model not found: {model_path}")
+            logger.error(f"   Run ordinal training first:")
+            logger.error(f"   python scripts/train_city_ordinal_optuna.py --city {args.city}")
             return 1
 
         logger.info(f"Using ordinal model: {model_path}")
@@ -1433,9 +1570,29 @@ def main():
                 else:
                     df_edge.to_parquet(cache_path, index=False)
                     logger.info(f"Cached edge data to {cache_path}")
+                    # Save metadata for smart cache invalidation
+                    save_edge_data_metadata(
+                        cache_path=cache_path,
+                        city=args.city,
+                        ordinal_model_path=model_path,
+                        candle_parquet_path=candle_path if args.candle_parquet else None,
+                        threshold=args.threshold,
+                        sample_rate=args.sample_rate,
+                        pnl_mode=pnl_suffix,
+                    )
             else:
                 df_edge.to_parquet(cache_path, index=False)
                 logger.info(f"Cached edge data to {cache_path}")
+                # Save metadata for smart cache invalidation
+                save_edge_data_metadata(
+                    cache_path=cache_path,
+                    city=args.city,
+                    ordinal_model_path=model_path,
+                    candle_parquet_path=candle_path if args.candle_parquet else None,
+                    threshold=args.threshold,
+                    sample_rate=args.sample_rate,
+                    pnl_mode=pnl_suffix,
+                )
 
     # Early exit if --regenerate-only (for slow machine with DB)
     if args.regenerate_only:
