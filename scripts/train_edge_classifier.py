@@ -115,10 +115,11 @@ def should_regenerate_edge_data(
             logger.info(f"   Current: {current_candle_mtime}")
             return True
 
-    # Check if parameters changed
-    if cached_meta.get('threshold') != threshold:
-        logger.info(f"⚠️  Regenerating: threshold changed ({cached_meta.get('threshold')} → {threshold})")
-        return True
+    # NOTE: threshold is NOT checked - it's just a filter, not fundamental to data
+    # We can train with different thresholds on the same edge data
+    # if cached_meta.get('threshold') != threshold:
+    #     logger.info(f"⚠️  Regenerating: threshold changed ({cached_meta.get('threshold')} → {threshold})")
+    #     return True
 
     if cached_meta.get('sample_rate') != sample_rate:
         logger.info(f"⚠️  Regenerating: sample_rate changed ({cached_meta.get('sample_rate')} → {sample_rate})")
@@ -131,8 +132,9 @@ def should_regenerate_edge_data(
     # Cache is valid
     logger.info(f"✅ Using cached edge data: {cache_path}")
     logger.info(f"   Generated: {cached_meta.get('generated_at', 'unknown')}")
+    logger.info(f"   Generation threshold: {cached_meta.get('threshold')}°F (will filter to {threshold}°F)")
     logger.info(f"   Ordinal model: {cached_meta.get('ordinal_model_path')}")
-    logger.info(f"   Threshold: {threshold}, Sample rate: {sample_rate}, P&L mode: {pnl_mode}")
+    logger.info(f"   Sample rate: {sample_rate}, P&L mode: {pnl_mode}")
     return False
 
 
@@ -1519,6 +1521,23 @@ def main():
 
     if use_cache:
         df_edge = pd.read_parquet(cache_path)
+
+        # Filter to desired threshold if cache was generated with lower threshold
+        meta_path = cache_path.with_suffix('.meta.json')
+        cache_threshold = 0.5  # Default if no metadata
+        if meta_path.exists():
+            try:
+                with open(meta_path) as f:
+                    meta = json.load(f)
+                cache_threshold = meta.get('threshold', 0.5)
+            except:
+                pass
+
+        if args.threshold > cache_threshold:
+            initial_count = len(df_edge)
+            df_edge = df_edge[df_edge['edge'].abs() >= args.threshold].copy()
+            logger.info(f"   Filtered cache from {cache_threshold}°F to {args.threshold}°F")
+            logger.info(f"   {initial_count:,} edges → {len(df_edge):,} edges")
     else:
         # Validate ordinal model exists
         if not model_path.exists():
