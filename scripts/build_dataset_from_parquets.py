@@ -5,11 +5,24 @@ This script runs on the fast machine after raw data has been extracted
 from the slow machine via extract_raw_data_to_parquet.py.
 
 It loads raw parquets and runs the full feature engineering pipeline
-to produce train_data_full.parquet and test_data_full.parquet.
+to produce data_full.parquet, then splits into train/test.
 
 Usage:
+    # Full rebuild (builds data_full.parquet, then splits 80/20)
     PYTHONPATH=. python scripts/build_dataset_from_parquets.py --city austin
     PYTHONPATH=. python scripts/build_dataset_from_parquets.py --city austin --workers 12
+
+    # Incremental update (append new days to data_full, then re-split)
+    PYTHONPATH=. python scripts/build_dataset_from_parquets.py --city austin --incremental
+
+    # Custom split ratio (85/15)
+    PYTHONPATH=. python scripts/build_dataset_from_parquets.py --city austin --split-ratio 0.15
+
+    # Build only, no split (just produces data_full.parquet)
+    PYTHONPATH=. python scripts/build_dataset_from_parquets.py --city austin --no-split
+
+    # Force full rebuild even with --incremental
+    PYTHONPATH=. python scripts/build_dataset_from_parquets.py --city austin --incremental --force-rebuild
 
 Required input files:
     models/raw_data/{city}/
@@ -23,8 +36,14 @@ Required input files:
 
 Output:
     models/saved/{city}/
-        train_data_full.parquet
-        test_data_full.parquet
+        data_full.parquet         <- ALL data (incremental appends here)
+        train_data_full.parquet   <- Split from data_full (first 80%)
+        test_data_full.parquet    <- Split from data_full (last 20%)
+
+Workflow:
+    1. Build: Process all days → data_full.parquet
+    2. Incremental: Append new days to data_full.parquet (if columns match)
+    3. Split: Create train/test from data_full using split ratio
 """
 
 import argparse
@@ -47,7 +66,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-DEFAULT_HOLDOUT_PCT = 0.20
+DEFAULT_SPLIT_RATIO = 0.20
 DEFAULT_WORKERS = 8
 
 
@@ -450,6 +469,58 @@ def _process_chunk_worker(args: tuple) -> List[dict]:
     return process_day_chunk(city, days, raw_data_dir, candles_dir, snapshot_interval_min, obs_t15_stats)
 
 
+def check_existing_data_full(output_dir: Path) -> tuple[Optional[pd.DataFrame], set]:
+    """Check for existing data_full.parquet and return data and existing dates.
+
+    Returns:
+        (existing_df, existing_dates)
+        If file doesn't exist, returns (None, set())
+    """
+    data_full_path = output_dir / "data_full.parquet"
+
+    existing_dates = set()
+    existing_df = None
+
+    if data_full_path.exists():
+        try:
+            existing_df = pd.read_parquet(data_full_path)
+            if 'day' in existing_df.columns:
+                existing_dates = set(pd.to_datetime(existing_df['day']).dt.date)
+            logger.info(f"Found existing data_full: {len(existing_df):,} rows, {len(existing_df.columns)} cols")
+            logger.info(f"  Date range: {min(existing_dates)} to {max(existing_dates)}")
+        except Exception as e:
+            logger.warning(f"Could not read existing data_full parquet: {e}")
+
+    return existing_df, existing_dates
+
+
+def columns_match(existing_df: pd.DataFrame, new_df: pd.DataFrame) -> tuple[bool, str]:
+    """Check if columns match between existing and new dataframes.
+
+    Returns:
+        (match: bool, reason: str)
+    """
+    if existing_df is None or new_df is None:
+        return False, "One or both dataframes are None"
+
+    existing_cols = set(existing_df.columns)
+    new_cols = set(new_df.columns)
+
+    if existing_cols == new_cols:
+        return True, "Columns match exactly"
+
+    missing_in_new = existing_cols - new_cols
+    extra_in_new = new_cols - existing_cols
+
+    reason_parts = []
+    if missing_in_new:
+        reason_parts.append(f"Missing in new: {sorted(missing_in_new)[:5]}{'...' if len(missing_in_new) > 5 else ''}")
+    if extra_in_new:
+        reason_parts.append(f"Extra in new: {sorted(extra_in_new)[:5]}{'...' if len(extra_in_new) > 5 else ''}")
+
+    return False, "; ".join(reason_parts)
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Build training dataset from raw parquet files"
@@ -480,10 +551,15 @@ def main():
         help="Output directory for train/test parquets",
     )
     parser.add_argument(
-        "--holdout-pct",
+        "--split-ratio",
         type=float,
-        default=DEFAULT_HOLDOUT_PCT,
-        help="Holdout percentage for test set (default 0.20)",
+        default=DEFAULT_SPLIT_RATIO,
+        help="Test set ratio for train/test split (default 0.20)",
+    )
+    parser.add_argument(
+        "--no-split",
+        action="store_true",
+        help="Skip train/test split, only output data_full.parquet",
     )
     parser.add_argument(
         "--workers",
@@ -512,6 +588,16 @@ def main():
         action="store_true",
         default=True,
         help="Fail immediately if required parquets are missing (default: True)",
+    )
+    parser.add_argument(
+        "--incremental",
+        action="store_true",
+        help="Incremental mode: append new days to existing parquets if columns match, else rebuild",
+    )
+    parser.add_argument(
+        "--force-rebuild",
+        action="store_true",
+        help="Force full rebuild even if incremental mode is enabled",
     )
     args = parser.parse_args()
 
@@ -546,21 +632,39 @@ def main():
     if args.start or args.end:
         logger.info(f"After filtering: {len(all_days)} days ({all_days[0]} to {all_days[-1]})")
 
-    # Split into train/test
-    n_days = len(all_days)
-    holdout_days = max(1, int(n_days * args.holdout_pct))
-    train_days = all_days[:-holdout_days]
-    test_days = all_days[-holdout_days:]
+    # --- INCREMENTAL MODE CHECK ---
+    existing_df = None
+    incremental_mode = args.incremental and not args.force_rebuild
 
-    logger.info(f"\nTrain days: {len(train_days)} ({train_days[0]} to {train_days[-1]})")
-    logger.info(f"Test days: {len(test_days)} ({test_days[0]} to {test_days[-1]})")
+    if incremental_mode:
+        logger.info("\n--- Incremental mode: checking existing data ---")
+        existing_df, existing_dates = check_existing_data_full(output_dir)
+
+        if existing_dates:
+            original_count = len(all_days)
+            # Filter to only new days not in existing datasets
+            all_days = [d for d in all_days if d not in existing_dates]
+            logger.info(f"Existing dates: {len(existing_dates)}")
+            logger.info(f"New days to process: {len(all_days)} (filtered from {original_count})")
+
+            if not all_days:
+                logger.info("No new days to process - dataset is up to date!")
+                print("\n" + "=" * 60)
+                print("INCREMENTAL UPDATE: NO NEW DATA")
+                print("=" * 60)
+                print(f"Existing data_full: {len(existing_df):,} rows" if existing_df is not None else "No data_full file")
+                return 0
+        else:
+            logger.info("No existing data found - will do full build")
+            incremental_mode = False  # Revert to full build
+
+    logger.info(f"\nDays to build: {len(all_days)} ({all_days[0]} to {all_days[-1]})")
 
     # Pre-compute obs_t15 stats for ALL days (O(n) instead of O(n * days))
     logger.info("\n--- Pre-computing rolling stats ---")
-    all_target_days = train_days + test_days
-    obs_t15_stats = precompute_all_obs_t15_stats(raw_data.observations, all_target_days)
+    obs_t15_stats = precompute_all_obs_t15_stats(raw_data.observations, all_days)
 
-    # Build datasets - use sequential processing with pre-loaded & pre-grouped data
+    # Build dataset - use sequential processing with pre-loaded & pre-grouped data
     # O(1) dict lookups per day instead of filtering millions of rows
     def build_dataset_sequential(days: List[date], desc: str) -> pd.DataFrame:
         """Build dataset for a list of days using pre-loaded raw_data."""
@@ -571,43 +675,106 @@ def main():
             all_rows.extend(rows)
         return pd.DataFrame(all_rows)
 
-    # Build training dataset
-    logger.info("\n--- Building training dataset ---")
-    df_train = build_dataset_sequential(train_days, "Training days")
-    logger.info(f"Training samples: {len(df_train):,}")
+    def build_dataset_parallel(days: List[date], desc: str, n_workers: int) -> pd.DataFrame:
+        """Build dataset using parallel processing (safe: lags computed after)."""
+        from joblib import Parallel, delayed
 
-    # Build test dataset
-    logger.info("\n--- Building test dataset ---")
-    df_test = build_dataset_sequential(test_days, "Test days")
-    logger.info(f"Test samples: {len(df_test):,}")
+        logger.info(f"Building {desc} ({len(days)} days) with {n_workers} workers...")
 
-    # Add lag features
+        def process_single_day(event_date: date) -> List[dict]:
+            return build_day_snapshots(city, event_date, raw_data, grouped, args.snapshot_interval, obs_t15_stats)
+
+        # Parallel process days - safe because each day is independent
+        # Lag features are added AFTER this step
+        results = Parallel(n_jobs=n_workers, backend="loky")(
+            delayed(process_single_day)(d) for d in tqdm(days, desc=desc)
+        )
+
+        # Flatten results
+        all_rows = []
+        for day_rows in results:
+            all_rows.extend(day_rows)
+        return pd.DataFrame(all_rows)
+
+    # Build FULL dataset (ALL days)
+    logger.info("\n--- Building full dataset ---")
+    if args.workers > 1:
+        df_new = build_dataset_parallel(all_days, "All days", args.workers)
+    else:
+        df_new = build_dataset_sequential(all_days, "All days")
+    logger.info(f"New samples: {len(df_new):,}")
+
+    # Add lag features to new data
     from models.features.calendar import add_lag_features_to_dataframe
 
     logger.info("\n--- Adding lag features ---")
-    if len(df_train) > 0 and "settle_f" in df_train.columns:
-        df_train = add_lag_features_to_dataframe(df_train)
-    if len(df_test) > 0 and "settle_f" in df_test.columns:
-        df_test = add_lag_features_to_dataframe(df_test)
+    if len(df_new) > 0 and "settle_f" in df_new.columns:
+        df_new = add_lag_features_to_dataframe(df_new)
 
-    # Save
+    # --- INCREMENTAL MERGE ---
     output_dir.mkdir(parents=True, exist_ok=True)
+    data_full_path = output_dir / "data_full.parquet"
 
+    if incremental_mode and existing_df is not None:
+        logger.info("\n--- Incremental merge: checking column compatibility ---")
+
+        cols_match, reason = columns_match(existing_df, df_new)
+
+        if cols_match:
+            logger.info(f"Columns match! Merging {len(df_new):,} new rows with {len(existing_df):,} existing")
+            df_full = pd.concat([existing_df, df_new], ignore_index=True)
+            df_full = df_full.sort_values('day').reset_index(drop=True)
+            logger.info(f"Merged data_full: {len(df_full):,} total rows")
+        else:
+            logger.warning(f"Column MISMATCH: {reason}")
+            logger.warning("Falling back to full rebuild (new data only)")
+            df_full = df_new
+    else:
+        df_full = df_new
+
+    # Save data_full.parquet
+    df_full.to_parquet(data_full_path, index=False)
+    logger.info(f"\nSaved data_full: {data_full_path}")
+    logger.info(f"  Rows: {len(df_full):,}, Columns: {len(df_full.columns)}")
+
+    # --- TRAIN/TEST SPLIT (unless --no-split) ---
     train_path = output_dir / "train_data_full.parquet"
     test_path = output_dir / "test_data_full.parquet"
 
-    df_train.to_parquet(train_path, index=False)
-    df_test.to_parquet(test_path, index=False)
+    if args.no_split:
+        logger.info("\n--- Skipping train/test split (--no-split) ---")
+        # Remove old train/test files if they exist (avoid confusion)
+        if train_path.exists():
+            train_path.unlink()
+            logger.info(f"  Removed old {train_path.name}")
+        if test_path.exists():
+            test_path.unlink()
+            logger.info(f"  Removed old {test_path.name}")
+    else:
+        from models.data.splits import train_test_split_by_ratio
 
-    logger.info(f"\nSaved train: {train_path}")
-    logger.info(f"Saved test: {test_path}")
+        logger.info(f"\n--- Splitting into train/test (ratio={args.split_ratio}) ---")
+        df_train, df_test = train_test_split_by_ratio(df_full, test_ratio=args.split_ratio, date_col="day")
+
+        df_train.to_parquet(train_path, index=False)
+        df_test.to_parquet(test_path, index=False)
+
+        logger.info(f"Saved train: {train_path}")
+        logger.info(f"  Rows: {len(df_train):,}, Days: {df_train['day'].nunique()}")
+        logger.info(f"Saved test: {test_path}")
+        logger.info(f"  Rows: {len(df_test):,}, Days: {df_test['day'].nunique()}")
 
     # Summary
     print("\n" + "=" * 60)
-    print("BUILD COMPLETE")
+    if incremental_mode and existing_df is not None:
+        print("INCREMENTAL BUILD COMPLETE")
+    else:
+        print("FULL BUILD COMPLETE")
     print("=" * 60)
-    print(f"\nTrain: {len(df_train):,} rows, {len(df_train.columns)} columns")
-    print(f"Test: {len(df_test):,} rows, {len(df_test.columns)} columns")
+    print(f"\ndata_full: {len(df_full):,} rows, {len(df_full.columns)} columns")
+    if not args.no_split:
+        print(f"train: {len(df_train):,} rows ({df_train['day'].nunique()} days)")
+        print(f"test: {len(df_test):,} rows ({df_test['day'].nunique()} days)")
 
     # Check for key features
     print("\nFeature check:")
@@ -615,9 +782,9 @@ def main():
                     "nbm_peak_window_max_f", "hrrr_peak_window_max_f",
                     "c_logit_mid_last", "market_yes_bid"]
     for col in key_features:
-        if col in df_train.columns:
-            non_null = df_train[col].notna().sum()
-            pct = 100 * non_null / len(df_train)
+        if col in df_full.columns:
+            non_null = df_full[col].notna().sum()
+            pct = 100 * non_null / len(df_full)
             print(f"  {col}: {pct:.1f}% non-null")
         else:
             print(f"  {col}: MISSING")

@@ -1,3 +1,22 @@
+Now you have parallel support! Run with workers on your fast machine:
+# Use 8-12 workers on fast machine (~4x speedup)
+PYTHONPATH=. python scripts/build_dataset_from_parquets.py --city austin --workers 12
+
+# Or max out your cores
+PYTHONPATH=. python scripts/build_dataset_from_parquets.py --city austin --workers $(nproc)
+Why this is safe:
+Each day's 456 snapshots are computed independently
+Lag features (settle_f_lag1, etc.) are computed AFTER all days are built (line 707-708)
+The obs_t15_stats is pre-computed before the loop
+Uses loky backend which handles shared memory properly
+Expected speedup:
+Workers	Time (est)
+1	~4 hours
+8	~45 min
+12	~30 min
+Note: Joblib should already be installed (catboost/sklearn dep). If not:
+pip install joblib
+
 
 # 1. Build dataset (~4 hours)
 python scripts/build_dataset_from_parquets.py --city chicago --workers 14
