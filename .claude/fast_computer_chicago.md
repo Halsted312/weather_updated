@@ -47,8 +47,8 @@ source .venv/bin/activate
 python scripts/train_edge_classifier.py \
     --city chicago \
     --from-parquet \
-    --workers 16 \
-    --trials 50
+    --workers 24 \
+    --trials 100
 ```
 
 **Flags explained:**
