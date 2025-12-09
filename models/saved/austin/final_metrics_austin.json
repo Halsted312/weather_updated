@@ -1,42 +1,41 @@
 {
   "city": "austin",
-  "trained_at": "2025-12-06T11:55:13.438180",
-  "n_train_samples": 389784,
-  "n_train_days": 855,
-  "n_test_samples": 97128,
-  "n_test_days": 213,
+  "trained_at": "2025-12-08T22:47:24.204443",
+  "n_train_samples": 163608,
+  "n_train_days": 359,
+  "n_test_samples": 82992,
+  "n_test_days": 182,
   "date_range": {
     "min_date": "2023-01-01",
     "max_date": "2025-12-03",
     "train_start": "2023-01-01",
-    "train_end": "2025-05-04",
-    "test_start": "2025-05-05",
+    "train_end": "2025-05-03",
+    "test_start": "2025-05-04",
     "test_end": "2025-12-03"
   },
   "delta_range": [
     -12,
     12
   ],
-  "optuna_trials": 4,
+  "optuna_trials": 100,
   "cv_splits": 4,
   "include_station_city": true,
   "metrics": {
-    "delta_accuracy": 0.27447286055514375,
-    "delta_mae": 1.9369182933860474,
-    "within_1_rate": 0.5476587595749938,
-    "within_2_rate": 0.741001564945227
+    "delta_accuracy": 0.2644230769230769,
+    "delta_mae": 2.000445826103721,
+    "within_1_rate": 0.5427752072488915,
+    "within_2_rate": 0.7397219009061115
   },
   "best_params": {
-    "grow_policy": "Lossguide",
-    "depth": 5,
-    "iterations": 863,
-    "learning_rate": 0.022261785203555637,
-    "border_count": 87,
-    "l2_leaf_reg": 37.75657476393088,
-    "min_data_in_leaf": 46,
-    "random_strength": 0.732288936155134,
-    "colsample_bylevel": 0.5319352458851474,
-    "subsample": 0.7223874032813048,
-    "max_leaves": 21
+    "grow_policy": "SymmetricTree",
+    "depth": 6,
+    "iterations": 1462,
+    "learning_rate": 0.07055713327872389,
+    "border_count": 97,
+    "l2_leaf_reg": 32.6970664895748,
+    "min_data_in_leaf": 146,
+    "random_strength": 0.5618353107931862,
+    "colsample_bylevel": 0.8428663609520833,
+    "subsample": 0.7746707117422209
   }
 }
