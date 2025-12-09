@@ -1,0 +1,12 @@
+{
+  "grow_policy": "SymmetricTree",
+  "depth": 8,
+  "iterations": 1453,
+  "learning_rate": 0.04379074175964758,
+  "border_count": 224,
+  "l2_leaf_reg": 38.212017260950894,
+  "min_data_in_leaf": 111,
+  "random_strength": 1.434812553927814,
+  "colsample_bylevel": 0.7680988118297574,
+  "subsample": 0.8709869447397797
+}

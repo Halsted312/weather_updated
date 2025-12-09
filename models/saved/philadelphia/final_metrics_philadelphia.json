@@ -1,0 +1,41 @@
+{
+  "city": "philadelphia",
+  "trained_at": "2025-12-06T21:33:20.251877",
+  "n_train_samples": 389772,
+  "n_train_days": 855,
+  "n_test_samples": 97128,
+  "n_test_days": 213,
+  "date_range": {
+    "min_date": "2023-01-01",
+    "max_date": "2025-12-03",
+    "train_start": "2023-01-01",
+    "train_end": "2025-05-04",
+    "test_start": "2025-05-05",
+    "test_end": "2025-12-03"
+  },
+  "delta_range": [
+    -12,
+    12
+  ],
+  "optuna_trials": 150,
+  "cv_splits": 4,
+  "include_station_city": true,
+  "metrics": {
+    "delta_accuracy": 0.22191335145375174,
+    "delta_mae": 2.1430483485709577,
+    "within_1_rate": 0.4796454163577959,
+    "within_2_rate": 0.6528292562391895
+  },
+  "best_params": {
+    "grow_policy": "SymmetricTree",
+    "depth": 5,
+    "iterations": 842,
+    "learning_rate": 0.051610104720249614,
+    "border_count": 158,
+    "l2_leaf_reg": 39.35016207460371,
+    "min_data_in_leaf": 30,
+    "random_strength": 0.25216826092689326,
+    "colsample_bylevel": 0.5976934631215683,
+    "subsample": 0.817499467900865
+  }
+}

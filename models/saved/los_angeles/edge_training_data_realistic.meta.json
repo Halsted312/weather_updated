@@ -1,0 +1,11 @@
+{
+  "city": "los_angeles",
+  "ordinal_model_path": "models/saved/los_angeles/ordinal_catboost_optuna.pkl",
+  "ordinal_model_mtime": 1765061333.0,
+  "candles_parquet_path": "models/candles/candles_los_angeles.parquet",
+  "candles_mtime": 1764985591.0,
+  "threshold": 1.5,
+  "sample_rate": 4,
+  "pnl_mode": "realistic",
+  "generated_at": "2025-12-08T00:01:42.357622"
+}

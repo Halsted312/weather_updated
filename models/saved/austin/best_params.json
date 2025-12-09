@@ -1,0 +1,13 @@
+{
+  "grow_policy": "Lossguide",
+  "depth": 5,
+  "iterations": 863,
+  "learning_rate": 0.022261785203555637,
+  "border_count": 87,
+  "l2_leaf_reg": 37.75657476393088,
+  "min_data_in_leaf": 46,
+  "random_strength": 0.732288936155134,
+  "colsample_bylevel": 0.5319352458851474,
+  "subsample": 0.7223874032813048,
+  "max_leaves": 21
+}

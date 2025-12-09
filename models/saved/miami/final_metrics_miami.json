@@ -1,0 +1,41 @@
+{
+  "city": "miami",
+  "trained_at": "2025-12-07T19:38:14.937511",
+  "n_train_samples": 389712,
+  "n_train_days": 855,
+  "n_test_samples": 97128,
+  "n_test_days": 213,
+  "date_range": {
+    "min_date": "2023-01-01",
+    "max_date": "2025-12-03",
+    "train_start": "2023-01-01",
+    "train_end": "2025-05-04",
+    "test_start": "2025-05-05",
+    "test_end": "2025-12-03"
+  },
+  "delta_range": [
+    -12,
+    12
+  ],
+  "optuna_trials": 150,
+  "cv_splits": 4,
+  "include_station_city": true,
+  "metrics": {
+    "delta_accuracy": 0.30456716909645004,
+    "delta_mae": 3.405135491310436,
+    "within_1_rate": 0.5315048183839881,
+    "within_2_rate": 0.6271209126101639
+  },
+  "best_params": {
+    "grow_policy": "SymmetricTree",
+    "depth": 5,
+    "iterations": 977,
+    "learning_rate": 0.02714341196581941,
+    "border_count": 65,
+    "l2_leaf_reg": 26.64803756855424,
+    "min_data_in_leaf": 115,
+    "random_strength": 0.1889328984532042,
+    "colsample_bylevel": 0.8908687713299506,
+    "subsample": 0.65373099409327
+  }
+}

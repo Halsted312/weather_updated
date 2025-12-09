@@ -1,0 +1,41 @@
+{
+  "city": "chicago",
+  "trained_at": "2025-12-08T11:17:04.612484",
+  "n_train_samples": 389712,
+  "n_train_days": 855,
+  "n_test_samples": 97128,
+  "n_test_days": 213,
+  "date_range": {
+    "min_date": "2023-01-01",
+    "max_date": "2025-12-03",
+    "train_start": "2023-01-01",
+    "train_end": "2025-05-04",
+    "test_start": "2025-05-05",
+    "test_end": "2025-12-03"
+  },
+  "delta_range": [
+    -12,
+    12
+  ],
+  "optuna_trials": 100,
+  "cv_splits": 4,
+  "include_station_city": true,
+  "metrics": {
+    "delta_accuracy": 0.23962194217939214,
+    "delta_mae": 2.3248085001235483,
+    "within_1_rate": 0.5136212008895478,
+    "within_2_rate": 0.6720719051148999
+  },
+  "best_params": {
+    "grow_policy": "SymmetricTree",
+    "depth": 8,
+    "iterations": 1453,
+    "learning_rate": 0.04379074175964758,
+    "border_count": 224,
+    "l2_leaf_reg": 38.212017260950894,
+    "min_data_in_leaf": 111,
+    "random_strength": 1.434812553927814,
+    "colsample_bylevel": 0.7680988118297574,
+    "subsample": 0.8709869447397797
+  }
+}

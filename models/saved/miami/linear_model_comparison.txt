@@ -1,0 +1,6 @@
+Model Comparison for miami
+Threshold: 1.5°F
+Date filter: Last 5 months
+
+ElasticNet: AUC=0.8397, Win=0.0%, Trades=0
+Ridge: AUC=0.8211, Win=0.0%, Trades=0

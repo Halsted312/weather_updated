@@ -106,10 +106,6 @@ run_dense_overnight.sh
 alembic/versions/__pycache__/
 
 # Models and ML artifacts
-models/saved/*
-models/reports/*
-!models/saved/.gitkeep
-!models/reports/.gitkeep
 catboost_info/
 optuna_studies/
 *.joblib

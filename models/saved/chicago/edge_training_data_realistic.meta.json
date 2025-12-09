@@ -1,0 +1,11 @@
+{
+  "city": "chicago",
+  "ordinal_model_path": "models/saved/chicago/ordinal_catboost_optuna.pkl",
+  "ordinal_model_mtime": 1765214224.0,
+  "candles_parquet_path": "models/candles/candles_chicago.parquet",
+  "candles_mtime": 1764985491.0,
+  "threshold": 0.5,
+  "sample_rate": 4,
+  "pnl_mode": "realistic",
+  "generated_at": "2025-12-08T14:36:07.767668"
+}

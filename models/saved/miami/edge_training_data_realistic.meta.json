@@ -1,0 +1,11 @@
+{
+  "city": "miami",
+  "ordinal_model_path": "models/saved/miami/ordinal_catboost_optuna.pkl",
+  "ordinal_model_mtime": 1765157894.9193041,
+  "candles_parquet_path": "models/candles/candles_miami.parquet",
+  "candles_mtime": 1764985642.2559745,
+  "threshold": 0.5,
+  "sample_rate": 4,
+  "pnl_mode": "realistic",
+  "generated_at": "2025-12-07T21:47:00.450751"
+}

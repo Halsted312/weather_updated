@@ -1,0 +1,11 @@
+{
+  "city": "denver",
+  "ordinal_model_path": "models/saved/denver/ordinal_catboost_optuna.pkl",
+  "ordinal_model_mtime": 1765107178.0,
+  "candles_parquet_path": "models/candles/candles_denver.parquet",
+  "candles_mtime": 1764985568.0,
+  "threshold": 0.5,
+  "sample_rate": 4,
+  "pnl_mode": "realistic",
+  "generated_at": "2025-12-07T22:15:31.139627"
+}

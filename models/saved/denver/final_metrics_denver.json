@@ -1,0 +1,41 @@
+{
+  "city": "denver",
+  "trained_at": "2025-12-07T05:32:58.725742",
+  "n_train_samples": 10944,
+  "n_train_days": 24,
+  "n_test_samples": 3192,
+  "n_test_days": 7,
+  "date_range": {
+    "min_date": "2025-10-01",
+    "max_date": "2025-10-31",
+    "train_start": "2025-10-01",
+    "train_end": "2025-10-24",
+    "test_start": "2025-10-25",
+    "test_end": "2025-10-31"
+  },
+  "delta_range": [
+    -12,
+    12
+  ],
+  "optuna_trials": 2,
+  "cv_splits": 4,
+  "include_station_city": true,
+  "metrics": {
+    "delta_accuracy": 0.07769423558897243,
+    "delta_mae": 4.008458646616542,
+    "within_1_rate": 0.33615288220551376,
+    "within_2_rate": 0.3800125313283208
+  },
+  "best_params": {
+    "grow_policy": "SymmetricTree",
+    "depth": 7,
+    "iterations": 1318,
+    "learning_rate": 0.053906581594944686,
+    "border_count": 139,
+    "l2_leaf_reg": 31.30262150493859,
+    "min_data_in_leaf": 92,
+    "random_strength": 1.3504818443583864,
+    "colsample_bylevel": 0.6230015461679068,
+    "subsample": 0.7736080523427494
+  }
+}
