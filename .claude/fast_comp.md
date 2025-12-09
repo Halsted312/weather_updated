@@ -1,3 +1,37 @@
+(.venv) (base) halsted@halsted:~/Python/weather_updated$ PYTHONPATH=. python scripts/train_edge_classifier.py     --city austin     --threshold 3.5     --sample-rate 4     --workers 28     --regenerate-only
+23:49:29 [INFO] __main__: Auto-detected candle parquet: models/candles/candles_austin.parquet
+============================================================
+ML EDGE CLASSIFIER TRAINING
+============================================================
+City: austin
+Optuna trials: 30
+Optuna metric: filtered_precision
+Workers: 28
+Edge threshold: 3.5°F
+Sample rate: every 4th snapshot
+P&L mode: REALISTIC (with fees)
+Maker fill probability: 40.0%
+Ordinal model: models/saved/austin/ordinal_catboost_optuna.pkl (default)
+Candle source: parquet (models/candles/candles_austin.parquet)
+Settlement source: database
+
+23:49:29 [INFO] __main__: ⚠️  Regenerating: cached edge data not found
+23:49:29 [INFO] __main__: Using ordinal model: models/saved/austin/ordinal_catboost_optuna.pkl
+23:49:29 [WARNING] __main__: Train data not found: models/saved/austin/train_data_full.parquet
+23:49:29 [WARNING] __main__: Test data not found: models/saved/austin/test_data_full.parquet
+Traceback (most recent call last):
+  File "/home/halsted/Python/weather_updated/scripts/train_edge_classifier.py", line 1731, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/halsted/Python/weather_updated/scripts/train_edge_classifier.py", line 1552, in main
+    df_combined = load_combined_data(args.city)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/halsted/Python/weather_updated/scripts/train_edge_classifier.py", line 472, in load_combined_data
+    raise FileNotFoundError(f"No data found for {city}")
+FileNotFoundError: No data found for austin
+(.venv) (base) halsted@halsted:~/Python/weather_updated$ 
+
+
 Done. Old edge files removed. Clean slate for Austin. Run on fast computer:
 PYTHONPATH=. python scripts/train_edge_classifier.py \
     --city austin \
