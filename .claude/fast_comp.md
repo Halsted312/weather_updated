@@ -1,3 +1,133 @@
+(.venv) (base) halsted@halsted:~/Python/weather_updated$ python scripts/train_edge_classifier.py     --city chicago     --from-parquet     --workers 24     --trials 100
+20:35:52 [INFO] __main__: Using threshold from config: 10.0°F
+20:35:52 [INFO] __main__: Auto-detected candle parquet: models/candles/candles_chicago.parquet
+20:35:52 [INFO] __main__: Auto-detected settlements parquet: models/raw_data/chicago/settlements.parquet
+============================================================
+ML EDGE CLASSIFIER TRAINING
+============================================================
+City: chicago
+Optuna trials: 100
+Optuna metric: filtered_precision
+Workers: 24
+Edge threshold: 10.0°F
+Sample rate: every 6th snapshot
+P&L mode: REALISTIC (with fees)
+Maker fill probability: 40.0%
+Ordinal model: models/saved/chicago/ordinal_catboost_optuna.pkl (default)
+Candle source: parquet (models/candles/candles_chicago.parquet)
+Settlement source: parquet (models/raw_data/chicago/settlements.parquet)
+Mode: PARQUET-ONLY (no DB required)
+
+20:35:52 [INFO] __main__: ⚠️  Regenerating: ordinal model changed
+20:35:52 [INFO] __main__:    Cached: 1765214224.0
+20:35:52 [INFO] __main__:    Current: 1765247638.801286
+20:35:52 [INFO] __main__: Using ordinal model: models/saved/chicago/ordinal_catboost_optuna.pkl
+20:35:52 [INFO] __main__: Loaded train data: 389,712 rows
+20:35:52 [INFO] __main__: Loaded test data: 97,128 rows
+/home/halsted/Python/weather_updated/scripts/train_edge_classifier.py:474: FutureWarning: The behavior of DataFrame concatenation with empty or all-NA entries is deprecated. In a future version, this will no longer exclude empty or all-NA columns when determining the result dtypes. To retain the old behavior, exclude the relevant entries before the concat operation.
+  df_combined = pd.concat(dfs, ignore_index=True)
+20:35:54 [INFO] __main__: Combined data: 486,840 rows
+20:35:54 [INFO] __main__: Generating edge data for chicago with 24 workers...
+20:35:54 [INFO] __main__: Processing 1068 unique days
+20:35:54 [INFO] __main__: Loading model from models/saved/chicago/ordinal_catboost_optuna.pkl...
+20:35:55 [INFO] models.training.ordinal_trainer: Loaded ordinal model from models/saved/chicago/ordinal_catboost_optuna.pkl
+20:35:55 [INFO] __main__: Batch loading settlements...
+20:35:55 [INFO] __main__: Loading settlements from parquet: models/raw_data/chicago/settlements.parquet
+20:35:55 [INFO] __main__: Loaded 1068 settlements
+20:35:55 [INFO] __main__: Days with settlement data: 1068
+20:35:55 [INFO] __main__: Loading candles from parquet: models/candles/candles_chicago.parquet
+20:35:55 [INFO] __main__: Loading candles from parquet: models/candles/candles_chicago.parquet
+20:35:55 [INFO] __main__: Loaded 14,795,744 candle rows from parquet
+20:35:57 [INFO] __main__: Filtered to 12,266,604 rows for requested dates
+20:35:57 [INFO] __main__: Organizing 12,266,604 candle rows by (day, bracket)...
+20:35:57 [INFO] __main__:   (This may take 10-20 minutes for 10M+ rows - please wait)
+20:55:18 [INFO] __main__: Organized into 6,401 (day, bracket) entries from parquet
+20:55:18 [INFO] __main__: Candle cache built: 6401 (day, bracket) entries
+20:55:18 [INFO] __main__: Sample cache keys: [(datetime.date(2023, 4, 1), '50.5-51.5'), (datetime.date(2023, 4, 1), '52.5-53.5'), (datetime.date(2023, 4, 1), '54.5-55.5'), (datetime.date(2023, 4, 1), '56.5-57.5'), (datetime.date(2023, 4, 1), '50-51')]
+20:55:26 [INFO] __main__: Processing 1068 days with 24 threads...
+Processing days: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1068/1068 [1:03:37<00:00,  3.57s/it]
+21:59:04 [INFO] __main__: Generated 80,359 edge samples
+21:59:04 [INFO] __main__: Signals with outcomes: 6,415
+21:59:04 [INFO] __main__: Cached edge data to models/saved/chicago/edge_training_data_realistic.parquet
+21:59:04 [INFO] __main__: Saved cache metadata: models/saved/chicago/edge_training_data_realistic.meta.json
+21:59:04 [INFO] __main__: Training on 6,979 edge signals
+
+Class balance: 5210/6415 wins (81.2%)
+
+--- REALISTIC P&L STATISTICS ---
+Total samples with valid trades: 6,415
+Average P&L per trade: $0.2978
+Std P&L per trade: $0.4480
+Total gross P&L: $2009.22
+Total fees paid: $98.86
+Total net P&L: $1910.36
+
+Trade roles: {'taker': np.int64(5098), 'maker': np.int64(1317)}
+Trade sides: {'yes': np.int64(6415)}
+Trade actions: {'sell': np.int64(6315), 'buy': np.int64(100)}
+
+Entry price range: 2¢ - 98¢
+Average entry price: 48.8¢
+
+============================================================
+OPTUNA TRAINING (100 trials)
+============================================================
+21:59:04 [INFO] models.edge.classifier: Training EdgeClassifier with 100 Optuna trials
+21:59:04 [INFO] models.edge.classifier: Using day-grouped time splits (DayGroupedTimeSeriesSplit)
+21:59:04 [INFO] models.edge.classifier: Using 15 features: ['forecast_temp', 'market_temp', 'edge', 'confidence', 'forecast_uncertainty']...
+21:59:04 [INFO] models.edge.classifier: Day splits: total_days=349, train+val_days=297, test_days=52
+21:59:04 [INFO] models.edge.classifier: ✓ Leakage checks PASSED
+21:59:04 [INFO] models.edge.classifier: Row-wise split: train=4687, val=309, test=385
+21:59:04 [INFO] models.edge.classifier: Class balance - train: 81.9% positive
+21:59:04 [INFO] models.edge.classifier: Starting Optuna optimization with 100 trials
+21:59:35 [INFO] models.edge.classifier: Best trial score (filtered_precision): 0.9404
+21:59:35 [INFO] models.edge.classifier: Best params: {'bootstrap_type': 'MVS', 'depth': 5, 'iterations': 428, 'learning_rate': 0.05551639412840685, 'l2_leaf_reg': 4.9599040490859565, 'min_data_in_leaf': 23, 'random_strength': 1.7637169234206294, 'colsample_bylevel': 0.6432305223526185, 'subsample': 0.7015965203814578, 'calibration_method': 'isotonic', 'decision_threshold': 0.8301634129416797}
+21:59:35 [INFO] models.edge.classifier: Fitting final model on train+val combined...
+21:59:37 [INFO] models.edge.classifier: Test AUC: 0.5725
+21:59:37 [INFO] models.edge.classifier: Test accuracy: 34.0%
+21:59:37 [INFO] models.edge.classifier: Baseline win rate: 73.2%
+21:59:37 [INFO] models.edge.classifier: Filtered win rate: 100.0% (n_trades=28)
+21:59:37 [INFO] models.edge.classifier: Mean PnL (all edges): 0.1881
+21:59:37 [INFO] models.edge.classifier: Mean PnL (trades): 0.8557
+21:59:37 [INFO] models.edge.classifier: Sharpe (trades): 9.0007
+21:59:37 [WARNING] models.edge.classifier: ⚠️ Filtered win rate = 100.0% > 90% is unrealistic! Check for data leakage.
+
+============================================================
+RESULTS
+============================================================
+Test AUC: 0.5725
+Test Accuracy: 34.0%
+
+Baseline win rate: 73.2%
+Filtered win rate: 100.0%
+Improvement: +26.8pp
+
+Trades recommended: 28/385 (7.3%)
+
+Feature Importance:
+  market_temp: 15.4379
+  base_temp: 13.0419
+  edge: 10.4947
+  forecast_temp: 9.5098
+  market_uncertainty: 7.7320
+  confidence: 7.2536
+  obs_fcst_max_gap: 6.8138
+  predicted_delta: 5.5697
+  forecast_uncertainty: 5.1587
+  hours_to_event_close: 3.8971
+  market_bid_ask_spread: 3.8164
+  fcst_remaining_potential: 3.6610
+  snapshot_hour: 3.6593
+  minutes_since_market_open: 3.5165
+  temp_volatility_30min: 0.4375
+
+21:59:37 [INFO] models.edge.classifier: Saved model to models/saved/chicago/edge_classifier.pkl
+21:59:37 [INFO] models.edge.classifier: Saved metadata to models/saved/chicago/edge_classifier.json
+Model saved to: models/saved/chicago/edge_classifier
+(.venv) (base) halsted@halsted:~/Python/weather_updated$ 
+
+
+
 To buy more LFS storage:
 Go to https://github.com/settings/billing
 Scroll to "Git LFS Data"
