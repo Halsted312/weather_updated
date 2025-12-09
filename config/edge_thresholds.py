@@ -26,7 +26,7 @@ from typing import Dict
 # Run: PYTHONPATH=. python scripts/sweep_min_edge_threshold.py --city <city>
 EDGE_MIN_THRESHOLD_F: Dict[str, float] = {
     "austin": 1.5,        # Default - update after sweep
-    "chicago": 1.5,       # Default - update after sweep
+    "chicago": 10.0,       # Default - update after sweep
     "denver": 10.0,        # Default - update after sweep
     "los_angeles": 1.5,   # Default - update after sweep
     "miami": 7.5,         # Updated 2025-12-07: Sweep found 7.5°F optimal (1,955 trades, 56% win, Sharpe 0.48)
@@ -35,6 +35,10 @@ EDGE_MIN_THRESHOLD_F: Dict[str, float] = {
 
 # Default threshold if city not found
 DEFAULT_MIN_EDGE_THRESHOLD_F = 1.5
+
+# Sweep configuration: thresholds to test when finding optimal edge threshold
+# Range: 0.5 to 11.0 by 0.5 increments
+SWEEP_THRESHOLDS = [x / 2 for x in range(1, 23)]  # [0.5, 1.0, 1.5, ..., 11.0]
 
 
 def get_min_edge_threshold(city: str) -> float:

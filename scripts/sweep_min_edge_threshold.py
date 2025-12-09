@@ -40,8 +40,10 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Default thresholds to sweep
-DEFAULT_THRESHOLDS = [0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.5]
+# Import sweep thresholds from config (0.5 to 11.0 by 0.5)
+from config.edge_thresholds import SWEEP_THRESHOLDS
+
+DEFAULT_THRESHOLDS = SWEEP_THRESHOLDS
 
 
 def compute_metrics(df: pd.DataFrame, threshold: float) -> Dict:
