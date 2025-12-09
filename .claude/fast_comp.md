@@ -1,3 +1,15 @@
+To buy more LFS storage:
+Go to https://github.com/settings/billing
+Scroll to "Git LFS Data"
+Click "Add more data" to buy data packs ($5/month for 50GB storage + 50GB bandwidth)
+Or view your current usage at: https://github.com/settings/billing/summary
+On the other computer:
+Before pulling, run:
+sudo apt install git-lfs -y
+git lfs install
+git pull
+
+
 (.venv) (base) halsted@halsted:~/Python/weather_updated$ python scripts/train_edge_classifier.py     --city chicago     --from-parquet     --workers 24     --trials 100
 20:02:01 [INFO] __main__: Using threshold from config: 10.0°F
 20:02:01 [INFO] __main__: Auto-detected candle parquet: models/candles/candles_chicago.parquet
