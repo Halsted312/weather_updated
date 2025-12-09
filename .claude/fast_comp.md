@@ -1,3 +1,12 @@
+Done. Old edge files removed. Clean slate for Austin. Run on fast computer:
+PYTHONPATH=. python scripts/train_edge_classifier.py \
+    --city austin \
+    --threshold 2.5 \
+    --sample-rate 4 \
+    --workers 24 \
+    --regenerate-only
+This generates edge_training_data_realistic.parquet. Then sweep and train classifier.
+
 (.venv) (base) halsted@halsted:~/Python/weather_updated$ python scripts/train_edge_classifier.py     --city chicago     --from-parquet     --workers 24     --trials 100
 20:35:52 [INFO] __main__: Using threshold from config: 10.0°F
 20:35:52 [INFO] __main__: Auto-detected candle parquet: models/candles/candles_chicago.parquet
