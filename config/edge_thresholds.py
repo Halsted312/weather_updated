@@ -25,12 +25,12 @@ from typing import Dict
 # These values should be updated based on sweep results
 # Run: PYTHONPATH=. python scripts/sweep_min_edge_threshold.py --city <city>
 EDGE_MIN_THRESHOLD_F: Dict[str, float] = {
-    "austin": 9.5,        # Default - update after sweep
-    "chicago": 10.0,       # Default - update after sweep
-    "denver": 10.0,        # Default - update after sweep
-    "los_angeles": 10.0,   # Default - update after sweep
-    "miami": 7.5,         # Updated 2025-12-07: Sweep found 7.5°F optimal (1,955 trades, 56% win, Sharpe 0.48)
-    "philadelphia": 10.0,  # Default - update after sweep
+    "austin": 9.5,         # Sweep: 85% baseline win rate
+    "chicago": 10.0,       # Classifier: Sharpe 2.77, 94% win, 36 trades
+    "denver": 10.0,        # Classifier: Sharpe 0.78, 77% win, 73 trades
+    "los_angeles": 10.0,   # Sweep 2025-12-09: Sharpe 0.54, 76% win, 11,140 trades
+    "miami": 9.0,          # Sweep 2025-12-09: Sharpe 0.55, 74% win, 782 trades
+    "philadelphia": 10.0,  # Sweep 2025-12-09: Sharpe 0.48, 82% win, 2,563 trades
 }
 
 # Default threshold if city not found

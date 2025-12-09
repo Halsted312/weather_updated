@@ -485,7 +485,7 @@ class OrdinalDeltaTrainer(BaseTrainer):
         if not self.classifiers:
             raise ValueError("Model not trained. Call train() first.")
 
-        X, _ = self._prepare_features(df)
+        X, _ = self._prepare_features(df, inference_mode=True)
         n_samples = len(X)
 
         # Compute probabilities for city-specific delta classes
@@ -589,7 +589,7 @@ class OrdinalDeltaTrainer(BaseTrainer):
         if not self.classifiers:
             raise ValueError("Model not trained. Call train() first.")
 
-        X, _ = self._prepare_features(df)
+        X, _ = self._prepare_features(df, inference_mode=True)
 
         probs_ge = {}
         for k in self.thresholds:

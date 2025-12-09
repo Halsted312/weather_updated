@@ -18,6 +18,7 @@ from sqlalchemy import text
 
 from models.training.ordinal_trainer import OrdinalDeltaTrainer
 from models.data.snapshot_builder import build_snapshot_for_inference
+from models.data.loader import load_inference_data
 from models.inference.probability import (
     delta_probs_to_dict,
     expected_settlement,
@@ -150,10 +151,21 @@ class LiveInferenceEngine:
         # Get snapshot parameters based on variant
         cutoff_time, snapshot_hour = self._get_snapshot_params(current_time)
 
-        # Get observations up to current time
-        temps_sofar, timestamps_sofar = self._get_observations(
-            session, city, event_date, cutoff=current_time
-        )
+        # Load all inference data (observations + T-1 forecasts)
+        try:
+            inference_data = load_inference_data(
+                city_id=city,
+                target_date=event_date,
+                cutoff_time=cutoff_time,
+                session=session,
+            )
+            temps_sofar = inference_data["temps_sofar"]
+            timestamps_sofar = inference_data["timestamps_sofar"]
+            fcst_daily = inference_data.get("fcst_daily")
+            fcst_hourly_df = inference_data.get("fcst_hourly_df")
+        except Exception as e:
+            logger.error(f"Failed to load inference data for {city} {event_date}: {e}")
+            return None
 
         if len(temps_sofar) < config.MIN_OBSERVATIONS:
             logger.warning(
@@ -175,8 +187,8 @@ class LiveInferenceEngine:
                 timestamps_sofar=timestamps_sofar,
                 cutoff_time=cutoff_time,  # Primary parameter
                 snapshot_hour=snapshot_hour,  # Backward compat
-                fcst_daily=None,  # TODO: Add T-1 forecast loading
-                fcst_hourly_df=None,
+                fcst_daily=fcst_daily,
+                fcst_hourly_df=fcst_hourly_df,
             )
         except Exception as e:
             logger.error(f"Feature building failed for {city} {event_date}: {e}")
@@ -184,7 +196,8 @@ class LiveInferenceEngine:
 
         # Run model prediction
         try:
-            delta_probs_array = self.models[city].predict_proba(features)  # Shape: (1, 13)
+            features_df = pd.DataFrame([features])
+            delta_probs_array = self.models[city].predict_proba(features_df)  # Shape: (1, 13)
             delta_probs_array = delta_probs_array[0]  # Get first row
 
             # Convert to dict for probability.py utilities

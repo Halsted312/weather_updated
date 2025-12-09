@@ -22,9 +22,9 @@ class TradingConfig:
 
     # === POSITION LIMITS ===
     max_bet_per_trade_usd: float = 50.0
-    max_daily_loss_usd: float = 500.0
-    max_positions_per_city: int = 4
-    max_total_positions: int = 20
+    max_daily_loss_usd: float = 600.0
+    max_positions_per_city: int = 2
+    max_total_positions: int = 12
 
     # === EDGE CLASSIFIER ===
     edge_confidence_threshold_base: float = 0.5  # Modified by aggressiveness
@@ -52,6 +52,11 @@ class TradingConfig:
 
     # === INFERENCE ===
     inference_cooldown_sec: int = 30  # Cache predictions for 30 seconds
+
+    # === INFERENCE STRATEGY ===
+    inference_mode: str = "adaptive"  # 'adaptive', 'classifier_only', 'threshold_only'
+    edge_classifier_cities: List[str] = field(default_factory=lambda: ["chicago", "denver"])
+    fallback_to_threshold: bool = True  # If classifier missing, use threshold
 
     # === DERIVED PROPERTIES ===
 
@@ -176,6 +181,11 @@ class TradingConfig:
             # Inference
             'inference_cooldown_sec': self.inference_cooldown_sec,
 
+            # Inference strategy
+            'inference_mode': self.inference_mode,
+            'edge_classifier_cities': self.edge_classifier_cities,
+            'fallback_to_threshold': self.fallback_to_threshold,
+
             # Derived (computed from aggressiveness)
             'effective_confidence_threshold': self.effective_confidence_threshold,
             'effective_kelly_fraction': self.effective_kelly_fraction,
@@ -213,6 +223,16 @@ class TradingConfig:
         for city in self.enabled_cities:
             if city not in valid_cities:
                 errors.append(f"Unknown city '{city}', must be one of {valid_cities}")
+
+        # Validate inference mode
+        valid_modes = {'adaptive', 'classifier_only', 'threshold_only'}
+        if self.inference_mode not in valid_modes:
+            errors.append(f"inference_mode must be one of {valid_modes}, got '{self.inference_mode}'")
+
+        # Validate classifier cities
+        for city in self.edge_classifier_cities:
+            if city not in valid_cities:
+                errors.append(f"Unknown classifier city '{city}', must be one of {valid_cities}")
 
         return errors
 

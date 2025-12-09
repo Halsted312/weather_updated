@@ -9,11 +9,12 @@ import asyncio
 import logging
 from collections import deque
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from typing import Dict, Optional, Deque, Tuple
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from live_trading.config import TradingConfig
+from src.trading.fees import classify_liquidity_role
 
 logger = logging.getLogger(__name__)
 
@@ -113,6 +114,99 @@ class OrderManager:
             f"{order.action} {order.side} @ {order.maker_price_cents}¢ "
             f"(timeout in {order.maker_timeout_sec}s)"
         )
+
+    def place_order(
+        self,
+        ticker: str,
+        side: str,
+        action: str,
+        num_contracts: int,
+        price_cents: int,
+        city: str,
+        event_date: date,
+        yes_bid: int,
+        yes_ask: int,
+        maker_timeout_sec: Optional[int] = None,
+    ) -> UUID:
+        """
+        Place an order and track it if maker.
+
+        This is the centralized order placement method that:
+        - Generates standardized client_order_id
+        - Calls Kalshi API to create order
+        - Automatically tracks maker orders for timeout conversion
+        - Returns order_id for reference
+
+        Args:
+            ticker: Market ticker
+            side: 'yes' or 'no'
+            action: 'buy' or 'sell'
+            num_contracts: Number of contracts
+            price_cents: Price in cents
+            city: City for tracking
+            event_date: Event date for tracking
+            yes_bid: Current best YES bid (for role detection)
+            yes_ask: Current best YES ask (for role detection)
+            maker_timeout_sec: Optional timeout override
+
+        Returns:
+            UUID of created order
+
+        Raises:
+            Exception if order creation fails
+        """
+        # Generate standardized client_order_id
+        client_order_id = f"om-{city}-{event_date}-{uuid4().hex[:8]}"
+
+        # Determine if this will be maker or taker
+        role = classify_liquidity_role(side, action, price_cents, yes_bid, yes_ask)
+        is_maker = (role == "maker")
+
+        # Place order via Kalshi API
+        result = self.client.create_order(
+            ticker=ticker,
+            side=side,
+            action=action,
+            count=num_contracts,
+            order_type="limit",
+            yes_price=price_cents if side == "yes" else None,
+            no_price=price_cents if side == "no" else None,
+            client_order_id=client_order_id,
+        )
+
+        # Extract order_id from response
+        order_id_str = result.get("order", {}).get("order_id")
+        if not order_id_str:
+            raise ValueError(f"No order_id in API response: {result}")
+
+        order_id = UUID(order_id_str)
+
+        logger.info(
+            f"Order placed: {order_id} ({role}) "
+            f"{action} {side} {num_contracts}x @ {price_cents}¢"
+        )
+
+        # Track maker orders for timeout conversion
+        if is_maker:
+            if maker_timeout_sec is None:
+                # Use default timeout from config
+                maker_timeout_sec = self.config.maker_timeout_base_seconds
+
+            pending_order = PendingOrder(
+                order_id=order_id,
+                ticker=ticker,
+                city=city,
+                event_date=str(event_date),
+                side=side,
+                action=action,
+                num_contracts=num_contracts,
+                maker_price_cents=price_cents,
+                placed_at=datetime.now(),
+                maker_timeout_sec=maker_timeout_sec,
+            )
+            self.track_order(pending_order)
+
+        return order_id
 
     def on_fill(self, order_id: UUID, fill_data: dict) -> None:
         """

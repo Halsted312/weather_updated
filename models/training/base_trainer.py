@@ -129,18 +129,20 @@ class BaseTrainer(ABC):
     def _prepare_features(
         self,
         df: pd.DataFrame,
-    ) -> tuple[pd.DataFrame, pd.Series]:
-        """Prepare features and target from DataFrame.
+        inference_mode: bool = False,
+    ) -> tuple[pd.DataFrame, Optional[pd.Series]]:
+        """Prepare features and optionally target from DataFrame.
 
         Handles structural nulls (time-based features) properly before
         sending to the imputer. Time-based features are filled with
         vc_max_f_sofar, not median.
 
         Args:
-            df: Snapshot DataFrame with features and 'delta' column
+            df: Snapshot DataFrame with features (and 'delta' column if training)
+            inference_mode: If True, don't require 'delta' column (for prediction)
 
         Returns:
-            Tuple of (X DataFrame, y Series)
+            Tuple of (X DataFrame, y Series or None if inference_mode)
         """
         df = df.copy()
 
@@ -171,8 +173,18 @@ class BaseTrainer(ABC):
                 df[col] = np.nan
 
         X = df[all_cols].copy()
-        y = df["delta"].copy()
 
+        if inference_mode:
+            return X, None
+
+        # Training mode: require and process 'delta' column
+        if "delta" not in df.columns:
+            raise ValueError(
+                "_prepare_features called without 'delta' column in training mode. "
+                "Use inference_mode=True for prediction."
+            )
+
+        y = df["delta"].copy()
         # Clip delta to valid range
         y = y.clip(min(DELTA_CLASSES), max(DELTA_CLASSES))
 
@@ -252,7 +264,7 @@ class BaseTrainer(ABC):
         if self.model is None:
             raise ValueError("Model not trained. Call train() first.")
 
-        X, _ = self._prepare_features(df)
+        X, _ = self._prepare_features(df, inference_mode=True)
         return self.model.predict(X)
 
     def predict_proba(self, df: pd.DataFrame) -> np.ndarray:
@@ -267,7 +279,7 @@ class BaseTrainer(ABC):
         if self.model is None:
             raise ValueError("Model not trained. Call train() first.")
 
-        X, _ = self._prepare_features(df)
+        X, _ = self._prepare_features(df, inference_mode=True)
         return self.model.predict_proba(X)
 
     def save(self, path: Path) -> None:

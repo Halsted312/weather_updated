@@ -1,11 +1,11 @@
 {
   "city": "chicago",
   "ordinal_model_path": "models/saved/chicago/ordinal_catboost_optuna.pkl",
-  "ordinal_model_mtime": 1765247638.801286,
+  "ordinal_model_hash": "26d81674383ed59dce30b4d6071b1d9b",
   "candles_parquet_path": "models/candles/candles_chicago.parquet",
-  "candles_mtime": 1765247637.9253561,
+  "candles_hash": "8390546e5189ca73c36f120aa4bfc2dd",
   "threshold": 10.0,
-  "sample_rate": 6,
+  "sample_rate": 4,
   "pnl_mode": "realistic",
-  "generated_at": "2025-12-08T21:59:04.738982"
+  "generated_at": "2025-12-09T04:43:44.924399"
 }

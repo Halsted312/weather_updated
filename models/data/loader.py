@@ -216,6 +216,8 @@ def load_historical_forecast_daily(
     if vc_location_id is None:
         return None
 
+    # Accept both 'forecast' (live/recent) and 'historical_forecast' (backfill)
+    # Prefer 'historical_forecast' for backtesting consistency, but fall back to 'forecast'
     query = text("""
         SELECT
             tempmax_f, tempmin_f, temp_f,
@@ -226,7 +228,8 @@ def load_historical_forecast_daily(
         WHERE vc_location_id = :vc_location_id
           AND target_date = :target_date
           AND forecast_basis_date = :basis_date
-          AND data_type = 'historical_forecast'
+          AND data_type IN ('historical_forecast', 'forecast')
+        ORDER BY CASE WHEN data_type = 'historical_forecast' THEN 0 ELSE 1 END
         LIMIT 1
     """)
 
@@ -282,6 +285,7 @@ def load_historical_forecast_hourly(
     if vc_location_id is None:
         return pd.DataFrame()
 
+    # Accept both 'forecast' (live/recent) and 'historical_forecast' (backfill)
     query = text("""
         SELECT
             target_datetime_local,
@@ -299,7 +303,7 @@ def load_historical_forecast_hourly(
         WHERE vc_location_id = :vc_location_id
           AND forecast_basis_date = :basis_date
           AND DATE(target_datetime_local) = :target_date
-          AND data_type = 'historical_forecast'
+          AND data_type IN ('historical_forecast', 'forecast')
         ORDER BY target_datetime_local
     """)
 

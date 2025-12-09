@@ -41,7 +41,7 @@ MODEL_DIR = Path("models/saved")
 
 # ===== MODEL VARIANT SELECTION =====
 # Switch between different ordinal model architectures
-ORDINAL_MODEL_VARIANT = "tod_v1"  # Options: "baseline", "hourly", "tod_v1"
+ORDINAL_MODEL_VARIANT = "baseline"  # Options: "baseline", "hourly", "tod_v1"
 
 # Model variant configurations
 MODEL_VARIANTS = {

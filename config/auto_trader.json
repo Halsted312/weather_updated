@@ -1,0 +1,38 @@
+{
+  "_comment": "Automatic trading daemon configuration",
+  "_docs": "See live_trading/config.py for field descriptions",
+
+  "aggressiveness": 0.5,
+
+  "max_bet_per_trade_usd": 50.0,
+  "max_daily_loss_usd": 600.0,
+  "max_positions_per_city": 2,
+  "max_total_positions": 12,
+
+  "edge_threshold_degf": 1.5,
+  "edge_confidence_threshold_base": 0.5,
+
+  "inference_mode": "adaptive",
+  "_inference_modes": ["adaptive", "classifier_only", "threshold_only"],
+  "edge_classifier_cities": ["chicago", "denver"],
+  "fallback_to_threshold": true,
+
+  "enabled_cities": [
+    "chicago",
+    "austin",
+    "denver",
+    "los_angeles",
+    "miami",
+    "philadelphia"
+  ],
+
+  "maker_timeout_base_seconds": 120,
+  "volume_timeout_multiplier": 1.5,
+  "volume_lookback_minutes": 30,
+
+  "min_ev_per_contract_cents": 3.0,
+  "min_bracket_prob": 0.35,
+
+  "bankroll_usd": 10000.0,
+  "kelly_fraction_base": 0.25
+}

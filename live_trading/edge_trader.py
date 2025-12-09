@@ -23,8 +23,9 @@ from zoneinfo import ZoneInfo
 
 from live_trading.config import TradingConfig
 from live_trading.inference import InferenceWrapper, EdgeDecision
+from live_trading.market_data import get_market_snapshot
 from live_trading.order_manager import OrderManager, VolumeTracker, PendingOrder
-from live_trading.position_tracker import PositionTracker
+from live_trading.daily_loss_tracker import DailyLossTracker
 from live_trading.websocket.handler import WebSocketHandler, KalshiAuth
 from live_trading.websocket.order_book import OrderBookManager, MarketState
 from live_trading.websocket.market_state import MarketStateTracker
@@ -92,7 +93,7 @@ class EdgeTrader:
         )
         self.order_manager = OrderManager(self.kalshi_client, config)
         self.volume_tracker = VolumeTracker(config.volume_lookback_minutes)
-        self.position_tracker = PositionTracker(config)
+        self.position_tracker = DailyLossTracker(config)
         self.session_logger = SessionLogger()
 
         # WebSocket components
@@ -302,51 +303,13 @@ class EdgeTrader:
         Returns:
             Dict with market data or None
         """
-        # Get all markets for this city/event
-        markets = self.order_book_manager.get_markets_for_city(city, event_date)
-
-        if not markets:
-            return None
-
-        # Build bracket data for market-implied calculation
-        brackets = []
-        best_bid = 0
-        best_ask = 100
-
-        for market in markets:
-            # Get bracket metadata from market state tracker
-            metadata = self.market_state_tracker.get_market_metadata(market.ticker)
-
-            floor_strike = None
-            cap_strike = None
-
-            if metadata and metadata.floor_strike is not None:
-                floor_strike = metadata.floor_strike
-            if metadata and metadata.cap_strike is not None:
-                cap_strike = metadata.cap_strike
-
-            brackets.append({
-                'ticker': market.ticker,
-                'yes_bid': market.yes_bid,
-                'yes_ask': market.yes_ask,
-                'floor_strike': floor_strike,
-                'cap_strike': cap_strike,
-            })
-
-            # Track best overall bid/ask
-            if market.yes_bid > best_bid:
-                best_bid = market.yes_bid
-            if market.yes_ask < best_ask:
-                best_ask = market.yes_ask
-
-        return {
-            'city': city,
-            'event_date': event_date,
-            'brackets': brackets,
-            'best_bid': best_bid,
-            'best_ask': best_ask,
-            'timestamp': datetime.now()
-        }
+        # Use shared utility for market snapshot retrieval
+        return get_market_snapshot(
+            order_book_mgr=self.order_book_manager,
+            market_state_tracker=self.market_state_tracker,
+            city=city,
+            event_date=event_date,
+        )
 
     async def _execute_trade(
         self,

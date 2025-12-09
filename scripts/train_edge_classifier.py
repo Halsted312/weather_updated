@@ -14,6 +14,7 @@ Usage:
 """
 
 import argparse
+import hashlib
 import json
 import logging
 import sys
@@ -60,6 +61,29 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+def compute_file_hash(file_path: Path, algorithm: str = "md5") -> Optional[str]:
+    """Compute hash of a file's contents.
+
+    This is git-sync proof - same content = same hash regardless of timestamps.
+
+    Args:
+        file_path: Path to file
+        algorithm: Hash algorithm (default: md5, fast enough for cache validation)
+
+    Returns:
+        Hex digest string, or None if file doesn't exist
+    """
+    if not file_path.exists():
+        return None
+
+    hasher = hashlib.new(algorithm)
+    with open(file_path, "rb") as f:
+        # Read in chunks for large files
+        for chunk in iter(lambda: f.read(8192), b""):
+            hasher.update(chunk)
+    return hasher.hexdigest()
+
+
 def should_regenerate_edge_data(
     cache_path: Path,
     ordinal_model_path: Path,
@@ -97,22 +121,32 @@ def should_regenerate_edge_data(
         logger.warning(f"⚠️  Regenerating: cannot read cache metadata ({e})")
         return True
 
-    # Check if ordinal model changed
+    # Check if ordinal model changed (using content hash, not timestamp)
     if ordinal_model_path.exists():
-        current_model_mtime = ordinal_model_path.stat().st_mtime
-        if cached_meta.get('ordinal_model_mtime') != current_model_mtime:
-            logger.info("⚠️  Regenerating: ordinal model changed")
-            logger.info(f"   Cached: {cached_meta.get('ordinal_model_mtime')}")
-            logger.info(f"   Current: {current_model_mtime}")
+        current_model_hash = compute_file_hash(ordinal_model_path)
+        cached_hash = cached_meta.get('ordinal_model_hash') or cached_meta.get('ordinal_model_mtime')  # Fallback for old caches
+        # For old caches that used mtime, we need to regenerate once to get hash
+        if cached_meta.get('ordinal_model_hash') is None and cached_meta.get('ordinal_model_mtime') is not None:
+            logger.info("⚠️  Regenerating: upgrading cache from mtime to hash-based validation")
+            return True
+        if cached_hash != current_model_hash:
+            logger.info("⚠️  Regenerating: ordinal model content changed")
+            logger.info(f"   Cached hash: {cached_hash[:16]}..." if cached_hash else "   Cached: None")
+            logger.info(f"   Current hash: {current_model_hash[:16]}..." if current_model_hash else "   Current: None")
             return True
 
-    # Check if candle data changed
+    # Check if candle data changed (using content hash, not timestamp)
     if candle_parquet_path and candle_parquet_path.exists():
-        current_candle_mtime = candle_parquet_path.stat().st_mtime
-        if cached_meta.get('candles_mtime') != current_candle_mtime:
-            logger.info("⚠️  Regenerating: candle data changed")
-            logger.info(f"   Cached: {cached_meta.get('candles_mtime')}")
-            logger.info(f"   Current: {current_candle_mtime}")
+        current_candle_hash = compute_file_hash(candle_parquet_path)
+        cached_candle_hash = cached_meta.get('candles_hash') or cached_meta.get('candles_mtime')  # Fallback
+        # For old caches that used mtime, we need to regenerate once to get hash
+        if cached_meta.get('candles_hash') is None and cached_meta.get('candles_mtime') is not None:
+            logger.info("⚠️  Regenerating: upgrading cache from mtime to hash-based validation")
+            return True
+        if cached_candle_hash != current_candle_hash:
+            logger.info("⚠️  Regenerating: candle data content changed")
+            logger.info(f"   Cached hash: {cached_candle_hash[:16]}..." if cached_candle_hash else "   Cached: None")
+            logger.info(f"   Current hash: {current_candle_hash[:16]}..." if current_candle_hash else "   Current: None")
             return True
 
     # NOTE: threshold is NOT checked - it's just a filter, not fundamental to data
@@ -150,13 +184,14 @@ def save_edge_data_metadata(
     """Save metadata alongside edge training data cache.
 
     This enables smart cache invalidation - we can reuse cache when inputs haven't changed.
+    Uses content hashes (not timestamps) for git-sync robustness.
     """
     meta = {
         'city': city,
         'ordinal_model_path': str(ordinal_model_path),
-        'ordinal_model_mtime': ordinal_model_path.stat().st_mtime if ordinal_model_path.exists() else None,
+        'ordinal_model_hash': compute_file_hash(ordinal_model_path) if ordinal_model_path.exists() else None,
         'candles_parquet_path': str(candle_parquet_path) if candle_parquet_path else None,
-        'candles_mtime': candle_parquet_path.stat().st_mtime if (candle_parquet_path and candle_parquet_path.exists()) else None,
+        'candles_hash': compute_file_hash(candle_parquet_path) if (candle_parquet_path and candle_parquet_path.exists()) else None,
         'threshold': threshold,
         'sample_rate': sample_rate,
         'pnl_mode': pnl_mode,
@@ -1331,7 +1366,7 @@ def main():
     parser.add_argument(
         "--sample-rate",
         type=int,
-        default=6,
+        default=4,
         help="Sample every Nth snapshot per day (1 = all)",
     )
     parser.add_argument(
@@ -1343,9 +1378,9 @@ def main():
     parser.add_argument(
         "--optuna-metric",
         type=str,
-        default="filtered_precision",
+        default="sharpe",
         choices=["auc", "filtered_precision", "f1", "mean_pnl", "sharpe"],
-        help="Optuna objective metric (default: filtered_precision)",
+        help="Optuna objective metric (default: sharpe)",
     )
     parser.add_argument(
         "--min-trades-for-metric",

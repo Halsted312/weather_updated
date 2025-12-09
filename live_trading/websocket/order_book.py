@@ -157,7 +157,7 @@ class OrderBookManager:
         }
 
         city_code = city_codes.get(city, city.upper()[:3])
-        date_str = event_date.strftime("%d%b%y").upper()  # 01DEC25
+        date_str = event_date.strftime("%y%b%d").upper()  # 25DEC09 (YYMMMDD format)
 
         markets = []
         for ticker, state in self.markets.items():

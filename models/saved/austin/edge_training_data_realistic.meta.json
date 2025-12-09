@@ -1,11 +1,11 @@
 {
   "city": "austin",
   "ordinal_model_path": "models/saved/austin/ordinal_catboost_optuna.pkl",
-  "ordinal_model_mtime": 1765259254.438597,
+  "ordinal_model_mtime": 1765255644.188822,
   "candles_parquet_path": "models/candles/candles_austin.parquet",
-  "candles_mtime": 1765247636.6994295,
-  "threshold": 3.5,
+  "candles_mtime": 1765247304.17051,
+  "threshold": 9.5,
   "sample_rate": 4,
   "pnl_mode": "realistic",
-  "generated_at": "2025-12-09T00:56:39.675232"
+  "generated_at": "2025-12-09T02:12:23.573256"
 }
