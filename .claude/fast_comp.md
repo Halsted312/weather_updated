@@ -1,3 +1,57 @@
+(.venv) (base) halsted@halsted:~/Python/weather_updated$ python scripts/train_edge_classifier.py     --city chicago     --from-parquet     --workers 24     --trials 100
+20:02:01 [INFO] __main__: Using threshold from config: 10.0°F
+20:02:01 [INFO] __main__: Auto-detected candle parquet: models/candles/candles_chicago.parquet
+20:02:01 [INFO] __main__: Auto-detected settlements parquet: models/raw_data/chicago/settlements.parquet
+============================================================
+ML EDGE CLASSIFIER TRAINING
+============================================================
+City: chicago
+Optuna trials: 100
+Optuna metric: filtered_precision
+Workers: 24
+Edge threshold: 10.0°F
+Sample rate: every 6th snapshot
+P&L mode: REALISTIC (with fees)
+Maker fill probability: 40.0%
+Ordinal model: models/saved/chicago/ordinal_catboost_optuna.pkl (default)
+Candle source: parquet (models/candles/candles_chicago.parquet)
+Settlement source: parquet (models/raw_data/chicago/settlements.parquet)
+Mode: PARQUET-ONLY (no DB required)
+
+20:02:01 [INFO] __main__: ⚠️  Regenerating: ordinal model changed
+20:02:01 [INFO] __main__:    Cached: 1765214224.0
+20:02:01 [INFO] __main__:    Current: 1765214224.5963826
+20:02:01 [INFO] __main__: Using ordinal model: models/saved/chicago/ordinal_catboost_optuna.pkl
+Traceback (most recent call last):
+  File "/home/halsted/Python/weather_updated/scripts/train_edge_classifier.py", line 1731, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/halsted/Python/weather_updated/scripts/train_edge_classifier.py", line 1552, in main
+    df_combined = load_combined_data(args.city)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/halsted/Python/weather_updated/scripts/train_edge_classifier.py", line 458, in load_combined_data
+    df_train = pd.read_parquet(train_path)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/halsted/Python/weather_updated/.venv/lib/python3.11/site-packages/pandas/io/parquet.py", line 669, in read_parquet
+    return impl.read(
+           ^^^^^^^^^^
+  File "/home/halsted/Python/weather_updated/.venv/lib/python3.11/site-packages/pandas/io/parquet.py", line 265, in read
+    pa_table = self.api.parquet.read_table(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/halsted/Python/weather_updated/.venv/lib/python3.11/site-packages/pyarrow/parquet/core.py", line 1844, in read_table
+    dataset = ParquetDataset(
+              ^^^^^^^^^^^^^^^
+  File "/home/halsted/Python/weather_updated/.venv/lib/python3.11/site-packages/pyarrow/parquet/core.py", line 1413, in __init__
+    [fragment], schema=schema or fragment.physical_schema,
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "pyarrow/_dataset.pyx", line 1477, in pyarrow._dataset.Fragment.physical_schema.__get__
+  File "pyarrow/error.pxi", line 155, in pyarrow.lib.pyarrow_internal_check_status
+  File "pyarrow/error.pxi", line 92, in pyarrow.lib.check_status
+pyarrow.lib.ArrowInvalid: Could not open Parquet input source '<Buffer>': Parquet file size is 0 bytes
+(.venv) (base) halsted@halsted:~/Python/weather_updated$ 
+
+
+
 GitHub Workflow - Yes, This Works
 On this computer: Commit and push your current state
 git add -A && git commit -m "sync for fast computer" && git push
