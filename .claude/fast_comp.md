@@ -1,3 +1,76 @@
+(.venv) (base) halsted@halsted:~/Python/weather_updated$ PYTHONPATH=. python scripts/train_edge_classifier.py     --city austin     --threshold 3.5     --sample-rate 4     --workers 28     --regenerate-only
+00:05:28 [INFO] __main__: Auto-detected candle parquet: models/candles/candles_austin.parquet
+============================================================
+ML EDGE CLASSIFIER TRAINING
+============================================================
+City: austin
+Optuna trials: 30
+Optuna metric: filtered_precision
+Workers: 28
+Edge threshold: 3.5°F
+Sample rate: every 4th snapshot
+P&L mode: REALISTIC (with fees)
+Maker fill probability: 40.0%
+Ordinal model: models/saved/austin/ordinal_catboost_optuna.pkl (default)
+Candle source: parquet (models/candles/candles_austin.parquet)
+Settlement source: database
+
+00:05:28 [INFO] __main__: ⚠️  Regenerating: cached edge data not found
+00:05:28 [INFO] __main__: Using ordinal model: models/saved/austin/ordinal_catboost_optuna.pkl
+00:05:28 [INFO] __main__: Loaded train data: 163,608 rows
+00:05:28 [INFO] __main__: Loaded test data: 82,992 rows
+/home/halsted/Python/weather_updated/scripts/train_edge_classifier.py:474: FutureWarning: The behavior of DataFrame concatenation with empty or all-NA entries is deprecated. In a future version, this will no longer exclude empty or all-NA columns when determining the result dtypes. To retain the old behavior, exclude the relevant entries before the concat operation.
+  df_combined = pd.concat(dfs, ignore_index=True)
+00:05:29 [INFO] __main__: Combined data: 246,600 rows
+00:05:29 [INFO] __main__: Generating edge data for austin with 28 workers...
+00:05:29 [INFO] __main__: Processing 541 unique days
+00:05:29 [INFO] __main__: Loading model from models/saved/austin/ordinal_catboost_optuna.pkl...
+00:05:29 [INFO] models.training.ordinal_trainer: Loaded ordinal model from models/saved/austin/ordinal_catboost_optuna.pkl
+00:05:29 [INFO] __main__: Batch loading settlements...
+00:05:29 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+00:05:29 [INFO] __main__: Loaded 535 settlements
+00:05:29 [INFO] __main__: Days with settlement data: 535
+00:05:29 [INFO] __main__: Loading candles from parquet: models/candles/candles_austin.parquet
+00:05:29 [INFO] __main__: Loading candles from parquet: models/candles/candles_austin.parquet
+00:05:30 [INFO] __main__: Loaded 11,245,787 candle rows from parquet
+00:05:31 [INFO] __main__: Filtered to 5,931,036 rows for requested dates
+00:05:31 [INFO] __main__: Organizing 5,931,036 candle rows by (day, bracket)...
+00:05:31 [INFO] __main__:   (This may take 10-20 minutes for 10M+ rows - please wait)
+00:09:44 [INFO] __main__: Organized into 2,867 (day, bracket) entries from parquet
+00:09:44 [INFO] __main__: Candle cache built: 2867 (day, bracket) entries
+00:09:44 [INFO] __main__: Sample cache keys: [(datetime.date(2023, 12, 12), '64.5-65.5'), (datetime.date(2023, 12, 12), '66.5-67.5'), (datetime.date(2023, 12, 12), '68.5-69.5'), (datetime.date(2023, 12, 12), '70.5-71.5'), (datetime.date(2023, 12, 12), '64-65')]
+00:09:47 [INFO] __main__: Processing 535 days with 28 threads...
+Processing days: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 535/535 [46:51<00:00,  5.25s/it]
+00:56:39 [INFO] __main__: Generated 54,185 edge samples
+00:56:39 [INFO] __main__: Signals with outcomes: 19,290
+00:56:39 [INFO] __main__: Cached edge data to models/saved/austin/edge_training_data_realistic.parquet
+00:56:39 [INFO] __main__: Saved cache metadata: models/saved/austin/edge_training_data_realistic.meta.json
+
+============================================================
+EDGE DATA GENERATION COMPLETE (--regenerate-only)
+============================================================
+Output: models/saved/austin/edge_training_data_realistic.parquet
+Rows: 54,185
+Signals (non-no_trade): 21,485
+Valid P&L rows: 19,290
+Mean P&L: $0.0919
+
+Copy this file to fast machine for training/sweeps.
+(.venv) (base) halsted@halsted:~/Python/weather_updated$ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 iles are HERE on this computer:
 models/saved/austin/train_data_full.parquet  (42 MB)
 models/saved/austin/test_data_full.parquet   (22 MB)
