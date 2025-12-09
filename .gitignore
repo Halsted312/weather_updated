@@ -81,7 +81,6 @@ data/file_inventory.json
 data/raw/
 data/results/
 data/cache/
-*.parquet
 *.csv
 *.pkl
 *.pickle
