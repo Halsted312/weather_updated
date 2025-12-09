@@ -1,0 +1,280 @@
+2025-12-06 02:45:06,925 - __main__ - INFO - ================================================================================
+2025-12-06 02:45:06,925 - __main__ - INFO - FAST NOAA INGESTION - AUSTIN
+2025-12-06 02:45:06,925 - __main__ - INFO - ================================================================================
+2025-12-06 02:45:06,925 - __main__ - INFO - Models: HRRR
+2025-12-06 02:45:06,925 - __main__ - INFO - Date range: 2025-05-01 to 2025-12-01 (215 days)
+2025-12-06 02:45:06,925 - __main__ - INFO - Workers: 20
+2025-12-06 02:45:06,925 - __main__ - INFO - 
+2025-12-06 02:45:06,925 - __main__ - INFO - Total tasks: 215 (215 days × 1 models)
+2025-12-06 02:45:06,937 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 02:45:06,937 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 02:45:06,937 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 02:45:06,937 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-05-02 run=2025-05-01 12:00:00+00:00
+2025-12-06 02:45:06,937 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-05-14 run=2025-05-13 12:00:00+00:00
+2025-12-06 02:45:06,937 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 02:45:06,937 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 02:45:06,938 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 02:45:06,938 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 02:45:06,938 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 02:45:06,938 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-05-15 run=2025-05-14 12:00:00+00:00
+2025-12-06 02:45:06,938 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 02:45:06,938 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-05-04 run=2025-05-03 12:00:00+00:00
+2025-12-06 02:45:06,938 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 02:45:06,938 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-05-12 run=2025-05-11 12:00:00+00:00
+2025-12-06 02:45:06,938 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-05-16 run=2025-05-15 12:00:00+00:00
+2025-12-06 02:45:06,938 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 02:45:06,939 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-05-17 run=2025-05-16 12:00:00+00:00
+2025-12-06 02:45:06,939 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 02:45:06,939 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-05-01 run=2025-04-30 12:00:00+00:00
+2025-12-06 02:45:06,939 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 02:45:06,939 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-05-18 run=2025-05-17 12:00:00+00:00
+2025-12-06 02:45:06,939 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-05-05 run=2025-05-04 12:00:00+00:00
+2025-12-06 02:45:06,939 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-05-13 run=2025-05-12 12:00:00+00:00
+2025-12-06 02:45:06,939 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-05-19 run=2025-05-18 12:00:00+00:00
+2025-12-06 02:45:06,939 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-05-06 run=2025-05-05 12:00:00+00:00
+2025-12-06 02:45:06,940 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-05-03 run=2025-05-02 12:00:00+00:00
+2025-12-06 02:45:06,940 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-05-20 run=2025-05-19 12:00:00+00:00
+2025-12-06 02:45:06,940 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-05-07 run=2025-05-06 12:00:00+00:00
+2025-12-06 02:45:06,941 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-05-08 run=2025-05-07 12:00:00+00:00
+2025-12-06 02:45:06,941 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-05-09 run=2025-05-08 12:00:00+00:00
+2025-12-06 02:45:06,941 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-05-10 run=2025-05-09 12:00:00+00:00
+2025-12-06 02:45:06,941 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-05-11 run=2025-05-10 12:00:00+00:00
+2025-12-06 02:46:47,885 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-05-14: 99.09°F
+2025-12-06 02:46:47,885 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-05-21 run=2025-05-20 12:00:00+00:00
+2025-12-06 02:46:48,518 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-05-02: 89.56°F
+2025-12-06 02:46:48,518 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-05-22 run=2025-05-21 12:00:00+00:00
+2025-12-06 02:47:07,548 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-05-13: 98.82°F
+2025-12-06 02:47:07,548 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-05-23 run=2025-05-22 12:00:00+00:00
+2025-12-06 02:47:20,889 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-05-06: 84.9°F
+2025-12-06 02:47:20,889 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-05-24 run=2025-05-23 12:00:00+00:00
+2025-12-06 02:47:27,193 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-05-18: 91.94°F
+2025-12-06 02:47:27,194 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-05-25 run=2025-05-24 12:00:00+00:00
+2025-12-06 02:47:28,384 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-05-10: 75.74°F
+2025-12-06 02:47:28,385 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-05-26 run=2025-05-25 12:00:00+00:00
+2025-12-06 02:47:33,775 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-05-20: 93.27°F
+2025-12-06 02:47:33,775 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-05-27 run=2025-05-26 12:00:00+00:00
+2025-12-06 02:47:35,457 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-05-08: 80.14°F
+2025-12-06 02:47:35,458 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-05-28 run=2025-05-27 12:00:00+00:00
+2025-12-06 02:47:44,336 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-05-03: 77.76°F
+2025-12-06 02:47:44,336 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-05-29 run=2025-05-28 12:00:00+00:00
+2025-12-06 02:47:48,464 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-05-04: 82.56°F
+2025-12-06 02:47:48,464 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-05-30 run=2025-05-29 12:00:00+00:00
+2025-12-06 02:47:48,464 - __main__ - INFO - Progress: 10/215 (4.7%) | Rate: 0.1 tasks/sec | ETA: 3312s
+2025-12-06 02:47:51,450 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-05-15: 94.75°F
+2025-12-06 02:47:51,450 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-05-31 run=2025-05-30 12:00:00+00:00
+2025-12-06 02:48:06,652 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-05-17: 95.16°F
+2025-12-06 02:48:06,652 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-06-01 run=2025-05-31 12:00:00+00:00
+2025-12-06 02:48:06,746 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-05-07: 78.13°F
+2025-12-06 02:48:06,748 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-06-02 run=2025-06-01 12:00:00+00:00
+2025-12-06 02:48:10,242 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-05-01: 87.7°F
+2025-12-06 02:48:10,242 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-06-03 run=2025-06-02 12:00:00+00:00
+2025-12-06 02:48:10,680 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-05-19: 95.73°F
+2025-12-06 02:48:10,681 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-06-04 run=2025-06-03 12:00:00+00:00
+2025-12-06 02:48:16,912 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-05-11: 82.25°F
+2025-12-06 02:48:16,912 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-06-05 run=2025-06-04 12:00:00+00:00
+2025-12-06 02:48:17,018 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-05-16: 96.05°F
+2025-12-06 02:48:17,018 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-06-06 run=2025-06-05 12:00:00+00:00
+2025-12-06 02:48:17,465 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-05-12: 87.65°F
+2025-12-06 02:48:17,465 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-06-07 run=2025-06-06 12:00:00+00:00
+2025-12-06 02:48:27,530 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-05-09: 78.38°F
+2025-12-06 02:48:27,530 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-06-08 run=2025-06-07 12:00:00+00:00
+2025-12-06 02:48:39,489 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-05-05: 73.03°F
+2025-12-06 02:48:39,489 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-06-09 run=2025-06-08 12:00:00+00:00
+2025-12-06 02:48:39,490 - __main__ - INFO - Progress: 20/215 (9.3%) | Rate: 0.1 tasks/sec | ETA: 2073s
+2025-12-06 02:49:07,665 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-05-25: 95.09°F
+2025-12-06 02:49:07,666 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-06-10 run=2025-06-09 12:00:00+00:00
+2025-12-06 02:49:39,015 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-05-21: 94.36°F
+2025-12-06 02:49:39,015 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-06-11 run=2025-06-10 12:00:00+00:00
+2025-12-06 02:49:41,592 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-05-26: 92.76°F
+2025-12-06 02:49:41,592 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-06-12 run=2025-06-11 12:00:00+00:00
+2025-12-06 02:49:46,038 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-05-28: 84.78°F
+2025-12-06 02:49:46,038 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-06-13 run=2025-06-12 12:00:00+00:00
+2025-12-06 02:49:49,779 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-05-23: 95.69°F
+2025-12-06 02:49:49,779 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-06-14 run=2025-06-13 12:00:00+00:00
+2025-12-06 02:49:53,158 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-05-22: 98.8°F
+2025-12-06 02:49:53,158 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-06-15 run=2025-06-14 12:00:00+00:00
+2025-12-06 02:50:13,593 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-06-04: 89.27°F
+2025-12-06 02:50:13,593 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-06-16 run=2025-06-15 12:00:00+00:00
+2025-12-06 02:50:23,725 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-05-27: 88.95°F
+2025-12-06 02:50:23,732 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-06-17 run=2025-06-16 12:00:00+00:00
+2025-12-06 02:50:30,037 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-06-09: 97.82°F
+2025-12-06 02:50:30,041 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-06-18 run=2025-06-17 12:00:00+00:00
+2025-12-06 02:50:33,275 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-06-01: 94.92°F
+2025-12-06 02:50:33,279 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-06-19 run=2025-06-18 12:00:00+00:00
+2025-12-06 02:50:33,285 - __main__ - INFO - Progress: 30/215 (14.0%) | Rate: 0.1 tasks/sec | ETA: 2013s
+2025-12-06 02:50:33,288 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-06-02: 95.53°F
+2025-12-06 02:50:33,288 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-06-20 run=2025-06-19 12:00:00+00:00
+2025-12-06 02:50:34,652 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-06-03: 92.51°F
+2025-12-06 02:50:34,653 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-06-21 run=2025-06-20 12:00:00+00:00
+2025-12-06 02:50:35,166 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-05-24: 96.12°F
+2025-12-06 02:50:35,167 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-06-22 run=2025-06-21 12:00:00+00:00
+2025-12-06 02:50:54,866 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-05-31: 88.31°F
+2025-12-06 02:50:54,866 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-06-23 run=2025-06-22 12:00:00+00:00
+2025-12-06 02:51:04,270 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-06-05: 92.98°F
+2025-12-06 02:51:04,270 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-06-24 run=2025-06-23 12:00:00+00:00
+2025-12-06 02:51:05,172 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-05-30: 80.46°F
+2025-12-06 02:51:05,172 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-06-25 run=2025-06-24 12:00:00+00:00
+2025-12-06 02:51:07,961 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-06-06: 94.16°F
+2025-12-06 02:51:07,961 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-06-26 run=2025-06-25 12:00:00+00:00
+2025-12-06 02:51:08,414 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-06-07: 95.2°F
+2025-12-06 02:51:08,414 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-06-27 run=2025-06-26 12:00:00+00:00
+2025-12-06 02:51:14,423 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-05-29: 90.86°F
+2025-12-06 02:51:14,425 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-06-28 run=2025-06-27 12:00:00+00:00
+2025-12-06 02:51:31,454 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-06-08: 97.25°F
+2025-12-06 02:51:31,454 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-06-29 run=2025-06-28 12:00:00+00:00
+2025-12-06 02:51:31,454 - __main__ - INFO - Progress: 40/215 (18.6%) | Rate: 0.1 tasks/sec | ETA: 1682s
+2025-12-06 02:51:47,817 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-06-13: 90.39°F
+2025-12-06 02:51:47,818 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-06-30 run=2025-06-29 12:00:00+00:00
+2025-12-06 02:52:02,649 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-06-14: 92.38°F
+2025-12-06 02:52:02,649 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-07-01 run=2025-06-30 12:00:00+00:00
+2025-12-06 02:52:08,191 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-06-15: 91.32°F
+2025-12-06 02:52:08,194 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-07-02 run=2025-07-01 12:00:00+00:00
+2025-12-06 02:52:11,473 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-06-10: 91.83°F
+2025-12-06 02:52:11,474 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-07-03 run=2025-07-02 12:00:00+00:00
+2025-12-06 02:52:40,759 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-06-21: 92.24°F
+2025-12-06 02:52:40,760 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-07-04 run=2025-07-03 12:00:00+00:00
+2025-12-06 02:52:46,026 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-06-11: 90.87°F
+2025-12-06 02:52:46,026 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-07-05 run=2025-07-04 12:00:00+00:00
+2025-12-06 02:52:48,465 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-06-12: 82.93°F
+2025-12-06 02:52:48,467 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-07-06 run=2025-07-05 12:00:00+00:00
+2025-12-06 02:52:51,489 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-06-22: 92.17°F
+2025-12-06 02:52:51,489 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-07-07 run=2025-07-06 12:00:00+00:00
+2025-12-06 02:52:54,887 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-06-17: 91.61°F
+2025-12-06 02:52:54,889 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-07-08 run=2025-07-07 12:00:00+00:00
+2025-12-06 02:52:55,189 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-06-23: 93.79°F
+2025-12-06 02:52:55,189 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-07-09 run=2025-07-08 12:00:00+00:00
+2025-12-06 02:52:55,189 - __main__ - INFO - Progress: 50/215 (23.3%) | Rate: 0.1 tasks/sec | ETA: 1545s
+2025-12-06 02:53:06,448 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-06-20: 92.19°F
+2025-12-06 02:53:06,451 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-07-10 run=2025-07-09 12:00:00+00:00
+2025-12-06 02:53:09,247 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-06-26: 85.39°F
+2025-12-06 02:53:09,260 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-07-11 run=2025-07-10 12:00:00+00:00
+2025-12-06 02:53:12,058 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-06-18: 91.73°F
+2025-12-06 02:53:12,058 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-07-12 run=2025-07-11 12:00:00+00:00
+2025-12-06 02:53:14,722 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-06-19: 93.24°F
+2025-12-06 02:53:14,722 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-07-13 run=2025-07-12 12:00:00+00:00
+2025-12-06 02:53:20,932 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-06-16: 93.41°F
+2025-12-06 02:53:20,932 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-07-14 run=2025-07-13 12:00:00+00:00
+2025-12-06 02:53:40,950 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-06-24: 92.57°F
+2025-12-06 02:53:40,950 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-07-15 run=2025-07-14 12:00:00+00:00
+2025-12-06 02:53:48,794 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-06-25: 89.02°F
+2025-12-06 02:53:48,794 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-07-16 run=2025-07-15 12:00:00+00:00
+2025-12-06 02:54:31,241 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-06-28: 94.44°F
+2025-12-06 02:54:31,241 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-07-17 run=2025-07-16 12:00:00+00:00
+2025-12-06 02:54:33,331 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-06-29: 94.34°F
+2025-12-06 02:54:33,331 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-07-18 run=2025-07-17 12:00:00+00:00
+2025-12-06 02:54:35,995 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-06-30: 90.95°F
+2025-12-06 02:54:35,995 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-07-19 run=2025-07-18 12:00:00+00:00
+2025-12-06 02:54:35,995 - __main__ - INFO - Progress: 60/215 (27.9%) | Rate: 0.1 tasks/sec | ETA: 1470s
+2025-12-06 02:54:38,082 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-06-27: 93.7°F
+2025-12-06 02:54:38,083 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-07-20 run=2025-07-19 12:00:00+00:00
+2025-12-06 02:54:51,097 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-07-04: 86.76°F
+2025-12-06 02:54:51,097 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-07-21 run=2025-07-20 12:00:00+00:00
+2025-12-06 02:54:56,394 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-07-03: 84.56°F
+2025-12-06 02:54:56,394 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-07-22 run=2025-07-21 12:00:00+00:00
+2025-12-06 02:55:02,234 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-07-05: 80.84°F
+2025-12-06 02:55:02,235 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-07-23 run=2025-07-22 12:00:00+00:00
+2025-12-06 02:55:02,883 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-07-10: 91.98°F
+2025-12-06 02:55:02,883 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-07-24 run=2025-07-23 12:00:00+00:00
+2025-12-06 02:55:03,428 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-07-01: 94.48°F
+2025-12-06 02:55:03,433 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-07-25 run=2025-07-24 12:00:00+00:00
+2025-12-06 02:55:03,724 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-07-07: 88.1°F
+2025-12-06 02:55:03,724 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-07-26 run=2025-07-25 12:00:00+00:00
+2025-12-06 02:55:08,475 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-07-06: 91.95°F
+2025-12-06 02:55:08,475 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-07-27 run=2025-07-26 12:00:00+00:00
+2025-12-06 02:55:10,499 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-07-02: 91.7°F
+2025-12-06 02:55:10,499 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-07-28 run=2025-07-27 12:00:00+00:00
+2025-12-06 02:55:29,347 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-07-12: 91.54°F
+2025-12-06 02:55:29,347 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-07-29 run=2025-07-28 12:00:00+00:00
+2025-12-06 02:55:29,351 - __main__ - INFO - Progress: 70/215 (32.6%) | Rate: 0.1 tasks/sec | ETA: 1289s
+2025-12-06 02:55:46,724 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-07-08: 87.44°F
+2025-12-06 02:55:46,724 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-07-30 run=2025-07-29 12:00:00+00:00
+2025-12-06 02:56:02,013 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-07-15: 92.38°F
+2025-12-06 02:56:02,013 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-07-31 run=2025-07-30 12:00:00+00:00
+2025-12-06 02:56:09,420 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-07-11: 90.05°F
+2025-12-06 02:56:09,420 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-08-01 run=2025-07-31 12:00:00+00:00
+2025-12-06 02:56:09,462 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-07-09: 86.12°F
+2025-12-06 02:56:09,463 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-08-02 run=2025-08-01 12:00:00+00:00
+2025-12-06 02:56:19,995 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-07-14: 88.42°F
+2025-12-06 02:56:19,996 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-08-03 run=2025-08-02 12:00:00+00:00
+2025-12-06 02:56:23,161 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-07-16: 94.25°F
+2025-12-06 02:56:23,161 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-08-04 run=2025-08-03 12:00:00+00:00
+2025-12-06 02:56:49,355 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-07-13: 92.5°F
+2025-12-06 02:56:49,355 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-08-05 run=2025-08-04 12:00:00+00:00
+2025-12-06 02:56:49,907 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-07-25: 98.41°F
+2025-12-06 02:56:49,909 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-08-06 run=2025-08-05 12:00:00+00:00
+2025-12-06 02:56:52,428 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-07-20: 95.37°F
+2025-12-06 02:56:52,428 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-08-07 run=2025-08-06 12:00:00+00:00
+2025-12-06 02:57:27,277 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-07-27: 92.3°F
+2025-12-06 02:57:27,278 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-08-08 run=2025-08-07 12:00:00+00:00
+2025-12-06 02:57:27,282 - __main__ - INFO - Progress: 80/215 (37.2%) | Rate: 0.1 tasks/sec | ETA: 1249s
+2025-12-06 02:57:27,424 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-07-23: 96.44°F
+2025-12-06 02:57:27,425 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-08-09 run=2025-08-08 12:00:00+00:00
+2025-12-06 02:57:32,975 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-07-18: 94.14°F
+2025-12-06 02:57:32,976 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-08-10 run=2025-08-09 12:00:00+00:00
+2025-12-06 02:57:35,981 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-07-28: 95.98°F
+2025-12-06 02:57:35,981 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-08-11 run=2025-08-10 12:00:00+00:00
+2025-12-06 02:57:43,689 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-07-24: 98.91°F
+2025-12-06 02:57:43,689 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-08-12 run=2025-08-11 12:00:00+00:00
+2025-12-06 02:57:50,733 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-07-21: 95.74°F
+2025-12-06 02:57:50,734 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-08-13 run=2025-08-12 12:00:00+00:00
+2025-12-06 02:57:52,498 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-07-22: 95.3°F
+2025-12-06 02:57:52,498 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-08-14 run=2025-08-13 12:00:00+00:00
+2025-12-06 02:57:53,732 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-07-26: 90.95°F
+2025-12-06 02:57:53,733 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-08-15 run=2025-08-14 12:00:00+00:00
+2025-12-06 02:58:05,759 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-07-19: 95.33°F
+2025-12-06 02:58:05,759 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-08-16 run=2025-08-15 12:00:00+00:00
+2025-12-06 02:58:13,283 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-07-17: 95.92°F
+2025-12-06 02:58:13,283 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-08-17 run=2025-08-16 12:00:00+00:00
+2025-12-06 02:58:24,617 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-07-30: 99.8°F
+2025-12-06 02:58:24,618 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-08-18 run=2025-08-17 12:00:00+00:00
+2025-12-06 02:58:24,618 - __main__ - INFO - Progress: 90/215 (41.9%) | Rate: 0.1 tasks/sec | ETA: 1108s
+2025-12-06 02:58:37,106 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-08-05: 97.22°F
+2025-12-06 02:58:37,107 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-08-19 run=2025-08-18 12:00:00+00:00
+2025-12-06 02:58:41,806 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-08-06: 96.38°F
+2025-12-06 02:58:41,806 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-08-20 run=2025-08-19 12:00:00+00:00
+2025-12-06 02:58:48,505 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-07-29: 98.39°F
+2025-12-06 02:58:48,509 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-08-21 run=2025-08-20 12:00:00+00:00
+2025-12-06 02:58:49,042 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-08-02: 86.13°F
+2025-12-06 02:58:49,043 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-08-22 run=2025-08-21 12:00:00+00:00
+2025-12-06 02:58:49,270 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-08-01: 97.56°F
+2025-12-06 02:58:49,270 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-08-23 run=2025-08-22 12:00:00+00:00
+2025-12-06 02:58:50,615 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-08-03: 99.39°F
+2025-12-06 02:58:50,616 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-08-24 run=2025-08-23 12:00:00+00:00
+2025-12-06 02:59:08,463 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-08-04: 99.56°F
+2025-12-06 02:59:08,463 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-08-25 run=2025-08-24 12:00:00+00:00
+2025-12-06 02:59:28,408 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-08-07: 98.73°F
+2025-12-06 02:59:28,408 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-08-26 run=2025-08-25 12:00:00+00:00
+2025-12-06 02:59:28,473 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-07-31: 100.79°F
+2025-12-06 02:59:28,473 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-08-27 run=2025-08-26 12:00:00+00:00
+2025-12-06 02:59:34,860 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-08-10: 96.08°F
+2025-12-06 02:59:34,860 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-08-28 run=2025-08-27 12:00:00+00:00
+2025-12-06 02:59:34,860 - __main__ - INFO - Progress: 100/215 (46.5%) | Rate: 0.1 tasks/sec | ETA: 998s
+2025-12-06 03:00:13,611 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-08-09: 97.98°F
+2025-12-06 03:00:13,611 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-08-29 run=2025-08-28 12:00:00+00:00
+2025-12-06 03:00:18,286 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-08-14: 96.42°F
+2025-12-06 03:00:18,287 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-08-30 run=2025-08-29 12:00:00+00:00
+2025-12-06 03:00:18,853 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-08-08: 98.25°F
+2025-12-06 03:00:18,854 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-08-31 run=2025-08-30 12:00:00+00:00
+2025-12-06 03:00:40,963 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-08-16: 93.92°F
+2025-12-06 03:00:40,964 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-09-01 run=2025-08-31 12:00:00+00:00
+2025-12-06 03:00:41,308 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-08-11: 95.24°F
+2025-12-06 03:00:41,309 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-09-02 run=2025-09-01 12:00:00+00:00
+2025-12-06 03:00:42,729 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-08-13: 93.03°F
+2025-12-06 03:00:42,729 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-09-03 run=2025-09-02 12:00:00+00:00
+2025-12-06 03:00:45,840 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-08-23: 90.9°F
+2025-12-06 03:00:45,840 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-09-04 run=2025-09-03 12:00:00+00:00
+2025-12-06 03:00:58,264 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-08-26: 96.0°F
+2025-12-06 03:00:58,265 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-09-05 run=2025-09-04 12:00:00+00:00
+2025-12-06 03:01:00,956 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-08-12: 96.08°F
+2025-12-06 03:01:00,957 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-09-06 run=2025-09-05 12:00:00+00:00
+2025-12-06 03:01:01,369 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-08-25: 96.4°F
+2025-12-06 03:01:01,369 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-09-07 run=2025-09-06 12:00:00+00:00
+2025-12-06 03:01:01,369 - __main__ - INFO - Progress: 110/215 (51.2%) | Rate: 0.1 tasks/sec | ETA: 911s
+2025-12-06 03:01:05,322 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-08-17: 97.03°F
+2025-12-06 03:01:05,322 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-09-08 run=2025-09-07 12:00:00+00:00
+2025-12-06 03:01:07,215 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-08-15: 96.46°F
+2025-12-06 03:01:07,216 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-09-09 run=2025-09-08 12:00:00+00:00
+2025-12-06 03:01:19,424 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-08-22: 89.8°F
+2025-12-06 03:01:19,424 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-09-10 run=2025-09-09 12:00:00+00:00
+2025-12-06 03:01:19,471 - src.weather_more_apis.ingest - INFO - ✓ HRRR austin 2025-08-21: 89.96°F
+2025-12-06 03:01:19,471 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for austin 2025-09-11 run=2025-09-10 12:00:00+00:00

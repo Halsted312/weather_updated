@@ -1,0 +1,262 @@
+2025-12-06 01:38:15,521 - __main__ - INFO - Logging to: /home/halsted/Documents/python/weather_updated/logs/vc_backfill_austin_20251206_013815.log
+2025-12-06 01:38:15,522 - __main__ - INFO - Starting full historical backfill for austin
+2025-12-06 01:38:15,522 - __main__ - INFO - Date range: 2025-05-01 to 2025-12-01
+2025-12-06 01:38:15,522 - __main__ - INFO - Total days: 215
+2025-12-06 01:38:15,530 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 01:38:15,530 - __main__ - INFO - ================================================================================
+2025-12-06 01:38:15,530 - __main__ - INFO - VC 15-MIN FORECAST BACKFILL - AUSTIN
+2025-12-06 01:38:15,530 - __main__ - INFO - ================================================================================
+2025-12-06 01:38:15,530 - __main__ - INFO - Date range: 2025-05-01 to 2025-12-01
+2025-12-06 01:38:15,530 - __main__ - INFO - Timezone: America/Chicago
+2025-12-06 01:38:15,530 - __main__ - INFO - City query: Austin,TX
+2025-12-06 01:38:15,543 - __main__ - INFO - Using vc_location_id: 6
+2025-12-06 01:38:15,543 - __main__ - INFO - Processing 215 days...
+2025-12-06 01:38:15,543 - __main__ - INFO - 
+2025-12-06 01:38:15,543 - __main__ - INFO - Progress: 1/215 (0.5%) | Rate: 23696.6 days/sec | ETA: 0.0 min
+2025-12-06 01:38:15,895 - __main__ - INFO - ✓ [1/215] 2025-05-01 → 96 rows inserted
+2025-12-06 01:38:16,186 - __main__ - INFO - ✓ [2/215] 2025-05-02 → 96 rows inserted
+2025-12-06 01:38:16,486 - __main__ - INFO - ✓ [3/215] 2025-05-03 → 96 rows inserted
+2025-12-06 01:38:16,787 - __main__ - INFO - ✓ [4/215] 2025-05-04 → 96 rows inserted
+2025-12-06 01:38:17,060 - __main__ - INFO - ✓ [5/215] 2025-05-05 → 96 rows inserted
+2025-12-06 01:38:17,362 - __main__ - INFO - ✓ [6/215] 2025-05-06 → 96 rows inserted
+2025-12-06 01:38:17,667 - __main__ - INFO - ✓ [7/215] 2025-05-07 → 96 rows inserted
+2025-12-06 01:38:17,956 - __main__ - INFO - ✓ [8/215] 2025-05-08 → 96 rows inserted
+2025-12-06 01:38:18,226 - __main__ - INFO - ✓ [9/215] 2025-05-09 → 96 rows inserted
+2025-12-06 01:38:18,226 - __main__ - INFO - Progress: 10/215 (4.7%) | Rate: 3.7 days/sec | ETA: 0.9 min
+2025-12-06 01:38:18,503 - __main__ - INFO - ✓ [10/215] 2025-05-10 → 96 rows inserted
+2025-12-06 01:38:18,782 - __main__ - INFO - ✓ [11/215] 2025-05-11 → 96 rows inserted
+2025-12-06 01:38:19,055 - __main__ - INFO - ✓ [12/215] 2025-05-12 → 96 rows inserted
+2025-12-06 01:38:19,328 - __main__ - INFO - ✓ [13/215] 2025-05-13 → 96 rows inserted
+2025-12-06 01:38:19,605 - __main__ - INFO - ✓ [14/215] 2025-05-14 → 96 rows inserted
+2025-12-06 01:38:19,877 - __main__ - INFO - ✓ [15/215] 2025-05-15 → 96 rows inserted
+2025-12-06 01:38:20,155 - __main__ - INFO - ✓ [16/215] 2025-05-16 → 96 rows inserted
+2025-12-06 01:38:20,430 - __main__ - INFO - ✓ [17/215] 2025-05-17 → 96 rows inserted
+2025-12-06 01:38:20,712 - __main__ - INFO - ✓ [18/215] 2025-05-18 → 96 rows inserted
+2025-12-06 01:38:20,982 - __main__ - INFO - ✓ [19/215] 2025-05-19 → 96 rows inserted
+2025-12-06 01:38:20,982 - __main__ - INFO - Progress: 20/215 (9.3%) | Rate: 3.7 days/sec | ETA: 0.9 min
+2025-12-06 01:38:21,323 - __main__ - INFO - ✓ [20/215] 2025-05-20 → 96 rows inserted
+2025-12-06 01:38:21,597 - __main__ - INFO - ✓ [21/215] 2025-05-21 → 96 rows inserted
+2025-12-06 01:38:21,874 - __main__ - INFO - ✓ [22/215] 2025-05-22 → 96 rows inserted
+2025-12-06 01:38:22,174 - __main__ - INFO - ✓ [23/215] 2025-05-23 → 96 rows inserted
+2025-12-06 01:38:22,504 - __main__ - INFO - ✓ [24/215] 2025-05-24 → 96 rows inserted
+2025-12-06 01:38:22,825 - __main__ - INFO - ✓ [25/215] 2025-05-25 → 96 rows inserted
+2025-12-06 01:38:23,114 - __main__ - INFO - ✓ [26/215] 2025-05-26 → 96 rows inserted
+2025-12-06 01:38:23,400 - __main__ - INFO - ✓ [27/215] 2025-05-27 → 96 rows inserted
+2025-12-06 01:38:23,703 - __main__ - INFO - ✓ [28/215] 2025-05-28 → 96 rows inserted
+2025-12-06 01:38:23,994 - __main__ - INFO - ✓ [29/215] 2025-05-29 → 96 rows inserted
+2025-12-06 01:38:23,994 - __main__ - INFO - Progress: 30/215 (14.0%) | Rate: 3.6 days/sec | ETA: 0.9 min
+2025-12-06 01:38:24,251 - __main__ - INFO - ✓ [30/215] 2025-05-30 → 96 rows inserted
+2025-12-06 01:38:24,542 - __main__ - INFO - ✓ [31/215] 2025-05-31 → 96 rows inserted
+2025-12-06 01:38:24,847 - __main__ - INFO - ✓ [32/215] 2025-06-01 → 96 rows inserted
+2025-12-06 01:38:25,141 - __main__ - INFO - ✓ [33/215] 2025-06-02 → 96 rows inserted
+2025-12-06 01:38:25,434 - __main__ - INFO - ✓ [34/215] 2025-06-03 → 96 rows inserted
+2025-12-06 01:38:25,711 - __main__ - INFO - ✓ [35/215] 2025-06-04 → 96 rows inserted
+2025-12-06 01:38:25,965 - __main__ - INFO - ✓ [36/215] 2025-06-05 → 96 rows inserted
+2025-12-06 01:38:26,226 - __main__ - INFO - ✓ [37/215] 2025-06-06 → 96 rows inserted
+2025-12-06 01:38:26,499 - __main__ - INFO - ✓ [38/215] 2025-06-07 → 96 rows inserted
+2025-12-06 01:38:26,771 - __main__ - INFO - ✓ [39/215] 2025-06-08 → 96 rows inserted
+2025-12-06 01:38:26,771 - __main__ - INFO - Progress: 40/215 (18.6%) | Rate: 3.6 days/sec | ETA: 0.8 min
+2025-12-06 01:38:27,081 - __main__ - INFO - ✓ [40/215] 2025-06-09 → 96 rows inserted
+2025-12-06 01:38:27,397 - __main__ - INFO - ✓ [41/215] 2025-06-10 → 96 rows inserted
+2025-12-06 01:38:27,697 - __main__ - INFO - ✓ [42/215] 2025-06-11 → 96 rows inserted
+2025-12-06 01:38:27,996 - __main__ - INFO - ✓ [43/215] 2025-06-12 → 96 rows inserted
+2025-12-06 01:38:28,303 - __main__ - INFO - ✓ [44/215] 2025-06-13 → 96 rows inserted
+2025-12-06 01:38:28,586 - __main__ - INFO - ✓ [45/215] 2025-06-14 → 96 rows inserted
+2025-12-06 01:38:28,866 - __main__ - INFO - ✓ [46/215] 2025-06-15 → 96 rows inserted
+2025-12-06 01:38:29,138 - __main__ - INFO - ✓ [47/215] 2025-06-16 → 96 rows inserted
+2025-12-06 01:38:29,418 - __main__ - INFO - ✓ [48/215] 2025-06-17 → 96 rows inserted
+2025-12-06 01:38:29,693 - __main__ - INFO - ✓ [49/215] 2025-06-18 → 96 rows inserted
+2025-12-06 01:38:29,693 - __main__ - INFO - Progress: 50/215 (23.3%) | Rate: 3.5 days/sec | ETA: 0.8 min
+2025-12-06 01:38:30,009 - __main__ - INFO - ✓ [50/215] 2025-06-19 → 96 rows inserted
+2025-12-06 01:38:30,302 - __main__ - INFO - ✓ [51/215] 2025-06-20 → 96 rows inserted
+2025-12-06 01:38:30,610 - __main__ - INFO - ✓ [52/215] 2025-06-21 → 96 rows inserted
+2025-12-06 01:38:30,906 - __main__ - INFO - ✓ [53/215] 2025-06-22 → 96 rows inserted
+2025-12-06 01:38:31,155 - __main__ - INFO - ✓ [54/215] 2025-06-23 → 96 rows inserted
+2025-12-06 01:38:31,431 - __main__ - INFO - ✓ [55/215] 2025-06-24 → 96 rows inserted
+2025-12-06 01:38:31,746 - __main__ - INFO - ✓ [56/215] 2025-06-25 → 96 rows inserted
+2025-12-06 01:38:32,029 - __main__ - INFO - ✓ [57/215] 2025-06-26 → 96 rows inserted
+2025-12-06 01:38:32,386 - __main__ - INFO - ✓ [58/215] 2025-06-27 → 96 rows inserted
+2025-12-06 01:38:32,630 - __main__ - INFO - ✓ [59/215] 2025-06-28 → 96 rows inserted
+2025-12-06 01:38:32,630 - __main__ - INFO - Progress: 60/215 (27.9%) | Rate: 3.5 days/sec | ETA: 0.7 min
+2025-12-06 01:38:32,887 - __main__ - INFO - ✓ [60/215] 2025-06-29 → 96 rows inserted
+2025-12-06 01:38:33,168 - __main__ - INFO - ✓ [61/215] 2025-06-30 → 96 rows inserted
+2025-12-06 01:38:33,423 - __main__ - INFO - ✓ [62/215] 2025-07-01 → 96 rows inserted
+2025-12-06 01:38:33,755 - __main__ - INFO - ✓ [63/215] 2025-07-02 → 96 rows inserted
+2025-12-06 01:38:34,011 - __main__ - INFO - ✓ [64/215] 2025-07-03 → 96 rows inserted
+2025-12-06 01:38:34,299 - __main__ - INFO - ✓ [65/215] 2025-07-04 → 96 rows inserted
+2025-12-06 01:38:34,612 - __main__ - INFO - ✓ [66/215] 2025-07-05 → 96 rows inserted
+2025-12-06 01:38:34,903 - __main__ - INFO - ✓ [67/215] 2025-07-06 → 96 rows inserted
+2025-12-06 01:38:35,205 - __main__ - INFO - ✓ [68/215] 2025-07-07 → 96 rows inserted
+2025-12-06 01:38:35,488 - __main__ - INFO - ✓ [69/215] 2025-07-08 → 96 rows inserted
+2025-12-06 01:38:35,488 - __main__ - INFO - Progress: 70/215 (32.6%) | Rate: 3.5 days/sec | ETA: 0.7 min
+2025-12-06 01:38:35,811 - __main__ - INFO - ✓ [70/215] 2025-07-09 → 96 rows inserted
+2025-12-06 01:38:36,091 - __main__ - INFO - ✓ [71/215] 2025-07-10 → 96 rows inserted
+2025-12-06 01:38:36,371 - __main__ - INFO - ✓ [72/215] 2025-07-11 → 96 rows inserted
+2025-12-06 01:38:36,631 - __main__ - INFO - ✓ [73/215] 2025-07-12 → 96 rows inserted
+2025-12-06 01:38:36,922 - __main__ - INFO - ✓ [74/215] 2025-07-13 → 96 rows inserted
+2025-12-06 01:38:37,238 - __main__ - INFO - ✓ [75/215] 2025-07-14 → 96 rows inserted
+2025-12-06 01:38:37,503 - __main__ - INFO - ✓ [76/215] 2025-07-15 → 96 rows inserted
+2025-12-06 01:38:37,779 - __main__ - INFO - ✓ [77/215] 2025-07-16 → 96 rows inserted
+2025-12-06 01:38:38,040 - __main__ - INFO - ✓ [78/215] 2025-07-17 → 96 rows inserted
+2025-12-06 01:38:38,334 - __main__ - INFO - ✓ [79/215] 2025-07-18 → 96 rows inserted
+2025-12-06 01:38:38,334 - __main__ - INFO - Progress: 80/215 (37.2%) | Rate: 3.5 days/sec | ETA: 0.6 min
+2025-12-06 01:38:38,589 - __main__ - INFO - ✓ [80/215] 2025-07-19 → 96 rows inserted
+2025-12-06 01:38:38,873 - __main__ - INFO - ✓ [81/215] 2025-07-20 → 96 rows inserted
+2025-12-06 01:38:39,166 - __main__ - INFO - ✓ [82/215] 2025-07-21 → 96 rows inserted
+2025-12-06 01:38:39,513 - __main__ - INFO - ✓ [83/215] 2025-07-22 → 96 rows inserted
+2025-12-06 01:38:39,826 - __main__ - INFO - ✓ [84/215] 2025-07-23 → 96 rows inserted
+2025-12-06 01:38:40,125 - __main__ - INFO - ✓ [85/215] 2025-07-24 → 96 rows inserted
+2025-12-06 01:38:40,406 - __main__ - INFO - ✓ [86/215] 2025-07-25 → 96 rows inserted
+2025-12-06 01:38:40,660 - __main__ - INFO - ✓ [87/215] 2025-07-26 → 96 rows inserted
+2025-12-06 01:38:40,933 - __main__ - INFO - ✓ [88/215] 2025-07-27 → 96 rows inserted
+2025-12-06 01:38:41,230 - __main__ - INFO - ✓ [89/215] 2025-07-28 → 96 rows inserted
+2025-12-06 01:38:41,230 - __main__ - INFO - Progress: 90/215 (41.9%) | Rate: 3.5 days/sec | ETA: 0.6 min
+2025-12-06 01:38:41,525 - __main__ - INFO - ✓ [90/215] 2025-07-29 → 96 rows inserted
+2025-12-06 01:38:41,851 - __main__ - INFO - ✓ [91/215] 2025-07-30 → 96 rows inserted
+2025-12-06 01:38:42,151 - __main__ - INFO - ✓ [92/215] 2025-07-31 → 96 rows inserted
+2025-12-06 01:38:42,465 - __main__ - INFO - ✓ [93/215] 2025-08-01 → 96 rows inserted
+2025-12-06 01:38:42,748 - __main__ - INFO - ✓ [94/215] 2025-08-02 → 96 rows inserted
+2025-12-06 01:38:43,028 - __main__ - INFO - ✓ [95/215] 2025-08-03 → 96 rows inserted
+2025-12-06 01:38:43,316 - __main__ - INFO - ✓ [96/215] 2025-08-04 → 96 rows inserted
+2025-12-06 01:38:43,614 - __main__ - INFO - ✓ [97/215] 2025-08-05 → 96 rows inserted
+2025-12-06 01:38:43,923 - __main__ - INFO - ✓ [98/215] 2025-08-06 → 96 rows inserted
+2025-12-06 01:38:44,213 - __main__ - INFO - ✓ [99/215] 2025-08-07 → 96 rows inserted
+2025-12-06 01:38:44,213 - __main__ - INFO - Progress: 100/215 (46.5%) | Rate: 3.5 days/sec | ETA: 0.5 min
+2025-12-06 01:38:44,502 - __main__ - INFO - ✓ [100/215] 2025-08-08 → 96 rows inserted
+2025-12-06 01:38:44,816 - __main__ - INFO - ✓ [101/215] 2025-08-09 → 96 rows inserted
+2025-12-06 01:38:45,074 - __main__ - INFO - ✓ [102/215] 2025-08-10 → 96 rows inserted
+2025-12-06 01:38:45,331 - __main__ - INFO - ✓ [103/215] 2025-08-11 → 96 rows inserted
+2025-12-06 01:38:45,615 - __main__ - INFO - ✓ [104/215] 2025-08-12 → 96 rows inserted
+2025-12-06 01:38:45,924 - __main__ - INFO - ✓ [105/215] 2025-08-13 → 96 rows inserted
+2025-12-06 01:38:46,230 - __main__ - INFO - ✓ [106/215] 2025-08-14 → 96 rows inserted
+2025-12-06 01:38:46,513 - __main__ - INFO - ✓ [107/215] 2025-08-15 → 96 rows inserted
+2025-12-06 01:38:46,828 - __main__ - INFO - ✓ [108/215] 2025-08-16 → 96 rows inserted
+2025-12-06 01:38:47,111 - __main__ - INFO - ✓ [109/215] 2025-08-17 → 96 rows inserted
+2025-12-06 01:38:47,111 - __main__ - INFO - Progress: 110/215 (51.2%) | Rate: 3.5 days/sec | ETA: 0.5 min
+2025-12-06 01:38:47,404 - __main__ - INFO - ✓ [110/215] 2025-08-18 → 96 rows inserted
+2025-12-06 01:38:47,707 - __main__ - INFO - ✓ [111/215] 2025-08-19 → 96 rows inserted
+2025-12-06 01:38:48,033 - __main__ - INFO - ✓ [112/215] 2025-08-20 → 96 rows inserted
+2025-12-06 01:38:48,326 - __main__ - INFO - ✓ [113/215] 2025-08-21 → 96 rows inserted
+2025-12-06 01:38:48,604 - __main__ - INFO - ✓ [114/215] 2025-08-22 → 96 rows inserted
+2025-12-06 01:38:48,859 - __main__ - INFO - ✓ [115/215] 2025-08-23 → 96 rows inserted
+2025-12-06 01:38:49,194 - __main__ - INFO - ✓ [116/215] 2025-08-24 → 96 rows inserted
+2025-12-06 01:38:49,454 - __main__ - INFO - ✓ [117/215] 2025-08-25 → 96 rows inserted
+2025-12-06 01:38:49,753 - __main__ - INFO - ✓ [118/215] 2025-08-26 → 96 rows inserted
+2025-12-06 01:38:50,075 - __main__ - INFO - ✓ [119/215] 2025-08-27 → 96 rows inserted
+2025-12-06 01:38:50,075 - __main__ - INFO - Progress: 120/215 (55.8%) | Rate: 3.5 days/sec | ETA: 0.5 min
+2025-12-06 01:38:50,338 - __main__ - INFO - ✓ [120/215] 2025-08-28 → 96 rows inserted
+2025-12-06 01:38:50,625 - __main__ - INFO - ✓ [121/215] 2025-08-29 → 96 rows inserted
+2025-12-06 01:38:50,919 - __main__ - INFO - ✓ [122/215] 2025-08-30 → 96 rows inserted
+2025-12-06 01:38:51,223 - __main__ - INFO - ✓ [123/215] 2025-08-31 → 96 rows inserted
+2025-12-06 01:38:51,501 - __main__ - INFO - ✓ [124/215] 2025-09-01 → 96 rows inserted
+2025-12-06 01:38:51,837 - __main__ - INFO - ✓ [125/215] 2025-09-02 → 96 rows inserted
+2025-12-06 01:38:52,132 - __main__ - INFO - ✓ [126/215] 2025-09-03 → 96 rows inserted
+2025-12-06 01:38:52,395 - __main__ - INFO - ✓ [127/215] 2025-09-04 → 96 rows inserted
+2025-12-06 01:38:52,699 - __main__ - INFO - ✓ [128/215] 2025-09-05 → 96 rows inserted
+2025-12-06 01:38:52,945 - __main__ - INFO - ✓ [129/215] 2025-09-06 → 96 rows inserted
+2025-12-06 01:38:52,945 - __main__ - INFO - Progress: 130/215 (60.5%) | Rate: 3.5 days/sec | ETA: 0.4 min
+2025-12-06 01:38:53,229 - __main__ - INFO - ✓ [130/215] 2025-09-07 → 96 rows inserted
+2025-12-06 01:38:53,507 - __main__ - INFO - ✓ [131/215] 2025-09-08 → 96 rows inserted
+2025-12-06 01:38:53,753 - __main__ - INFO - ✓ [132/215] 2025-09-09 → 96 rows inserted
+2025-12-06 01:38:54,083 - __main__ - INFO - ✓ [133/215] 2025-09-10 → 96 rows inserted
+2025-12-06 01:38:54,330 - __main__ - INFO - ✓ [134/215] 2025-09-11 → 96 rows inserted
+2025-12-06 01:38:54,632 - __main__ - INFO - ✓ [135/215] 2025-09-12 → 96 rows inserted
+2025-12-06 01:38:54,899 - __main__ - INFO - ✓ [136/215] 2025-09-13 → 96 rows inserted
+2025-12-06 01:38:55,162 - __main__ - INFO - ✓ [137/215] 2025-09-14 → 96 rows inserted
+2025-12-06 01:38:55,445 - __main__ - INFO - ✓ [138/215] 2025-09-15 → 96 rows inserted
+2025-12-06 01:38:55,723 - __main__ - INFO - ✓ [139/215] 2025-09-16 → 96 rows inserted
+2025-12-06 01:38:55,723 - __main__ - INFO - Progress: 140/215 (65.1%) | Rate: 3.5 days/sec | ETA: 0.4 min
+2025-12-06 01:38:56,025 - __main__ - INFO - ✓ [140/215] 2025-09-17 → 96 rows inserted
+2025-12-06 01:38:56,304 - __main__ - INFO - ✓ [141/215] 2025-09-18 → 96 rows inserted
+2025-12-06 01:38:56,568 - __main__ - INFO - ✓ [142/215] 2025-09-19 → 96 rows inserted
+2025-12-06 01:38:56,838 - __main__ - INFO - ✓ [143/215] 2025-09-20 → 96 rows inserted
+2025-12-06 01:38:57,103 - __main__ - INFO - ✓ [144/215] 2025-09-21 → 96 rows inserted
+2025-12-06 01:38:57,381 - __main__ - INFO - ✓ [145/215] 2025-09-22 → 96 rows inserted
+2025-12-06 01:38:57,626 - __main__ - INFO - ✓ [146/215] 2025-09-23 → 96 rows inserted
+2025-12-06 01:38:57,943 - __main__ - INFO - ✓ [147/215] 2025-09-24 → 96 rows inserted
+2025-12-06 01:38:58,213 - __main__ - INFO - ✓ [148/215] 2025-09-25 → 96 rows inserted
+2025-12-06 01:38:58,506 - __main__ - INFO - ✓ [149/215] 2025-09-26 → 96 rows inserted
+2025-12-06 01:38:58,506 - __main__ - INFO - Progress: 150/215 (69.8%) | Rate: 3.5 days/sec | ETA: 0.3 min
+2025-12-06 01:38:58,793 - __main__ - INFO - ✓ [150/215] 2025-09-27 → 96 rows inserted
+2025-12-06 01:38:59,083 - __main__ - INFO - ✓ [151/215] 2025-09-28 → 96 rows inserted
+2025-12-06 01:38:59,340 - __main__ - INFO - ✓ [152/215] 2025-09-29 → 96 rows inserted
+2025-12-06 01:38:59,611 - __main__ - INFO - ✓ [153/215] 2025-09-30 → 96 rows inserted
+2025-12-06 01:38:59,889 - __main__ - INFO - ✓ [154/215] 2025-10-01 → 96 rows inserted
+2025-12-06 01:39:00,140 - __main__ - INFO - ✓ [155/215] 2025-10-02 → 96 rows inserted
+2025-12-06 01:39:00,398 - __main__ - INFO - ✓ [156/215] 2025-10-03 → 96 rows inserted
+2025-12-06 01:39:00,647 - __main__ - INFO - ✓ [157/215] 2025-10-04 → 96 rows inserted
+2025-12-06 01:39:00,977 - __main__ - INFO - ✓ [158/215] 2025-10-05 → 96 rows inserted
+2025-12-06 01:39:01,264 - __main__ - INFO - ✓ [159/215] 2025-10-06 → 96 rows inserted
+2025-12-06 01:39:01,264 - __main__ - INFO - Progress: 160/215 (74.4%) | Rate: 3.5 days/sec | ETA: 0.3 min
+2025-12-06 01:39:01,531 - __main__ - INFO - ✓ [160/215] 2025-10-07 → 96 rows inserted
+2025-12-06 01:39:01,820 - __main__ - INFO - ✓ [161/215] 2025-10-08 → 96 rows inserted
+2025-12-06 01:39:02,099 - __main__ - INFO - ✓ [162/215] 2025-10-09 → 96 rows inserted
+2025-12-06 01:39:02,355 - __main__ - INFO - ✓ [163/215] 2025-10-10 → 96 rows inserted
+2025-12-06 01:39:02,673 - __main__ - INFO - ✓ [164/215] 2025-10-11 → 96 rows inserted
+2025-12-06 01:39:02,921 - __main__ - INFO - ✓ [165/215] 2025-10-12 → 96 rows inserted
+2025-12-06 01:39:03,252 - __main__ - INFO - ✓ [166/215] 2025-10-13 → 96 rows inserted
+2025-12-06 01:39:03,527 - __main__ - INFO - ✓ [167/215] 2025-10-14 → 96 rows inserted
+2025-12-06 01:39:03,795 - __main__ - INFO - ✓ [168/215] 2025-10-15 → 96 rows inserted
+2025-12-06 01:39:04,039 - __main__ - INFO - ✓ [169/215] 2025-10-16 → 96 rows inserted
+2025-12-06 01:39:04,039 - __main__ - INFO - Progress: 170/215 (79.1%) | Rate: 3.5 days/sec | ETA: 0.2 min
+2025-12-06 01:39:04,342 - __main__ - INFO - ✓ [170/215] 2025-10-17 → 96 rows inserted
+2025-12-06 01:39:04,612 - __main__ - INFO - ✓ [171/215] 2025-10-18 → 96 rows inserted
+2025-12-06 01:39:04,904 - __main__ - INFO - ✓ [172/215] 2025-10-19 → 96 rows inserted
+2025-12-06 01:39:05,169 - __main__ - INFO - ✓ [173/215] 2025-10-20 → 96 rows inserted
+2025-12-06 01:39:05,496 - __main__ - INFO - ✓ [174/215] 2025-10-21 → 96 rows inserted
+2025-12-06 01:39:05,779 - __main__ - INFO - ✓ [175/215] 2025-10-22 → 96 rows inserted
+2025-12-06 01:39:06,045 - __main__ - INFO - ✓ [176/215] 2025-10-23 → 96 rows inserted
+2025-12-06 01:39:06,343 - __main__ - INFO - ✓ [177/215] 2025-10-24 → 96 rows inserted
+2025-12-06 01:39:06,622 - __main__ - INFO - ✓ [178/215] 2025-10-25 → 96 rows inserted
+2025-12-06 01:39:06,909 - __main__ - INFO - ✓ [179/215] 2025-10-26 → 96 rows inserted
+2025-12-06 01:39:06,909 - __main__ - INFO - Progress: 180/215 (83.7%) | Rate: 3.5 days/sec | ETA: 0.2 min
+2025-12-06 01:39:07,161 - __main__ - INFO - ✓ [180/215] 2025-10-27 → 96 rows inserted
+2025-12-06 01:39:07,416 - __main__ - INFO - ✓ [181/215] 2025-10-28 → 96 rows inserted
+2025-12-06 01:39:07,738 - __main__ - INFO - ✓ [182/215] 2025-10-29 → 96 rows inserted
+2025-12-06 01:39:08,055 - __main__ - INFO - ✓ [183/215] 2025-10-30 → 96 rows inserted
+2025-12-06 01:39:08,476 - __main__ - INFO - ✓ [184/215] 2025-10-31 → 96 rows inserted
+2025-12-06 01:39:08,749 - __main__ - INFO - ✓ [185/215] 2025-11-01 → 96 rows inserted
+2025-12-06 01:39:09,226 - __main__ - INFO - ✓ [186/215] 2025-11-02 → 100 rows inserted
+2025-12-06 01:39:09,523 - __main__ - INFO - ✓ [187/215] 2025-11-03 → 96 rows inserted
+2025-12-06 01:39:09,784 - __main__ - INFO - ✓ [188/215] 2025-11-04 → 96 rows inserted
+2025-12-06 01:39:10,080 - __main__ - INFO - ✓ [189/215] 2025-11-05 → 96 rows inserted
+2025-12-06 01:39:10,080 - __main__ - INFO - Progress: 190/215 (88.4%) | Rate: 3.5 days/sec | ETA: 0.1 min
+2025-12-06 01:39:10,385 - __main__ - INFO - ✓ [190/215] 2025-11-06 → 96 rows inserted
+2025-12-06 01:39:10,780 - __main__ - INFO - ✓ [191/215] 2025-11-07 → 96 rows inserted
+2025-12-06 01:39:11,054 - __main__ - INFO - ✓ [192/215] 2025-11-08 → 96 rows inserted
+2025-12-06 01:39:11,304 - __main__ - INFO - ✓ [193/215] 2025-11-09 → 96 rows inserted
+2025-12-06 01:39:11,557 - __main__ - INFO - ✓ [194/215] 2025-11-10 → 96 rows inserted
+2025-12-06 01:39:11,826 - __main__ - INFO - ✓ [195/215] 2025-11-11 → 96 rows inserted
+2025-12-06 01:39:12,164 - __main__ - INFO - ✓ [196/215] 2025-11-12 → 96 rows inserted
+2025-12-06 01:39:12,444 - __main__ - INFO - ✓ [197/215] 2025-11-13 → 96 rows inserted
+2025-12-06 01:39:12,739 - __main__ - INFO - ✓ [198/215] 2025-11-14 → 96 rows inserted
+2025-12-06 01:39:13,026 - __main__ - INFO - ✓ [199/215] 2025-11-15 → 96 rows inserted
+2025-12-06 01:39:13,026 - __main__ - INFO - Progress: 200/215 (93.0%) | Rate: 3.5 days/sec | ETA: 0.1 min
+2025-12-06 01:39:13,346 - __main__ - INFO - ✓ [200/215] 2025-11-16 → 96 rows inserted
+2025-12-06 01:39:13,603 - __main__ - INFO - ✓ [201/215] 2025-11-17 → 96 rows inserted
+2025-12-06 01:39:13,849 - __main__ - INFO - ✓ [202/215] 2025-11-18 → 96 rows inserted
+2025-12-06 01:39:14,120 - __main__ - INFO - ✓ [203/215] 2025-11-19 → 96 rows inserted
+2025-12-06 01:39:14,407 - __main__ - INFO - ✓ [204/215] 2025-11-20 → 96 rows inserted
+2025-12-06 01:39:14,669 - __main__ - INFO - ✓ [205/215] 2025-11-21 → 96 rows inserted
+2025-12-06 01:39:14,923 - __main__ - INFO - ✓ [206/215] 2025-11-22 → 96 rows inserted
+2025-12-06 01:39:15,176 - __main__ - INFO - ✓ [207/215] 2025-11-23 → 96 rows inserted
+2025-12-06 01:39:15,465 - __main__ - INFO - ✓ [208/215] 2025-11-24 → 96 rows inserted
+2025-12-06 01:39:15,720 - __main__ - INFO - ✓ [209/215] 2025-11-25 → 96 rows inserted
+2025-12-06 01:39:15,720 - __main__ - INFO - Progress: 210/215 (97.7%) | Rate: 3.5 days/sec | ETA: 0.0 min
+2025-12-06 01:39:15,979 - __main__ - INFO - ✓ [210/215] 2025-11-26 → 96 rows inserted
+2025-12-06 01:39:16,240 - __main__ - INFO - ✓ [211/215] 2025-11-27 → 96 rows inserted
+2025-12-06 01:39:16,382 - __main__ - ERROR - Client error (400): 400 Client Error:  for url: https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/Austin,TX/2025-11-28/2025-11-28?key=3US3VRK96ZFG6HYUGYQ8249S9&unitGroup=us&include=fcst%2Cminutes&forecastBasisDate=2025-11-27&options=minuteinterval_15%2Cstnslevel1%2Cusefcst&elements=datetime%2CdatetimeEpoch%2Ctemp%2Chumidity%2Cdew%2Ccloudcover%2Cwindspeed%2Cwindgust%2Cpressure%2Cvisibility%2Cconditions&contentType=json
+2025-12-06 01:39:16,382 - __main__ - ERROR - [212/215] FAILED to fetch 2025-11-28 (basis=2025-11-27): 400 Client Error:  for url: https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/Austin,TX/2025-11-28/2025-11-28?key=3US3VRK96ZFG6HYUGYQ8249S9&unitGroup=us&include=fcst%2Cminutes&forecastBasisDate=2025-11-27&options=minuteinterval_15%2Cstnslevel1%2Cusefcst&elements=datetime%2CdatetimeEpoch%2Ctemp%2Chumidity%2Cdew%2Ccloudcover%2Cwindspeed%2Cwindgust%2Cpressure%2Cvisibility%2Cconditions&contentType=json
+2025-12-06 01:39:16,663 - __main__ - INFO - ✓ [213/215] 2025-11-29 → 96 rows inserted
+2025-12-06 01:39:16,904 - __main__ - INFO - ✓ [214/215] 2025-11-30 → 96 rows inserted
+2025-12-06 01:39:17,174 - __main__ - INFO - ✓ [215/215] 2025-12-01 → 96 rows inserted
+2025-12-06 01:39:17,174 - __main__ - INFO - 
+2025-12-06 01:39:17,174 - __main__ - INFO - ================================================================================
+2025-12-06 01:39:17,174 - __main__ - INFO - BACKFILL COMPLETE
+2025-12-06 01:39:17,174 - __main__ - INFO - ================================================================================
+2025-12-06 01:39:17,174 - __main__ - INFO - Processed: 215 days in 1.0 minutes
+2025-12-06 01:39:17,174 - __main__ - INFO - Total rows: 20548
+2025-12-06 01:39:17,174 - __main__ - INFO - Success rate: 99.5%
+2025-12-06 01:39:17,174 - __main__ - WARNING - Failed dates (1):
+2025-12-06 01:39:17,174 - __main__ - WARNING -   - 2025-11-28: 400 Client Error:  for url: https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/Austin,TX/2025-11-28/2025-11-28?key=3US3VRK96ZFG6HYUGYQ8249S9&unitGroup=us&include=fcst%2Cminutes&forecastBasisDate=2025-11-27&options=minuteinterval_15%2Cstnslevel1%2Cusefcst&elements=datetime%2CdatetimeEpoch%2Ctemp%2Chumidity%2Cdew%2Ccloudcover%2Cwindspeed%2Cwindgust%2Cpressure%2Cvisibility%2Cconditions&contentType=json
+2025-12-06 01:39:17,174 - __main__ - INFO - Log file: /home/halsted/Documents/python/weather_updated/logs/vc_backfill_austin_20251206_013815.log

@@ -1,0 +1,523 @@
+21:11:55 [INFO] __main__: ============================================================
+21:11:55 [INFO] __main__: DENVER Optuna Training (1 trials)
+21:11:55 [INFO] __main__: ============================================================
+21:11:55 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:11:55 [INFO] __main__: Available data: 2023-01-01 to 2025-11-27
+21:11:55 [INFO] __main__: Total days: 1062
+21:11:55 [INFO] __main__: Training: 2023-01-01 to 2025-04-28 (850 days)
+21:11:55 [INFO] __main__: Testing:  2025-04-29 to 2025-11-27 (212 days)
+21:11:55 [INFO] __main__: 
+Building training dataset...
+21:11:55 [INFO] __main__: Building dataset for denver: 2023-01-01 to 2025-04-28 (849 days)
+21:11:55 [INFO] __main__: Using 14 parallel workers
+21:11:55 [INFO] __main__: include_station_city=True
+21:11:55 [INFO] __main__: Split into 29 chunks
+21:11:55 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:11:55 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:11:55 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:11:55 [INFO] models.data.dataset: Building dataset for denver...
+21:11:55 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:11:55 [INFO] models.data.dataset: Building dataset for denver...
+21:11:55 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:11:55 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:11:55 [INFO] models.data.dataset: Building dataset for denver...
+21:11:55 [INFO] models.data.dataset: Building dataset for denver...
+21:11:55 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:11:55 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:11:55 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:11:55 [INFO] models.data.dataset: Building dataset for denver...
+21:11:55 [INFO] models.data.dataset: Building dataset for denver...
+21:11:55 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:11:55 [INFO] models.data.dataset: Building dataset for denver...
+21:11:55 [INFO] models.data.dataset: Building dataset for denver...
+21:11:55 [INFO] models.data.dataset: Building dataset for denver...
+21:11:55 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:11:55 [INFO] models.data.dataset: Building dataset for denver...
+21:11:55 [INFO] models.data.dataset: Building dataset for denver...
+21:11:55 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:11:55 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:11:55 [INFO] models.data.dataset: Building dataset for denver...
+21:11:55 [INFO] models.data.dataset: Building dataset for denver...
+21:11:55 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:11:55 [INFO] models.data.dataset: Building dataset for denver...
+21:11:55 [INFO] models.data.loader: Loaded 30 settlement records for denver from 2023-04-01 to 2023-04-30
+21:11:55 [INFO] models.data.loader: Loaded 30 settlement records for denver from 2023-05-01 to 2023-05-30
+21:11:55 [INFO] models.data.loader: Loaded 30 settlement records for denver from 2023-05-31 to 2023-06-29
+21:11:55 [INFO] models.data.loader: Loaded 30 settlement records for denver from 2023-01-01 to 2023-01-30
+21:11:55 [INFO] models.data.loader: Loaded 30 settlement records for denver from 2023-01-31 to 2023-03-01
+21:11:55 [INFO] models.data.loader: Loaded 30 settlement records for denver from 2023-06-30 to 2023-07-29
+21:11:55 [INFO] models.data.loader: Loaded 30 settlement records for denver from 2023-08-29 to 2023-09-27
+21:11:55 [INFO] models.data.loader: Loaded 30 settlement records for denver from 2023-09-28 to 2023-10-27
+21:11:55 [INFO] models.data.loader: Loaded 30 settlement records for denver from 2023-03-02 to 2023-03-31
+21:11:55 [INFO] models.data.loader: Loaded 30 settlement records for denver from 2023-07-30 to 2023-08-28
+21:11:55 [INFO] models.data.loader: Loaded 30 settlement records for denver from 2023-12-27 to 2024-01-25
+21:11:55 [INFO] models.data.loader: Loaded 30 settlement records for denver from 2023-10-28 to 2023-11-26
+21:11:55 [INFO] models.data.loader: Loaded 30 settlement records for denver from 2023-11-27 to 2023-12-26
+21:11:55 [INFO] models.data.loader: Loaded 30 settlement records for denver from 2024-01-26 to 2024-02-24
+21:11:56 [INFO] models.data.loader: Loaded 8724 VC observations for denver from 2022-12-31 to 2023-01-30
+21:11:56 [INFO] models.data.loader: Loaded 8928 VC observations for denver from 2023-12-26 to 2024-01-25
+21:11:56 [INFO] models.data.loader: Loaded 8916 VC observations for denver from 2023-03-01 to 2023-03-31
+21:11:56 [INFO] models.data.loader: Loaded 8928 VC observations for denver from 2023-11-26 to 2023-12-26
+21:11:56 [INFO] models.data.loader: Loaded 8928 VC observations for denver from 2023-07-29 to 2023-08-28
+21:11:56 [INFO] models.data.loader: Loaded 8928 VC observations for denver from 2023-01-30 to 2023-03-01
+21:11:56 [INFO] models.data.loader: Loaded 8928 VC observations for denver from 2023-08-28 to 2023-09-27
+21:11:56 [INFO] models.data.loader: Loaded 8928 VC observations for denver from 2023-09-27 to 2023-10-27
+21:11:56 [INFO] models.data.loader: Loaded 8928 VC observations for denver from 2023-03-31 to 2023-04-30
+21:11:56 [INFO] models.data.loader: Loaded 8928 VC observations for denver from 2023-06-29 to 2023-07-29
+21:11:56 [INFO] models.data.loader: Loaded 8940 VC observations for denver from 2023-10-27 to 2023-11-26
+21:11:56 [INFO] models.data.loader: Loaded 8928 VC observations for denver from 2023-05-30 to 2023-06-29
+21:11:56 [INFO] models.data.loader: Loaded 8928 VC observations for denver from 2023-04-30 to 2023-05-30
+21:11:56 [INFO] models.data.loader: Loaded 8928 VC observations for denver from 2024-01-25 to 2024-02-24
+21:17:25 [INFO] models.data.dataset: Built 13596 snapshots total
+21:17:25 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:17:25 [INFO] models.data.dataset: Building dataset for denver...
+21:17:25 [INFO] __main__: Chunk 1/29: 2023-01-01 to 2023-01-30, 13,596 rows, 30 days
+21:17:25 [INFO] models.data.loader: Loaded 30 settlement records for denver from 2024-02-25 to 2024-03-25
+21:17:26 [INFO] models.data.loader: Loaded 8916 VC observations for denver from 2024-02-24 to 2024-03-25
+21:17:31 [INFO] models.data.dataset: Built 13680 snapshots total
+21:17:31 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:17:31 [INFO] models.data.dataset: Building dataset for denver...
+21:17:31 [INFO] __main__: Chunk 2/29: 2023-12-27 to 2024-01-25, 13,680 rows, 30 days
+21:17:31 [INFO] models.data.loader: Loaded 30 settlement records for denver from 2024-03-26 to 2024-04-24
+21:17:31 [INFO] models.data.loader: Loaded 8928 VC observations for denver from 2024-03-25 to 2024-04-24
+21:17:32 [INFO] models.data.dataset: Built 13680 snapshots total
+21:17:32 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:17:32 [INFO] models.data.dataset: Building dataset for denver...
+21:17:32 [INFO] __main__: Chunk 3/29: 2023-06-30 to 2023-07-29, 13,680 rows, 30 days
+21:17:32 [INFO] models.data.loader: Loaded 30 settlement records for denver from 2024-04-25 to 2024-05-24
+21:17:33 [INFO] models.data.dataset: Built 13680 snapshots total
+21:17:33 [INFO] models.data.loader: Loaded 8928 VC observations for denver from 2024-04-24 to 2024-05-24
+21:17:33 [INFO] models.data.dataset: Built 13680 snapshots total
+21:17:33 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:17:33 [INFO] models.data.dataset: Building dataset for denver...
+21:17:33 [INFO] __main__: Chunk 4/29: 2023-08-29 to 2023-09-27, 13,680 rows, 30 days
+21:17:33 [INFO] models.data.loader: Loaded 30 settlement records for denver from 2024-05-25 to 2024-06-23
+21:17:33 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:17:33 [INFO] models.data.dataset: Building dataset for denver...
+21:17:33 [INFO] __main__: Chunk 5/29: 2023-05-31 to 2023-06-29, 13,680 rows, 30 days
+21:17:33 [INFO] models.data.loader: Loaded 30 settlement records for denver from 2024-06-24 to 2024-07-23
+21:17:34 [INFO] models.data.loader: Loaded 8928 VC observations for denver from 2024-05-24 to 2024-06-23
+21:17:34 [INFO] models.data.dataset: Built 13680 snapshots total
+21:17:34 [INFO] models.data.loader: Loaded 8928 VC observations for denver from 2024-06-23 to 2024-07-23
+21:17:34 [INFO] models.data.dataset: Built 13680 snapshots total
+21:17:34 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:17:34 [INFO] models.data.dataset: Building dataset for denver...
+21:17:34 [INFO] __main__: Chunk 6/29: 2023-10-28 to 2023-11-26, 13,680 rows, 30 days
+21:17:34 [INFO] models.data.loader: Loaded 30 settlement records for denver from 2024-07-24 to 2024-08-22
+21:17:35 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:17:35 [INFO] models.data.dataset: Building dataset for denver...
+21:17:35 [INFO] __main__: Chunk 7/29: 2023-07-30 to 2023-08-28, 13,680 rows, 30 days
+21:17:35 [INFO] models.data.loader: Loaded 30 settlement records for denver from 2024-08-23 to 2024-09-21
+21:17:35 [INFO] models.data.loader: Loaded 8928 VC observations for denver from 2024-07-23 to 2024-08-22
+21:17:35 [INFO] models.data.loader: Loaded 8928 VC observations for denver from 2024-08-22 to 2024-09-21
+21:17:36 [INFO] models.data.dataset: Built 13680 snapshots total
+21:17:36 [INFO] __main__: Chunk 8/29: 2023-01-31 to 2023-03-01, 13,680 rows, 30 days
+21:17:36 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:17:36 [INFO] models.data.dataset: Building dataset for denver...
+21:17:36 [INFO] models.data.loader: Loaded 30 settlement records for denver from 2024-09-22 to 2024-10-21
+21:17:36 [INFO] models.data.dataset: Built 13680 snapshots total
+21:17:36 [INFO] models.data.loader: Loaded 8928 VC observations for denver from 2024-09-21 to 2024-10-21
+21:17:36 [INFO] __main__: Chunk 9/29: 2023-03-02 to 2023-03-31, 13,680 rows, 30 days
+21:17:36 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:17:36 [INFO] models.data.dataset: Building dataset for denver...
+21:17:36 [INFO] models.data.loader: Loaded 30 settlement records for denver from 2024-10-22 to 2024-11-20
+21:17:37 [INFO] models.data.loader: Loaded 8940 VC observations for denver from 2024-10-21 to 2024-11-20
+21:17:37 [INFO] models.data.dataset: Built 13680 snapshots total
+21:17:38 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:17:38 [INFO] models.data.dataset: Building dataset for denver...
+21:17:38 [INFO] __main__: Chunk 10/29: 2023-04-01 to 2023-04-30, 13,680 rows, 30 days
+21:17:38 [INFO] models.data.loader: Loaded 30 settlement records for denver from 2024-11-21 to 2024-12-20
+21:17:38 [INFO] models.data.dataset: Built 13680 snapshots total
+21:17:38 [INFO] models.data.dataset: Built 13680 snapshots total
+21:17:38 [INFO] models.data.loader: Loaded 8928 VC observations for denver from 2024-11-20 to 2024-12-20
+21:17:39 [INFO] __main__: Chunk 11/29: 2024-01-26 to 2024-02-24, 13,680 rows, 30 days
+21:17:39 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:17:39 [INFO] models.data.dataset: Building dataset for denver...
+21:17:39 [INFO] models.data.loader: Loaded 30 settlement records for denver from 2024-12-21 to 2025-01-19
+21:17:39 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:17:39 [INFO] models.data.dataset: Building dataset for denver...
+21:17:39 [INFO] __main__: Chunk 12/29: 2023-05-01 to 2023-05-30, 13,680 rows, 30 days
+21:17:39 [INFO] models.data.loader: Loaded 30 settlement records for denver from 2025-01-20 to 2025-02-18
+21:17:39 [INFO] models.data.dataset: Built 13680 snapshots total
+21:17:39 [INFO] models.data.dataset: Built 13680 snapshots total
+21:17:39 [INFO] models.data.loader: Loaded 8928 VC observations for denver from 2024-12-20 to 2025-01-19
+21:17:39 [INFO] models.data.loader: Loaded 8928 VC observations for denver from 2025-01-19 to 2025-02-18
+21:17:39 [INFO] __main__: Chunk 13/29: 2023-09-28 to 2023-10-27, 13,680 rows, 30 days
+21:17:39 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:17:39 [INFO] models.data.dataset: Building dataset for denver...
+21:17:39 [INFO] models.data.loader: Loaded 30 settlement records for denver from 2025-02-19 to 2025-03-20
+21:17:39 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:17:39 [INFO] models.data.dataset: Building dataset for denver...
+21:17:39 [INFO] __main__: Chunk 14/29: 2023-11-27 to 2023-12-26, 13,680 rows, 30 days
+21:17:39 [INFO] models.data.loader: Loaded 30 settlement records for denver from 2025-03-21 to 2025-04-19
+21:17:40 [INFO] models.data.loader: Loaded 8916 VC observations for denver from 2025-02-18 to 2025-03-20
+21:17:40 [INFO] models.data.loader: Loaded 8928 VC observations for denver from 2025-03-20 to 2025-04-19
+21:23:01 [INFO] models.data.dataset: Built 13680 snapshots total
+21:23:02 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:23:02 [INFO] models.data.dataset: Building dataset for denver...
+21:23:02 [INFO] __main__: Chunk 15/29: 2024-02-25 to 2024-03-25, 13,680 rows, 30 days
+21:23:02 [INFO] models.data.loader: Loaded 9 settlement records for denver from 2025-04-20 to 2025-04-28
+21:23:02 [INFO] models.data.loader: Loaded 2880 VC observations for denver from 2025-04-19 to 2025-04-28
+21:23:07 [INFO] models.data.dataset: Built 13680 snapshots total
+21:23:08 [INFO] __main__: Chunk 16/29: 2024-03-26 to 2024-04-24, 13,680 rows, 30 days
+21:23:08 [INFO] models.data.dataset: Built 13680 snapshots total
+21:23:08 [INFO] __main__: Chunk 17/29: 2024-04-25 to 2024-05-24, 13,680 rows, 30 days
+21:23:08 [INFO] models.data.dataset: Built 13680 snapshots total
+21:23:09 [INFO] models.data.dataset: Built 13680 snapshots total
+21:23:09 [INFO] __main__: Chunk 18/29: 2024-05-25 to 2024-06-23, 13,680 rows, 30 days
+21:23:09 [INFO] models.data.dataset: Built 13680 snapshots total
+21:23:09 [INFO] __main__: Chunk 19/29: 2024-06-24 to 2024-07-23, 13,680 rows, 30 days
+21:23:09 [INFO] __main__: Chunk 20/29: 2024-08-23 to 2024-09-21, 13,680 rows, 30 days
+21:23:10 [INFO] models.data.dataset: Built 13680 snapshots total
+21:23:11 [INFO] __main__: Chunk 21/29: 2024-07-24 to 2024-08-22, 13,680 rows, 30 days
+21:23:12 [INFO] models.data.dataset: Built 13680 snapshots total
+21:23:13 [INFO] __main__: Chunk 22/29: 2024-09-22 to 2024-10-21, 13,680 rows, 30 days
+21:23:14 [INFO] models.data.dataset: Built 13680 snapshots total
+21:23:15 [INFO] __main__: Chunk 23/29: 2024-10-22 to 2024-11-20, 13,680 rows, 30 days
+21:23:51 [INFO] models.data.dataset: Built 13680 snapshots total
+21:23:52 [INFO] __main__: Chunk 24/29: 2024-12-21 to 2025-01-19, 13,680 rows, 30 days
+21:23:53 [INFO] models.data.dataset: Built 13680 snapshots total
+21:23:54 [INFO] __main__: Chunk 25/29: 2024-11-21 to 2024-12-20, 13,680 rows, 30 days
+21:23:56 [INFO] models.data.dataset: Built 13680 snapshots total
+21:23:56 [INFO] __main__: Chunk 26/29: 2025-02-19 to 2025-03-20, 13,680 rows, 30 days
+21:23:58 [INFO] models.data.dataset: Built 13680 snapshots total
+21:23:58 [INFO] models.data.dataset: Built 13680 snapshots total
+21:23:58 [INFO] __main__: Chunk 27/29: 2025-01-20 to 2025-02-18, 13,680 rows, 30 days
+21:23:58 [INFO] __main__: Chunk 28/29: 2025-03-21 to 2025-04-19, 13,680 rows, 30 days
+21:24:35 [INFO] models.data.dataset: Built 4104 snapshots total
+21:24:36 [INFO] __main__: Chunk 29/29: 2025-04-20 to 2025-04-28, 4,104 rows, 9 days
+21:24:36 [INFO] __main__: All chunks completed in 760.4s
+/home/halsted/Documents/python/weather_updated/scripts/train_city_ordinal_optuna.py:188: FutureWarning: The behavior of DataFrame concatenation with empty or all-NA entries is deprecated. In a future version, this will no longer exclude empty or all-NA columns when determining the result dtypes. To retain the old behavior, exclude the relevant entries before the concat operation.
+  df_combined = pd.concat(dfs, ignore_index=True)
+21:24:38 [INFO] __main__: Combined dataset: 387,060 rows, 849 days
+21:24:38 [INFO] __main__: 
+Building test dataset...
+21:24:38 [INFO] __main__: Building dataset for denver: 2025-04-29 to 2025-11-27 (213 days)
+21:24:38 [INFO] __main__: Using 12 parallel workers
+21:24:38 [INFO] __main__: include_station_city=True
+21:24:38 [INFO] __main__: Split into 27 chunks
+21:24:39 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:24:39 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:24:39 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:24:39 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:24:39 [INFO] models.data.dataset: Building dataset for denver...
+21:24:39 [INFO] models.data.dataset: Building dataset for denver...
+21:24:39 [INFO] models.data.dataset: Building dataset for denver...
+21:24:39 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:24:39 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:24:39 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:24:39 [INFO] models.data.dataset: Building dataset for denver...
+21:24:39 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:24:39 [INFO] models.data.dataset: Building dataset for denver...
+21:24:39 [INFO] models.data.dataset: Building dataset for denver...
+21:24:39 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:24:39 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:24:39 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:24:39 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:24:39 [INFO] models.data.dataset: Building dataset for denver...
+21:24:39 [INFO] models.data.dataset: Building dataset for denver...
+21:24:39 [INFO] models.data.dataset: Building dataset for denver...
+21:24:39 [INFO] models.data.dataset: Building dataset for denver...
+21:24:39 [INFO] models.data.dataset: Building dataset for denver...
+21:24:39 [INFO] models.data.dataset: Building dataset for denver...
+21:24:39 [INFO] models.data.loader: Loaded 8 settlement records for denver from 2025-05-23 to 2025-05-30
+21:24:39 [INFO] models.data.loader: Loaded 8 settlement records for denver from 2025-05-31 to 2025-06-07
+21:24:39 [INFO] models.data.loader: Loaded 8 settlement records for denver from 2025-07-18 to 2025-07-25
+21:24:39 [INFO] models.data.loader: Loaded 8 settlement records for denver from 2025-06-08 to 2025-06-15
+21:24:39 [INFO] models.data.loader: Loaded 8 settlement records for denver from 2025-05-15 to 2025-05-22
+21:24:39 [INFO] models.data.loader: Loaded 8 settlement records for denver from 2025-04-29 to 2025-05-06
+21:24:39 [INFO] models.data.loader: Loaded 8 settlement records for denver from 2025-07-02 to 2025-07-09
+21:24:39 [INFO] models.data.loader: Loaded 8 settlement records for denver from 2025-07-10 to 2025-07-17
+21:24:39 [INFO] models.data.loader: Loaded 8 settlement records for denver from 2025-06-24 to 2025-07-01
+21:24:39 [INFO] models.data.loader: Loaded 8 settlement records for denver from 2025-06-16 to 2025-06-23
+21:24:39 [INFO] models.data.loader: Loaded 8 settlement records for denver from 2025-05-07 to 2025-05-14
+21:24:39 [INFO] models.data.loader: Loaded 8 settlement records for denver from 2025-07-26 to 2025-08-02
+21:24:39 [INFO] models.data.loader: Loaded 2592 VC observations for denver from 2025-05-30 to 2025-06-07
+21:24:39 [INFO] models.data.loader: Loaded 2592 VC observations for denver from 2025-04-28 to 2025-05-06
+21:24:39 [INFO] models.data.loader: Loaded 2592 VC observations for denver from 2025-05-14 to 2025-05-22
+21:24:39 [INFO] models.data.loader: Loaded 2592 VC observations for denver from 2025-07-17 to 2025-07-25
+21:24:39 [INFO] models.data.loader: Loaded 2592 VC observations for denver from 2025-06-15 to 2025-06-23
+21:24:39 [INFO] models.data.loader: Loaded 2592 VC observations for denver from 2025-07-09 to 2025-07-17
+21:24:39 [INFO] models.data.loader: Loaded 2592 VC observations for denver from 2025-06-07 to 2025-06-15
+21:24:39 [INFO] models.data.loader: Loaded 2592 VC observations for denver from 2025-06-23 to 2025-07-01
+21:24:39 [INFO] models.data.loader: Loaded 2592 VC observations for denver from 2025-05-06 to 2025-05-14
+21:24:39 [INFO] models.data.loader: Loaded 2592 VC observations for denver from 2025-05-22 to 2025-05-30
+21:24:39 [INFO] models.data.loader: Loaded 2592 VC observations for denver from 2025-07-25 to 2025-08-02
+21:24:39 [INFO] models.data.loader: Loaded 2592 VC observations for denver from 2025-07-01 to 2025-07-09
+21:26:15 [INFO] models.data.dataset: Built 3648 snapshots total
+21:26:15 [INFO] models.data.dataset: Built 3648 snapshots total
+21:26:15 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:26:15 [INFO] models.data.dataset: Building dataset for denver...
+21:26:15 [INFO] __main__: Chunk 1/27: 2025-04-29 to 2025-05-06, 3,648 rows, 8 days
+21:26:15 [INFO] models.data.loader: Loaded 8 settlement records for denver from 2025-08-03 to 2025-08-10
+21:26:16 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:26:16 [INFO] models.data.dataset: Building dataset for denver...
+21:26:16 [INFO] __main__: Chunk 2/27: 2025-07-26 to 2025-08-02, 3,648 rows, 8 days
+21:26:16 [INFO] models.data.loader: Loaded 8 settlement records for denver from 2025-08-11 to 2025-08-18
+21:26:16 [INFO] models.data.loader: Loaded 2592 VC observations for denver from 2025-08-02 to 2025-08-10
+21:26:16 [INFO] models.data.dataset: Built 3648 snapshots total
+21:26:16 [INFO] models.data.loader: Loaded 2592 VC observations for denver from 2025-08-10 to 2025-08-18
+21:26:16 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:26:16 [INFO] models.data.dataset: Building dataset for denver...
+21:26:16 [INFO] __main__: Chunk 3/27: 2025-05-07 to 2025-05-14, 3,648 rows, 8 days
+21:26:16 [INFO] models.data.loader: Loaded 8 settlement records for denver from 2025-08-19 to 2025-08-26
+21:26:16 [INFO] models.data.dataset: Built 3648 snapshots total
+21:26:16 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:26:16 [INFO] models.data.dataset: Building dataset for denver...
+21:26:16 [INFO] __main__: Chunk 4/27: 2025-06-16 to 2025-06-23, 3,648 rows, 8 days
+21:26:16 [INFO] models.data.loader: Loaded 8 settlement records for denver from 2025-08-27 to 2025-09-03
+21:26:16 [INFO] models.data.loader: Loaded 2592 VC observations for denver from 2025-08-18 to 2025-08-26
+21:26:17 [INFO] models.data.loader: Loaded 2592 VC observations for denver from 2025-08-26 to 2025-09-03
+21:26:18 [INFO] models.data.dataset: Built 3648 snapshots total
+21:26:18 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:26:18 [INFO] models.data.dataset: Building dataset for denver...
+21:26:18 [INFO] __main__: Chunk 5/27: 2025-06-08 to 2025-06-15, 3,648 rows, 8 days
+21:26:18 [INFO] models.data.loader: Loaded 8 settlement records for denver from 2025-09-04 to 2025-09-11
+21:26:18 [INFO] models.data.dataset: Built 3648 snapshots total
+21:26:18 [INFO] models.data.loader: Loaded 2592 VC observations for denver from 2025-09-03 to 2025-09-11
+21:26:18 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:26:18 [INFO] models.data.dataset: Building dataset for denver...
+21:26:18 [INFO] __main__: Chunk 6/27: 2025-07-02 to 2025-07-09, 3,648 rows, 8 days
+21:26:18 [INFO] models.data.loader: Loaded 8 settlement records for denver from 2025-09-12 to 2025-09-19
+21:26:19 [INFO] models.data.loader: Loaded 2592 VC observations for denver from 2025-09-11 to 2025-09-19
+21:26:19 [INFO] models.data.dataset: Built 3648 snapshots total
+21:26:19 [INFO] models.data.dataset: Built 3648 snapshots total
+21:26:19 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:26:19 [INFO] models.data.dataset: Building dataset for denver...
+21:26:19 [INFO] __main__: Chunk 7/27: 2025-05-15 to 2025-05-22, 3,648 rows, 8 days
+21:26:19 [INFO] models.data.dataset: Built 3648 snapshots total
+21:26:19 [INFO] models.data.loader: Loaded 8 settlement records for denver from 2025-09-20 to 2025-09-27
+21:26:19 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:26:19 [INFO] models.data.dataset: Building dataset for denver...
+21:26:19 [INFO] __main__: Chunk 8/27: 2025-05-31 to 2025-06-07, 3,648 rows, 8 days
+21:26:19 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:26:19 [INFO] models.data.dataset: Building dataset for denver...
+21:26:19 [INFO] __main__: Chunk 9/27: 2025-05-23 to 2025-05-30, 3,648 rows, 8 days
+21:26:19 [INFO] models.data.loader: Loaded 8 settlement records for denver from 2025-09-28 to 2025-10-05
+21:26:19 [INFO] models.data.loader: Loaded 8 settlement records for denver from 2025-10-06 to 2025-10-13
+21:26:20 [INFO] models.data.loader: Loaded 2592 VC observations for denver from 2025-09-19 to 2025-09-27
+21:26:20 [INFO] models.data.loader: Loaded 2592 VC observations for denver from 2025-09-27 to 2025-10-05
+21:26:20 [INFO] models.data.loader: Loaded 2592 VC observations for denver from 2025-10-05 to 2025-10-13
+21:26:22 [INFO] models.data.dataset: Built 3648 snapshots total
+21:26:22 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:26:22 [INFO] models.data.dataset: Building dataset for denver...
+21:26:22 [INFO] __main__: Chunk 10/27: 2025-07-10 to 2025-07-17, 3,648 rows, 8 days
+21:26:22 [INFO] models.data.loader: Loaded 8 settlement records for denver from 2025-10-14 to 2025-10-21
+21:26:22 [INFO] models.data.loader: Loaded 2592 VC observations for denver from 2025-10-13 to 2025-10-21
+21:26:24 [INFO] models.data.dataset: Built 3648 snapshots total
+21:26:24 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:26:24 [INFO] models.data.dataset: Building dataset for denver...
+21:26:24 [INFO] __main__: Chunk 11/27: 2025-06-24 to 2025-07-01, 3,648 rows, 8 days
+21:26:24 [INFO] models.data.loader: Loaded 8 settlement records for denver from 2025-10-22 to 2025-10-29
+21:26:24 [INFO] models.data.dataset: Built 3648 snapshots total
+21:26:24 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:26:24 [INFO] models.data.dataset: Building dataset for denver...
+21:26:24 [INFO] __main__: Chunk 12/27: 2025-07-18 to 2025-07-25, 3,648 rows, 8 days
+21:26:24 [INFO] models.data.loader: Loaded 8 settlement records for denver from 2025-10-30 to 2025-11-06
+21:26:24 [INFO] models.data.loader: Loaded 2592 VC observations for denver from 2025-10-21 to 2025-10-29
+21:26:24 [INFO] models.data.loader: Loaded 2604 VC observations for denver from 2025-10-29 to 2025-11-06
+21:27:53 [INFO] models.data.dataset: Built 3648 snapshots total
+21:27:53 [INFO] models.data.dataset: Built 3648 snapshots total
+21:27:53 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:27:53 [INFO] models.data.dataset: Building dataset for denver...
+21:27:53 [INFO] __main__: Chunk 13/27: 2025-08-11 to 2025-08-18, 3,648 rows, 8 days
+21:27:53 [INFO] models.data.loader: Loaded 8 settlement records for denver from 2025-11-07 to 2025-11-14
+21:27:53 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:27:53 [INFO] models.data.dataset: Building dataset for denver...
+21:27:53 [INFO] __main__: Chunk 14/27: 2025-08-03 to 2025-08-10, 3,648 rows, 8 days
+21:27:53 [INFO] models.data.loader: Loaded 8 settlement records for denver from 2025-11-15 to 2025-11-22
+21:27:54 [INFO] models.data.loader: Loaded 2592 VC observations for denver from 2025-11-06 to 2025-11-14
+21:27:54 [INFO] models.data.loader: Loaded 2592 VC observations for denver from 2025-11-14 to 2025-11-22
+21:27:54 [INFO] models.data.dataset: Built 3648 snapshots total
+21:27:54 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+21:27:54 [INFO] models.data.dataset: Building dataset for denver...
+21:27:54 [INFO] __main__: Chunk 15/27: 2025-08-27 to 2025-09-03, 3,648 rows, 8 days
+21:27:54 [INFO] models.data.loader: Loaded 5 settlement records for denver from 2025-11-23 to 2025-11-27
+21:27:54 [INFO] models.data.dataset: Built 3648 snapshots total
+21:27:54 [INFO] __main__: Chunk 16/27: 2025-08-19 to 2025-08-26, 3,648 rows, 8 days
+21:27:55 [INFO] models.data.loader: Loaded 1728 VC observations for denver from 2025-11-22 to 2025-11-27
+21:27:56 [INFO] models.data.dataset: Built 3648 snapshots total
+21:27:56 [INFO] models.data.dataset: Built 3648 snapshots total
+21:27:56 [INFO] __main__: Chunk 17/27: 2025-09-04 to 2025-09-11, 3,648 rows, 8 days
+21:27:56 [INFO] __main__: Chunk 18/27: 2025-10-06 to 2025-10-13, 3,648 rows, 8 days
+21:27:57 [INFO] models.data.dataset: Built 3648 snapshots total
+21:27:57 [INFO] __main__: Chunk 19/27: 2025-09-20 to 2025-09-27, 3,648 rows, 8 days
+21:27:59 [INFO] models.data.dataset: Built 3648 snapshots total
+21:27:59 [INFO] __main__: Chunk 20/27: 2025-09-12 to 2025-09-19, 3,648 rows, 8 days
+21:27:59 [INFO] models.data.dataset: Built 3648 snapshots total
+21:27:59 [INFO] __main__: Chunk 21/27: 2025-09-28 to 2025-10-05, 3,648 rows, 8 days
+21:28:00 [INFO] models.data.dataset: Built 3648 snapshots total
+21:28:00 [INFO] __main__: Chunk 22/27: 2025-10-14 to 2025-10-21, 3,648 rows, 8 days
+21:28:02 [INFO] models.data.dataset: Built 3648 snapshots total
+21:28:02 [INFO] __main__: Chunk 23/27: 2025-10-30 to 2025-11-06, 3,648 rows, 8 days
+21:28:03 [INFO] models.data.dataset: Built 3648 snapshots total
+21:28:03 [INFO] __main__: Chunk 24/27: 2025-10-22 to 2025-10-29, 3,648 rows, 8 days
+21:28:46 [INFO] models.data.dataset: Built 2280 snapshots total
+21:28:46 [INFO] __main__: Chunk 25/27: 2025-11-23 to 2025-11-27, 2,280 rows, 5 days
+21:29:14 [INFO] models.data.dataset: Built 3648 snapshots total
+21:29:14 [INFO] models.data.dataset: Built 3648 snapshots total
+21:29:14 [INFO] __main__: Chunk 26/27: 2025-11-15 to 2025-11-22, 3,648 rows, 8 days
+21:29:14 [INFO] __main__: Chunk 27/27: 2025-11-07 to 2025-11-14, 3,648 rows, 8 days
+21:29:15 [INFO] __main__: All chunks completed in 276.2s
+/home/halsted/Documents/python/weather_updated/scripts/train_city_ordinal_optuna.py:188: FutureWarning: The behavior of DataFrame concatenation with empty or all-NA entries is deprecated. In a future version, this will no longer exclude empty or all-NA columns when determining the result dtypes. To retain the old behavior, exclude the relevant entries before the concat operation.
+  df_combined = pd.concat(dfs, ignore_index=True)
+21:29:15 [INFO] __main__: Combined dataset: 97,128 rows, 213 days
+21:29:16 [INFO] __main__: Cached datasets to models/saved/denver
+21:29:16 [INFO] __main__: 
+Training samples: 387,060
+21:29:16 [INFO] __main__: Training days: 849
+21:29:16 [INFO] __main__: Test samples: 97,128
+21:29:16 [INFO] __main__: Test days: 213
+21:29:16 [INFO] __main__: 
+Station-city features: ['station_city_temp_gap', 'station_city_max_gap_sofar', 'station_city_mean_gap_sofar', 'station_city_gap_std', 'station_city_gap_trend']
+21:29:16 [INFO] __main__:   station_city_temp_gap: 386,976/387,060 non-null (100.0%)
+21:29:16 [INFO] __main__:   station_city_max_gap_sofar: 386,976/387,060 non-null (100.0%)
+21:29:16 [INFO] __main__:   station_city_mean_gap_sofar: 386,976/387,060 non-null (100.0%)
+21:29:16 [INFO] __main__:   station_city_gap_std: 386,976/387,060 non-null (100.0%)
+21:29:16 [INFO] __main__:   station_city_gap_trend: 386,970/387,060 non-null (100.0%)
+21:29:16 [INFO] __main__: 
+Multi-horizon features: ['fcst_multi_std', 'fcst_multi_mean', 'fcst_multi_drift']
+21:29:16 [INFO] __main__:   fcst_multi_std: 387,060/387,060 non-null (100.0%)
+21:29:16 [INFO] __main__:   fcst_multi_mean: 387,060/387,060 non-null (100.0%)
+21:29:16 [INFO] __main__:   fcst_multi_drift: 0/387,060 non-null (0.0%)
+21:29:16 [INFO] models.training.ordinal_trainer: Training ordinal model (catboost) on 387060 samples
+21:29:16 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['settle_f_lag1', 'settle_f_lag2', 'settle_f_lag7', 'vc_max_f_lag1', 'vc_max_f_lag7', 'delta_vcmax_lag1']
+21:29:16 [INFO] models.training.ordinal_trainer: City delta range: [-10, 10]
+21:29:16 [INFO] models.training.ordinal_trainer: Training 20 threshold classifiers: [-9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+21:29:16 [INFO] models.training.ordinal_trainer: Starting Optuna tuning with 1 trials
+
+============================================================
+OPTUNA TRAINING (1 trials)
+============================================================
+  0%|          | 0/1 [00:00<?, ?it/s]Best trial: 0. Best value: 0.936255:   0%|          | 0/1 [00:10<?, ?it/s]Best trial: 0. Best value: 0.936255: 100%|██████████| 1/1 [00:10<00:00, 10.94s/it]Best trial: 0. Best value: 0.936255: 100%|██████████| 1/1 [00:10<00:00, 10.94s/it]
+21:29:27 [INFO] models.training.ordinal_trainer: Best params: {'bootstrap_type': 'Bernoulli', 'depth': 8, 'iterations': 217, 'learning_rate': 0.01085480209338859, 'border_count': 81, 'l2_leaf_reg': 5.094451250294697, 'min_data_in_leaf': 5, 'random_strength': 1.822553163986766, 'colsample_bylevel': 0.9761187699947961, 'subsample': 0.633075798996299}
+21:29:27 [INFO] models.training.ordinal_trainer: Best AUC: 0.9363
+21:29:27 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['settle_f_lag1', 'settle_f_lag2', 'settle_f_lag7', 'vc_max_f_lag1', 'vc_max_f_lag7', 'delta_vcmax_lag1']
+21:29:29 [INFO] models.training.ordinal_trainer:   Threshold -9: trained (pos_rate=85.6%)
+21:29:29 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['settle_f_lag1', 'settle_f_lag2', 'settle_f_lag7', 'vc_max_f_lag1', 'vc_max_f_lag7', 'delta_vcmax_lag1']
+21:29:31 [INFO] models.training.ordinal_trainer:   Threshold -8: trained (pos_rate=84.1%)
+21:29:31 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['settle_f_lag1', 'settle_f_lag2', 'settle_f_lag7', 'vc_max_f_lag1', 'vc_max_f_lag7', 'delta_vcmax_lag1']
+21:29:33 [INFO] models.training.ordinal_trainer:   Threshold -7: trained (pos_rate=81.4%)
+21:29:33 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['settle_f_lag1', 'settle_f_lag2', 'settle_f_lag7', 'vc_max_f_lag1', 'vc_max_f_lag7', 'delta_vcmax_lag1']
+21:29:34 [INFO] models.training.ordinal_trainer:   Threshold -6: trained (pos_rate=80.1%)
+21:29:35 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['settle_f_lag1', 'settle_f_lag2', 'settle_f_lag7', 'vc_max_f_lag1', 'vc_max_f_lag7', 'delta_vcmax_lag1']
+21:29:39 [INFO] models.training.ordinal_trainer:   Threshold -5: trained (pos_rate=77.5%)
+21:29:39 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['settle_f_lag1', 'settle_f_lag2', 'settle_f_lag7', 'vc_max_f_lag1', 'vc_max_f_lag7', 'delta_vcmax_lag1']
+21:29:41 [INFO] models.training.ordinal_trainer:   Threshold -4: trained (pos_rate=75.3%)
+21:29:41 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['settle_f_lag1', 'settle_f_lag2', 'settle_f_lag7', 'vc_max_f_lag1', 'vc_max_f_lag7', 'delta_vcmax_lag1']
+21:29:46 [INFO] models.training.ordinal_trainer:   Threshold -3: trained (pos_rate=71.2%)
+21:29:46 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['settle_f_lag1', 'settle_f_lag2', 'settle_f_lag7', 'vc_max_f_lag1', 'vc_max_f_lag7', 'delta_vcmax_lag1']
+21:29:49 [INFO] models.training.ordinal_trainer:   Threshold -2: trained (pos_rate=68.9%)
+21:29:49 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['settle_f_lag1', 'settle_f_lag2', 'settle_f_lag7', 'vc_max_f_lag1', 'vc_max_f_lag7', 'delta_vcmax_lag1']
+21:29:53 [INFO] models.training.ordinal_trainer:   Threshold -1: trained (pos_rate=64.0%)
+21:29:53 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['settle_f_lag1', 'settle_f_lag2', 'settle_f_lag7', 'vc_max_f_lag1', 'vc_max_f_lag7', 'delta_vcmax_lag1']
+21:29:59 [INFO] models.training.ordinal_trainer:   Threshold +0: trained (pos_rate=58.4%)
+21:29:59 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['settle_f_lag1', 'settle_f_lag2', 'settle_f_lag7', 'vc_max_f_lag1', 'vc_max_f_lag7', 'delta_vcmax_lag1']
+21:30:04 [INFO] models.training.ordinal_trainer:   Threshold +1: trained (pos_rate=44.0%)
+21:30:04 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['settle_f_lag1', 'settle_f_lag2', 'settle_f_lag7', 'vc_max_f_lag1', 'vc_max_f_lag7', 'delta_vcmax_lag1']
+21:30:09 [INFO] models.training.ordinal_trainer:   Threshold +2: trained (pos_rate=37.3%)
+21:30:09 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['settle_f_lag1', 'settle_f_lag2', 'settle_f_lag7', 'vc_max_f_lag1', 'vc_max_f_lag7', 'delta_vcmax_lag1']
+21:30:11 [INFO] models.training.ordinal_trainer:   Threshold +3: trained (pos_rate=32.2%)
+21:30:11 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['settle_f_lag1', 'settle_f_lag2', 'settle_f_lag7', 'vc_max_f_lag1', 'vc_max_f_lag7', 'delta_vcmax_lag1']
+21:30:13 [INFO] models.training.ordinal_trainer:   Threshold +4: trained (pos_rate=29.1%)
+21:30:13 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['settle_f_lag1', 'settle_f_lag2', 'settle_f_lag7', 'vc_max_f_lag1', 'vc_max_f_lag7', 'delta_vcmax_lag1']
+21:30:15 [INFO] models.training.ordinal_trainer:   Threshold +5: trained (pos_rate=25.4%)
+21:30:15 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['settle_f_lag1', 'settle_f_lag2', 'settle_f_lag7', 'vc_max_f_lag1', 'vc_max_f_lag7', 'delta_vcmax_lag1']
+21:30:19 [INFO] models.training.ordinal_trainer:   Threshold +6: trained (pos_rate=22.7%)
+21:30:19 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['settle_f_lag1', 'settle_f_lag2', 'settle_f_lag7', 'vc_max_f_lag1', 'vc_max_f_lag7', 'delta_vcmax_lag1']
+21:30:21 [INFO] models.training.ordinal_trainer:   Threshold +7: trained (pos_rate=19.5%)
+21:30:21 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['settle_f_lag1', 'settle_f_lag2', 'settle_f_lag7', 'vc_max_f_lag1', 'vc_max_f_lag7', 'delta_vcmax_lag1']
+21:30:26 [INFO] models.training.ordinal_trainer:   Threshold +8: trained (pos_rate=17.2%)
+21:30:26 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['settle_f_lag1', 'settle_f_lag2', 'settle_f_lag7', 'vc_max_f_lag1', 'vc_max_f_lag7', 'delta_vcmax_lag1']
+21:30:30 [INFO] models.training.ordinal_trainer:   Threshold +9: trained (pos_rate=15.2%)
+21:30:30 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['settle_f_lag1', 'settle_f_lag2', 'settle_f_lag7', 'vc_max_f_lag1', 'vc_max_f_lag7', 'delta_vcmax_lag1']
+21:30:36 [INFO] models.training.ordinal_trainer:   Threshold +10: trained (pos_rate=13.0%)
+21:30:36 [INFO] models.training.ordinal_trainer: Ordinal training complete: 20 classifiers
+21:30:36 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['settle_f_lag1', 'settle_f_lag2', 'settle_f_lag7', 'vc_max_f_lag1', 'vc_max_f_lag7', 'delta_vcmax_lag1']
+21:30:37 [INFO] models.training.ordinal_trainer: Saved ordinal model to models/saved/denver/ordinal_catboost_optuna.pkl
+21:30:37 [INFO] __main__: 
+Saved model to models/saved/denver/ordinal_catboost_optuna.pkl
+21:30:37 [INFO] __main__: Saved best params to models/saved/denver/best_params.json
+21:30:37 [INFO] __main__: Saved final metrics to models/saved/denver/final_metrics_denver.json
+
+============================================================
+EVALUATION
+============================================================
+
+Test Set Metrics:
+----------------------------------------
+  delta_accuracy: 0.1697
+  delta_mae: 3.5918
+  off_by_1_rate: 0.1872
+  off_by_2plus_rate: 0.6431
+  within_1_rate: 0.3569
+  within_2_rate: 0.5148
+
+============================================================
+FEATURE IMPORTANCE
+============================================================
+
+Top 30 Features:
+                       feature  importance
+0             obs_fcst_max_gap   21.355158
+1            num_samples_sofar   12.496990
+2               fcst_multi_std    6.712573
+3              fcst_prev_std_f    5.679602
+4          fcst_prev_frac_part    3.461183
+5            err_max_pos_sofar    3.292391
+6                      doy_sin    3.022803
+7              above_fcst_flag    2.143201
+8                     week_sin    2.105056
+9        fcst_prev_hour_of_max    2.000904
+10              err_mean_sofar    1.931912
+11             fcst_prev_q50_f    1.776643
+12                       month    1.632885
+13             fcst_multi_mean    1.467301
+14                     doy_cos    1.456534
+15             fcst_prev_q75_f    1.422808
+16                  is_weekend    1.390634
+17             err_last3h_mean    1.347950
+18          vc_frac_part_sofar    1.278238
+19  slope_max_30min_down_sofar    1.114523
+20             fcst_prev_min_f    1.038608
+21          err_abs_mean_sofar    1.034003
+22             fcst_prev_q10_f    1.001422
+23    slope_max_30min_up_sofar    0.961773
+24             fcst_prev_max_f    0.940931
+25               edge_max_flag    0.897938
+26          minutes_ge_base_m1    0.876996
+27             fcst_prev_q90_f    0.867093
+28          max_run_ge_base_m1    0.814069
+29                    week_cos    0.797135
+
+----------------------------------------
+Multi-horizon feature importance:
+             feature  importance
+2     fcst_multi_std    6.712573
+13   fcst_multi_mean    1.467301
+81  fcst_multi_drift    0.000000
+  fcst_multi_std: rank 3/92
+  fcst_multi_mean: rank 14/92
+  fcst_multi_drift: rank 82/92
+
+============================================================
+SUMMARY
+============================================================
+City: denver
+Model: models/saved/denver/ordinal_catboost_optuna.pkl
+Params: models/saved/denver/best_params.json
+Metrics: models/saved/denver/final_metrics_denver.json
+Training samples: 387,060
+Test samples: 97,128
+Optuna trials: 1
+Best params: {'bootstrap_type': 'Bernoulli', 'depth': 8, 'iterations': 217, 'learning_rate': 0.01085480209338859, 'border_count': 81, 'l2_leaf_reg': 5.094451250294697, 'min_data_in_leaf': 5, 'random_strength': 1.822553163986766, 'colsample_bylevel': 0.9761187699947961, 'subsample': 0.633075798996299}
+
+Key Metrics:
+  Accuracy: 17.0%
+  MAE: 3.59
+  Within 1: 35.7%
+  Within 2: 51.5%
+
+============================================================
+DONE
+============================================================

@@ -1,0 +1,148 @@
+18:57:52 [INFO] __main__: ============================================================
+18:57:52 [INFO] __main__: AUSTIN Optuna Training (3 trials)
+18:57:52 [INFO] __main__: ============================================================
+18:57:52 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+18:57:52 [INFO] __main__: Available data: 2023-01-01 to 2025-11-27
+18:57:52 [INFO] __main__: Total days: 1062
+18:57:52 [INFO] __main__: Training: 2023-01-01 to 2025-04-28 (850 days)
+18:57:52 [INFO] __main__: Testing:  2025-04-29 to 2025-11-27 (212 days)
+18:57:52 [INFO] __main__: 
+Building training dataset...
+18:57:52 [INFO] __main__: Building dataset for austin: 2023-01-01 to 2025-04-28 (849 days)
+18:57:52 [INFO] __main__: Using 14 parallel workers
+18:57:52 [INFO] __main__: include_station_city=True
+18:57:52 [INFO] __main__: Split into 29 chunks
+18:57:52 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+18:57:52 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+18:57:52 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+18:57:52 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+18:57:52 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+18:57:52 [INFO] models.data.dataset: Building dataset for austin...
+18:57:52 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+18:57:52 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+18:57:52 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+18:57:52 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+18:57:52 [INFO] models.data.dataset: Building dataset for austin...
+18:57:52 [INFO] models.data.dataset: Building dataset for austin...
+18:57:52 [INFO] models.data.dataset: Building dataset for austin...
+18:57:52 [INFO] models.data.dataset: Building dataset for austin...
+18:57:52 [INFO] models.data.dataset: Building dataset for austin...
+18:57:52 [INFO] models.data.dataset: Building dataset for austin...
+18:57:52 [INFO] models.data.dataset: Building dataset for austin...
+18:57:52 [INFO] models.data.dataset: Building dataset for austin...
+18:57:52 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+18:57:52 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+18:57:52 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+18:57:52 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+18:57:52 [INFO] models.data.dataset: Building dataset for austin...
+18:57:52 [INFO] models.data.dataset: Building dataset for austin...
+18:57:52 [INFO] models.data.dataset: Building dataset for austin...
+18:57:52 [INFO] models.data.dataset: Building dataset for austin...
+18:57:52 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+18:57:52 [INFO] models.data.dataset: Building dataset for austin...
+18:57:52 [INFO] models.data.loader: Loaded 30 settlement records for austin from 2023-01-01 to 2023-01-30
+18:57:52 [INFO] models.data.loader: Loaded 30 settlement records for austin from 2023-05-01 to 2023-05-30
+18:57:52 [INFO] models.data.loader: Loaded 30 settlement records for austin from 2023-06-30 to 2023-07-29
+18:57:52 [INFO] models.data.loader: Loaded 30 settlement records for austin from 2023-04-01 to 2023-04-30
+18:57:52 [INFO] models.data.loader: Loaded 30 settlement records for austin from 2023-05-31 to 2023-06-29
+18:57:52 [INFO] models.data.loader: Loaded 30 settlement records for austin from 2023-12-27 to 2024-01-25
+18:57:52 [INFO] models.data.loader: Loaded 30 settlement records for austin from 2023-09-28 to 2023-10-27
+18:57:52 [INFO] models.data.loader: Loaded 30 settlement records for austin from 2023-08-29 to 2023-09-27
+18:57:52 [INFO] models.data.loader: Loaded 30 settlement records for austin from 2023-10-28 to 2023-11-26
+18:57:52 [INFO] models.data.loader: Loaded 30 settlement records for austin from 2023-07-30 to 2023-08-28
+18:57:52 [INFO] models.data.loader: Loaded 30 settlement records for austin from 2023-01-31 to 2023-03-01
+18:57:52 [INFO] models.data.loader: Loaded 30 settlement records for austin from 2023-11-27 to 2023-12-26
+18:57:52 [INFO] models.data.loader: Loaded 30 settlement records for austin from 2024-01-26 to 2024-02-24
+18:57:52 [INFO] models.data.loader: Loaded 30 settlement records for austin from 2023-03-02 to 2023-03-31
+18:57:53 [INFO] models.data.loader: Loaded 8712 VC observations for austin from 2022-12-31 to 2023-01-30
+18:57:53 [INFO] models.data.loader: Loaded 8928 VC observations for austin from 2023-11-26 to 2023-12-26
+18:57:53 [INFO] models.data.loader: Loaded 8928 VC observations for austin from 2023-08-28 to 2023-09-27
+18:57:53 [INFO] models.data.loader: Loaded 8928 VC observations for austin from 2023-09-27 to 2023-10-27
+18:57:53 [INFO] models.data.loader: Loaded 8928 VC observations for austin from 2023-03-31 to 2023-04-30
+18:57:53 [INFO] models.data.loader: Loaded 8928 VC observations for austin from 2023-01-30 to 2023-03-01
+18:57:53 [INFO] models.data.loader: Loaded 8928 VC observations for austin from 2023-06-29 to 2023-07-29
+18:57:53 [INFO] models.data.loader: Loaded 8928 VC observations for austin from 2023-12-26 to 2024-01-25
+18:57:53 [INFO] models.data.loader: Loaded 8928 VC observations for austin from 2023-05-30 to 2023-06-29
+18:57:53 [INFO] models.data.loader: Loaded 8928 VC observations for austin from 2023-04-30 to 2023-05-30
+18:57:53 [INFO] models.data.loader: Loaded 8916 VC observations for austin from 2023-03-01 to 2023-03-31
+18:57:53 [INFO] models.data.loader: Loaded 8940 VC observations for austin from 2023-10-27 to 2023-11-26
+18:57:53 [INFO] models.data.loader: Loaded 8928 VC observations for austin from 2024-01-25 to 2024-02-24
+18:57:53 [INFO] models.data.loader: Loaded 8928 VC observations for austin from 2023-07-29 to 2023-08-28
+19:01:03 [INFO] models.data.dataset: Built 13584 snapshots total
+19:01:03 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+19:01:03 [INFO] models.data.dataset: Building dataset for austin...
+19:01:03 [INFO] __main__: Chunk 1/29: 2023-01-01 to 2023-01-30, 13,584 rows, 30 days
+19:01:03 [INFO] models.data.loader: Loaded 30 settlement records for austin from 2024-02-25 to 2024-03-25
+19:01:04 [INFO] models.data.loader: Loaded 8916 VC observations for austin from 2024-02-24 to 2024-03-25
+19:01:05 [INFO] models.data.dataset: Built 13680 snapshots total
+19:01:05 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+19:01:05 [INFO] models.data.dataset: Building dataset for austin...
+19:01:05 [INFO] __main__: Chunk 2/29: 2023-03-02 to 2023-03-31, 13,680 rows, 30 days
+19:01:05 [INFO] models.data.loader: Loaded 30 settlement records for austin from 2024-03-26 to 2024-04-24
+19:01:06 [INFO] models.data.loader: Loaded 8928 VC observations for austin from 2024-03-25 to 2024-04-24
+19:01:06 [INFO] models.data.dataset: Built 13680 snapshots total
+19:01:06 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+19:01:06 [INFO] models.data.dataset: Building dataset for austin...
+19:01:06 [INFO] __main__: Chunk 3/29: 2023-01-31 to 2023-03-01, 13,680 rows, 30 days
+19:01:06 [INFO] models.data.loader: Loaded 30 settlement records for austin from 2024-04-25 to 2024-05-24
+19:01:07 [INFO] models.data.loader: Loaded 8928 VC observations for austin from 2024-04-24 to 2024-05-24
+19:01:11 [INFO] models.data.dataset: Built 13680 snapshots total
+19:01:11 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+19:01:11 [INFO] models.data.dataset: Building dataset for austin...
+19:01:11 [INFO] __main__: Chunk 4/29: 2023-04-01 to 2023-04-30, 13,680 rows, 30 days
+19:01:11 [INFO] models.data.loader: Loaded 30 settlement records for austin from 2024-05-25 to 2024-06-23
+19:01:12 [INFO] models.data.loader: Loaded 8928 VC observations for austin from 2024-05-24 to 2024-06-23
+19:01:35 [INFO] models.data.dataset: Built 13680 snapshots total
+19:01:35 [INFO] __main__: Chunk 5/29: 2023-05-01 to 2023-05-30, 13,680 rows, 30 days
+19:01:35 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+19:01:35 [INFO] models.data.dataset: Building dataset for austin...
+19:01:35 [INFO] models.data.loader: Loaded 30 settlement records for austin from 2024-06-24 to 2024-07-23
+19:01:36 [INFO] models.data.loader: Loaded 8928 VC observations for austin from 2024-06-23 to 2024-07-23
+19:01:47 [INFO] models.data.dataset: Built 13680 snapshots total
+19:01:48 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+19:01:48 [INFO] models.data.dataset: Building dataset for austin...
+19:01:48 [INFO] __main__: Chunk 6/29: 2023-11-27 to 2023-12-26, 13,680 rows, 30 days
+19:01:48 [INFO] models.data.loader: Loaded 30 settlement records for austin from 2024-07-24 to 2024-08-22
+19:01:48 [INFO] models.data.dataset: Built 13680 snapshots total
+19:01:48 [INFO] models.data.loader: Loaded 8928 VC observations for austin from 2024-07-23 to 2024-08-22
+19:01:48 [INFO] __main__: Chunk 7/29: 2023-06-30 to 2023-07-29, 13,680 rows, 30 days
+19:01:48 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+19:01:48 [INFO] models.data.dataset: Building dataset for austin...
+19:01:48 [INFO] models.data.loader: Loaded 30 settlement records for austin from 2024-08-23 to 2024-09-21
+19:01:48 [INFO] models.data.dataset: Built 13680 snapshots total
+19:01:49 [INFO] models.data.loader: Loaded 8928 VC observations for austin from 2024-08-22 to 2024-09-21
+19:01:49 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+19:01:49 [INFO] models.data.dataset: Building dataset for austin...
+19:01:49 [INFO] __main__: Chunk 8/29: 2023-09-28 to 2023-10-27, 13,680 rows, 30 days
+19:01:49 [INFO] models.data.loader: Loaded 30 settlement records for austin from 2024-09-22 to 2024-10-21
+19:01:49 [INFO] models.data.loader: Loaded 8928 VC observations for austin from 2024-09-21 to 2024-10-21
+19:01:51 [INFO] models.data.dataset: Built 13680 snapshots total
+19:01:51 [INFO] models.data.dataset: Built 13680 snapshots total
+19:01:51 [INFO] __main__: Chunk 9/29: 2023-07-30 to 2023-08-28, 13,680 rows, 30 days
+19:01:51 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+19:01:51 [INFO] models.data.dataset: Building dataset for austin...
+19:01:51 [INFO] models.data.loader: Loaded 30 settlement records for austin from 2024-10-22 to 2024-11-20
+19:01:51 [INFO] __main__: Chunk 10/29: 2023-10-28 to 2023-11-26, 13,680 rows, 30 days
+19:01:51 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+19:01:51 [INFO] models.data.dataset: Building dataset for austin...
+19:01:51 [INFO] models.data.loader: Loaded 30 settlement records for austin from 2024-11-21 to 2024-12-20
+19:01:52 [INFO] models.data.loader: Loaded 8940 VC observations for austin from 2024-10-21 to 2024-11-20
+19:01:52 [INFO] models.data.loader: Loaded 8928 VC observations for austin from 2024-11-20 to 2024-12-20
+19:01:53 [INFO] models.data.dataset: Built 13680 snapshots total
+19:01:53 [INFO] __main__: Chunk 11/29: 2023-08-29 to 2023-09-27, 13,680 rows, 30 days
+19:01:53 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+19:01:53 [INFO] models.data.dataset: Building dataset for austin...
+19:01:53 [INFO] models.data.loader: Loaded 30 settlement records for austin from 2024-12-21 to 2025-01-19
+19:01:53 [INFO] models.data.dataset: Built 13680 snapshots total
+19:01:53 [INFO] models.data.loader: Loaded 8928 VC observations for austin from 2024-12-20 to 2025-01-19
+19:01:54 [INFO] __main__: Chunk 12/29: 2023-05-31 to 2023-06-29, 13,680 rows, 30 days
+19:01:54 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+19:01:54 [INFO] models.data.dataset: Building dataset for austin...
+19:01:54 [INFO] models.data.loader: Loaded 30 settlement records for austin from 2025-01-20 to 2025-02-18
+19:01:54 [INFO] models.data.loader: Loaded 8928 VC observations for austin from 2025-01-19 to 2025-02-18
+19:40:47 [INFO] models.data.dataset: Built 13680 snapshots total
+19:40:47 [INFO] __main__: Chunk 13/29: 2023-12-27 to 2024-01-25, 13,680 rows, 30 days
+19:40:47 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+19:40:47 [INFO] models.data.dataset: Building dataset for austin...
+19:40:47 [INFO] models.data.loader: Loaded 30 settlement records for austin from 2025-02-19 to 2025-03-20
+19:40:48 [INFO] models.data.loader: Loaded 8916 VC observations for austin from 2025-02-18 to 2025-03-20

@@ -1,0 +1,30 @@
+2025-12-06 02:05:41,357 - __main__ - INFO - Logging to: /home/halsted/Documents/python/weather_updated/logs/noaa_guidance_ingest_20251206_020541.log
+2025-12-06 02:05:41,358 - __main__ - INFO - ================================================================================
+2025-12-06 02:05:41,358 - __main__ - INFO - NOAA MODEL GUIDANCE INGESTION - AUSTIN
+2025-12-06 02:05:41,358 - __main__ - INFO - ================================================================================
+2025-12-06 02:05:41,358 - __main__ - INFO - Models: NBM
+2025-12-06 02:05:41,358 - __main__ - INFO - Date range: 2025-06-15 to 2025-06-15
+2025-12-06 02:05:41,358 - __main__ - INFO - City: austin (America/Chicago)
+2025-12-06 02:05:41,358 - __main__ - INFO - Location: 30.18, -97.68
+2025-12-06 02:05:41,358 - __main__ - INFO - 
+2025-12-06 02:05:41,358 - __main__ - INFO - Progress: 1/1 (100.0%) | Rate: 1048576.00 days/sec | ETA: 0.0 min
+2025-12-06 02:05:41,358 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-06-15 run=2025-06-14 12:00:00+00:00
+2025-12-06 02:05:59,685 - __main__ - ERROR - Error ingesting nbm austin 2025-06-15: '_GeneratorContextManager' object has no attribute 'execute'
+2025-12-06 02:05:59,685 - __main__ - INFO - 
+2025-12-06 02:05:59,685 - __main__ - INFO - ================================================================================
+2025-12-06 02:05:59,685 - __main__ - INFO - INGESTION COMPLETE
+2025-12-06 02:05:59,685 - __main__ - INFO - ================================================================================
+2025-12-06 02:05:59,685 - __main__ - INFO - Processed: 1 days in 0.3 minutes
+2025-12-06 02:05:59,685 - __main__ - INFO - Successful: 0
+2025-12-06 02:05:59,685 - __main__ - INFO - Failed: 1
+2025-12-06 02:05:59,685 - __main__ - INFO - Success rate: 0.0%
+2025-12-06 02:05:59,685 - __main__ - WARNING - Failed entries (1):
+2025-12-06 02:05:59,685 - __main__ - WARNING -   - 2025-06-15 nbm: '_GeneratorContextManager' object has no attribute 'execute'
+2025-12-06 02:05:59,685 - __main__ - INFO - Log file: /home/halsted/Documents/python/weather_updated/logs/noaa_guidance_ingest_20251206_020541.log
+Traceback (most recent call last):
+  File "/home/halsted/Documents/python/weather_updated/scripts/ingest_weather_more_apis_guidance.py", line 190, in <module>
+    main()
+  File "/home/halsted/Documents/python/weather_updated/scripts/ingest_weather_more_apis_guidance.py", line 186, in main
+    session.close()
+    ^^^^^^^^^^^^^
+AttributeError: '_GeneratorContextManager' object has no attribute 'close'

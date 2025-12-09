@@ -1,0 +1,195 @@
+06:08:50 [INFO] build_dataset_pipeline: Building dataset for austin: 2025-06-01 to 2025-06-14
+06:08:50 [INFO] build_dataset_pipeline: Workers: 4, include_station_city=True
+06:08:50 [INFO] scripts.train_city_ordinal_optuna: Building dataset for austin: 2025-06-01 to 2025-06-14 (14 days)
+06:08:50 [INFO] scripts.train_city_ordinal_optuna: Using 4 parallel workers
+06:08:50 [INFO] scripts.train_city_ordinal_optuna: include_station_city=True
+06:08:50 [INFO] scripts.train_city_ordinal_optuna: Split into 14 chunks
+06:08:51 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+06:08:51 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+06:08:51 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+06:08:51 [INFO] models.data.dataset: Building dataset for austin...
+06:08:51 [INFO] models.data.dataset: Building dataset for austin...
+06:08:51 [INFO] models.data.dataset: Building dataset for austin...
+06:08:51 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+06:08:51 [INFO] models.data.dataset: Building dataset for austin...
+06:08:51 [INFO] models.data.loader: Loaded 1 settlement records for austin from 2025-06-04 to 2025-06-04
+06:08:51 [INFO] models.data.loader: Loaded 1 settlement records for austin from 2025-06-02 to 2025-06-02
+06:08:51 [INFO] models.data.loader: Loaded 1 settlement records for austin from 2025-06-01 to 2025-06-01
+06:08:51 [INFO] models.data.loader: Loaded 1 settlement records for austin from 2025-06-03 to 2025-06-03
+06:08:51 [INFO] models.data.loader: Loaded 576 VC observations for austin from 2025-06-02 to 2025-06-03
+06:08:51 [INFO] models.data.loader: Loaded 576 VC observations for austin from 2025-06-01 to 2025-06-02
+06:08:51 [INFO] models.data.loader: Loaded 576 VC observations for austin from 2025-05-31 to 2025-06-01
+06:08:51 [INFO] models.data.loader: Loaded 576 VC observations for austin from 2025-06-03 to 2025-06-04
+06:08:51 [INFO] models.data.dataset: Batch-loading multi-horizon forecasts for austin...
+06:08:51 [INFO] models.data.dataset: Batch-loading multi-horizon forecasts for austin...
+06:08:51 [INFO] models.data.dataset: Batch-loading multi-horizon forecasts for austin...
+06:08:51 [INFO] models.data.dataset: Batch-loading multi-horizon forecasts for austin...
+06:08:51 [INFO] models.data.loader: Batch-loaded 6 multi-horizon forecasts for austin
+06:08:51 [INFO] models.data.dataset: Batch-loading candles for austin...
+06:08:51 [INFO] models.data.loader: Batch-loaded 6 multi-horizon forecasts for austin
+06:08:51 [INFO] models.data.dataset: Batch-loading candles for austin...
+06:08:51 [INFO] models.data.loader: Batch-loaded 6 multi-horizon forecasts for austin
+06:08:51 [INFO] models.data.dataset: Batch-loading candles for austin...
+06:08:51 [INFO] models.data.loader: Batch-loaded 6 multi-horizon forecasts for austin
+06:08:51 [INFO] models.data.dataset: Batch-loading candles for austin...
+06:08:52 [INFO] models.data.dataset: Batch-loaded 21777 candles for austin (2025-06-03 to 2025-06-03)
+06:08:52 [INFO] models.data.dataset: Batch-loaded 22131 candles for austin (2025-06-02 to 2025-06-02)
+06:08:52 [INFO] models.data.dataset: Batch-loaded 21986 candles for austin (2025-06-04 to 2025-06-04)
+06:08:52 [INFO] models.data.dataset: Batch-loaded 22560 candles for austin (2025-06-01 to 2025-06-01)
+06:08:52 [INFO] models.data.loader: Loaded 8640 VC observations for austin from 2025-05-03 to 2025-06-01
+06:08:52 [INFO] models.data.loader: Loaded 8640 VC observations for austin from 2025-05-02 to 2025-05-31
+06:08:52 [INFO] models.data.loader: Loaded 8640 VC observations for austin from 2025-05-05 to 2025-06-03
+06:08:52 [INFO] models.data.loader: Loaded 8640 VC observations for austin from 2025-05-04 to 2025-06-02
+06:09:07 [INFO] models.data.dataset: Built 456 snapshots total
+06:09:07 [INFO] models.data.dataset: Adding lag features...
+06:09:07 [INFO] models.data.dataset: Lag features added: ['disagree_flag_sofar', 'edge_max_flag', 'fcst_prev_near_boundary_flag', 'above_fcst_flag', 'city_warmer_flag', 'high_humidity_flag', 'strong_wind_flag', 'high_cloud_flag', 'clear_sky_flag', 'high_wetbulb_flag', 'strong_windchill_flag', 'clearing_trend_flag', 'clouding_trend_flag', 'settle_f_lag1', 'settle_f_lag2', 'settle_f_lag7', 'vc_max_f_lag1', 'vc_max_f_lag7', 'delta_vcmax_lag1']
+06:09:07 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+06:09:07 [INFO] models.data.dataset: Building dataset for austin...
+06:09:07 [INFO] scripts.train_city_ordinal_optuna: Chunk 1/14: 2025-06-01 to 2025-06-01, 456 rows, 1 days
+06:09:07 [INFO] models.data.loader: Loaded 1 settlement records for austin from 2025-06-05 to 2025-06-05
+06:09:07 [INFO] models.data.dataset: Built 456 snapshots total
+06:09:07 [INFO] models.data.dataset: Built 456 snapshots total
+06:09:07 [INFO] models.data.dataset: Adding lag features...
+06:09:07 [INFO] models.data.dataset: Adding lag features...
+06:09:07 [INFO] models.data.dataset: Lag features added: ['disagree_flag_sofar', 'edge_max_flag', 'fcst_prev_near_boundary_flag', 'above_fcst_flag', 'city_warmer_flag', 'high_humidity_flag', 'strong_wind_flag', 'high_cloud_flag', 'clear_sky_flag', 'high_wetbulb_flag', 'strong_windchill_flag', 'clearing_trend_flag', 'clouding_trend_flag', 'settle_f_lag1', 'settle_f_lag2', 'settle_f_lag7', 'vc_max_f_lag1', 'vc_max_f_lag7', 'delta_vcmax_lag1']
+06:09:07 [INFO] models.data.dataset: Lag features added: ['disagree_flag_sofar', 'edge_max_flag', 'fcst_prev_near_boundary_flag', 'above_fcst_flag', 'city_warmer_flag', 'high_humidity_flag', 'strong_wind_flag', 'high_cloud_flag', 'clear_sky_flag', 'high_wetbulb_flag', 'strong_windchill_flag', 'clearing_trend_flag', 'clouding_trend_flag', 'settle_f_lag1', 'settle_f_lag2', 'settle_f_lag7', 'vc_max_f_lag1', 'vc_max_f_lag7', 'delta_vcmax_lag1']
+06:09:07 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+06:09:07 [INFO] models.data.dataset: Building dataset for austin...
+06:09:07 [INFO] scripts.train_city_ordinal_optuna: Chunk 2/14: 2025-06-04 to 2025-06-04, 456 rows, 1 days
+06:09:07 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+06:09:07 [INFO] scripts.train_city_ordinal_optuna: Chunk 3/14: 2025-06-03 to 2025-06-03, 456 rows, 1 days
+06:09:07 [INFO] models.data.dataset: Building dataset for austin...
+06:09:07 [INFO] models.data.loader: Loaded 1 settlement records for austin from 2025-06-06 to 2025-06-06
+06:09:07 [INFO] models.data.loader: Loaded 1 settlement records for austin from 2025-06-07 to 2025-06-07
+06:09:07 [INFO] models.data.dataset: Built 456 snapshots total
+06:09:07 [INFO] models.data.dataset: Adding lag features...
+06:09:07 [INFO] models.data.dataset: Lag features added: ['disagree_flag_sofar', 'edge_max_flag', 'fcst_prev_near_boundary_flag', 'above_fcst_flag', 'city_warmer_flag', 'high_humidity_flag', 'strong_wind_flag', 'high_cloud_flag', 'clear_sky_flag', 'high_wetbulb_flag', 'strong_windchill_flag', 'clearing_trend_flag', 'clouding_trend_flag', 'settle_f_lag1', 'settle_f_lag2', 'settle_f_lag7', 'vc_max_f_lag1', 'vc_max_f_lag7', 'delta_vcmax_lag1']
+06:09:07 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+06:09:07 [INFO] scripts.train_city_ordinal_optuna: Chunk 4/14: 2025-06-02 to 2025-06-02, 456 rows, 1 days
+06:09:07 [INFO] models.data.dataset: Building dataset for austin...
+06:09:07 [INFO] models.data.loader: Loaded 1 settlement records for austin from 2025-06-08 to 2025-06-08
+06:09:07 [INFO] models.data.loader: Loaded 576 VC observations for austin from 2025-06-04 to 2025-06-05
+06:09:07 [INFO] models.data.dataset: Batch-loading multi-horizon forecasts for austin...
+06:09:07 [INFO] models.data.loader: Batch-loaded 6 multi-horizon forecasts for austin
+06:09:07 [INFO] models.data.dataset: Batch-loading candles for austin...
+06:09:07 [INFO] models.data.loader: Loaded 576 VC observations for austin from 2025-06-05 to 2025-06-06
+06:09:07 [INFO] models.data.loader: Loaded 576 VC observations for austin from 2025-06-06 to 2025-06-07
+06:09:08 [INFO] models.data.loader: Loaded 576 VC observations for austin from 2025-06-07 to 2025-06-08
+06:09:08 [INFO] models.data.dataset: Batch-loading multi-horizon forecasts for austin...
+06:09:08 [INFO] models.data.dataset: Batch-loading multi-horizon forecasts for austin...
+06:09:08 [INFO] models.data.loader: Batch-loaded 6 multi-horizon forecasts for austin
+06:09:08 [INFO] models.data.dataset: Batch-loading candles for austin...
+06:09:08 [INFO] models.data.loader: Batch-loaded 6 multi-horizon forecasts for austin
+06:09:08 [INFO] models.data.dataset: Batch-loading candles for austin...
+06:09:08 [INFO] models.data.dataset: Batch-loading multi-horizon forecasts for austin...
+06:09:08 [INFO] models.data.loader: Batch-loaded 6 multi-horizon forecasts for austin
+06:09:08 [INFO] models.data.dataset: Batch-loading candles for austin...
+06:09:08 [INFO] models.data.dataset: Batch-loaded 22331 candles for austin (2025-06-05 to 2025-06-05)
+06:09:09 [INFO] models.data.loader: Loaded 8640 VC observations for austin from 2025-05-06 to 2025-06-04
+06:09:09 [INFO] models.data.dataset: Batch-loaded 21868 candles for austin (2025-06-07 to 2025-06-07)
+06:09:09 [INFO] models.data.dataset: Batch-loaded 22524 candles for austin (2025-06-06 to 2025-06-06)
+06:09:09 [INFO] models.data.dataset: Batch-loaded 21909 candles for austin (2025-06-08 to 2025-06-08)
+06:09:09 [INFO] models.data.loader: Loaded 8640 VC observations for austin from 2025-05-08 to 2025-06-06
+06:09:09 [INFO] models.data.loader: Loaded 8640 VC observations for austin from 2025-05-07 to 2025-06-05
+06:09:09 [INFO] models.data.loader: Loaded 8640 VC observations for austin from 2025-05-09 to 2025-06-07
+06:09:23 [INFO] models.data.dataset: Built 456 snapshots total
+06:09:23 [INFO] models.data.dataset: Adding lag features...
+06:09:23 [INFO] models.data.dataset: Lag features added: ['disagree_flag_sofar', 'edge_max_flag', 'fcst_prev_near_boundary_flag', 'above_fcst_flag', 'city_warmer_flag', 'high_humidity_flag', 'strong_wind_flag', 'high_cloud_flag', 'clear_sky_flag', 'high_wetbulb_flag', 'strong_windchill_flag', 'clearing_trend_flag', 'clouding_trend_flag', 'settle_f_lag1', 'settle_f_lag2', 'settle_f_lag7', 'vc_max_f_lag1', 'vc_max_f_lag7', 'delta_vcmax_lag1']
+06:09:23 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+06:09:23 [INFO] models.data.dataset: Building dataset for austin...
+06:09:23 [INFO] scripts.train_city_ordinal_optuna: Chunk 5/14: 2025-06-05 to 2025-06-05, 456 rows, 1 days
+06:09:23 [INFO] models.data.loader: Loaded 1 settlement records for austin from 2025-06-09 to 2025-06-09
+06:09:23 [INFO] models.data.dataset: Built 456 snapshots total
+06:09:23 [INFO] models.data.loader: Loaded 576 VC observations for austin from 2025-06-08 to 2025-06-09
+06:09:23 [INFO] models.data.dataset: Adding lag features...
+06:09:23 [INFO] models.data.dataset: Lag features added: ['disagree_flag_sofar', 'edge_max_flag', 'fcst_prev_near_boundary_flag', 'above_fcst_flag', 'city_warmer_flag', 'high_humidity_flag', 'strong_wind_flag', 'high_cloud_flag', 'clear_sky_flag', 'high_wetbulb_flag', 'strong_windchill_flag', 'clearing_trend_flag', 'clouding_trend_flag', 'settle_f_lag1', 'settle_f_lag2', 'settle_f_lag7', 'vc_max_f_lag1', 'vc_max_f_lag7', 'delta_vcmax_lag1']
+06:09:23 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+06:09:23 [INFO] models.data.dataset: Building dataset for austin...
+06:09:23 [INFO] scripts.train_city_ordinal_optuna: Chunk 6/14: 2025-06-07 to 2025-06-07, 456 rows, 1 days
+06:09:23 [INFO] models.data.loader: Loaded 1 settlement records for austin from 2025-06-10 to 2025-06-10
+06:09:23 [INFO] models.data.dataset: Batch-loading multi-horizon forecasts for austin...
+06:09:23 [INFO] models.data.loader: Batch-loaded 6 multi-horizon forecasts for austin
+06:09:23 [INFO] models.data.dataset: Batch-loading candles for austin...
+06:09:23 [INFO] models.data.dataset: Built 456 snapshots total
+06:09:23 [INFO] models.data.dataset: Adding lag features...
+06:09:23 [INFO] models.data.dataset: Lag features added: ['disagree_flag_sofar', 'edge_max_flag', 'fcst_prev_near_boundary_flag', 'above_fcst_flag', 'city_warmer_flag', 'high_humidity_flag', 'strong_wind_flag', 'high_cloud_flag', 'clear_sky_flag', 'high_wetbulb_flag', 'strong_windchill_flag', 'clearing_trend_flag', 'clouding_trend_flag', 'settle_f_lag1', 'settle_f_lag2', 'settle_f_lag7', 'vc_max_f_lag1', 'vc_max_f_lag7', 'delta_vcmax_lag1']
+06:09:23 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+06:09:23 [INFO] models.data.dataset: Building dataset for austin...
+06:09:23 [INFO] scripts.train_city_ordinal_optuna: Chunk 7/14: 2025-06-06 to 2025-06-06, 456 rows, 1 days
+06:09:23 [INFO] models.data.loader: Loaded 1 settlement records for austin from 2025-06-11 to 2025-06-11
+06:09:24 [INFO] models.data.dataset: Built 456 snapshots total
+06:09:24 [INFO] models.data.dataset: Adding lag features...
+06:09:24 [INFO] models.data.dataset: Lag features added: ['disagree_flag_sofar', 'edge_max_flag', 'fcst_prev_near_boundary_flag', 'above_fcst_flag', 'city_warmer_flag', 'high_humidity_flag', 'strong_wind_flag', 'high_cloud_flag', 'clear_sky_flag', 'high_wetbulb_flag', 'strong_windchill_flag', 'clearing_trend_flag', 'clouding_trend_flag', 'settle_f_lag1', 'settle_f_lag2', 'settle_f_lag7', 'vc_max_f_lag1', 'vc_max_f_lag7', 'delta_vcmax_lag1']
+06:09:24 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+06:09:24 [INFO] models.data.dataset: Building dataset for austin...
+06:09:24 [INFO] scripts.train_city_ordinal_optuna: Chunk 8/14: 2025-06-08 to 2025-06-08, 456 rows, 1 days
+06:09:24 [INFO] models.data.loader: Loaded 1 settlement records for austin from 2025-06-12 to 2025-06-12
+06:09:24 [INFO] models.data.loader: Loaded 576 VC observations for austin from 2025-06-09 to 2025-06-10
+06:09:24 [INFO] models.data.loader: Loaded 576 VC observations for austin from 2025-06-10 to 2025-06-11
+06:09:24 [INFO] models.data.dataset: Batch-loading multi-horizon forecasts for austin...
+06:09:24 [INFO] models.data.loader: Batch-loaded 6 multi-horizon forecasts for austin
+06:09:24 [INFO] models.data.dataset: Batch-loading candles for austin...
+06:09:24 [INFO] models.data.loader: Loaded 576 VC observations for austin from 2025-06-11 to 2025-06-12
+06:09:24 [INFO] models.data.dataset: Batch-loading multi-horizon forecasts for austin...
+06:09:24 [INFO] models.data.loader: Batch-loaded 6 multi-horizon forecasts for austin
+06:09:24 [INFO] models.data.dataset: Batch-loading candles for austin...
+06:09:24 [INFO] models.data.dataset: Batch-loading multi-horizon forecasts for austin...
+06:09:24 [INFO] models.data.loader: Batch-loaded 6 multi-horizon forecasts for austin
+06:09:24 [INFO] models.data.dataset: Batch-loading candles for austin...
+06:09:24 [INFO] models.data.dataset: Batch-loaded 22196 candles for austin (2025-06-09 to 2025-06-09)
+06:09:24 [INFO] models.data.loader: Loaded 8640 VC observations for austin from 2025-05-10 to 2025-06-08
+06:09:25 [INFO] models.data.dataset: Batch-loaded 21977 candles for austin (2025-06-10 to 2025-06-10)
+06:09:25 [INFO] models.data.dataset: Batch-loaded 22180 candles for austin (2025-06-11 to 2025-06-11)
+06:09:25 [INFO] models.data.loader: Loaded 8640 VC observations for austin from 2025-05-11 to 2025-06-09
+06:09:25 [INFO] models.data.dataset: Batch-loaded 22249 candles for austin (2025-06-12 to 2025-06-12)
+06:09:25 [INFO] models.data.loader: Loaded 8640 VC observations for austin from 2025-05-12 to 2025-06-10
+06:09:25 [INFO] models.data.loader: Loaded 8640 VC observations for austin from 2025-05-13 to 2025-06-11
+06:09:39 [INFO] models.data.dataset: Built 456 snapshots total
+06:09:39 [INFO] models.data.dataset: Adding lag features...
+06:09:39 [INFO] models.data.dataset: Lag features added: ['disagree_flag_sofar', 'edge_max_flag', 'fcst_prev_near_boundary_flag', 'above_fcst_flag', 'city_warmer_flag', 'high_humidity_flag', 'strong_wind_flag', 'high_cloud_flag', 'clear_sky_flag', 'high_wetbulb_flag', 'strong_windchill_flag', 'clearing_trend_flag', 'clouding_trend_flag', 'settle_f_lag1', 'settle_f_lag2', 'settle_f_lag7', 'vc_max_f_lag1', 'vc_max_f_lag7', 'delta_vcmax_lag1']
+06:09:39 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+06:09:39 [INFO] models.data.dataset: Building dataset for austin...
+06:09:39 [INFO] scripts.train_city_ordinal_optuna: Chunk 9/14: 2025-06-09 to 2025-06-09, 456 rows, 1 days
+06:09:39 [INFO] models.data.loader: Loaded 1 settlement records for austin from 2025-06-13 to 2025-06-13
+06:09:40 [INFO] models.data.loader: Loaded 576 VC observations for austin from 2025-06-12 to 2025-06-13
+06:09:40 [INFO] models.data.dataset: Batch-loading multi-horizon forecasts for austin...
+06:09:40 [INFO] models.data.loader: Batch-loaded 6 multi-horizon forecasts for austin
+06:09:40 [INFO] models.data.dataset: Batch-loading candles for austin...
+06:09:40 [INFO] models.data.dataset: Built 456 snapshots total
+06:09:40 [INFO] models.data.dataset: Adding lag features...
+06:09:40 [INFO] models.data.dataset: Lag features added: ['disagree_flag_sofar', 'edge_max_flag', 'fcst_prev_near_boundary_flag', 'above_fcst_flag', 'city_warmer_flag', 'high_humidity_flag', 'strong_wind_flag', 'high_cloud_flag', 'clear_sky_flag', 'high_wetbulb_flag', 'strong_windchill_flag', 'clearing_trend_flag', 'clouding_trend_flag', 'settle_f_lag1', 'settle_f_lag2', 'settle_f_lag7', 'vc_max_f_lag1', 'vc_max_f_lag7', 'delta_vcmax_lag1']
+06:09:40 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+06:09:40 [INFO] models.data.dataset: Building dataset for austin...
+06:09:40 [INFO] scripts.train_city_ordinal_optuna: Chunk 10/14: 2025-06-10 to 2025-06-10, 456 rows, 1 days
+06:09:40 [INFO] models.data.loader: Loaded 1 settlement records for austin from 2025-06-14 to 2025-06-14
+06:09:40 [INFO] models.data.dataset: Built 456 snapshots total
+06:09:40 [INFO] models.data.dataset: Adding lag features...
+06:09:40 [INFO] models.data.dataset: Lag features added: ['disagree_flag_sofar', 'edge_max_flag', 'fcst_prev_near_boundary_flag', 'above_fcst_flag', 'city_warmer_flag', 'high_humidity_flag', 'strong_wind_flag', 'high_cloud_flag', 'clear_sky_flag', 'high_wetbulb_flag', 'strong_windchill_flag', 'clearing_trend_flag', 'clouding_trend_flag', 'settle_f_lag1', 'settle_f_lag2', 'settle_f_lag7', 'vc_max_f_lag1', 'vc_max_f_lag7', 'delta_vcmax_lag1']
+06:09:40 [INFO] scripts.train_city_ordinal_optuna: Chunk 11/14: 2025-06-11 to 2025-06-11, 456 rows, 1 days
+06:09:40 [INFO] models.data.dataset: Built 456 snapshots total
+06:09:40 [INFO] models.data.dataset: Adding lag features...
+06:09:40 [INFO] models.data.dataset: Lag features added: ['disagree_flag_sofar', 'edge_max_flag', 'fcst_prev_near_boundary_flag', 'above_fcst_flag', 'city_warmer_flag', 'high_humidity_flag', 'strong_wind_flag', 'high_cloud_flag', 'clear_sky_flag', 'high_wetbulb_flag', 'strong_windchill_flag', 'clearing_trend_flag', 'clouding_trend_flag', 'settle_f_lag1', 'settle_f_lag2', 'settle_f_lag7', 'vc_max_f_lag1', 'vc_max_f_lag7', 'delta_vcmax_lag1']
+06:09:40 [INFO] scripts.train_city_ordinal_optuna: Chunk 12/14: 2025-06-12 to 2025-06-12, 456 rows, 1 days
+06:09:40 [INFO] models.data.loader: Loaded 576 VC observations for austin from 2025-06-13 to 2025-06-14
+06:09:40 [INFO] models.data.dataset: Batch-loading multi-horizon forecasts for austin...
+06:09:40 [INFO] models.data.loader: Batch-loaded 6 multi-horizon forecasts for austin
+06:09:40 [INFO] models.data.dataset: Batch-loading candles for austin...
+06:09:40 [INFO] models.data.dataset: Batch-loaded 22176 candles for austin (2025-06-13 to 2025-06-13)
+06:09:40 [INFO] models.data.loader: Loaded 8640 VC observations for austin from 2025-05-14 to 2025-06-12
+06:09:41 [INFO] models.data.dataset: Batch-loaded 22321 candles for austin (2025-06-14 to 2025-06-14)
+06:09:41 [INFO] models.data.loader: Loaded 8640 VC observations for austin from 2025-05-15 to 2025-06-13
+06:09:55 [INFO] models.data.dataset: Built 456 snapshots total
+06:09:55 [INFO] models.data.dataset: Adding lag features...
+06:09:55 [INFO] models.data.dataset: Lag features added: ['disagree_flag_sofar', 'edge_max_flag', 'fcst_prev_near_boundary_flag', 'above_fcst_flag', 'city_warmer_flag', 'high_humidity_flag', 'strong_wind_flag', 'high_cloud_flag', 'clear_sky_flag', 'high_wetbulb_flag', 'strong_windchill_flag', 'clearing_trend_flag', 'clouding_trend_flag', 'settle_f_lag1', 'settle_f_lag2', 'settle_f_lag7', 'vc_max_f_lag1', 'vc_max_f_lag7', 'delta_vcmax_lag1']
+06:09:55 [INFO] scripts.train_city_ordinal_optuna: Chunk 13/14: 2025-06-13 to 2025-06-13, 456 rows, 1 days
+06:09:55 [INFO] models.data.dataset: Built 456 snapshots total
+06:09:55 [INFO] models.data.dataset: Adding lag features...
+06:09:55 [INFO] models.data.dataset: Lag features added: ['disagree_flag_sofar', 'edge_max_flag', 'fcst_prev_near_boundary_flag', 'above_fcst_flag', 'city_warmer_flag', 'high_humidity_flag', 'strong_wind_flag', 'high_cloud_flag', 'clear_sky_flag', 'high_wetbulb_flag', 'strong_windchill_flag', 'clearing_trend_flag', 'clouding_trend_flag', 'settle_f_lag1', 'settle_f_lag2', 'settle_f_lag7', 'vc_max_f_lag1', 'vc_max_f_lag7', 'delta_vcmax_lag1']
+06:09:55 [INFO] scripts.train_city_ordinal_optuna: Chunk 14/14: 2025-06-14 to 2025-06-14, 456 rows, 1 days
+06:09:55 [INFO] scripts.train_city_ordinal_optuna: All chunks completed in 64.8s
+06:09:55 [INFO] scripts.train_city_ordinal_optuna: Combined dataset: 6,384 rows, 14 days
+06:09:55 [INFO] build_dataset_pipeline: Built 6,384 rows (14 days, 256 cols)
+06:09:55 [INFO] build_dataset_pipeline: Train: 5,472 rows (12 days)
+06:09:55 [INFO] build_dataset_pipeline: Test:  912 rows (2 days)
+06:09:55 [INFO] build_dataset_pipeline: Saved train to models/saved/austin/train_data_full.parquet
+06:09:55 [INFO] build_dataset_pipeline: Saved test  to models/saved/austin/test_data_full.parquet

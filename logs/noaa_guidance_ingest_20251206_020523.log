@@ -1,0 +1,6 @@
+2025-12-06 02:05:23,453 - __main__ - INFO - Logging to: /home/halsted/Documents/python/weather_updated/logs/noaa_guidance_ingest_20251206_020523.log
+2025-12-06 02:05:23,454 - __main__ - INFO - ================================================================================
+2025-12-06 02:05:23,454 - __main__ - INFO - NOAA MODEL GUIDANCE INGESTION - AUSTIN
+2025-12-06 02:05:23,454 - __main__ - INFO - ================================================================================
+2025-12-06 02:05:23,454 - __main__ - INFO - Models: NBM
+2025-12-06 02:05:23,454 - __main__ - INFO - Date range: 2025-06-15 to 2025-06-15

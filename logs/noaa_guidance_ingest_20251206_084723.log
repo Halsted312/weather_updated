@@ -1,0 +1,47 @@
+2025-12-06 08:47:23,575 - __main__ - INFO - Logging to: /home/halsted/Documents/python/weather_updated/logs/noaa_guidance_ingest_20251206_084723.log
+2025-12-06 08:47:23,576 - __main__ - INFO - ================================================================================
+2025-12-06 08:47:23,576 - __main__ - INFO - NOAA MODEL GUIDANCE INGESTION - CHICAGO
+2025-12-06 08:47:23,576 - __main__ - INFO - ================================================================================
+2025-12-06 08:47:23,576 - __main__ - INFO - Models: HRRR
+2025-12-06 08:47:23,576 - __main__ - INFO - Date range: 2022-12-23 to 2025-12-01
+2025-12-06 08:47:23,576 - __main__ - INFO - City: chicago (America/Chicago)
+2025-12-06 08:47:23,576 - __main__ - INFO - Location: 41.78, -87.76
+2025-12-06 08:47:23,576 - __main__ - INFO - 
+2025-12-06 08:47:23,583 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 08:47:23,583 - __main__ - INFO - Progress: 1/1075 (0.1%) | Rate: 146.50 days/sec | ETA: 0.1 min
+2025-12-06 08:47:23,583 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for chicago 2022-12-23 run=2022-12-22 12:00:00+00:00
+2025-12-06 08:47:26,978 - src.weather_more_apis.ingest - INFO - ✓ HRRR chicago 2022-12-23: -2.98°F
+2025-12-06 08:47:26,978 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for chicago 2022-12-24 run=2022-12-23 12:00:00+00:00
+2025-12-06 08:47:30,021 - src.weather_more_apis.ingest - INFO - ✓ HRRR chicago 2022-12-24: 6.82°F
+2025-12-06 08:47:30,021 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for chicago 2022-12-25 run=2022-12-24 12:00:00+00:00
+2025-12-06 08:47:33,514 - src.weather_more_apis.ingest - INFO - ✓ HRRR chicago 2022-12-25: 13.74°F
+2025-12-06 08:47:33,515 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for chicago 2022-12-26 run=2022-12-25 12:00:00+00:00
+2025-12-06 08:47:36,410 - src.weather_more_apis.ingest - INFO - ✓ HRRR chicago 2022-12-26: 20.17°F
+2025-12-06 08:47:36,410 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for chicago 2022-12-27 run=2022-12-26 12:00:00+00:00
+2025-12-06 08:47:39,644 - src.weather_more_apis.ingest - INFO - ✓ HRRR chicago 2022-12-27: 24.16°F
+2025-12-06 08:47:39,644 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for chicago 2022-12-28 run=2022-12-27 12:00:00+00:00
+2025-12-06 08:47:42,920 - src.weather_more_apis.ingest - INFO - ✓ HRRR chicago 2022-12-28: 42.29°F
+2025-12-06 08:47:42,920 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for chicago 2022-12-29 run=2022-12-28 12:00:00+00:00
+2025-12-06 08:47:47,159 - src.weather_more_apis.ingest - INFO - ✓ HRRR chicago 2022-12-29: 57.78°F
+2025-12-06 08:47:47,159 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for chicago 2022-12-30 run=2022-12-29 12:00:00+00:00
+2025-12-06 08:47:50,493 - src.weather_more_apis.ingest - INFO - ✓ HRRR chicago 2022-12-30: 38.98°F
+2025-12-06 08:47:50,493 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for chicago 2022-12-31 run=2022-12-30 12:00:00+00:00
+2025-12-06 08:47:54,069 - src.weather_more_apis.ingest - INFO - ✓ HRRR chicago 2022-12-31: 34.31°F
+2025-12-06 08:47:54,069 - __main__ - INFO - Progress: 10/1075 (0.9%) | Rate: 0.33 days/sec | ETA: 54.1 min
+2025-12-06 08:47:54,069 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for chicago 2023-01-01 run=2022-12-31 12:00:00+00:00
+2025-12-06 08:47:57,489 - src.weather_more_apis.ingest - INFO - ✓ HRRR chicago 2023-01-01: 43.0°F
+2025-12-06 08:47:57,489 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for chicago 2023-01-02 run=2023-01-01 12:00:00+00:00
+2025-12-06 08:48:01,207 - src.weather_more_apis.ingest - INFO - ✓ HRRR chicago 2023-01-02: 39.3°F
+2025-12-06 08:48:01,207 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for chicago 2023-01-03 run=2023-01-02 12:00:00+00:00
+2025-12-06 08:48:04,266 - src.weather_more_apis.ingest - INFO - ✓ HRRR chicago 2023-01-03: 50.11°F
+2025-12-06 08:48:04,266 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for chicago 2023-01-04 run=2023-01-03 12:00:00+00:00
+2025-12-06 08:48:07,446 - src.weather_more_apis.ingest - INFO - ✓ HRRR chicago 2023-01-04: 35.74°F
+2025-12-06 08:48:07,447 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for chicago 2023-01-05 run=2023-01-04 12:00:00+00:00
+2025-12-06 08:48:10,172 - src.weather_more_apis.ingest - INFO - ✓ HRRR chicago 2023-01-05: 33.97°F
+2025-12-06 08:48:10,172 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for chicago 2023-01-06 run=2023-01-05 12:00:00+00:00
+2025-12-06 08:48:13,760 - src.weather_more_apis.ingest - INFO - ✓ HRRR chicago 2023-01-06: 32.2°F
+2025-12-06 08:48:13,760 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for chicago 2023-01-07 run=2023-01-06 12:00:00+00:00
+2025-12-06 08:48:17,464 - src.weather_more_apis.ingest - INFO - ✓ HRRR chicago 2023-01-07: 31.94°F
+2025-12-06 08:48:17,464 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for chicago 2023-01-08 run=2023-01-07 12:00:00+00:00
+2025-12-06 08:48:20,054 - src.weather_more_apis.ingest - INFO - ✓ HRRR chicago 2023-01-08: 31.07°F
+2025-12-06 08:48:20,054 - src.weather_more_apis.ingest - INFO - Ingesting HRRR for chicago 2023-01-09 run=2023-01-08 12:00:00+00:00

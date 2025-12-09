@@ -1,0 +1,26 @@
+2025-11-28 12:10:28,066 - __main__ - WARNING - ================================================================================
+2025-11-28 12:10:28,066 - __main__ - WARNING - LIVE TRADING MODE ENABLED - REAL ORDERS WILL BE PLACED
+2025-11-28 12:10:28,066 - __main__ - WARNING - Bet size: $50.0/trade, Max daily loss: $500.0
+2025-11-28 12:10:28,066 - __main__ - WARNING - ================================================================================
+2025-11-28 12:10:28,066 - __main__ - WARNING - Skipping confirmation (--yes flag or non-interactive)
+2025-11-28 12:10:28,073 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-11-28 12:10:28,073 - models.inference.live_engine - INFO - Loading ordinal models for all cities...
+2025-11-28 12:10:28,076 - models.training.ordinal_trainer - INFO - Loaded ordinal model from models/saved/chicago/ordinal_catboost_optuna.pkl
+2025-11-28 12:10:28,076 - models.inference.live_engine - INFO - ✓ Loaded chicago model: 12 classifiers
+2025-11-28 12:10:28,080 - models.training.ordinal_trainer - INFO - Loaded ordinal model from models/saved/austin/ordinal_catboost_optuna.pkl
+2025-11-28 12:10:28,080 - models.inference.live_engine - INFO - ✓ Loaded austin model: 12 classifiers
+2025-11-28 12:10:28,084 - models.training.ordinal_trainer - INFO - Loaded ordinal model from models/saved/denver/ordinal_catboost_optuna.pkl
+2025-11-28 12:10:28,084 - models.inference.live_engine - INFO - ✓ Loaded denver model: 12 classifiers
+2025-11-28 12:10:28,087 - models.training.ordinal_trainer - INFO - Loaded ordinal model from models/saved/los_angeles/ordinal_catboost_optuna.pkl
+2025-11-28 12:10:28,087 - models.inference.live_engine - INFO - ✓ Loaded los_angeles model: 11 classifiers
+2025-11-28 12:10:28,091 - models.training.ordinal_trainer - INFO - Loaded ordinal model from models/saved/miami/ordinal_catboost_optuna.pkl
+2025-11-28 12:10:28,091 - models.inference.live_engine - INFO - ✓ Loaded miami model: 11 classifiers
+2025-11-28 12:10:28,094 - models.training.ordinal_trainer - INFO - Loaded ordinal model from models/saved/philadelphia/ordinal_catboost_optuna.pkl
+2025-11-28 12:10:28,094 - models.inference.live_engine - INFO - ✓ Loaded philadelphia model: 12 classifiers
+2025-11-28 12:10:28,094 - models.inference.live_engine - INFO - Successfully loaded 6/6 city models
+2025-11-28 12:10:28,094 - src.utils.rate_limiter - INFO - Kalshi rate limiter: 28.0 req/sec (1 of 1 workers, min=5.0, burst=5)
+2025-11-28 12:10:28,116 - src.kalshi.client - INFO - Kalshi client initialized: https://api.elections.kalshi.com/trade-api/v2 (rate: 28.0 req/sec)
+2025-11-28 12:10:28,116 - __main__ - INFO - Initialized LiveWebSocketTrader (dry_run=False, bet_size=$50.0, max_daily_loss=$500.0, cities=['chicago', 'austin', 'denver', 'los_angeles', 'miami', 'philadelphia'])
+2025-11-28 12:10:28,139 - __main__ - INFO - Connecting to wss://api.elections.kalshi.com/trade-api/ws/v2...
+2025-11-28 12:10:28,213 - __main__ - INFO - ✓ WebSocket connected
+2025-11-28 12:10:28,213 - __main__ - INFO - ✓ Subscribed to orderbook_delta for 6 series

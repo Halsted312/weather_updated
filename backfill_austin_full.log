@@ -1,0 +1,86 @@
+2025-12-05 23:15:30,567 - __main__ - INFO - Starting full historical backfill for Austin
+2025-12-05 23:15:30,567 - __main__ - INFO - Date range: 2022-12-23 to 2025-12-05
+2025-12-05 23:15:30,567 - __main__ - INFO - Total days: 1079
+2025-12-05 23:15:30,574 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-05 23:15:30,574 - __main__ - INFO - Starting backfill for austin
+2025-12-05 23:15:30,574 - __main__ - INFO - Date range: 2022-12-23 to 2025-12-05
+2025-12-05 23:15:30,574 - __main__ - INFO - Timezone: America/Chicago
+2025-12-05 23:15:30,574 - __main__ - INFO - City query: Austin,TX
+2025-12-05 23:15:30,588 - __main__ - INFO - Using vc_location_id: 6
+2025-12-05 23:15:30,588 - __main__ - INFO - Requesting VC historical forecast: 2022-12-23 (basis=2022-12-22)
+2025-12-05 23:15:30,746 - __main__ - INFO - [1/1079] Event 2022-12-23 basis 2022-12-22: 96 rows
+Traceback (most recent call last):
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1936, in _exec_single_context
+    self.dialect.do_executemany(
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/psycopg2.py", line 794, in do_executemany
+    cursor.executemany(statement, parameters)
+psycopg2.ProgrammingError: can't adapt type 'dict'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/halsted/Documents/python/weather_updated/scripts/backfill_vc_historical_forecast_minutes_austin.py", line 354, in <module>
+    main()
+  File "/home/halsted/Documents/python/weather_updated/scripts/backfill_vc_historical_forecast_minutes_austin.py", line 350, in main
+    backfill_austin_historical_forecast_minutes(session, start_event_date, end_event_date)
+  File "/home/halsted/Documents/python/weather_updated/scripts/backfill_vc_historical_forecast_minutes_austin.py", line 332, in backfill_austin_historical_forecast_minutes
+    upsert_vc_minute_weather(session, rows)
+  File "/home/halsted/Documents/python/weather_updated/scripts/backfill_vc_historical_forecast_minutes_austin.py", line 260, in upsert_vc_minute_weather
+    session.execute(insert_sql, values)
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2362, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2256, in _execute_internal
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1418, in execute
+    return meth(
+           ^^^^^
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 515, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1640, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2355, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1936, in _exec_single_context
+    self.dialect.do_executemany(
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/psycopg2.py", line 794, in do_executemany
+    cursor.executemany(statement, parameters)
+sqlalchemy.exc.ProgrammingError: (psycopg2.ProgrammingError) can't adapt type 'dict'
+[SQL: 
+        INSERT INTO wx.vc_minute_weather (
+            vc_location_id, data_type, forecast_basis_date,
+            datetime_local, datetime_utc,
+            temp_f, humidity, cloudcover,
+            windspeed_mph, windgust_mph, dew_f,
+            pressure_mb, visibility_miles, conditions, raw_json
+        )
+        VALUES (
+            %(vc_location_id)s, %(data_type)s, %(forecast_basis_date)s,
+            %(datetime_local)s, %(datetime_utc)s,
+            %(temp_f)s, %(humidity)s, %(cloudcover)s,
+            %(windspeed_mph)s, %(windgust_mph)s, %(dew_f)s,
+            %(pressure_mb)s, %(visibility_miles)s, %(conditions)s, %(raw_json)s
+        )
+        ON CONFLICT (vc_location_id, data_type, forecast_basis_date, datetime_utc)
+        DO UPDATE SET
+            temp_f = EXCLUDED.temp_f,
+            humidity = EXCLUDED.humidity,
+            cloudcover = EXCLUDED.cloudcover,
+            windspeed_mph = EXCLUDED.windspeed_mph,
+            windgust_mph = EXCLUDED.windgust_mph,
+            dew_f = EXCLUDED.dew_f,
+            pressure_mb = EXCLUDED.pressure_mb,
+            visibility_miles = EXCLUDED.visibility_miles,
+            conditions = EXCLUDED.conditions,
+            raw_json = EXCLUDED.raw_json
+    ]
+[parameters: [{'vc_location_id': 6, 'data_type': 'historical_forecast', 'forecast_basis_date': datetime.date(2022, 12, 22), 'datetime_local': datetime.datetime(2022, 12, 23, 0, 0), 'datetime_utc': datetime.datetime(2022, 12, 23, 6, 0, tzinfo=datetime.timezone.utc), 'temp_f': None, 'humidity': None, 'cloudcover': None, 'windspeed_mph': None, 'windgust_mph': None, 'dew_f': None, 'pressure_mb': None, 'visibility_miles': None, 'conditions': None, 'raw_json': {'datetime': '00:00:00', 'datetimeEpoch': 1671775200, 'temp': None, 'humidity': None, 'dew': None, 'windspeed': None, 'windgust': None, 'pressure': None, 'visibility': None}}, {'vc_location_id': 6, 'data_type': 'historical_forecast', 'forecast_basis_date': datetime.date(2022, 12, 22), 'datetime_local': datetime.datetime(2022, 12, 23, 0, 15), 'datetime_utc': datetime.datetime(2022, 12, 23, 6, 15, tzinfo=datetime.timezone.utc), 'temp_f': None, 'humidity': None, 'cloudcover': None, 'windspeed_mph': None, 'windgust_mph': None, 'dew_f': None, 'pressure_mb': None, 'visibility_miles': None, 'conditions': None, 'raw_json': {'datetime': '00:15:00', 'datetimeEpoch': 1671776100, 'temp': None, 'humidity': None, 'dew': None, 'windspeed': None, 'windgust': None, 'pressure': None, 'visibility': None}}, {'vc_location_id': 6, 'data_type': 'historical_forecast', 'forecast_basis_date': datetime.date(2022, 12, 22), 'datetime_local': datetime.datetime(2022, 12, 23, 0, 30), 'datetime_utc': datetime.datetime(2022, 12, 23, 6, 30, tzinfo=datetime.timezone.utc), 'temp_f': None, 'humidity': None, 'cloudcover': None, 'windspeed_mph': None, 'windgust_mph': None, 'dew_f': None, 'pressure_mb': None, 'visibility_miles': None, 'conditions': None, 'raw_json': {'datetime': '00:30:00', 'datetimeEpoch': 1671777000, 'temp': None, 'humidity': None, 'dew': None, 'windspeed': None, 'windgust': None, 'pressure': None, 'visibility': None}}, {'vc_location_id': 6, 'data_type': 'historical_forecast', 'forecast_basis_date': datetime.date(2022, 12, 22), 'datetime_local': datetime.datetime(2022, 12, 23, 0, 45), 'datetime_utc': datetime.datetime(2022, 12, 23, 6, 45, tzinfo=datetime.timezone.utc), 'temp_f': None, 'humidity': None, 'cloudcover': None, 'windspeed_mph': None, 'windgust_mph': None, 'dew_f': None, 'pressure_mb': None, 'visibility_miles': None, 'conditions': None, 'raw_json': {'datetime': '00:45:00', 'datetimeEpoch': 1671777900, 'temp': None, 'humidity': None, 'dew': None, 'windspeed': None, 'windgust': None, 'pressure': None, 'visibility': None}}, {'vc_location_id': 6, 'data_type': 'historical_forecast', 'forecast_basis_date': datetime.date(2022, 12, 22), 'datetime_local': datetime.datetime(2022, 12, 23, 1, 0), 'datetime_utc': datetime.datetime(2022, 12, 23, 7, 0, tzinfo=datetime.timezone.utc), 'temp_f': None, 'humidity': None, 'cloudcover': None, 'windspeed_mph': None, 'windgust_mph': None, 'dew_f': None, 'pressure_mb': None, 'visibility_miles': None, 'conditions': None, 'raw_json': {'datetime': '01:00:00', 'datetimeEpoch': 1671778800, 'temp': None, 'humidity': None, 'dew': None, 'windspeed': None, 'windgust': None, 'pressure': None, 'visibility': None}}, {'vc_location_id': 6, 'data_type': 'historical_forecast', 'forecast_basis_date': datetime.date(2022, 12, 22), 'datetime_local': datetime.datetime(2022, 12, 23, 1, 15), 'datetime_utc': datetime.datetime(2022, 12, 23, 7, 15, tzinfo=datetime.timezone.utc), 'temp_f': None, 'humidity': None, 'cloudcover': None, 'windspeed_mph': None, 'windgust_mph': None, 'dew_f': None, 'pressure_mb': None, 'visibility_miles': None, 'conditions': None, 'raw_json': {'datetime': '01:15:00', 'datetimeEpoch': 1671779700, 'temp': None, 'humidity': None, 'dew': None, 'windspeed': None, 'windgust': None, 'pressure': None, 'visibility': None}}, {'vc_location_id': 6, 'data_type': 'historical_forecast', 'forecast_basis_date': datetime.date(2022, 12, 22), 'datetime_local': datetime.datetime(2022, 12, 23, 1, 30), 'datetime_utc': datetime.datetime(2022, 12, 23, 7, 30, tzinfo=datetime.timezone.utc), 'temp_f': None, 'humidity': None, 'cloudcover': None, 'windspeed_mph': None, 'windgust_mph': None, 'dew_f': None, 'pressure_mb': None, 'visibility_miles': None, 'conditions': None, 'raw_json': {'datetime': '01:30:00', 'datetimeEpoch': 1671780600, 'temp': None, 'humidity': None, 'dew': None, 'windspeed': None, 'windgust': None, 'pressure': None, 'visibility': None}}, {'vc_location_id': 6, 'data_type': 'historical_forecast', 'forecast_basis_date': datetime.date(2022, 12, 22), 'datetime_local': datetime.datetime(2022, 12, 23, 1, 45), 'datetime_utc': datetime.datetime(2022, 12, 23, 7, 45, tzinfo=datetime.timezone.utc), 'temp_f': None, 'humidity': None, 'cloudcover': None, 'windspeed_mph': None, 'windgust_mph': None, 'dew_f': None, 'pressure_mb': None, 'visibility_miles': None, 'conditions': None, 'raw_json': {'datetime': '01:45:00', 'datetimeEpoch': 1671781500, 'temp': None, 'humidity': None, 'dew': None, 'windspeed': None, 'windgust': None, 'pressure': None, 'visibility': None}}  ... displaying 10 of 96 total bound parameter sets ...  {'vc_location_id': 6, 'data_type': 'historical_forecast', 'forecast_basis_date': datetime.date(2022, 12, 22), 'datetime_local': datetime.datetime(2022, 12, 23, 23, 30), 'datetime_utc': datetime.datetime(2022, 12, 24, 5, 30, tzinfo=datetime.timezone.utc), 'temp_f': None, 'humidity': None, 'cloudcover': None, 'windspeed_mph': None, 'windgust_mph': None, 'dew_f': None, 'pressure_mb': None, 'visibility_miles': None, 'conditions': None, 'raw_json': {'datetime': '23:30:00', 'datetimeEpoch': 1671859800, 'temp': None, 'humidity': None, 'dew': None, 'windspeed': None, 'windgust': None, 'pressure': None, 'visibility': None}}, {'vc_location_id': 6, 'data_type': 'historical_forecast', 'forecast_basis_date': datetime.date(2022, 12, 22), 'datetime_local': datetime.datetime(2022, 12, 23, 23, 45), 'datetime_utc': datetime.datetime(2022, 12, 24, 5, 45, tzinfo=datetime.timezone.utc), 'temp_f': None, 'humidity': None, 'cloudcover': None, 'windspeed_mph': None, 'windgust_mph': None, 'dew_f': None, 'pressure_mb': None, 'visibility_miles': None, 'conditions': None, 'raw_json': {'datetime': '23:45:00', 'datetimeEpoch': 1671860700, 'temp': None, 'humidity': None, 'dew': None, 'windspeed': None, 'windgust': None, 'pressure': None, 'visibility': None}}]]
+(Background on this error at: https://sqlalche.me/e/20/f405)
