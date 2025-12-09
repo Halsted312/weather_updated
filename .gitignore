@@ -127,3 +127,6 @@ migrations/env.py
 
 # Docker local overrides (docker-compose.yml is tracked)
 docker-compose.override.yml
+
+# Trash
+.Trash-*/
