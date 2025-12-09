@@ -1,3 +1,24 @@
+GitHub Workflow - Yes, This Works
+On this computer: Commit and push your current state
+git add -A && git commit -m "sync for fast computer" && git push
+On fast computer: Clone to LOCAL drive
+cd /local/fast/drive
+git clone <your-repo-url> weather_updated
+cd weather_updated
+pip install -e .  # or use existing venv
+Run everything locally on fast computer (10-50x faster I/O)
+When done on fast computer: Push results
+git add models/saved/ models/raw_data/  # or whatever changed
+git commit -m "Austin + Chicago models built"
+git push
+Back on this computer: Pull the results
+git pull
+Note: Large parquet files (50-100MB) in models/saved/ will bloat git history. Consider:
+Adding them to .gitignore and using rsync/scp instead
+Or using Git LFS for large files
+Or just accepting the bloat since it's a private research repo
+The local SSD vs network mount difference for parallel parquet processing is huge - probably 10-20x faster
+
 
 (.venv) (base) halsted@halsted:~/slow_weather_updated$ PYTHONPATH=. python scripts/build_dataset_from_parquets.py --city austin
 18:29:42 [INFO] __main__: ============================================================
