@@ -1,3 +1,16 @@
+iles are HERE on this computer:
+models/saved/austin/train_data_full.parquet  (42 MB)
+models/saved/austin/test_data_full.parquet   (22 MB)
+models/saved/austin/data_full.parquet        (114 MB)
+Your fast computer doesn't have them. Quick fix - run from THIS computer:
+git add models/saved/austin/
+git commit -m "Austin data for fast computer"
+git push
+Then on FAST computer:
+cd ~/Python/weather_updated
+git pull
+Then run your edge classifier command again on the fast computer.
+
 (.venv) (base) halsted@halsted:~/Python/weather_updated$ PYTHONPATH=. python scripts/train_edge_classifier.py     --city austin     --threshold 3.5     --sample-rate 4     --workers 28     --regenerate-only
 23:49:29 [INFO] __main__: Auto-detected candle parquet: models/candles/candles_austin.parquet
 ============================================================
