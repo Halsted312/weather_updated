@@ -1,0 +1,22 @@
+2025-12-06 02:06:35,544 - __main__ - INFO - Logging to: /home/halsted/Documents/python/weather_updated/logs/noaa_guidance_ingest_20251206_020635.log
+2025-12-06 02:06:35,545 - __main__ - INFO - ================================================================================
+2025-12-06 02:06:35,545 - __main__ - INFO - NOAA MODEL GUIDANCE INGESTION - AUSTIN
+2025-12-06 02:06:35,545 - __main__ - INFO - ================================================================================
+2025-12-06 02:06:35,545 - __main__ - INFO - Models: NBM
+2025-12-06 02:06:35,545 - __main__ - INFO - Date range: 2025-06-15 to 2025-06-15
+2025-12-06 02:06:35,545 - __main__ - INFO - City: austin (America/Chicago)
+2025-12-06 02:06:35,545 - __main__ - INFO - Location: 30.18, -97.68
+2025-12-06 02:06:35,545 - __main__ - INFO - 
+2025-12-06 02:06:35,552 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 02:06:35,552 - __main__ - INFO - Progress: 1/1 (100.0%) | Rate: 143.74 days/sec | ETA: 0.0 min
+2025-12-06 02:06:35,552 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-06-15 run=2025-06-14 12:00:00+00:00
+2025-12-06 02:06:51,244 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-06-15: 91.44°F
+2025-12-06 02:06:51,245 - __main__ - INFO - 
+2025-12-06 02:06:51,245 - __main__ - INFO - ================================================================================
+2025-12-06 02:06:51,245 - __main__ - INFO - INGESTION COMPLETE
+2025-12-06 02:06:51,245 - __main__ - INFO - ================================================================================
+2025-12-06 02:06:51,245 - __main__ - INFO - Processed: 1 days in 0.3 minutes
+2025-12-06 02:06:51,245 - __main__ - INFO - Successful: 1
+2025-12-06 02:06:51,245 - __main__ - INFO - Failed: 0
+2025-12-06 02:06:51,245 - __main__ - INFO - Success rate: 100.0%
+2025-12-06 02:06:51,245 - __main__ - INFO - Log file: /home/halsted/Documents/python/weather_updated/logs/noaa_guidance_ingest_20251206_020635.log

@@ -1,0 +1,43 @@
+08:05:34 [INFO] __main__: ============================================================
+08:05:34 [INFO] __main__: CHICAGO Optuna Training (100 trials)
+08:05:34 [INFO] __main__: Optimization objective: auc
+08:05:34 [INFO] __main__: ============================================================
+08:05:34 [INFO] __main__: Loading from training cache: data/training_cache/chicago/full.parquet
+08:05:35 [INFO] __main__: Loaded 486,912 rows, 237 columns
+08:05:35 [INFO] __main__: Data range after filtering: 2023-01-01 to 2025-12-03
+08:05:36 [INFO] __main__: Total days: 1068
+08:05:36 [INFO] __main__: Training: 2023-01-01 to 2025-05-04 (855 days)
+08:05:36 [INFO] __main__: Testing:  2025-05-05 to 2025-12-03 (213 days)
+08:05:36 [INFO] __main__: 
+Training samples: 389,784
+08:05:36 [INFO] __main__: Training days: 855
+08:05:36 [INFO] __main__: Test samples: 97,128
+08:05:36 [INFO] __main__: Test days: 213
+08:05:36 [INFO] __main__: 
+Station-city features: ['station_city_temp_gap', 'station_city_max_gap_sofar', 'station_city_mean_gap_sofar', 'station_city_gap_std', 'station_city_gap_trend', 'station_city_gap_x_fcst_gap']
+08:05:36 [INFO] __main__:   station_city_temp_gap: 389,592/389,784 non-null (100.0%)
+08:05:36 [INFO] __main__:   station_city_max_gap_sofar: 389,592/389,784 non-null (100.0%)
+08:05:36 [INFO] __main__:   station_city_mean_gap_sofar: 389,592/389,784 non-null (100.0%)
+08:05:36 [INFO] __main__:   station_city_gap_std: 389,592/389,784 non-null (100.0%)
+08:05:36 [INFO] __main__:   station_city_gap_trend: 389,583/389,784 non-null (99.9%)
+08:05:36 [INFO] __main__:   station_city_gap_x_fcst_gap: 388,680/389,784 non-null (99.7%)
+08:05:36 [INFO] __main__: 
+Multi-horizon features: ['fcst_multi_mean', 'fcst_multi_median', 'fcst_multi_ema', 'fcst_multi_std', 'fcst_multi_range', 'fcst_multi_t1_t2_diff', 'fcst_multi_drift', 'fcst_multi_cv', 'fcst_multi_range_pct']
+08:05:36 [INFO] __main__:   fcst_multi_mean: 389,784/389,784 non-null (100.0%)
+08:05:36 [INFO] __main__:   fcst_multi_median: 389,784/389,784 non-null (100.0%)
+08:05:36 [INFO] __main__:   fcst_multi_ema: 389,784/389,784 non-null (100.0%)
+08:05:36 [INFO] __main__:   fcst_multi_std: 389,784/389,784 non-null (100.0%)
+08:05:36 [INFO] __main__:   fcst_multi_range: 389,784/389,784 non-null (100.0%)
+08:05:36 [INFO] __main__:   fcst_multi_t1_t2_diff: 387,960/389,784 non-null (99.5%)
+08:05:36 [INFO] __main__:   fcst_multi_drift: 387,960/389,784 non-null (99.5%)
+08:05:36 [INFO] __main__:   fcst_multi_cv: 389,784/389,784 non-null (100.0%)
+08:05:36 [INFO] __main__:   fcst_multi_range_pct: 389,784/389,784 non-null (100.0%)
+08:05:36 [INFO] models.training.ordinal_trainer: Training ordinal model (catboost) on 389784 samples
+08:05:37 [INFO] models.training.ordinal_trainer: City delta range: [-12, 12]
+08:05:37 [INFO] models.training.ordinal_trainer: Training 24 threshold classifiers: [-11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+08:05:37 [INFO] models.training.ordinal_trainer: Starting Optuna tuning with 100 trials (objective=auc)
+
+============================================================
+OPTUNA TRAINING (100 trials, objective=auc)
+============================================================
+  0%|          | 0/100 [00:00<?, ?it/s]

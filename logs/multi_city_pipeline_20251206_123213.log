@@ -1,0 +1,189 @@
+2025-12-06 12:32:13 [INFO] ============================================================
+2025-12-06 12:32:13 [INFO] MULTI-CITY ML PIPELINE
+2025-12-06 12:32:13 [INFO] ============================================================
+2025-12-06 12:32:13 [INFO] Log file: logs/multi_city_pipeline_20251206_123213.log
+2025-12-06 12:32:13 [INFO] Started: 2025-12-06 12:32:13
+2025-12-06 12:32:13 [INFO] 
+2025-12-06 12:32:13 [INFO] Cities: ['denver', 'los_angeles', 'miami', 'philadelphia']
+2025-12-06 12:32:13 [INFO] Date range: 2023-01-01 to 2025-12-03
+2025-12-06 12:32:13 [INFO] Ordinal trials: 150
+2025-12-06 12:32:13 [INFO] Edge trials: 80 
+2025-12-06 12:32:13 [INFO] Edge threshold: 1.5°F
+2025-12-06 12:32:13 [INFO] Edge sample rate: 4
+2025-12-06 12:32:13 [INFO] Workers: 12
+2025-12-06 12:32:13 [INFO] Cache directory: models/saved
+2025-12-06 12:32:13 [INFO] Skip build: False
+2025-12-06 12:32:13 [INFO] Continue on error: True
+2025-12-06 12:32:13 [INFO] Models output: /home/halsted/Documents/python/weather_updated/models/saved
+2025-12-06 12:32:13 [INFO] 
+============================================================
+2025-12-06 12:32:13 [INFO] PHASE 1: ORDINAL MODEL TRAINING
+2025-12-06 12:32:13 [INFO] ============================================================
+2025-12-06 12:32:13 [INFO] 
+############################################################
+2025-12-06 12:32:13 [INFO] # ORDINAL TRAINING: DENVER
+2025-12-06 12:32:13 [INFO] # Date range: 2023-01-01 to 2025-12-03
+2025-12-06 12:32:13 [INFO] # Trials: 150
+2025-12-06 12:32:13 [INFO] ############################################################
+2025-12-06 12:32:13 [INFO] 
+============================================================
+2025-12-06 12:32:13 [INFO] RUNNING: Build dataset for denver
+2025-12-06 12:32:13 [INFO] Command: /home/halsted/Documents/python/weather_updated/.venv/bin/python models/pipeline/01_build_dataset.py --city denver --start 2023-01-01 --end 2025-12-03 --workers 12
+2025-12-06 12:32:13 [INFO] ============================================================
+2025-12-06 12:57:35 [INFO] SUCCESS: Build dataset for denver completed in 1522.3s (25.4 min)
+2025-12-06 12:57:35 [INFO] 
+============================================================
+2025-12-06 12:57:35 [INFO] RUNNING: Train ordinal model for denver
+2025-12-06 12:57:35 [INFO] Command: /home/halsted/Documents/python/weather_updated/.venv/bin/python models/pipeline/03_train_ordinal.py --city denver --trials 150 --workers 12 --cache-dir models/saved
+2025-12-06 12:57:35 [INFO] ============================================================
+2025-12-06 14:28:01 [INFO] SUCCESS: Train ordinal model for denver completed in 5425.7s (90.4 min)
+2025-12-06 14:28:01 [INFO] 
+DENVER ORDINAL COMPLETED in 6948.0s (115.8 min)
+2025-12-06 14:28:01 [INFO] 
+############################################################
+2025-12-06 14:28:01 [INFO] # ORDINAL TRAINING: LOS_ANGELES
+2025-12-06 14:28:01 [INFO] # Date range: 2023-01-01 to 2025-12-03
+2025-12-06 14:28:01 [INFO] # Trials: 150
+2025-12-06 14:28:01 [INFO] ############################################################
+2025-12-06 14:28:01 [INFO] 
+============================================================
+2025-12-06 14:28:01 [INFO] RUNNING: Build dataset for los_angeles
+2025-12-06 14:28:01 [INFO] Command: /home/halsted/Documents/python/weather_updated/.venv/bin/python models/pipeline/01_build_dataset.py --city los_angeles --start 2023-01-01 --end 2025-12-03 --workers 12
+2025-12-06 14:28:01 [INFO] ============================================================
+2025-12-06 14:52:49 [INFO] SUCCESS: Build dataset for los_angeles completed in 1488.0s (24.8 min)
+2025-12-06 14:52:49 [INFO] 
+============================================================
+2025-12-06 14:52:49 [INFO] RUNNING: Train ordinal model for los_angeles
+2025-12-06 14:52:49 [INFO] Command: /home/halsted/Documents/python/weather_updated/.venv/bin/python models/pipeline/03_train_ordinal.py --city los_angeles --trials 150 --workers 12 --cache-dir models/saved
+2025-12-06 14:52:49 [INFO] ============================================================
+2025-12-06 16:48:54 [INFO] SUCCESS: Train ordinal model for los_angeles completed in 6964.8s (116.1 min)
+2025-12-06 16:48:54 [INFO] 
+LOS_ANGELES ORDINAL COMPLETED in 8452.8s (140.9 min)
+2025-12-06 16:48:54 [INFO] 
+############################################################
+2025-12-06 16:48:54 [INFO] # ORDINAL TRAINING: MIAMI
+2025-12-06 16:48:54 [INFO] # Date range: 2023-01-01 to 2025-12-03
+2025-12-06 16:48:54 [INFO] # Trials: 150
+2025-12-06 16:48:54 [INFO] ############################################################
+2025-12-06 16:48:54 [INFO] 
+============================================================
+2025-12-06 16:48:54 [INFO] RUNNING: Build dataset for miami
+2025-12-06 16:48:54 [INFO] Command: /home/halsted/Documents/python/weather_updated/.venv/bin/python models/pipeline/01_build_dataset.py --city miami --start 2023-01-01 --end 2025-12-03 --workers 12
+2025-12-06 16:48:54 [INFO] ============================================================
+2025-12-06 17:16:58 [INFO] SUCCESS: Build dataset for miami completed in 1683.7s (28.1 min)
+2025-12-06 17:16:58 [INFO] 
+============================================================
+2025-12-06 17:16:58 [INFO] RUNNING: Train ordinal model for miami
+2025-12-06 17:16:58 [INFO] Command: /home/halsted/Documents/python/weather_updated/.venv/bin/python models/pipeline/03_train_ordinal.py --city miami --trials 150 --workers 12 --cache-dir models/saved
+2025-12-06 17:16:58 [INFO] ============================================================
+2025-12-06 19:05:56 [INFO] SUCCESS: Train ordinal model for miami completed in 6538.1s (109.0 min)
+2025-12-06 19:05:56 [INFO] 
+MIAMI ORDINAL COMPLETED in 8221.7s (137.0 min)
+2025-12-06 19:05:56 [INFO] 
+############################################################
+2025-12-06 19:05:56 [INFO] # ORDINAL TRAINING: PHILADELPHIA
+2025-12-06 19:05:56 [INFO] # Date range: 2023-01-01 to 2025-12-03
+2025-12-06 19:05:56 [INFO] # Trials: 150
+2025-12-06 19:05:56 [INFO] ############################################################
+2025-12-06 19:05:56 [INFO] 
+============================================================
+2025-12-06 19:05:56 [INFO] RUNNING: Build dataset for philadelphia
+2025-12-06 19:05:56 [INFO] Command: /home/halsted/Documents/python/weather_updated/.venv/bin/python models/pipeline/01_build_dataset.py --city philadelphia --start 2023-01-01 --end 2025-12-03 --workers 12
+2025-12-06 19:05:56 [INFO] ============================================================
+2025-12-06 19:30:00 [INFO] SUCCESS: Build dataset for philadelphia completed in 1444.4s (24.1 min)
+2025-12-06 19:30:00 [INFO] 
+============================================================
+2025-12-06 19:30:00 [INFO] RUNNING: Train ordinal model for philadelphia
+2025-12-06 19:30:00 [INFO] Command: /home/halsted/Documents/python/weather_updated/.venv/bin/python models/pipeline/03_train_ordinal.py --city philadelphia --trials 150 --workers 12 --cache-dir models/saved
+2025-12-06 19:30:00 [INFO] ============================================================
+2025-12-06 21:33:20 [INFO] SUCCESS: Train ordinal model for philadelphia completed in 7400.1s (123.3 min)
+2025-12-06 21:33:20 [INFO] 
+PHILADELPHIA ORDINAL COMPLETED in 8844.5s (147.4 min)
+2025-12-06 21:33:20 [INFO] 
+============================================================
+2025-12-06 21:33:20 [INFO] PHASE 2: EDGE CLASSIFIER TRAINING
+2025-12-06 21:33:20 [INFO] ============================================================
+2025-12-06 21:33:20 [INFO] 
+############################################################
+2025-12-06 21:33:20 [INFO] # EDGE TRAINING: DENVER
+2025-12-06 21:33:20 [INFO] # Trials: 80, Threshold: 1.5°F, Sample rate: 4
+2025-12-06 21:33:20 [INFO] ############################################################
+2025-12-06 21:33:20 [INFO] 
+============================================================
+2025-12-06 21:33:20 [INFO] RUNNING: Train edge classifier for denver
+2025-12-06 21:33:20 [INFO] Command: /home/halsted/Documents/python/weather_updated/.venv/bin/python scripts/train_edge_classifier.py --city denver --trials 80 --workers 12 --threshold 1.5 --sample-rate 4 --optuna-metric sharpe
+2025-12-06 21:33:20 [INFO] ============================================================
+2025-12-06 21:34:45 [ERROR] FAILED: Train edge classifier for denver (exit code 1) after 85.2s
+2025-12-06 21:34:45 [INFO] 
+############################################################
+2025-12-06 21:34:45 [INFO] # EDGE TRAINING: LOS_ANGELES
+2025-12-06 21:34:45 [INFO] # Trials: 80, Threshold: 1.5°F, Sample rate: 4
+2025-12-06 21:34:45 [INFO] ############################################################
+2025-12-06 21:34:45 [INFO] 
+============================================================
+2025-12-06 21:34:45 [INFO] RUNNING: Train edge classifier for los_angeles
+2025-12-06 21:34:45 [INFO] Command: /home/halsted/Documents/python/weather_updated/.venv/bin/python scripts/train_edge_classifier.py --city los_angeles --trials 80 --workers 12 --threshold 1.5 --sample-rate 4 --optuna-metric sharpe
+2025-12-06 21:34:45 [INFO] ============================================================
+2025-12-06 21:35:20 [INFO] SUCCESS: Train edge classifier for los_angeles completed in 34.3s (0.6 min)
+2025-12-06 21:35:20 [INFO] 
+LOS_ANGELES EDGE COMPLETED in 34.3s (0.6 min)
+2025-12-06 21:35:20 [INFO] 
+############################################################
+2025-12-06 21:35:20 [INFO] # EDGE TRAINING: MIAMI
+2025-12-06 21:35:20 [INFO] # Trials: 80, Threshold: 1.5°F, Sample rate: 4
+2025-12-06 21:35:20 [INFO] ############################################################
+2025-12-06 21:35:20 [INFO] 
+============================================================
+2025-12-06 21:35:20 [INFO] RUNNING: Train edge classifier for miami
+2025-12-06 21:35:20 [INFO] Command: /home/halsted/Documents/python/weather_updated/.venv/bin/python scripts/train_edge_classifier.py --city miami --trials 80 --workers 12 --threshold 1.5 --sample-rate 4 --optuna-metric sharpe
+2025-12-06 21:35:20 [INFO] ============================================================
+2025-12-06 21:36:41 [INFO] SUCCESS: Train edge classifier for miami completed in 80.9s (1.3 min)
+2025-12-06 21:36:41 [INFO] 
+MIAMI EDGE COMPLETED in 80.9s (1.3 min)
+2025-12-06 21:36:41 [INFO] 
+############################################################
+2025-12-06 21:36:41 [INFO] # EDGE TRAINING: PHILADELPHIA
+2025-12-06 21:36:41 [INFO] # Trials: 80, Threshold: 1.5°F, Sample rate: 4
+2025-12-06 21:36:41 [INFO] ############################################################
+2025-12-06 21:36:41 [INFO] 
+============================================================
+2025-12-06 21:36:41 [INFO] RUNNING: Train edge classifier for philadelphia
+2025-12-06 21:36:41 [INFO] Command: /home/halsted/Documents/python/weather_updated/.venv/bin/python scripts/train_edge_classifier.py --city philadelphia --trials 80 --workers 12 --threshold 1.5 --sample-rate 4 --optuna-metric sharpe
+2025-12-06 21:36:41 [INFO] ============================================================
+2025-12-06 23:00:50 [INFO] SUCCESS: Train edge classifier for philadelphia completed in 5049.3s (84.2 min)
+2025-12-06 23:00:50 [INFO] 
+PHILADELPHIA EDGE COMPLETED in 5049.3s (84.2 min)
+2025-12-06 23:00:50 [INFO] 
+============================================================
+2025-12-06 23:00:50 [INFO] PIPELINE SUMMARY
+2025-12-06 23:00:50 [INFO] ============================================================
+2025-12-06 23:00:50 [INFO] Finished: 2025-12-06 23:00:50
+2025-12-06 23:00:50 [INFO] Total time: 37716.8s (628.6 min, 10.48 hr)
+2025-12-06 23:00:50 [INFO] Log file: logs/multi_city_pipeline_20251206_123213.log
+2025-12-06 23:00:50 [INFO] 
+2025-12-06 23:00:50 [INFO] Ordinal Training Results:
+2025-12-06 23:00:50 [INFO] ----------------------------------------
+2025-12-06 23:00:50 [INFO]   [+] denver          SUCCESS    (115.8 min)
+2025-12-06 23:00:50 [INFO]   [+] los_angeles     SUCCESS    (140.9 min)
+2025-12-06 23:00:50 [INFO]   [+] miami           SUCCESS    (137.0 min)
+2025-12-06 23:00:50 [INFO]   [+] philadelphia    SUCCESS    (147.4 min)
+2025-12-06 23:00:50 [INFO] 
+2025-12-06 23:00:50 [INFO] Edge Training Results:
+2025-12-06 23:00:50 [INFO] ----------------------------------------
+2025-12-06 23:00:50 [INFO]   [X] denver          FAILED     (1.4 min)
+2025-12-06 23:00:50 [INFO]   [+] los_angeles     SUCCESS    (0.6 min)
+2025-12-06 23:00:50 [INFO]   [+] miami           SUCCESS    (1.3 min)
+2025-12-06 23:00:50 [INFO]   [+] philadelphia    SUCCESS    (84.2 min)
+2025-12-06 23:00:50 [INFO] 
+2025-12-06 23:00:50 [INFO] Output Files:
+2025-12-06 23:00:50 [INFO] ----------------------------------------
+2025-12-06 23:00:50 [INFO]   models/saved/denver/ordinal_catboost_optuna.pkl
+2025-12-06 23:00:50 [INFO]   models/saved/los_angeles/ordinal_catboost_optuna.pkl
+2025-12-06 23:00:50 [INFO]   models/saved/los_angeles/edge_classifier.pkl
+2025-12-06 23:00:50 [INFO]   models/saved/miami/ordinal_catboost_optuna.pkl
+2025-12-06 23:00:50 [INFO]   models/saved/miami/edge_classifier.pkl
+2025-12-06 23:00:50 [INFO]   models/saved/philadelphia/ordinal_catboost_optuna.pkl
+2025-12-06 23:00:50 [INFO]   models/saved/philadelphia/edge_classifier.pkl
+2025-12-06 23:00:50 [ERROR] 
+FAILED CITIES: ['denver']
+2025-12-06 23:00:50 [ERROR] Check log file for details: logs/multi_city_pipeline_20251206_123213.log

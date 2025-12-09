@@ -1,0 +1,189 @@
+nohup: ignoring input
+09:40:52 [INFO] __main__: ============================================================
+09:40:52 [INFO] __main__: MIAMI Optuna Training (100 trials)
+09:40:52 [INFO] __main__: Optimization objective: auc
+09:40:52 [INFO] __main__: ============================================================
+09:40:52 [INFO] __main__: Loading from training cache: data/training_cache/miami/full.parquet
+09:40:53 [INFO] __main__: Loaded 486,900 rows, 237 columns
+09:40:53 [INFO] __main__: Data range after filtering: 2023-01-01 to 2025-12-03
+09:40:53 [INFO] __main__: Total days: 1068
+09:40:53 [INFO] __main__: Training: 2023-01-01 to 2025-05-04 (855 days)
+09:40:53 [INFO] __main__: Testing:  2025-05-05 to 2025-12-03 (213 days)
+09:40:53 [INFO] __main__: 
+Training samples: 389,772
+09:40:53 [INFO] __main__: Training days: 855
+09:40:53 [INFO] __main__: Test samples: 97,128
+09:40:53 [INFO] __main__: Test days: 213
+09:40:53 [INFO] __main__: 
+Station-city features: ['station_city_temp_gap', 'station_city_max_gap_sofar', 'station_city_mean_gap_sofar', 'station_city_gap_std', 'station_city_gap_trend', 'station_city_gap_x_fcst_gap']
+09:40:53 [INFO] __main__:   station_city_temp_gap: 389,664/389,772 non-null (100.0%)
+09:40:53 [INFO] __main__:   station_city_max_gap_sofar: 389,664/389,772 non-null (100.0%)
+09:40:53 [INFO] __main__:   station_city_mean_gap_sofar: 389,664/389,772 non-null (100.0%)
+09:40:53 [INFO] __main__:   station_city_gap_std: 389,664/389,772 non-null (100.0%)
+09:40:53 [INFO] __main__:   station_city_gap_trend: 389,658/389,772 non-null (100.0%)
+09:40:53 [INFO] __main__:   station_city_gap_x_fcst_gap: 389,664/389,772 non-null (100.0%)
+09:40:53 [INFO] __main__: 
+Multi-horizon features: ['fcst_multi_mean', 'fcst_multi_median', 'fcst_multi_ema', 'fcst_multi_std', 'fcst_multi_range', 'fcst_multi_t1_t2_diff', 'fcst_multi_drift', 'fcst_multi_cv', 'fcst_multi_range_pct']
+09:40:53 [INFO] __main__:   fcst_multi_mean: 389,772/389,772 non-null (100.0%)
+09:40:53 [INFO] __main__:   fcst_multi_median: 389,772/389,772 non-null (100.0%)
+09:40:53 [INFO] __main__:   fcst_multi_ema: 389,772/389,772 non-null (100.0%)
+09:40:53 [INFO] __main__:   fcst_multi_std: 389,772/389,772 non-null (100.0%)
+09:40:53 [INFO] __main__:   fcst_multi_range: 389,772/389,772 non-null (100.0%)
+09:40:53 [INFO] __main__:   fcst_multi_t1_t2_diff: 389,772/389,772 non-null (100.0%)
+09:40:53 [INFO] __main__:   fcst_multi_drift: 389,772/389,772 non-null (100.0%)
+09:40:53 [INFO] __main__:   fcst_multi_cv: 389,772/389,772 non-null (100.0%)
+09:40:53 [INFO] __main__:   fcst_multi_range_pct: 389,772/389,772 non-null (100.0%)
+09:40:55 [INFO] models.training.ordinal_trainer: Training ordinal model (catboost) on 389772 samples
+09:40:56 [INFO] models.training.ordinal_trainer: City delta range: [-12, 12]
+09:40:56 [INFO] models.training.ordinal_trainer: Training 24 threshold classifiers: [-11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+09:40:56 [INFO] models.training.ordinal_trainer: Starting Optuna tuning with 100 trials (objective=auc)
+
+============================================================
+OPTUNA TRAINING (100 trials, objective=auc)
+============================================================
+  0%|          | 0/100 [00:00<?, ?it/s]Best trial: 0. Best value: 0.86899:   0%|          | 0/100 [00:24<?, ?it/s]Best trial: 0. Best value: 0.86899:   1%|          | 1/100 [00:24<39:42, 24.07s/it]Best trial: 0. Best value: 0.86899:   1%|          | 1/100 [00:47<39:42, 24.07s/it]Best trial: 0. Best value: 0.86899:   2%|▏         | 2/100 [00:47<38:19, 23.46s/it]Best trial: 2. Best value: 0.875244:   2%|▏         | 2/100 [01:05<38:19, 23.46s/it]Best trial: 2. Best value: 0.875244:   3%|▎         | 3/100 [01:05<34:32, 21.37s/it]Best trial: 3. Best value: 0.879238:   3%|▎         | 3/100 [01:23<34:32, 21.37s/it]Best trial: 3. Best value: 0.879238:   4%|▍         | 4/100 [01:23<32:01, 20.01s/it]Best trial: 3. Best value: 0.879238:   4%|▍         | 4/100 [01:45<32:01, 20.01s/it]Best trial: 3. Best value: 0.879238:   5%|▌         | 5/100 [01:45<32:40, 20.63s/it]Best trial: 3. Best value: 0.879238:   5%|▌         | 5/100 [02:35<32:40, 20.63s/it]Best trial: 3. Best value: 0.879238:   6%|▌         | 6/100 [02:35<47:56, 30.60s/it]Best trial: 3. Best value: 0.879238:   6%|▌         | 6/100 [03:04<47:56, 30.60s/it]Best trial: 3. Best value: 0.879238:   7%|▋         | 7/100 [03:04<46:32, 30.03s/it]Best trial: 3. Best value: 0.879238:   7%|▋         | 7/100 [03:20<46:32, 30.03s/it]Best trial: 3. Best value: 0.879238:   8%|▊         | 8/100 [03:20<38:59, 25.43s/it]Best trial: 3. Best value: 0.879238:   8%|▊         | 8/100 [03:33<38:59, 25.43s/it]Best trial: 3. Best value: 0.879238:   9%|▉         | 9/100 [03:33<33:00, 21.77s/it]Best trial: 9. Best value: 0.880924:   9%|▉         | 9/100 [03:49<33:00, 21.77s/it]Best trial: 9. Best value: 0.880924:  10%|█         | 10/100 [03:49<29:53, 19.93s/it]Best trial: 9. Best value: 0.880924:  10%|█         | 10/100 [03:59<29:53, 19.93s/it]Best trial: 9. Best value: 0.880924:  11%|█         | 11/100 [03:59<25:00, 16.86s/it]Best trial: 9. Best value: 0.880924:  11%|█         | 11/100 [04:14<25:00, 16.86s/it]Best trial: 9. Best value: 0.880924:  12%|█▏        | 12/100 [04:14<23:49, 16.25s/it]Best trial: 9. Best value: 0.880924:  12%|█▏        | 12/100 [04:35<23:49, 16.25s/it]Best trial: 9. Best value: 0.880924:  13%|█▎        | 13/100 [04:35<25:44, 17.75s/it]Best trial: 9. Best value: 0.880924:  13%|█▎        | 13/100 [04:47<25:44, 17.75s/it]Best trial: 9. Best value: 0.880924:  14%|█▍        | 14/100 [04:47<22:56, 16.01s/it]Best trial: 9. Best value: 0.880924:  14%|█▍        | 14/100 [04:59<22:56, 16.01s/it]Best trial: 9. Best value: 0.880924:  15%|█▌        | 15/100 [04:59<21:08, 14.92s/it]Best trial: 9. Best value: 0.880924:  15%|█▌        | 15/100 [05:12<21:08, 14.92s/it]Best trial: 9. Best value: 0.880924:  16%|█▌        | 16/100 [05:12<19:52, 14.20s/it]Best trial: 9. Best value: 0.880924:  16%|█▌        | 16/100 [05:32<19:52, 14.20s/it]Best trial: 9. Best value: 0.880924:  17%|█▋        | 17/100 [05:32<21:57, 15.87s/it]Best trial: 9. Best value: 0.880924:  17%|█▋        | 17/100 [05:50<21:57, 15.87s/it]Best trial: 9. Best value: 0.880924:  18%|█▊        | 18/100 [05:50<22:39, 16.58s/it]Best trial: 18. Best value: 0.882137:  18%|█▊        | 18/100 [06:06<22:39, 16.58s/it]Best trial: 18. Best value: 0.882137:  19%|█▉        | 19/100 [06:06<22:21, 16.57s/it]Best trial: 18. Best value: 0.882137:  19%|█▉        | 19/100 [06:23<22:21, 16.57s/it]Best trial: 18. Best value: 0.882137:  20%|██        | 20/100 [06:23<22:12, 16.66s/it]Best trial: 18. Best value: 0.882137:  20%|██        | 20/100 [06:43<22:12, 16.66s/it]Best trial: 18. Best value: 0.882137:  21%|██        | 21/100 [06:43<23:17, 17.69s/it]Best trial: 18. Best value: 0.882137:  21%|██        | 21/100 [07:01<23:17, 17.69s/it]Best trial: 18. Best value: 0.882137:  22%|██▏       | 22/100 [07:01<22:58, 17.68s/it]Best trial: 18. Best value: 0.882137:  22%|██▏       | 22/100 [07:17<22:58, 17.68s/it]Best trial: 18. Best value: 0.882137:  23%|██▎       | 23/100 [07:17<21:54, 17.07s/it]Best trial: 18. Best value: 0.882137:  23%|██▎       | 23/100 [07:38<21:54, 17.07s/it]Best trial: 18. Best value: 0.882137:  24%|██▍       | 24/100 [07:38<23:11, 18.30s/it]Best trial: 18. Best value: 0.882137:  24%|██▍       | 24/100 [07:50<23:11, 18.30s/it]Best trial: 18. Best value: 0.882137:  25%|██▌       | 25/100 [07:50<20:22, 16.30s/it]Best trial: 18. Best value: 0.882137:  25%|██▌       | 25/100 [08:07<20:22, 16.30s/it]Best trial: 18. Best value: 0.882137:  26%|██▌       | 26/100 [08:07<20:30, 16.63s/it]Best trial: 26. Best value: 0.882554:  26%|██▌       | 26/100 [08:21<20:30, 16.63s/it]Best trial: 26. Best value: 0.882554:  27%|██▋       | 27/100 [08:21<19:10, 15.76s/it]Best trial: 26. Best value: 0.882554:  27%|██▋       | 27/100 [08:34<19:10, 15.76s/it]Best trial: 26. Best value: 0.882554:  28%|██▊       | 28/100 [08:34<18:09, 15.14s/it]Best trial: 28. Best value: 0.883948:  28%|██▊       | 28/100 [09:03<18:09, 15.14s/it]Best trial: 28. Best value: 0.883948:  29%|██▉       | 29/100 [09:03<22:38, 19.13s/it]Best trial: 28. Best value: 0.883948:  29%|██▉       | 29/100 [09:30<22:38, 19.13s/it]Best trial: 28. Best value: 0.883948:  30%|███       | 30/100 [09:30<25:14, 21.64s/it]Best trial: 28. Best value: 0.883948:  30%|███       | 30/100 [09:57<25:14, 21.64s/it]Best trial: 28. Best value: 0.883948:  31%|███       | 31/100 [09:57<26:38, 23.17s/it]Best trial: 28. Best value: 0.883948:  31%|███       | 31/100 [10:29<26:38, 23.17s/it]Best trial: 28. Best value: 0.883948:  32%|███▏      | 32/100 [10:29<29:13, 25.78s/it]Best trial: 28. Best value: 0.883948:  32%|███▏      | 32/100 [11:07<29:13, 25.78s/it]Best trial: 28. Best value: 0.883948:  33%|███▎      | 33/100 [11:07<33:02, 29.60s/it]Best trial: 28. Best value: 0.883948:  33%|███▎      | 33/100 [11:36<33:02, 29.60s/it]Best trial: 28. Best value: 0.883948:  34%|███▍      | 34/100 [11:36<32:21, 29.42s/it]Best trial: 28. Best value: 0.883948:  34%|███▍      | 34/100 [11:55<32:21, 29.42s/it]Best trial: 28. Best value: 0.883948:  35%|███▌      | 35/100 [11:55<28:19, 26.15s/it]Best trial: 28. Best value: 0.883948:  35%|███▌      | 35/100 [12:20<28:19, 26.15s/it]Best trial: 28. Best value: 0.883948:  36%|███▌      | 36/100 [12:20<27:38, 25.92s/it]Best trial: 28. Best value: 0.883948:  36%|███▌      | 36/100 [12:42<27:38, 25.92s/it]Best trial: 28. Best value: 0.883948:  37%|███▋      | 37/100 [12:42<25:46, 24.55s/it]Best trial: 28. Best value: 0.883948:  37%|███▋      | 37/100 [13:25<25:46, 24.55s/it]Best trial: 28. Best value: 0.883948:  38%|███▊      | 38/100 [13:25<31:14, 30.24s/it]Best trial: 28. Best value: 0.883948:  38%|███▊      | 38/100 [13:49<31:14, 30.24s/it]Best trial: 28. Best value: 0.883948:  39%|███▉      | 39/100 [13:49<28:41, 28.23s/it]Best trial: 28. Best value: 0.883948:  39%|███▉      | 39/100 [14:03<28:41, 28.23s/it]Best trial: 28. Best value: 0.883948:  40%|████      | 40/100 [14:03<24:01, 24.02s/it]Best trial: 28. Best value: 0.883948:  40%|████      | 40/100 [14:27<24:01, 24.02s/it]Best trial: 28. Best value: 0.883948:  41%|████      | 41/100 [14:27<23:35, 23.99s/it]Best trial: 28. Best value: 0.883948:  41%|████      | 41/100 [15:15<23:35, 23.99s/it]Best trial: 28. Best value: 0.883948:  42%|████▏     | 42/100 [15:15<30:19, 31.38s/it]Best trial: 28. Best value: 0.883948:  42%|████▏     | 42/100 [15:54<30:19, 31.38s/it]Best trial: 28. Best value: 0.883948:  43%|████▎     | 43/100 [15:54<31:49, 33.49s/it]Best trial: 28. Best value: 0.883948:  43%|████▎     | 43/100 [16:24<31:49, 33.49s/it]Best trial: 28. Best value: 0.883948:  44%|████▍     | 44/100 [16:24<30:24, 32.58s/it]Best trial: 28. Best value: 0.883948:  44%|████▍     | 44/100 [16:56<30:24, 32.58s/it]Best trial: 28. Best value: 0.883948:  45%|████▌     | 45/100 [16:56<29:42, 32.41s/it]Best trial: 28. Best value: 0.883948:  45%|████▌     | 45/100 [17:45<29:42, 32.41s/it]Best trial: 28. Best value: 0.883948:  46%|████▌     | 46/100 [17:45<33:32, 37.27s/it]Best trial: 46. Best value: 0.888864:  46%|████▌     | 46/100 [18:13<33:32, 37.27s/it]Best trial: 46. Best value: 0.888864:  47%|████▋     | 47/100 [18:13<30:26, 34.46s/it]Best trial: 46. Best value: 0.888864:  47%|████▋     | 47/100 [18:40<30:26, 34.46s/it]Best trial: 46. Best value: 0.888864:  48%|████▊     | 48/100 [18:40<27:52, 32.17s/it]Best trial: 46. Best value: 0.888864:  48%|████▊     | 48/100 [19:00<27:52, 32.17s/it]Best trial: 46. Best value: 0.888864:  49%|████▉     | 49/100 [19:00<24:24, 28.72s/it]Best trial: 46. Best value: 0.888864:  49%|████▉     | 49/100 [19:19<24:24, 28.72s/it]Best trial: 46. Best value: 0.888864:  50%|█████     | 50/100 [19:19<21:20, 25.62s/it]Best trial: 46. Best value: 0.888864:  50%|█████     | 50/100 [19:34<21:20, 25.62s/it]Best trial: 46. Best value: 0.888864:  51%|█████     | 51/100 [19:34<18:26, 22.57s/it]Best trial: 46. Best value: 0.888864:  51%|█████     | 51/100 [19:57<18:26, 22.57s/it]Best trial: 46. Best value: 0.888864:  52%|█████▏    | 52/100 [19:57<18:06, 22.63s/it]Best trial: 46. Best value: 0.888864:  52%|█████▏    | 52/100 [20:37<18:06, 22.63s/it]Best trial: 46. Best value: 0.888864:  53%|█████▎    | 53/100 [20:37<21:46, 27.80s/it]Best trial: 46. Best value: 0.888864:  53%|█████▎    | 53/100 [20:57<21:46, 27.80s/it]Best trial: 46. Best value: 0.888864:  54%|█████▍    | 54/100 [20:57<19:29, 25.42s/it]Best trial: 46. Best value: 0.888864:  54%|█████▍    | 54/100 [21:12<19:29, 25.42s/it]Best trial: 46. Best value: 0.888864:  55%|█████▌    | 55/100 [21:12<16:47, 22.39s/it]Best trial: 46. Best value: 0.888864:  55%|█████▌    | 55/100 [21:34<16:47, 22.39s/it]Best trial: 46. Best value: 0.888864:  56%|█████▌    | 56/100 [21:34<16:23, 22.35s/it]Best trial: 46. Best value: 0.888864:  56%|█████▌    | 56/100 [21:50<16:23, 22.35s/it]Best trial: 46. Best value: 0.888864:  57%|█████▋    | 57/100 [21:50<14:41, 20.50s/it]Best trial: 46. Best value: 0.888864:  57%|█████▋    | 57/100 [22:04<14:41, 20.50s/it]Best trial: 46. Best value: 0.888864:  58%|█████▊    | 58/100 [22:04<12:59, 18.56s/it]Best trial: 46. Best value: 0.888864:  58%|█████▊    | 58/100 [22:48<12:59, 18.56s/it]Best trial: 46. Best value: 0.888864:  59%|█████▉    | 59/100 [22:48<17:45, 26.00s/it]Best trial: 46. Best value: 0.888864:  59%|█████▉    | 59/100 [23:03<17:45, 26.00s/it]Best trial: 46. Best value: 0.888864:  60%|██████    | 60/100 [23:03<15:09, 22.74s/it]Best trial: 46. Best value: 0.888864:  60%|██████    | 60/100 [23:24<15:09, 22.74s/it]Best trial: 46. Best value: 0.888864:  61%|██████    | 61/100 [23:24<14:27, 22.24s/it]Best trial: 46. Best value: 0.888864:  61%|██████    | 61/100 [23:58<14:27, 22.24s/it]Best trial: 46. Best value: 0.888864:  62%|██████▏   | 62/100 [23:58<16:24, 25.90s/it]Best trial: 46. Best value: 0.888864:  62%|██████▏   | 62/100 [24:31<16:24, 25.90s/it]Best trial: 46. Best value: 0.888864:  63%|██████▎   | 63/100 [24:31<17:14, 27.96s/it]Best trial: 46. Best value: 0.888864:  63%|██████▎   | 63/100 [24:56<17:14, 27.96s/it]Best trial: 46. Best value: 0.888864:  64%|██████▍   | 64/100 [24:56<16:12, 27.03s/it]Best trial: 46. Best value: 0.888864:  64%|██████▍   | 64/100 [25:12<16:12, 27.03s/it]Best trial: 46. Best value: 0.888864:  65%|██████▌   | 65/100 [25:12<13:51, 23.77s/it]Best trial: 46. Best value: 0.888864:  65%|██████▌   | 65/100 [25:27<13:51, 23.77s/it]Best trial: 46. Best value: 0.888864:  66%|██████▌   | 66/100 [25:27<11:59, 21.15s/it]Best trial: 46. Best value: 0.888864:  66%|██████▌   | 66/100 [25:39<11:59, 21.15s/it]Best trial: 46. Best value: 0.888864:  67%|██████▋   | 67/100 [25:39<10:07, 18.42s/it]Best trial: 46. Best value: 0.888864:  67%|██████▋   | 67/100 [26:01<10:07, 18.42s/it]Best trial: 46. Best value: 0.888864:  68%|██████▊   | 68/100 [26:01<10:24, 19.53s/it]Best trial: 46. Best value: 0.888864:  68%|██████▊   | 68/100 [26:15<10:24, 19.53s/it]Best trial: 46. Best value: 0.888864:  69%|██████▉   | 69/100 [26:15<09:09, 17.73s/it]Best trial: 46. Best value: 0.888864:  69%|██████▉   | 69/100 [26:28<09:09, 17.73s/it]Best trial: 46. Best value: 0.888864:  70%|███████   | 70/100 [26:28<08:09, 16.32s/it]Best trial: 46. Best value: 0.888864:  70%|███████   | 70/100 [26:44<08:09, 16.32s/it]Best trial: 46. Best value: 0.888864:  71%|███████   | 71/100 [26:44<07:50, 16.22s/it]Best trial: 46. Best value: 0.888864:  71%|███████   | 71/100 [26:57<07:50, 16.22s/it]Best trial: 46. Best value: 0.888864:  72%|███████▏  | 72/100 [26:57<07:10, 15.37s/it]Best trial: 46. Best value: 0.888864:  72%|███████▏  | 72/100 [27:13<07:10, 15.37s/it]Best trial: 46. Best value: 0.888864:  73%|███████▎  | 73/100 [27:13<06:54, 15.33s/it]Best trial: 46. Best value: 0.888864:  73%|███████▎  | 73/100 [27:26<06:54, 15.33s/it]Best trial: 46. Best value: 0.888864:  74%|███████▍  | 74/100 [27:26<06:22, 14.71s/it]Best trial: 46. Best value: 0.888864:  74%|███████▍  | 74/100 [27:41<06:22, 14.71s/it]Best trial: 46. Best value: 0.888864:  75%|███████▌  | 75/100 [27:41<06:11, 14.86s/it]Best trial: 46. Best value: 0.888864:  75%|███████▌  | 75/100 [27:55<06:11, 14.86s/it]Best trial: 46. Best value: 0.888864:  76%|███████▌  | 76/100 [27:55<05:51, 14.64s/it]Best trial: 46. Best value: 0.888864:  76%|███████▌  | 76/100 [28:14<05:51, 14.64s/it]Best trial: 46. Best value: 0.888864:  77%|███████▋  | 77/100 [28:14<06:04, 15.83s/it]Best trial: 46. Best value: 0.888864:  77%|███████▋  | 77/100 [28:32<06:04, 15.83s/it]Best trial: 46. Best value: 0.888864:  78%|███████▊  | 78/100 [28:32<06:04, 16.58s/it]Best trial: 46. Best value: 0.888864:  78%|███████▊  | 78/100 [28:54<06:04, 16.58s/it]Best trial: 46. Best value: 0.888864:  79%|███████▉  | 79/100 [28:54<06:22, 18.21s/it]Best trial: 46. Best value: 0.888864:  79%|███████▉  | 79/100 [29:13<06:22, 18.21s/it]Best trial: 46. Best value: 0.888864:  80%|████████  | 80/100 [29:13<06:10, 18.50s/it]Best trial: 46. Best value: 0.888864:  80%|████████  | 80/100 [29:27<06:10, 18.50s/it]Best trial: 46. Best value: 0.888864:  81%|████████  | 81/100 [29:27<05:22, 16.95s/it]Best trial: 46. Best value: 0.888864:  81%|████████  | 81/100 [29:45<05:22, 16.95s/it]Best trial: 46. Best value: 0.888864:  82%|████████▏ | 82/100 [29:45<05:12, 17.36s/it]Best trial: 46. Best value: 0.888864:  82%|████████▏ | 82/100 [30:14<05:12, 17.36s/it]Best trial: 46. Best value: 0.888864:  83%|████████▎ | 83/100 [30:14<05:55, 20.92s/it]Best trial: 46. Best value: 0.888864:  83%|████████▎ | 83/100 [30:30<05:55, 20.92s/it]Best trial: 46. Best value: 0.888864:  84%|████████▍ | 84/100 [30:30<05:08, 19.31s/it]Best trial: 46. Best value: 0.888864:  84%|████████▍ | 84/100 [30:49<05:08, 19.31s/it]Best trial: 46. Best value: 0.888864:  85%|████████▌ | 85/100 [30:49<04:50, 19.36s/it]Best trial: 46. Best value: 0.888864:  85%|████████▌ | 85/100 [31:08<04:50, 19.36s/it]Best trial: 46. Best value: 0.888864:  86%|████████▌ | 86/100 [31:08<04:28, 19.20s/it]Best trial: 46. Best value: 0.888864:  86%|████████▌ | 86/100 [31:25<04:28, 19.20s/it]Best trial: 46. Best value: 0.888864:  87%|████████▋ | 87/100 [31:25<03:59, 18.40s/it]Best trial: 46. Best value: 0.888864:  87%|████████▋ | 87/100 [31:45<03:59, 18.40s/it]Best trial: 46. Best value: 0.888864:  88%|████████▊ | 88/100 [31:45<03:46, 18.91s/it]Best trial: 46. Best value: 0.888864:  88%|████████▊ | 88/100 [32:08<03:46, 18.91s/it]Best trial: 46. Best value: 0.888864:  89%|████████▉ | 89/100 [32:08<03:40, 20.07s/it]Best trial: 46. Best value: 0.888864:  89%|████████▉ | 89/100 [32:27<03:40, 20.07s/it]Best trial: 46. Best value: 0.888864:  90%|█████████ | 90/100 [32:27<03:20, 20.02s/it]Best trial: 46. Best value: 0.888864:  90%|█████████ | 90/100 [32:46<03:20, 20.02s/it]Best trial: 46. Best value: 0.888864:  91%|█████████ | 91/100 [32:46<02:55, 19.50s/it]Best trial: 46. Best value: 0.888864:  91%|█████████ | 91/100 [33:00<02:55, 19.50s/it]Best trial: 46. Best value: 0.888864:  92%|█████████▏| 92/100 [33:00<02:23, 17.95s/it]Best trial: 46. Best value: 0.888864:  92%|█████████▏| 92/100 [33:18<02:23, 17.95s/it]Best trial: 46. Best value: 0.888864:  93%|█████████▎| 93/100 [33:18<02:06, 18.08s/it]Best trial: 46. Best value: 0.888864:  93%|█████████▎| 93/100 [33:39<02:06, 18.08s/it]Best trial: 46. Best value: 0.888864:  94%|█████████▍| 94/100 [33:39<01:53, 18.95s/it]Best trial: 94. Best value: 0.89112:  94%|█████████▍| 94/100 [33:56<01:53, 18.95s/it] Best trial: 94. Best value: 0.89112:  95%|█████████▌| 95/100 [33:56<01:31, 18.39s/it]Best trial: 94. Best value: 0.89112:  95%|█████████▌| 95/100 [34:12<01:31, 18.39s/it]Best trial: 94. Best value: 0.89112:  96%|█████████▌| 96/100 [34:12<01:09, 17.42s/it]Best trial: 94. Best value: 0.89112:  96%|█████████▌| 96/100 [34:25<01:09, 17.42s/it]Best trial: 94. Best value: 0.89112:  97%|█████████▋| 97/100 [34:25<00:48, 16.18s/it]Best trial: 94. Best value: 0.89112:  97%|█████████▋| 97/100 [34:46<00:48, 16.18s/it]Best trial: 94. Best value: 0.89112:  98%|█████████▊| 98/100 [34:46<00:35, 17.77s/it]Best trial: 94. Best value: 0.89112:  98%|█████████▊| 98/100 [35:07<00:35, 17.77s/it]Best trial: 94. Best value: 0.89112:  99%|█████████▉| 99/100 [35:07<00:18, 18.66s/it]Best trial: 94. Best value: 0.89112:  99%|█████████▉| 99/100 [35:23<00:18, 18.66s/it]Best trial: 94. Best value: 0.89112: 100%|██████████| 100/100 [35:23<00:00, 17.85s/it]Best trial: 94. Best value: 0.89112: 100%|██████████| 100/100 [35:23<00:00, 21.24s/it]
+10:16:19 [INFO] models.training.ordinal_trainer: Best params: {'bootstrap_type': 'Bernoulli', 'grow_policy': 'Depthwise', 'depth': 5, 'iterations': 440, 'learning_rate': 0.027365059056917593, 'border_count': 80, 'l2_leaf_reg': 0.30247975898854484, 'min_data_in_leaf': 47, 'random_strength': 1.6115235947623523, 'colsample_bylevel': 0.946953658894228, 'subsample': 0.656296357408028}
+10:16:19 [INFO] models.training.ordinal_trainer: Best AUC: 0.8911
+10:16:19 [WARNING] models.training.ordinal_trainer: Threshold -11: highly imbalanced (99.1% positive)
+10:16:21 [INFO] models.training.ordinal_trainer:   Threshold -11: trained (pos_rate=99.1%)
+10:16:25 [INFO] models.training.ordinal_trainer:   Threshold -10: trained (pos_rate=98.9%)
+10:16:30 [INFO] models.training.ordinal_trainer:   Threshold -9: trained (pos_rate=98.1%)
+10:16:32 [INFO] models.training.ordinal_trainer:   Threshold -8: trained (pos_rate=97.7%)
+10:16:34 [INFO] models.training.ordinal_trainer:   Threshold -7: trained (pos_rate=96.5%)
+10:16:37 [INFO] models.training.ordinal_trainer:   Threshold -6: trained (pos_rate=95.6%)
+10:16:40 [INFO] models.training.ordinal_trainer:   Threshold -5: trained (pos_rate=93.9%)
+10:16:46 [INFO] models.training.ordinal_trainer:   Threshold -4: trained (pos_rate=92.8%)
+10:16:48 [INFO] models.training.ordinal_trainer:   Threshold -3: trained (pos_rate=90.1%)
+10:16:52 [INFO] models.training.ordinal_trainer:   Threshold -2: trained (pos_rate=87.1%)
+10:16:55 [INFO] models.training.ordinal_trainer:   Threshold -1: trained (pos_rate=78.3%)
+10:16:59 [INFO] models.training.ordinal_trainer:   Threshold +0: trained (pos_rate=68.7%)
+10:17:03 [INFO] models.training.ordinal_trainer:   Threshold +1: trained (pos_rate=44.3%)
+10:17:05 [INFO] models.training.ordinal_trainer:   Threshold +2: trained (pos_rate=28.3%)
+10:17:11 [INFO] models.training.ordinal_trainer:   Threshold +3: trained (pos_rate=16.6%)
+10:17:14 [INFO] models.training.ordinal_trainer:   Threshold +4: trained (pos_rate=12.0%)
+10:17:16 [INFO] models.training.ordinal_trainer:   Threshold +5: trained (pos_rate=6.8%)
+10:17:20 [INFO] models.training.ordinal_trainer:   Threshold +6: trained (pos_rate=4.1%)
+10:17:22 [INFO] models.training.ordinal_trainer:   Threshold +7: trained (pos_rate=2.3%)
+10:17:29 [INFO] models.training.ordinal_trainer:   Threshold +8: trained (pos_rate=1.6%)
+10:17:34 [INFO] models.training.ordinal_trainer:   Threshold +9: trained (pos_rate=1.0%)
+10:17:34 [WARNING] models.training.ordinal_trainer: Threshold 10: highly imbalanced (0.8% positive)
+10:17:36 [INFO] models.training.ordinal_trainer:   Threshold +10: trained (pos_rate=0.8%)
+10:17:36 [WARNING] models.training.ordinal_trainer: Threshold 11: highly imbalanced (0.5% positive)
+10:17:41 [INFO] models.training.ordinal_trainer:   Threshold +11: trained (pos_rate=0.5%)
+10:17:41 [WARNING] models.training.ordinal_trainer: Threshold 12: extreme imbalance (pos_rate=0.0040), using constant predictor
+10:17:41 [INFO] models.training.ordinal_trainer: Ordinal training complete: 24 classifiers
+10:17:43 [INFO] models.training.ordinal_trainer: Saved ordinal model to models/saved/miami/ordinal_catboost_optuna.pkl
+10:17:43 [INFO] __main__: 
+Saved model to models/saved/miami/ordinal_catboost_optuna.pkl
+10:17:43 [INFO] __main__: Saved best params to models/saved/miami/best_params.json
+10:17:43 [INFO] __main__: Saved final metrics to models/saved/miami/final_metrics_miami.json
+
+============================================================
+EVALUATION
+============================================================
+
+Test Set Metrics:
+----------------------------------------
+  delta_accuracy: 0.3469
+  delta_mae: 1.4154
+  off_by_1_rate: 0.3066
+  off_by_2plus_rate: 0.3465
+  within_1_rate: 0.6535
+  within_2_rate: 0.8251
+
+============================================================
+FEATURE IMPORTANCE
+============================================================
+
+Top 30 Features:
+                           feature  importance
+0                   fcst_obs_ratio   11.170784
+1                 obs_fcst_max_gap    5.463380
+2             obs_fcst_gap_squared    2.983054
+3             log_abs_obs_fcst_gap    2.770344
+4          temp_zscore_vs_forecast    2.703247
+5             fcst_peak_hour_float    2.355807
+6            fcst_prev_hour_of_max    2.253319
+7              fcst_dewpoint_range    1.735186
+8          confidence_weighted_gap    1.596120
+9            gap_x_hours_remaining    1.573628
+10                delta_vcmax_lag1    1.495010
+11        fcst_remaining_potential    1.458151
+12                 fcst_prev_std_f    1.296450
+13           fcst_multi_t1_t2_diff    1.295981
+14                remaining_upside    1.274349
+15               fcst_multi_median    1.272964
+16      minutes_since_max_observed    1.244101
+17            fcst_cloudcover_mean    1.230358
+18                  obs_confidence    1.154477
+19                         doy_sin    1.047856
+20          temp_x_hours_remaining    1.040851
+21    fcst_humidity_afternoon_mean    1.029924
+22             fcst_cloudcover_max    0.995959
+23  log_expected_delta_uncertainty    0.990594
+24               fcst_dewpoint_min    0.970177
+25                   vc_max_f_lag7    0.968430
+26                  fcst_multi_ema    0.919774
+27            pred_floor_max_sofar    0.896684
+28           fcst_cloudcover_range    0.882450
+29                 fcst_prev_q25_f    0.860576
+
+----------------------------------------
+Station-city feature importance:
+                         feature  importance
+49   station_city_mean_gap_sofar    0.667251
+90    station_city_max_gap_sofar    0.291146
+117         station_city_gap_std    0.160844
+123  station_city_gap_x_fcst_gap    0.135364
+141       station_city_gap_trend    0.076537
+169        station_city_temp_gap    0.010096
+  station_city_mean_gap_sofar: rank 50/201
+  station_city_max_gap_sofar: rank 91/201
+  station_city_gap_std: rank 118/201
+  station_city_gap_x_fcst_gap: rank 124/201
+  station_city_gap_trend: rank 142/201
+  station_city_temp_gap: rank 170/201
+
+----------------------------------------
+Multi-horizon feature importance:
+                   feature  importance
+13   fcst_multi_t1_t2_diff    1.295981
+15       fcst_multi_median    1.272964
+26          fcst_multi_ema    0.919774
+33         fcst_multi_mean    0.817543
+64        fcst_multi_range    0.517376
+68        fcst_multi_drift    0.460155
+70    fcst_multi_range_pct    0.416013
+102          fcst_multi_cv    0.220838
+122         fcst_multi_std    0.142337
+  fcst_multi_t1_t2_diff: rank 14/201
+  fcst_multi_median: rank 16/201
+  fcst_multi_ema: rank 27/201
+  fcst_multi_mean: rank 34/201
+  fcst_multi_range: rank 65/201
+  fcst_multi_drift: rank 69/201
+  fcst_multi_range_pct: rank 71/201
+  fcst_multi_cv: rank 103/201
+  fcst_multi_std: rank 123/201
+
+============================================================
+SUMMARY
+============================================================
+City: miami
+Model: models/saved/miami/ordinal_catboost_optuna.pkl
+Params: models/saved/miami/best_params.json
+Metrics: models/saved/miami/final_metrics_miami.json
+Training samples: 389,772
+Test samples: 97,128
+Optuna trials: 100
+Best params: {'bootstrap_type': 'Bernoulli', 'grow_policy': 'Depthwise', 'depth': 5, 'iterations': 440, 'learning_rate': 0.027365059056917593, 'border_count': 80, 'l2_leaf_reg': 0.30247975898854484, 'min_data_in_leaf': 47, 'random_strength': 1.6115235947623523, 'colsample_bylevel': 0.946953658894228, 'subsample': 0.656296357408028}
+
+Key Metrics:
+  Accuracy: 34.7%
+  MAE: 1.42
+  Within 1: 65.4%
+  Within 2: 82.5%
+
+============================================================
+DONE
+============================================================

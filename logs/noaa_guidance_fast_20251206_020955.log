@@ -1,0 +1,487 @@
+2025-12-06 02:09:55,647 - __main__ - INFO - ================================================================================
+2025-12-06 02:09:55,647 - __main__ - INFO - FAST NOAA INGESTION - AUSTIN
+2025-12-06 02:09:55,647 - __main__ - INFO - ================================================================================
+2025-12-06 02:09:55,647 - __main__ - INFO - Models: NBM
+2025-12-06 02:09:55,647 - __main__ - INFO - Date range: 2025-05-01 to 2025-12-01 (215 days)
+2025-12-06 02:09:55,647 - __main__ - INFO - Workers: 16
+2025-12-06 02:09:55,647 - __main__ - INFO - 
+2025-12-06 02:09:55,647 - __main__ - INFO - Total tasks: 215 (215 days × 1 models)
+2025-12-06 02:09:55,659 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 02:09:55,659 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 02:09:55,659 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-05-14 run=2025-05-13 12:00:00+00:00
+2025-12-06 02:09:55,659 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 02:09:55,659 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-05-02 run=2025-05-01 12:00:00+00:00
+2025-12-06 02:09:55,659 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 02:09:55,660 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 02:09:55,660 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 02:09:55,660 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-05-15 run=2025-05-14 12:00:00+00:00
+2025-12-06 02:09:55,660 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 02:09:55,660 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 02:09:55,660 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 02:09:55,660 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-05-05 run=2025-05-04 12:00:00+00:00
+2025-12-06 02:09:55,660 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 02:09:55,660 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-05-16 run=2025-05-15 12:00:00+00:00
+2025-12-06 02:09:55,661 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 02:09:55,661 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 02:09:55,662 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 02:09:55,662 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-05-01 run=2025-04-30 12:00:00+00:00
+2025-12-06 02:09:55,662 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-05-13 run=2025-05-12 12:00:00+00:00
+2025-12-06 02:09:55,662 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-05-06 run=2025-05-05 12:00:00+00:00
+2025-12-06 02:09:55,662 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-05-03 run=2025-05-02 12:00:00+00:00
+2025-12-06 02:09:55,662 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-05-07 run=2025-05-06 12:00:00+00:00
+2025-12-06 02:09:55,662 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-05-04 run=2025-05-03 12:00:00+00:00
+2025-12-06 02:09:55,663 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-05-08 run=2025-05-07 12:00:00+00:00
+2025-12-06 02:09:55,663 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-05-09 run=2025-05-08 12:00:00+00:00
+2025-12-06 02:09:55,663 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-05-10 run=2025-05-09 12:00:00+00:00
+2025-12-06 02:09:55,663 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-05-11 run=2025-05-10 12:00:00+00:00
+2025-12-06 02:09:55,663 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-05-12 run=2025-05-11 12:00:00+00:00
+2025-12-06 02:10:52,617 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-05-10: 78.93°F
+2025-12-06 02:10:52,617 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-05-17 run=2025-05-16 12:00:00+00:00
+2025-12-06 02:11:02,554 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-05-08: 83.57°F
+2025-12-06 02:11:02,554 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-05-18 run=2025-05-17 12:00:00+00:00
+2025-12-06 02:11:22,122 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-05-01: 89.87°F
+2025-12-06 02:11:22,122 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-05-19 run=2025-05-18 12:00:00+00:00
+2025-12-06 02:11:22,671 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-05-11: 82.76°F
+2025-12-06 02:11:22,671 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-05-20 run=2025-05-19 12:00:00+00:00
+2025-12-06 02:11:30,832 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-05-05: 73.49°F
+2025-12-06 02:11:30,832 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-05-21 run=2025-05-20 12:00:00+00:00
+2025-12-06 02:11:33,791 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-05-14: 102.72°F
+2025-12-06 02:11:33,791 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-05-22 run=2025-05-21 12:00:00+00:00
+2025-12-06 02:11:35,265 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-05-04: 80.08°F
+2025-12-06 02:11:35,265 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-05-23 run=2025-05-22 12:00:00+00:00
+2025-12-06 02:11:35,674 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-05-12: 90.46°F
+2025-12-06 02:11:35,674 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-05-24 run=2025-05-23 12:00:00+00:00
+2025-12-06 02:11:37,321 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-05-07: 84.54°F
+2025-12-06 02:11:37,321 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-05-25 run=2025-05-24 12:00:00+00:00
+2025-12-06 02:11:51,547 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-05-13: 101.86°F
+2025-12-06 02:11:51,547 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-05-26 run=2025-05-25 12:00:00+00:00
+2025-12-06 02:11:51,556 - __main__ - INFO - Progress: 10/215 (4.7%) | Rate: 0.1 tasks/sec | ETA: 2376s
+2025-12-06 02:11:52,597 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-05-15: 98.78°F
+2025-12-06 02:11:52,597 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-05-27 run=2025-05-26 12:00:00+00:00
+2025-12-06 02:11:52,644 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-05-09: 81.52°F
+2025-12-06 02:11:52,644 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-05-28 run=2025-05-27 12:00:00+00:00
+2025-12-06 02:11:55,073 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-05-02: 83.32°F
+2025-12-06 02:11:55,076 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-05-29 run=2025-05-28 12:00:00+00:00
+2025-12-06 02:12:00,151 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-05-06: 83.93°F
+2025-12-06 02:12:00,151 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-05-30 run=2025-05-29 12:00:00+00:00
+2025-12-06 02:12:07,193 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-05-03: 77.7°F
+2025-12-06 02:12:07,194 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-05-31 run=2025-05-30 12:00:00+00:00
+2025-12-06 02:12:14,225 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-05-16: 97.99°F
+2025-12-06 02:12:14,225 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-06-01 run=2025-05-31 12:00:00+00:00
+2025-12-06 02:12:18,850 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-05-18: 94.42°F
+2025-12-06 02:12:18,850 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-06-02 run=2025-06-01 12:00:00+00:00
+2025-12-06 02:12:37,853 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-05-17: 95.88°F
+2025-12-06 02:12:37,854 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-06-03 run=2025-06-02 12:00:00+00:00
+2025-12-06 02:12:42,802 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-05-20: 94.62°F
+2025-12-06 02:12:42,802 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-06-04 run=2025-06-03 12:00:00+00:00
+2025-12-06 02:13:01,447 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-05-27: 86.85°F
+2025-12-06 02:13:01,448 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-06-05 run=2025-06-04 12:00:00+00:00
+2025-12-06 02:13:01,453 - __main__ - INFO - Progress: 20/215 (9.3%) | Rate: 0.1 tasks/sec | ETA: 1812s
+2025-12-06 02:13:08,216 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-05-24: 97.12°F
+2025-12-06 02:13:08,217 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-06-06 run=2025-06-05 12:00:00+00:00
+2025-12-06 02:13:21,215 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-05-21: 94.35°F
+2025-12-06 02:13:21,215 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-06-07 run=2025-06-06 12:00:00+00:00
+2025-12-06 02:13:21,815 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-05-30: 84.61°F
+2025-12-06 02:13:21,822 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-06-08 run=2025-06-07 12:00:00+00:00
+2025-12-06 02:13:25,564 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-05-26: 92.61°F
+2025-12-06 02:13:25,564 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-06-09 run=2025-06-08 12:00:00+00:00
+2025-12-06 02:13:28,810 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-05-19: 94.26°F
+2025-12-06 02:13:28,810 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-06-10 run=2025-06-09 12:00:00+00:00
+2025-12-06 02:13:35,245 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-06-01: 95.34°F
+2025-12-06 02:13:35,245 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-06-11 run=2025-06-10 12:00:00+00:00
+2025-12-06 02:13:36,292 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-05-23: 95.38°F
+2025-12-06 02:13:36,292 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-06-12 run=2025-06-11 12:00:00+00:00
+2025-12-06 02:13:42,490 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-05-25: 96.75°F
+2025-12-06 02:13:42,490 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-06-13 run=2025-06-12 12:00:00+00:00
+2025-12-06 02:13:50,232 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-05-22: 96.12°F
+2025-12-06 02:13:50,232 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-06-14 run=2025-06-13 12:00:00+00:00
+2025-12-06 02:13:53,763 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-05-28: 81.88°F
+2025-12-06 02:13:53,763 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-06-15 run=2025-06-14 12:00:00+00:00
+2025-12-06 02:13:53,765 - __main__ - INFO - Progress: 30/215 (14.0%) | Rate: 0.1 tasks/sec | ETA: 1468s
+2025-12-06 02:14:10,153 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-05-29: 89.19°F
+2025-12-06 02:14:10,153 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-06-16 run=2025-06-15 12:00:00+00:00
+2025-12-06 02:14:17,072 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-05-31: 87.66°F
+2025-12-06 02:14:17,073 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-06-17 run=2025-06-16 12:00:00+00:00
+2025-12-06 02:14:18,027 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-06-02: 94.37°F
+2025-12-06 02:14:18,027 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-06-18 run=2025-06-17 12:00:00+00:00
+2025-12-06 02:14:25,993 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-06-04: 90.32°F
+2025-12-06 02:14:25,993 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-06-19 run=2025-06-18 12:00:00+00:00
+2025-12-06 02:14:26,093 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-06-12: 84.69°F
+2025-12-06 02:14:26,094 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-06-20 run=2025-06-19 12:00:00+00:00
+2025-12-06 02:14:50,335 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-nbm-grib2-pds.s3.amazonaws.com/blend.20250613/12/core/blend.t12z.core.f030.co.grib2: HTTPSConnectionPool(host='noaa-nbm-grib2-pds.s3.amazonaws.com', port=443): Read timed out. (read timeout=60)
+2025-12-06 02:14:50,337 - src.weather_more_apis.ingest - WARNING - Missing GRIB for nbm fhr=30 (url=https://noaa-nbm-grib2-pds.s3.amazonaws.com/blend.20250613/12/core/blend.t12z.core.f030.co.grib2)
+2025-12-06 02:14:50,476 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-nbm-grib2-pds.s3.amazonaws.com/blend.20250602/12/core/blend.t12z.core.f033.co.grib2: HTTPSConnectionPool(host='noaa-nbm-grib2-pds.s3.amazonaws.com', port=443): Read timed out. (read timeout=60)
+2025-12-06 02:14:50,477 - src.weather_more_apis.ingest - WARNING - Missing GRIB for nbm fhr=33 (url=https://noaa-nbm-grib2-pds.s3.amazonaws.com/blend.20250602/12/core/blend.t12z.core.f033.co.grib2)
+2025-12-06 02:15:08,224 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-06-05: 92.64°F
+2025-12-06 02:15:08,224 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-06-21 run=2025-06-20 12:00:00+00:00
+2025-12-06 02:15:12,056 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-06-09: 95.09°F
+2025-12-06 02:15:12,056 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-06-22 run=2025-06-21 12:00:00+00:00
+2025-12-06 02:15:20,161 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-06-13: 91.42°F
+2025-12-06 02:15:20,161 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-06-23 run=2025-06-22 12:00:00+00:00
+2025-12-06 02:15:22,522 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-06-07: 97.21°F
+2025-12-06 02:15:22,523 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-06-24 run=2025-06-23 12:00:00+00:00
+2025-12-06 02:15:26,803 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-06-11: 84.16°F
+2025-12-06 02:15:26,803 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-06-25 run=2025-06-24 12:00:00+00:00
+2025-12-06 02:15:26,804 - __main__ - INFO - Progress: 40/215 (18.6%) | Rate: 0.1 tasks/sec | ETA: 1449s
+2025-12-06 02:15:28,819 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-06-08: 97.88°F
+2025-12-06 02:15:28,820 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-06-26 run=2025-06-25 12:00:00+00:00
+2025-12-06 02:15:39,200 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-06-15: 91.44°F
+2025-12-06 02:15:39,200 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-06-27 run=2025-06-26 12:00:00+00:00
+2025-12-06 02:15:43,614 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-06-16: 93.65°F
+2025-12-06 02:15:43,614 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-06-28 run=2025-06-27 12:00:00+00:00
+2025-12-06 02:15:49,725 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-06-10: 88.79°F
+2025-12-06 02:15:49,726 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-06-29 run=2025-06-28 12:00:00+00:00
+2025-12-06 02:15:50,089 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-06-03: 91.0°F
+2025-12-06 02:15:50,090 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-06-30 run=2025-06-29 12:00:00+00:00
+2025-12-06 02:15:52,712 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-06-06: 94.59°F
+2025-12-06 02:15:52,713 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-07-01 run=2025-06-30 12:00:00+00:00
+2025-12-06 02:16:23,338 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-06-18: 93.52°F
+2025-12-06 02:16:23,338 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-07-02 run=2025-07-01 12:00:00+00:00
+2025-12-06 02:16:27,757 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-06-17: 94.8°F
+2025-12-06 02:16:27,757 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-07-03 run=2025-07-02 12:00:00+00:00
+2025-12-06 02:16:35,423 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-06-19: 93.29°F
+2025-12-06 02:16:35,423 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-07-04 run=2025-07-03 12:00:00+00:00
+2025-12-06 02:16:37,762 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-06-23: 93.0°F
+2025-12-06 02:16:37,763 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-07-05 run=2025-07-04 12:00:00+00:00
+2025-12-06 02:16:37,764 - __main__ - INFO - Progress: 50/215 (23.3%) | Rate: 0.1 tasks/sec | ETA: 1327s
+2025-12-06 02:16:38,647 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-06-21: 92.52°F
+2025-12-06 02:16:38,648 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-07-06 run=2025-07-05 12:00:00+00:00
+2025-12-06 02:16:39,039 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-06-14: 91.54°F
+2025-12-06 02:16:39,042 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-07-07 run=2025-07-06 12:00:00+00:00
+2025-12-06 02:16:42,691 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-06-20: 91.72°F
+2025-12-06 02:16:42,691 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-07-08 run=2025-07-07 12:00:00+00:00
+2025-12-06 02:16:47,980 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-06-25: 89.42°F
+2025-12-06 02:16:47,980 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-07-09 run=2025-07-08 12:00:00+00:00
+2025-12-06 02:16:58,352 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-06-22: 93.24°F
+2025-12-06 02:16:58,352 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-07-10 run=2025-07-09 12:00:00+00:00
+2025-12-06 02:16:59,945 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-06-28: 93.63°F
+2025-12-06 02:16:59,945 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-07-11 run=2025-07-10 12:00:00+00:00
+2025-12-06 02:17:06,063 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-06-24: 91.36°F
+2025-12-06 02:17:06,063 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-07-12 run=2025-07-11 12:00:00+00:00
+2025-12-06 02:17:21,476 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-07-01: 93.13°F
+2025-12-06 02:17:21,476 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-07-13 run=2025-07-12 12:00:00+00:00
+2025-12-06 02:17:36,695 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-06-27: 92.7°F
+2025-12-06 02:17:36,695 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-07-14 run=2025-07-13 12:00:00+00:00
+2025-12-06 02:17:43,550 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-06-30: 92.32°F
+2025-12-06 02:17:43,550 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-07-15 run=2025-07-14 12:00:00+00:00
+2025-12-06 02:17:43,550 - __main__ - INFO - Progress: 60/215 (27.9%) | Rate: 0.1 tasks/sec | ETA: 1209s
+2025-12-06 02:17:44,740 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-06-29: 91.89°F
+2025-12-06 02:17:44,740 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-07-16 run=2025-07-15 12:00:00+00:00
+2025-12-06 02:18:10,609 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-07-08: 88.99°F
+2025-12-06 02:18:10,609 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-07-17 run=2025-07-16 12:00:00+00:00
+2025-12-06 02:18:16,453 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-07-04: 87.4°F
+2025-12-06 02:18:16,453 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-07-18 run=2025-07-17 12:00:00+00:00
+2025-12-06 02:18:18,444 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-07-12: 89.46°F
+2025-12-06 02:18:18,444 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-07-19 run=2025-07-18 12:00:00+00:00
+2025-12-06 02:18:21,488 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-07-06: 88.81°F
+2025-12-06 02:18:21,488 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-07-20 run=2025-07-19 12:00:00+00:00
+2025-12-06 02:18:28,463 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-07-10: 92.14°F
+2025-12-06 02:18:28,463 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-07-21 run=2025-07-20 12:00:00+00:00
+2025-12-06 02:18:28,875 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-06-26: 89.19°F
+2025-12-06 02:18:28,876 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-07-22 run=2025-07-21 12:00:00+00:00
+2025-12-06 02:18:39,417 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-07-03: 85.42°F
+2025-12-06 02:18:39,417 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-07-23 run=2025-07-22 12:00:00+00:00
+2025-12-06 02:18:41,988 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-07-09: 88.23°F
+2025-12-06 02:18:41,988 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-07-24 run=2025-07-23 12:00:00+00:00
+2025-12-06 02:18:45,640 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-07-05: 83.66°F
+2025-12-06 02:18:45,640 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-07-25 run=2025-07-24 12:00:00+00:00
+2025-12-06 02:18:45,640 - __main__ - INFO - Progress: 70/215 (32.6%) | Rate: 0.1 tasks/sec | ETA: 1098s
+2025-12-06 02:18:48,351 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-07-13: 88.48°F
+2025-12-06 02:18:48,352 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-07-26 run=2025-07-25 12:00:00+00:00
+2025-12-06 02:18:48,450 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-07-02: 90.88°F
+2025-12-06 02:18:48,453 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-07-27 run=2025-07-26 12:00:00+00:00
+2025-12-06 02:19:03,977 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-07-14: 88.21°F
+2025-12-06 02:19:03,978 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-07-28 run=2025-07-27 12:00:00+00:00
+2025-12-06 02:19:18,605 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-07-23: 95.29°F
+2025-12-06 02:19:18,605 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-07-29 run=2025-07-28 12:00:00+00:00
+2025-12-06 02:19:19,683 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-07-07: 89.49°F
+2025-12-06 02:19:19,683 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-07-30 run=2025-07-29 12:00:00+00:00
+2025-12-06 02:19:22,022 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-07-11: 90.88°F
+2025-12-06 02:19:22,022 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-07-31 run=2025-07-30 12:00:00+00:00
+2025-12-06 02:19:33,118 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-07-16: 92.79°F
+2025-12-06 02:19:33,118 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-08-01 run=2025-07-31 12:00:00+00:00
+2025-12-06 02:19:43,985 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-07-17: 93.33°F
+2025-12-06 02:19:43,985 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-08-02 run=2025-08-01 12:00:00+00:00
+2025-12-06 02:19:59,760 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-07-22: 94.01°F
+2025-12-06 02:19:59,760 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-08-03 run=2025-08-02 12:00:00+00:00
+2025-12-06 02:20:05,302 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-07-15: 90.54°F
+2025-12-06 02:20:05,302 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-08-04 run=2025-08-03 12:00:00+00:00
+2025-12-06 02:20:05,302 - __main__ - INFO - Progress: 80/215 (37.2%) | Rate: 0.1 tasks/sec | ETA: 1029s
+2025-12-06 02:20:06,903 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-07-20: 93.56°F
+2025-12-06 02:20:06,903 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-08-05 run=2025-08-04 12:00:00+00:00
+2025-12-06 02:20:11,697 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-07-25: 93.54°F
+2025-12-06 02:20:11,698 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-08-06 run=2025-08-05 12:00:00+00:00
+2025-12-06 02:20:14,591 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-07-19: 92.77°F
+2025-12-06 02:20:14,591 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-08-07 run=2025-08-06 12:00:00+00:00
+2025-12-06 02:20:16,314 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-07-21: 94.82°F
+2025-12-06 02:20:16,314 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-08-08 run=2025-08-07 12:00:00+00:00
+2025-12-06 02:20:22,411 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-07-18: 91.0°F
+2025-12-06 02:20:22,411 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-08-09 run=2025-08-08 12:00:00+00:00
+2025-12-06 02:20:29,165 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-07-24: 97.02°F
+2025-12-06 02:20:29,166 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-08-10 run=2025-08-09 12:00:00+00:00
+2025-12-06 02:20:48,414 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-07-28: 94.01°F
+2025-12-06 02:20:48,414 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-08-11 run=2025-08-10 12:00:00+00:00
+2025-12-06 02:20:50,975 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-07-26: 88.97°F
+2025-12-06 02:20:50,975 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-08-12 run=2025-08-11 12:00:00+00:00
+2025-12-06 02:21:12,602 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-07-31: 98.42°F
+2025-12-06 02:21:12,603 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-08-13 run=2025-08-12 12:00:00+00:00
+2025-12-06 02:21:15,898 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-07-27: 91.22°F
+2025-12-06 02:21:15,898 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-08-14 run=2025-08-13 12:00:00+00:00
+2025-12-06 02:21:15,902 - __main__ - INFO - Progress: 90/215 (41.9%) | Rate: 0.1 tasks/sec | ETA: 945s
+2025-12-06 02:21:16,284 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-08-02: 93.6°F
+2025-12-06 02:21:16,284 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-08-15 run=2025-08-14 12:00:00+00:00
+2025-12-06 02:21:25,024 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-07-29: 96.08°F
+2025-12-06 02:21:25,024 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-08-16 run=2025-08-15 12:00:00+00:00
+2025-12-06 02:21:30,000 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-08-01: 98.13°F
+2025-12-06 02:21:30,001 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-08-17 run=2025-08-16 12:00:00+00:00
+2025-12-06 02:21:33,613 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-08-07: 96.82°F
+2025-12-06 02:21:33,613 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-08-18 run=2025-08-17 12:00:00+00:00
+2025-12-06 02:21:41,823 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-08-03: 96.67°F
+2025-12-06 02:21:41,823 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-08-19 run=2025-08-18 12:00:00+00:00
+2025-12-06 02:21:42,912 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-08-06: 93.78°F
+2025-12-06 02:21:42,913 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-08-20 run=2025-08-19 12:00:00+00:00
+2025-12-06 02:21:53,022 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-08-04: 92.73°F
+2025-12-06 02:21:53,022 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-08-21 run=2025-08-20 12:00:00+00:00
+2025-12-06 02:21:56,333 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-07-30: 98.55°F
+2025-12-06 02:21:56,336 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-08-22 run=2025-08-21 12:00:00+00:00
+2025-12-06 02:21:57,385 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-08-05: 94.46°F
+2025-12-06 02:21:57,386 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-08-23 run=2025-08-22 12:00:00+00:00
+2025-12-06 02:22:10,307 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-08-08: 97.88°F
+2025-12-06 02:22:10,307 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-08-24 run=2025-08-23 12:00:00+00:00
+2025-12-06 02:22:10,308 - __main__ - INFO - Progress: 100/215 (46.5%) | Rate: 0.1 tasks/sec | ETA: 845s
+2025-12-06 02:22:23,068 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-08-12: 95.23°F
+2025-12-06 02:22:23,068 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-08-25 run=2025-08-24 12:00:00+00:00
+2025-12-06 02:22:27,456 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-08-11: 93.56°F
+2025-12-06 02:22:27,456 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-08-26 run=2025-08-25 12:00:00+00:00
+2025-12-06 02:22:30,793 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-08-10: 94.93°F
+2025-12-06 02:22:30,793 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-08-27 run=2025-08-26 12:00:00+00:00
+2025-12-06 02:22:32,836 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-08-16: 94.68°F
+2025-12-06 02:22:32,836 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-08-28 run=2025-08-27 12:00:00+00:00
+2025-12-06 02:22:50,003 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-08-15: 95.02°F
+2025-12-06 02:22:50,004 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-08-29 run=2025-08-28 12:00:00+00:00
+2025-12-06 02:23:01,370 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-08-13: 94.08°F
+2025-12-06 02:23:01,370 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-08-30 run=2025-08-29 12:00:00+00:00
+2025-12-06 02:23:22,204 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-08-23: 90.36°F
+2025-12-06 02:23:22,205 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-08-31 run=2025-08-30 12:00:00+00:00
+2025-12-06 02:23:35,203 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-08-18: 97.32°F
+2025-12-06 02:23:35,203 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-09-01 run=2025-08-31 12:00:00+00:00
+2025-12-06 02:23:36,049 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-08-19: 96.06°F
+2025-12-06 02:23:36,049 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-09-02 run=2025-09-01 12:00:00+00:00
+2025-12-06 02:23:47,275 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-08-17: 97.2°F
+2025-12-06 02:23:47,275 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-09-03 run=2025-09-02 12:00:00+00:00
+2025-12-06 02:23:47,275 - __main__ - INFO - Progress: 110/215 (51.2%) | Rate: 0.1 tasks/sec | ETA: 794s
+2025-12-06 02:23:47,317 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-08-09: 96.1°F
+2025-12-06 02:23:47,317 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-09-04 run=2025-09-03 12:00:00+00:00
+2025-12-06 02:23:47,810 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-08-21: 91.11°F
+2025-12-06 02:23:47,810 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-09-05 run=2025-09-04 12:00:00+00:00
+2025-12-06 02:23:47,969 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-08-27: 91.36°F
+2025-12-06 02:23:47,969 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-09-06 run=2025-09-05 12:00:00+00:00
+2025-12-06 02:23:57,651 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-08-20: 96.66°F
+2025-12-06 02:23:57,651 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-09-07 run=2025-09-06 12:00:00+00:00
+2025-12-06 02:24:03,674 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-08-14: 95.59°F
+2025-12-06 02:24:03,674 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-09-08 run=2025-09-07 12:00:00+00:00
+2025-12-06 02:24:04,215 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-08-25: 95.04°F
+2025-12-06 02:24:04,215 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-09-09 run=2025-09-08 12:00:00+00:00
+2025-12-06 02:24:04,944 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-08-22: 90.81°F
+2025-12-06 02:24:04,944 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-09-10 run=2025-09-09 12:00:00+00:00
+2025-12-06 02:24:10,671 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-08-29: 96.31°F
+2025-12-06 02:24:10,672 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-09-11 run=2025-09-10 12:00:00+00:00
+2025-12-06 02:24:13,920 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-08-30: 92.59°F
+2025-12-06 02:24:13,921 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-09-12 run=2025-09-11 12:00:00+00:00
+2025-12-06 02:24:18,827 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-08-26: 93.69°F
+2025-12-06 02:24:18,827 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-09-13 run=2025-09-12 12:00:00+00:00
+2025-12-06 02:24:18,828 - __main__ - INFO - Progress: 120/215 (55.8%) | Rate: 0.1 tasks/sec | ETA: 683s
+2025-12-06 02:24:20,692 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-08-24: 94.39°F
+2025-12-06 02:24:20,693 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-09-14 run=2025-09-13 12:00:00+00:00
+2025-12-06 02:25:09,499 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-09-09: 89.73°F
+2025-12-06 02:25:09,499 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-09-15 run=2025-09-14 12:00:00+00:00
+2025-12-06 02:25:09,563 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-08-31: 87.87°F
+2025-12-06 02:25:09,563 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-09-16 run=2025-09-15 12:00:00+00:00
+2025-12-06 02:25:16,301 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-08-28: 95.56°F
+2025-12-06 02:25:16,301 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-09-17 run=2025-09-16 12:00:00+00:00
+2025-12-06 02:25:20,759 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-09-05: 97.5°F
+2025-12-06 02:25:20,760 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-09-18 run=2025-09-17 12:00:00+00:00
+2025-12-06 02:25:23,580 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-09-02: 91.0°F
+2025-12-06 02:25:23,580 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-09-19 run=2025-09-18 12:00:00+00:00
+2025-12-06 02:25:32,099 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-09-06: 88.25°F
+2025-12-06 02:25:32,099 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-09-20 run=2025-09-19 12:00:00+00:00
+2025-12-06 02:25:37,692 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-09-04: 99.46°F
+2025-12-06 02:25:37,692 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-09-21 run=2025-09-20 12:00:00+00:00
+2025-12-06 02:25:47,122 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-09-08: 88.45°F
+2025-12-06 02:25:47,123 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-09-22 run=2025-09-21 12:00:00+00:00
+2025-12-06 02:25:53,329 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-09-10: 93.02°F
+2025-12-06 02:25:53,330 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-09-23 run=2025-09-22 12:00:00+00:00
+2025-12-06 02:25:53,335 - __main__ - INFO - Progress: 130/215 (60.5%) | Rate: 0.1 tasks/sec | ETA: 626s
+2025-12-06 02:25:55,136 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-09-01: 86.41°F
+2025-12-06 02:25:55,136 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-09-24 run=2025-09-23 12:00:00+00:00
+2025-12-06 02:26:02,410 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-09-07: 85.05°F
+2025-12-06 02:26:02,410 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-09-25 run=2025-09-24 12:00:00+00:00
+2025-12-06 02:26:06,807 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-09-03: 93.99°F
+2025-12-06 02:26:06,807 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-09-26 run=2025-09-25 12:00:00+00:00
+2025-12-06 02:26:17,763 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-09-13: 93.38°F
+2025-12-06 02:26:17,763 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-09-27 run=2025-09-26 12:00:00+00:00
+2025-12-06 02:26:17,831 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-09-11: 93.51°F
+2025-12-06 02:26:17,831 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-09-28 run=2025-09-27 12:00:00+00:00
+2025-12-06 02:26:30,191 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-09-14: 92.86°F
+2025-12-06 02:26:30,192 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-09-29 run=2025-09-28 12:00:00+00:00
+2025-12-06 02:26:32,147 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-09-12: 94.05°F
+2025-12-06 02:26:32,148 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-09-30 run=2025-09-29 12:00:00+00:00
+2025-12-06 02:26:52,535 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-09-16: 91.99°F
+2025-12-06 02:26:52,535 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-10-01 run=2025-09-30 12:00:00+00:00
+2025-12-06 02:26:57,855 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-09-15: 91.22°F
+2025-12-06 02:26:57,855 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-10-02 run=2025-10-01 12:00:00+00:00
+2025-12-06 02:27:15,524 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-09-25: 88.2°F
+2025-12-06 02:27:15,524 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-10-03 run=2025-10-02 12:00:00+00:00
+2025-12-06 02:27:15,524 - __main__ - INFO - Progress: 140/215 (65.1%) | Rate: 0.1 tasks/sec | ETA: 557s
+2025-12-06 02:27:25,940 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-09-17: 92.28°F
+2025-12-06 02:27:25,940 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-10-04 run=2025-10-03 12:00:00+00:00
+2025-12-06 02:27:27,003 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-09-24: 87.42°F
+2025-12-06 02:27:27,006 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-10-05 run=2025-10-04 12:00:00+00:00
+2025-12-06 02:27:28,263 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-09-22: 93.94°F
+2025-12-06 02:27:28,263 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-10-06 run=2025-10-05 12:00:00+00:00
+2025-12-06 02:27:38,381 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-09-20: 93.07°F
+2025-12-06 02:27:38,381 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-10-07 run=2025-10-06 12:00:00+00:00
+2025-12-06 02:27:38,564 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-09-23: 95.58°F
+2025-12-06 02:27:38,564 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-10-08 run=2025-10-07 12:00:00+00:00
+2025-12-06 02:27:44,001 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-09-21: 92.03°F
+2025-12-06 02:27:44,001 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-10-09 run=2025-10-08 12:00:00+00:00
+2025-12-06 02:27:46,945 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-09-29: 88.74°F
+2025-12-06 02:27:46,945 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-10-10 run=2025-10-09 12:00:00+00:00
+2025-12-06 02:27:49,625 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-09-18: 91.94°F
+2025-12-06 02:27:49,626 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-10-11 run=2025-10-10 12:00:00+00:00
+2025-12-06 02:28:10,670 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-09-26: 90.09°F
+2025-12-06 02:28:10,676 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-10-12 run=2025-10-11 12:00:00+00:00
+2025-12-06 02:28:18,038 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-10-01: 93.16°F
+2025-12-06 02:28:18,038 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-10-13 run=2025-10-12 12:00:00+00:00
+2025-12-06 02:28:18,038 - __main__ - INFO - Progress: 150/215 (69.8%) | Rate: 0.1 tasks/sec | ETA: 478s
+2025-12-06 02:28:19,408 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-09-28: 89.51°F
+2025-12-06 02:28:19,409 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-10-14 run=2025-10-13 12:00:00+00:00
+2025-12-06 02:28:19,909 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-09-30: 91.76°F
+2025-12-06 02:28:19,909 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-10-15 run=2025-10-14 12:00:00+00:00
+2025-12-06 02:28:22,187 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-09-19: 92.55°F
+2025-12-06 02:28:22,187 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-10-16 run=2025-10-15 12:00:00+00:00
+2025-12-06 02:28:43,908 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-10-02: 93.04°F
+2025-12-06 02:28:43,909 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-10-17 run=2025-10-16 12:00:00+00:00
+2025-12-06 02:28:45,599 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-10-04: 90.16°F
+2025-12-06 02:28:45,605 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-10-18 run=2025-10-17 12:00:00+00:00
+2025-12-06 02:28:49,738 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-09-27: 90.93°F
+2025-12-06 02:28:49,739 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-10-19 run=2025-10-18 12:00:00+00:00
+2025-12-06 02:29:20,681 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-10-03: 90.14°F
+2025-12-06 02:29:20,681 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-10-20 run=2025-10-19 12:00:00+00:00
+2025-12-06 02:29:20,789 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-10-05: 91.02°F
+2025-12-06 02:29:20,789 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-10-21 run=2025-10-20 12:00:00+00:00
+2025-12-06 02:29:23,155 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-10-07: 89.58°F
+2025-12-06 02:29:23,155 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-10-22 run=2025-10-21 12:00:00+00:00
+2025-12-06 02:29:32,285 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-10-08: 90.86°F
+2025-12-06 02:29:32,285 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-10-23 run=2025-10-22 12:00:00+00:00
+2025-12-06 02:29:32,285 - __main__ - INFO - Progress: 160/215 (74.4%) | Rate: 0.1 tasks/sec | ETA: 404s
+2025-12-06 02:29:39,193 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-10-11: 89.6°F
+2025-12-06 02:29:39,194 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-10-24 run=2025-10-23 12:00:00+00:00
+2025-12-06 02:29:41,093 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-10-06: 91.11°F
+2025-12-06 02:29:41,094 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-10-25 run=2025-10-24 12:00:00+00:00
+2025-12-06 02:29:44,824 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-10-09: 90.81°F
+2025-12-06 02:29:44,824 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-10-26 run=2025-10-25 12:00:00+00:00
+2025-12-06 02:29:45,938 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-10-16: 86.76°F
+2025-12-06 02:29:45,938 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-10-27 run=2025-10-26 12:00:00+00:00
+2025-12-06 02:29:52,276 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-10-10: 90.25°F
+2025-12-06 02:29:52,276 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-10-28 run=2025-10-27 12:00:00+00:00
+2025-12-06 02:29:55,675 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-10-12: 90.18°F
+2025-12-06 02:29:55,676 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-10-29 run=2025-10-28 12:00:00+00:00
+2025-12-06 02:30:06,804 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-10-15: 89.87°F
+2025-12-06 02:30:06,805 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-10-30 run=2025-10-29 12:00:00+00:00
+2025-12-06 02:30:16,927 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-10-14: 89.92°F
+2025-12-06 02:30:16,927 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-10-31 run=2025-10-30 12:00:00+00:00
+2025-12-06 02:30:28,191 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-10-17: 89.01°F
+2025-12-06 02:30:28,192 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-11-01 run=2025-10-31 12:00:00+00:00
+2025-12-06 02:30:33,362 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-10-18: 92.03°F
+2025-12-06 02:30:33,365 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-11-02 run=2025-11-01 12:00:00+00:00
+2025-12-06 02:30:33,366 - __main__ - INFO - Progress: 170/215 (79.1%) | Rate: 0.1 tasks/sec | ETA: 328s
+2025-12-06 02:30:41,396 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-10-22: 84.16°F
+2025-12-06 02:30:41,396 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-11-03 run=2025-11-02 12:00:00+00:00
+2025-12-06 02:30:41,407 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-10-19: 82.45°F
+2025-12-06 02:30:41,422 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-11-04 run=2025-11-03 12:00:00+00:00
+2025-12-06 02:30:59,445 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-10-13: 89.06°F
+2025-12-06 02:30:59,446 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-11-05 run=2025-11-04 12:00:00+00:00
+2025-12-06 02:31:10,918 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-10-25: 78.35°F
+2025-12-06 02:31:10,918 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-11-06 run=2025-11-05 12:00:00+00:00
+2025-12-06 02:31:16,302 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-10-20: 91.35°F
+2025-12-06 02:31:16,303 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-11-07 run=2025-11-06 12:00:00+00:00
+2025-12-06 02:31:31,219 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-10-24: 85.42°F
+2025-12-06 02:31:31,219 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-11-08 run=2025-11-07 12:00:00+00:00
+2025-12-06 02:31:32,007 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-10-26: 81.19°F
+2025-12-06 02:31:32,008 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-11-09 run=2025-11-08 12:00:00+00:00
+2025-12-06 02:31:38,009 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-10-27: 84.69°F
+2025-12-06 02:31:38,009 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-11-10 run=2025-11-09 12:00:00+00:00
+2025-12-06 02:31:41,305 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-10-21: 85.37°F
+2025-12-06 02:31:41,305 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-11-11 run=2025-11-10 12:00:00+00:00
+2025-12-06 02:31:45,887 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-10-31: 74.17°F
+2025-12-06 02:31:45,889 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-11-12 run=2025-11-11 12:00:00+00:00
+2025-12-06 02:31:45,890 - __main__ - INFO - Progress: 180/215 (83.7%) | Rate: 0.1 tasks/sec | ETA: 255s
+2025-12-06 02:31:46,033 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-10-23: 88.34°F
+2025-12-06 02:31:46,033 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-11-13 run=2025-11-12 12:00:00+00:00
+2025-12-06 02:31:47,771 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-10-28: 84.45°F
+2025-12-06 02:31:47,771 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-11-14 run=2025-11-13 12:00:00+00:00
+2025-12-06 02:31:55,366 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-11-04: 79.14°F
+2025-12-06 02:31:55,366 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-11-15 run=2025-11-14 12:00:00+00:00
+2025-12-06 02:31:57,797 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-11-02: 72.43°F
+2025-12-06 02:31:57,797 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-11-16 run=2025-11-15 12:00:00+00:00
+2025-12-06 02:31:59,067 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-10-30: 69.84°F
+2025-12-06 02:31:59,067 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-11-17 run=2025-11-16 12:00:00+00:00
+2025-12-06 02:32:18,832 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-11-01: 71.19°F
+2025-12-06 02:32:18,832 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-11-18 run=2025-11-17 12:00:00+00:00
+2025-12-06 02:32:19,948 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-10-29: 67.35°F
+2025-12-06 02:32:19,949 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-11-19 run=2025-11-18 12:00:00+00:00
+2025-12-06 02:32:48,535 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-11-08: 86.04°F
+2025-12-06 02:32:48,535 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-11-20 run=2025-11-19 12:00:00+00:00
+2025-12-06 02:32:48,561 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-11-05: 82.02°F
+2025-12-06 02:32:48,561 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-11-21 run=2025-11-20 12:00:00+00:00
+2025-12-06 02:33:03,919 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-11-06: 82.69°F
+2025-12-06 02:33:03,920 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-11-22 run=2025-11-21 12:00:00+00:00
+2025-12-06 02:33:03,920 - __main__ - INFO - Progress: 190/215 (88.4%) | Rate: 0.1 tasks/sec | ETA: 183s
+2025-12-06 02:33:05,020 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-11-13: 83.03°F
+2025-12-06 02:33:05,021 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-11-23 run=2025-11-22 12:00:00+00:00
+2025-12-06 02:33:22,709 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-11-03: 77.38°F
+2025-12-06 02:33:22,710 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-11-24 run=2025-11-23 12:00:00+00:00
+2025-12-06 02:33:26,588 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-11-12: 81.39°F
+2025-12-06 02:33:26,588 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-11-25 run=2025-11-24 12:00:00+00:00
+2025-12-06 02:33:33,855 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-11-15: 83.79°F
+2025-12-06 02:33:33,855 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-11-26 run=2025-11-25 12:00:00+00:00
+2025-12-06 02:33:35,560 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-11-14: 83.37°F
+2025-12-06 02:33:35,560 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-11-27 run=2025-11-26 12:00:00+00:00
+2025-12-06 02:33:51,892 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-11-18: 84.88°F
+2025-12-06 02:33:51,893 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-11-28 run=2025-11-27 12:00:00+00:00
+2025-12-06 02:33:52,190 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-11-10: 59.23°F
+2025-12-06 02:33:52,190 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-11-29 run=2025-11-28 12:00:00+00:00
+2025-12-06 02:33:53,536 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-11-17: 86.38°F
+2025-12-06 02:33:53,536 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-11-30 run=2025-11-29 12:00:00+00:00
+2025-12-06 02:33:54,595 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-11-09: 68.59°F
+2025-12-06 02:33:54,595 - src.weather_more_apis.ingest - INFO - Ingesting NBM for austin 2025-12-01 run=2025-11-30 12:00:00+00:00
+2025-12-06 02:33:56,827 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-11-07: 88.38°F
+2025-12-06 02:33:56,827 - __main__ - INFO - Progress: 200/215 (93.0%) | Rate: 0.1 tasks/sec | ETA: 108s
+2025-12-06 02:34:25,525 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-11-11: 71.94°F
+2025-12-06 02:34:33,006 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-11-23: 73.06°F
+2025-12-06 02:34:34,545 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-11-19: 82.83°F
+2025-12-06 02:34:36,330 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-11-27: 63.59°F
+2025-12-06 02:34:36,726 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-11-21: 78.73°F
+2025-12-06 02:34:48,616 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-11-22: 73.51°F
+2025-12-06 02:34:49,862 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-11-28: 66.16°F
+2025-12-06 02:34:53,469 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-11-26: 62.46°F
+2025-12-06 02:34:55,791 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-12-01: 51.28°F
+2025-12-06 02:34:57,712 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-11-24: 78.49°F
+2025-12-06 02:34:57,712 - __main__ - INFO - Progress: 210/215 (97.7%) | Rate: 0.1 tasks/sec | ETA: 36s
+2025-12-06 02:35:03,134 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-11-20: 78.66°F
+2025-12-06 02:35:08,039 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-11-29: 75.88°F
+2025-12-06 02:35:08,609 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-11-16: 86.43°F
+2025-12-06 02:35:08,702 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-11-25: 77.16°F
+2025-12-06 02:35:15,075 - src.weather_more_apis.ingest - INFO - ✓ NBM austin 2025-11-30: 48.85°F
+2025-12-06 02:35:15,075 - __main__ - INFO - Progress: 215/215 (100.0%) | Rate: 0.1 tasks/sec | ETA: 0s
+2025-12-06 02:35:15,178 - __main__ - INFO - 
+2025-12-06 02:35:15,178 - __main__ - INFO - ================================================================================
+2025-12-06 02:35:15,178 - __main__ - INFO - INGESTION COMPLETE
+2025-12-06 02:35:15,178 - __main__ - INFO - ================================================================================
+2025-12-06 02:35:15,178 - __main__ - INFO - Total time: 25.3 minutes (1520 seconds)
+2025-12-06 02:35:15,178 - __main__ - INFO - Successful: 215
+2025-12-06 02:35:15,178 - __main__ - INFO - Failed: 0
+2025-12-06 02:35:15,178 - __main__ - INFO - Success rate: 100.0%
+2025-12-06 02:35:15,178 - __main__ - INFO - Throughput: 0.14 tasks/second
+2025-12-06 02:35:15,178 - __main__ - INFO - Log: /home/halsted/Documents/python/weather_updated/logs/noaa_guidance_fast_20251206_020955.log

@@ -1,0 +1,212 @@
+05:12:48 [INFO] train_ordinal_pipeline: Invoking train_city_ordinal_optuna with args: --city austin --trials 80 --workers 60 --cv-splits 4 --use-cached
+05:12:48 [INFO] scripts.train_city_ordinal_optuna: ============================================================
+05:12:48 [INFO] scripts.train_city_ordinal_optuna: AUSTIN Optuna Training (80 trials)
+05:12:48 [INFO] scripts.train_city_ordinal_optuna: Optimization objective: auc
+05:12:48 [INFO] scripts.train_city_ordinal_optuna: ============================================================
+05:12:48 [INFO] scripts.train_city_ordinal_optuna: Loading from training cache: data/training_cache/austin/full.parquet
+05:12:49 [INFO] scripts.train_city_ordinal_optuna: Loaded 486,912 rows, 237 columns
+05:12:49 [INFO] scripts.train_city_ordinal_optuna: Data range after filtering: 2023-01-01 to 2025-12-03
+05:12:50 [INFO] scripts.train_city_ordinal_optuna: Total days: 1068
+05:12:50 [INFO] scripts.train_city_ordinal_optuna: Training: 2023-01-01 to 2025-05-04 (855 days)
+05:12:50 [INFO] scripts.train_city_ordinal_optuna: Testing:  2025-05-05 to 2025-12-03 (213 days)
+05:12:50 [INFO] scripts.train_city_ordinal_optuna: 
+Training samples: 389,784
+05:12:50 [INFO] scripts.train_city_ordinal_optuna: Training days: 855
+05:12:50 [INFO] scripts.train_city_ordinal_optuna: Test samples: 97,128
+05:12:50 [INFO] scripts.train_city_ordinal_optuna: Test days: 213
+05:12:50 [INFO] scripts.train_city_ordinal_optuna: 
+Station-city features: ['station_city_temp_gap', 'station_city_max_gap_sofar', 'station_city_mean_gap_sofar', 'station_city_gap_std', 'station_city_gap_trend', 'station_city_gap_x_fcst_gap']
+05:12:50 [INFO] scripts.train_city_ordinal_optuna:   station_city_temp_gap: 389,688/389,784 non-null (100.0%)
+05:12:50 [INFO] scripts.train_city_ordinal_optuna:   station_city_max_gap_sofar: 389,688/389,784 non-null (100.0%)
+05:12:50 [INFO] scripts.train_city_ordinal_optuna:   station_city_mean_gap_sofar: 389,688/389,784 non-null (100.0%)
+05:12:50 [INFO] scripts.train_city_ordinal_optuna:   station_city_gap_std: 389,688/389,784 non-null (100.0%)
+05:12:50 [INFO] scripts.train_city_ordinal_optuna:   station_city_gap_trend: 389,682/389,784 non-null (100.0%)
+05:12:50 [INFO] scripts.train_city_ordinal_optuna:   station_city_gap_x_fcst_gap: 389,688/389,784 non-null (100.0%)
+05:12:50 [INFO] scripts.train_city_ordinal_optuna: 
+Multi-horizon features: ['fcst_multi_mean', 'fcst_multi_median', 'fcst_multi_ema', 'fcst_multi_std', 'fcst_multi_range', 'fcst_multi_t1_t2_diff', 'fcst_multi_drift', 'fcst_multi_cv', 'fcst_multi_range_pct']
+05:12:50 [INFO] scripts.train_city_ordinal_optuna:   fcst_multi_mean: 389,784/389,784 non-null (100.0%)
+05:12:50 [INFO] scripts.train_city_ordinal_optuna:   fcst_multi_median: 389,784/389,784 non-null (100.0%)
+05:12:50 [INFO] scripts.train_city_ordinal_optuna:   fcst_multi_ema: 389,784/389,784 non-null (100.0%)
+05:12:50 [INFO] scripts.train_city_ordinal_optuna:   fcst_multi_std: 389,784/389,784 non-null (100.0%)
+05:12:50 [INFO] scripts.train_city_ordinal_optuna:   fcst_multi_range: 389,784/389,784 non-null (100.0%)
+05:12:50 [INFO] scripts.train_city_ordinal_optuna:   fcst_multi_t1_t2_diff: 389,784/389,784 non-null (100.0%)
+05:12:50 [INFO] scripts.train_city_ordinal_optuna:   fcst_multi_drift: 389,784/389,784 non-null (100.0%)
+05:12:50 [INFO] scripts.train_city_ordinal_optuna:   fcst_multi_cv: 389,784/389,784 non-null (100.0%)
+05:12:50 [INFO] scripts.train_city_ordinal_optuna:   fcst_multi_range_pct: 389,784/389,784 non-null (100.0%)
+05:12:53 [INFO] models.training.ordinal_trainer: Training ordinal model (catboost) on 389784 samples
+05:12:53 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['nbm_peak_window_max_f', 'nbm_peak_window_revision_1h_f', 'hrrr_peak_window_max_f', 'hrrr_peak_window_revision_1h_f', 'ndfd_tmax_T1_f', 'ndfd_drift_T2_to_T1_f', 'hrrr_minus_nbm_peak_window_max_f', 'ndfd_minus_vc_T1_f', 'nbm_t15_z_30d_f', 'hrrr_t15_z_30d_f', 'hrrr_minus_nbm_t15_z_30d_f']
+05:12:53 [INFO] models.training.ordinal_trainer: City delta range: [-12, 12]
+05:12:53 [INFO] models.training.ordinal_trainer: Training 24 threshold classifiers: [-11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+05:12:53 [INFO] models.training.ordinal_trainer: Starting Optuna tuning with 80 trials (objective=auc)
+
+============================================================
+OPTUNA TRAINING (80 trials, objective=auc)
+============================================================
+  0%|          | 0/80 [00:00<?, ?it/s]Best trial: 0. Best value: 0.897411:   0%|          | 0/80 [00:10<?, ?it/s]Best trial: 0. Best value: 0.897411:   1%|▏         | 1/80 [00:10<14:13, 10.80s/it]Best trial: 0. Best value: 0.897411:   1%|▏         | 1/80 [00:19<14:13, 10.80s/it]Best trial: 0. Best value: 0.897411:   2%|▎         | 2/80 [00:19<12:36,  9.69s/it]Best trial: 0. Best value: 0.897411:   2%|▎         | 2/80 [00:32<12:36,  9.69s/it]Best trial: 0. Best value: 0.897411:   4%|▍         | 3/80 [00:32<14:07, 11.01s/it]Best trial: 0. Best value: 0.897411:   4%|▍         | 3/80 [00:42<14:07, 11.01s/it]Best trial: 0. Best value: 0.897411:   5%|▌         | 4/80 [00:42<13:21, 10.55s/it]Best trial: 0. Best value: 0.897411:   5%|▌         | 4/80 [00:57<13:21, 10.55s/it]Best trial: 0. Best value: 0.897411:   6%|▋         | 5/80 [00:57<15:25, 12.34s/it]Best trial: 0. Best value: 0.897411:   6%|▋         | 5/80 [01:06<15:25, 12.34s/it]Best trial: 0. Best value: 0.897411:   8%|▊         | 6/80 [01:06<13:49, 11.21s/it]Best trial: 0. Best value: 0.897411:   8%|▊         | 6/80 [01:36<13:49, 11.21s/it]Best trial: 0. Best value: 0.897411:   9%|▉         | 7/80 [01:36<21:09, 17.39s/it]Best trial: 7. Best value: 0.899891:   9%|▉         | 7/80 [01:47<21:09, 17.39s/it]Best trial: 7. Best value: 0.899891:  10%|█         | 8/80 [01:47<18:12, 15.18s/it]Best trial: 7. Best value: 0.899891:  10%|█         | 8/80 [01:57<18:12, 15.18s/it]Best trial: 7. Best value: 0.899891:  11%|█▏        | 9/80 [01:57<16:01, 13.54s/it]Best trial: 7. Best value: 0.899891:  11%|█▏        | 9/80 [02:07<16:01, 13.54s/it]Best trial: 7. Best value: 0.899891:  12%|█▎        | 10/80 [02:07<14:30, 12.44s/it]Best trial: 10. Best value: 0.903556:  12%|█▎        | 10/80 [02:20<14:30, 12.44s/it]Best trial: 10. Best value: 0.903556:  14%|█▍        | 11/80 [02:20<14:45, 12.83s/it]Best trial: 10. Best value: 0.903556:  14%|█▍        | 11/80 [02:35<14:45, 12.83s/it]Best trial: 10. Best value: 0.903556:  15%|█▌        | 12/80 [02:35<15:00, 13.24s/it]Best trial: 10. Best value: 0.903556:  15%|█▌        | 12/80 [02:53<15:00, 13.24s/it]Best trial: 10. Best value: 0.903556:  16%|█▋        | 13/80 [02:53<16:23, 14.68s/it]Best trial: 10. Best value: 0.903556:  16%|█▋        | 13/80 [03:04<16:23, 14.68s/it]Best trial: 10. Best value: 0.903556:  18%|█▊        | 14/80 [03:04<15:09, 13.79s/it]Best trial: 10. Best value: 0.903556:  18%|█▊        | 14/80 [03:23<15:09, 13.79s/it]Best trial: 10. Best value: 0.903556:  19%|█▉        | 15/80 [03:23<16:23, 15.13s/it]Best trial: 10. Best value: 0.903556:  19%|█▉        | 15/80 [03:47<16:23, 15.13s/it]Best trial: 10. Best value: 0.903556:  20%|██        | 16/80 [03:47<19:01, 17.84s/it]Best trial: 10. Best value: 0.903556:  20%|██        | 16/80 [04:02<19:01, 17.84s/it]Best trial: 10. Best value: 0.903556:  21%|██▏       | 17/80 [04:02<17:48, 16.96s/it]Best trial: 10. Best value: 0.903556:  21%|██▏       | 17/80 [04:17<17:48, 16.96s/it]Best trial: 10. Best value: 0.903556:  22%|██▎       | 18/80 [04:17<17:12, 16.65s/it]Best trial: 10. Best value: 0.903556:  22%|██▎       | 18/80 [04:46<17:12, 16.65s/it]Best trial: 10. Best value: 0.903556:  24%|██▍       | 19/80 [04:46<20:29, 20.16s/it]Best trial: 10. Best value: 0.903556:  24%|██▍       | 19/80 [05:11<20:29, 20.16s/it]Best trial: 10. Best value: 0.903556:  25%|██▌       | 20/80 [05:11<21:47, 21.78s/it]Best trial: 10. Best value: 0.903556:  25%|██▌       | 20/80 [05:28<21:47, 21.78s/it]Best trial: 10. Best value: 0.903556:  26%|██▋       | 21/80 [05:28<19:49, 20.16s/it]Best trial: 10. Best value: 0.903556:  26%|██▋       | 21/80 [05:49<19:49, 20.16s/it]Best trial: 10. Best value: 0.903556:  28%|██▊       | 22/80 [05:49<19:45, 20.44s/it]Best trial: 10. Best value: 0.903556:  28%|██▊       | 22/80 [06:09<19:45, 20.44s/it]Best trial: 10. Best value: 0.903556:  29%|██▉       | 23/80 [06:09<19:18, 20.32s/it]Best trial: 10. Best value: 0.903556:  29%|██▉       | 23/80 [06:31<19:18, 20.32s/it]Best trial: 10. Best value: 0.903556:  30%|███       | 24/80 [06:31<19:35, 20.98s/it]Best trial: 10. Best value: 0.903556:  30%|███       | 24/80 [06:57<19:35, 20.98s/it]Best trial: 10. Best value: 0.903556:  31%|███▏      | 25/80 [06:57<20:33, 22.42s/it]Best trial: 10. Best value: 0.903556:  31%|███▏      | 25/80 [07:17<20:33, 22.42s/it]Best trial: 10. Best value: 0.903556:  32%|███▎      | 26/80 [07:17<19:21, 21.51s/it]Best trial: 10. Best value: 0.903556:  32%|███▎      | 26/80 [07:31<19:21, 21.51s/it]Best trial: 10. Best value: 0.903556:  34%|███▍      | 27/80 [07:31<17:08, 19.41s/it]Best trial: 10. Best value: 0.903556:  34%|███▍      | 27/80 [07:48<17:08, 19.41s/it]Best trial: 10. Best value: 0.903556:  35%|███▌      | 28/80 [07:48<16:17, 18.80s/it]Best trial: 10. Best value: 0.903556:  35%|███▌      | 28/80 [08:00<16:17, 18.80s/it]Best trial: 10. Best value: 0.903556:  36%|███▋      | 29/80 [08:00<14:14, 16.76s/it]Best trial: 10. Best value: 0.903556:  36%|███▋      | 29/80 [08:15<14:14, 16.76s/it]Best trial: 10. Best value: 0.903556:  38%|███▊      | 30/80 [08:15<13:24, 16.09s/it]Best trial: 10. Best value: 0.903556:  38%|███▊      | 30/80 [08:28<13:24, 16.09s/it]Best trial: 10. Best value: 0.903556:  39%|███▉      | 31/80 [08:28<12:19, 15.10s/it]Best trial: 10. Best value: 0.903556:  39%|███▉      | 31/80 [08:41<12:19, 15.10s/it]Best trial: 10. Best value: 0.903556:  40%|████      | 32/80 [08:41<11:38, 14.55s/it]Best trial: 10. Best value: 0.903556:  40%|████      | 32/80 [09:04<11:38, 14.55s/it]Best trial: 10. Best value: 0.903556:  41%|████▏     | 33/80 [09:04<13:16, 16.95s/it]Best trial: 10. Best value: 0.903556:  41%|████▏     | 33/80 [09:17<13:16, 16.95s/it]Best trial: 10. Best value: 0.903556:  42%|████▎     | 34/80 [09:17<12:14, 15.98s/it]Best trial: 10. Best value: 0.903556:  42%|████▎     | 34/80 [09:35<12:14, 15.98s/it]Best trial: 10. Best value: 0.903556:  44%|████▍     | 35/80 [09:35<12:16, 16.37s/it]Best trial: 10. Best value: 0.903556:  44%|████▍     | 35/80 [09:47<12:16, 16.37s/it]Best trial: 10. Best value: 0.903556:  45%|████▌     | 36/80 [09:47<11:11, 15.25s/it]Best trial: 10. Best value: 0.903556:  45%|████▌     | 36/80 [09:59<11:11, 15.25s/it]Best trial: 10. Best value: 0.903556:  46%|████▋     | 37/80 [09:59<10:10, 14.20s/it]Best trial: 10. Best value: 0.903556:  46%|████▋     | 37/80 [10:22<10:10, 14.20s/it]Best trial: 10. Best value: 0.903556:  48%|████▊     | 38/80 [10:22<11:45, 16.80s/it]Best trial: 10. Best value: 0.903556:  48%|████▊     | 38/80 [10:38<11:45, 16.80s/it]Best trial: 10. Best value: 0.903556:  49%|████▉     | 39/80 [10:38<11:17, 16.54s/it]Best trial: 10. Best value: 0.903556:  49%|████▉     | 39/80 [10:53<11:17, 16.54s/it]Best trial: 10. Best value: 0.903556:  50%|█████     | 40/80 [10:53<10:48, 16.21s/it]Best trial: 10. Best value: 0.903556:  50%|█████     | 40/80 [11:06<10:48, 16.21s/it]Best trial: 10. Best value: 0.903556:  51%|█████▏    | 41/80 [11:06<09:50, 15.14s/it]Best trial: 10. Best value: 0.903556:  51%|█████▏    | 41/80 [11:27<09:50, 15.14s/it]Best trial: 10. Best value: 0.903556:  52%|█████▎    | 42/80 [11:27<10:44, 16.95s/it]Best trial: 10. Best value: 0.903556:  52%|█████▎    | 42/80 [11:41<10:44, 16.95s/it]Best trial: 10. Best value: 0.903556:  54%|█████▍    | 43/80 [11:41<09:58, 16.17s/it]Best trial: 10. Best value: 0.903556:  54%|█████▍    | 43/80 [11:59<09:58, 16.17s/it]Best trial: 10. Best value: 0.903556:  55%|█████▌    | 44/80 [11:59<09:53, 16.49s/it]Best trial: 44. Best value: 0.90642:  55%|█████▌    | 44/80 [12:16<09:53, 16.49s/it] Best trial: 44. Best value: 0.90642:  56%|█████▋    | 45/80 [12:16<09:50, 16.86s/it]Best trial: 44. Best value: 0.90642:  56%|█████▋    | 45/80 [12:29<09:50, 16.86s/it]Best trial: 44. Best value: 0.90642:  57%|█████▊    | 46/80 [12:29<08:46, 15.50s/it]Best trial: 44. Best value: 0.90642:  57%|█████▊    | 46/80 [12:48<08:46, 15.50s/it]Best trial: 44. Best value: 0.90642:  59%|█████▉    | 47/80 [12:48<09:06, 16.55s/it]Best trial: 44. Best value: 0.90642:  59%|█████▉    | 47/80 [12:56<09:06, 16.55s/it]Best trial: 44. Best value: 0.90642:  60%|██████    | 48/80 [12:56<07:33, 14.17s/it]Best trial: 44. Best value: 0.90642:  60%|██████    | 48/80 [13:11<07:33, 14.17s/it]Best trial: 44. Best value: 0.90642:  61%|██████▏   | 49/80 [13:11<07:27, 14.44s/it]Best trial: 44. Best value: 0.90642:  61%|██████▏   | 49/80 [13:22<07:27, 14.44s/it]Best trial: 44. Best value: 0.90642:  62%|██████▎   | 50/80 [13:22<06:40, 13.36s/it]Best trial: 44. Best value: 0.90642:  62%|██████▎   | 50/80 [13:35<06:40, 13.36s/it]Best trial: 44. Best value: 0.90642:  64%|██████▍   | 51/80 [13:35<06:25, 13.30s/it]Best trial: 44. Best value: 0.90642:  64%|██████▍   | 51/80 [13:50<06:25, 13.30s/it]Best trial: 44. Best value: 0.90642:  65%|██████▌   | 52/80 [13:50<06:26, 13.79s/it]Best trial: 44. Best value: 0.90642:  65%|██████▌   | 52/80 [14:06<06:26, 13.79s/it]Best trial: 44. Best value: 0.90642:  66%|██████▋   | 53/80 [14:06<06:30, 14.47s/it]Best trial: 44. Best value: 0.90642:  66%|██████▋   | 53/80 [14:23<06:30, 14.47s/it]Best trial: 44. Best value: 0.90642:  68%|██████▊   | 54/80 [14:23<06:30, 15.02s/it]Best trial: 44. Best value: 0.90642:  68%|██████▊   | 54/80 [14:54<06:30, 15.02s/it]Best trial: 44. Best value: 0.90642:  69%|██████▉   | 55/80 [14:54<08:20, 20.02s/it]Best trial: 44. Best value: 0.90642:  69%|██████▉   | 55/80 [15:16<08:20, 20.02s/it]Best trial: 44. Best value: 0.90642:  70%|███████   | 56/80 [15:16<08:09, 20.38s/it]Best trial: 56. Best value: 0.906894:  70%|███████   | 56/80 [15:37<08:09, 20.38s/it]Best trial: 56. Best value: 0.906894:  71%|███████▏  | 57/80 [15:37<07:56, 20.74s/it]Best trial: 56. Best value: 0.906894:  71%|███████▏  | 57/80 [16:00<07:56, 20.74s/it]Best trial: 56. Best value: 0.906894:  72%|███████▎  | 58/80 [16:00<07:47, 21.26s/it]Best trial: 56. Best value: 0.906894:  72%|███████▎  | 58/80 [16:11<07:47, 21.26s/it]Best trial: 56. Best value: 0.906894:  74%|███████▍  | 59/80 [16:11<06:25, 18.34s/it]Best trial: 56. Best value: 0.906894:  74%|███████▍  | 59/80 [16:25<06:25, 18.34s/it]Best trial: 56. Best value: 0.906894:  75%|███████▌  | 60/80 [16:25<05:40, 17.00s/it]Best trial: 56. Best value: 0.906894:  75%|███████▌  | 60/80 [16:36<05:40, 17.00s/it]Best trial: 56. Best value: 0.906894:  76%|███████▋  | 61/80 [16:36<04:50, 15.30s/it]Best trial: 56. Best value: 0.906894:  76%|███████▋  | 61/80 [16:50<04:50, 15.30s/it]Best trial: 56. Best value: 0.906894:  78%|███████▊  | 62/80 [16:50<04:26, 14.83s/it]Best trial: 56. Best value: 0.906894:  78%|███████▊  | 62/80 [17:01<04:26, 14.83s/it]Best trial: 56. Best value: 0.906894:  79%|███████▉  | 63/80 [17:01<03:50, 13.57s/it]Best trial: 56. Best value: 0.906894:  79%|███████▉  | 63/80 [17:24<03:50, 13.57s/it]Best trial: 56. Best value: 0.906894:  80%|████████  | 64/80 [17:24<04:24, 16.53s/it]Best trial: 56. Best value: 0.906894:  80%|████████  | 64/80 [17:38<04:24, 16.53s/it]Best trial: 56. Best value: 0.906894:  81%|████████▏ | 65/80 [17:38<03:55, 15.70s/it]Best trial: 56. Best value: 0.906894:  81%|████████▏ | 65/80 [17:59<03:55, 15.70s/it]Best trial: 56. Best value: 0.906894:  82%|████████▎ | 66/80 [17:59<04:02, 17.30s/it]Best trial: 56. Best value: 0.906894:  82%|████████▎ | 66/80 [18:14<04:02, 17.30s/it]Best trial: 56. Best value: 0.906894:  84%|████████▍ | 67/80 [18:14<03:37, 16.76s/it]Best trial: 56. Best value: 0.906894:  84%|████████▍ | 67/80 [18:44<03:37, 16.76s/it]Best trial: 56. Best value: 0.906894:  85%|████████▌ | 68/80 [18:44<04:05, 20.48s/it]Best trial: 56. Best value: 0.906894:  85%|████████▌ | 68/80 [19:00<04:05, 20.48s/it]Best trial: 56. Best value: 0.906894:  86%|████████▋ | 69/80 [19:00<03:32, 19.29s/it]Best trial: 56. Best value: 0.906894:  86%|████████▋ | 69/80 [19:16<03:32, 19.29s/it]Best trial: 56. Best value: 0.906894:  88%|████████▊ | 70/80 [19:16<03:02, 18.30s/it]Best trial: 56. Best value: 0.906894:  88%|████████▊ | 70/80 [19:38<03:02, 18.30s/it]Best trial: 56. Best value: 0.906894:  89%|████████▉ | 71/80 [19:38<02:54, 19.42s/it]Best trial: 56. Best value: 0.906894:  89%|████████▉ | 71/80 [20:03<02:54, 19.42s/it]Best trial: 56. Best value: 0.906894:  90%|█████████ | 72/80 [20:03<02:48, 21.05s/it]Best trial: 56. Best value: 0.906894:  90%|█████████ | 72/80 [20:30<02:48, 21.05s/it]Best trial: 56. Best value: 0.906894:  91%|█████████▏| 73/80 [20:30<02:40, 22.89s/it]Best trial: 56. Best value: 0.906894:  91%|█████████▏| 73/80 [21:00<02:40, 22.89s/it]Best trial: 56. Best value: 0.906894:  92%|█████████▎| 74/80 [21:00<02:29, 24.99s/it]Best trial: 56. Best value: 0.906894:  92%|█████████▎| 74/80 [21:20<02:29, 24.99s/it]Best trial: 56. Best value: 0.906894:  94%|█████████▍| 75/80 [21:20<01:56, 23.37s/it]Best trial: 56. Best value: 0.906894:  94%|█████████▍| 75/80 [21:43<01:56, 23.37s/it]Best trial: 56. Best value: 0.906894:  95%|█████████▌| 76/80 [21:43<01:33, 23.41s/it]Best trial: 56. Best value: 0.906894:  95%|█████████▌| 76/80 [21:56<01:33, 23.41s/it]Best trial: 56. Best value: 0.906894:  96%|█████████▋| 77/80 [21:56<01:00, 20.13s/it]Best trial: 56. Best value: 0.906894:  96%|█████████▋| 77/80 [22:14<01:00, 20.13s/it]Best trial: 56. Best value: 0.906894:  98%|█████████▊| 78/80 [22:14<00:39, 19.76s/it]Best trial: 56. Best value: 0.906894:  98%|█████████▊| 78/80 [22:28<00:39, 19.76s/it]Best trial: 56. Best value: 0.906894:  99%|█████████▉| 79/80 [22:28<00:17, 17.86s/it]Best trial: 56. Best value: 0.906894:  99%|█████████▉| 79/80 [22:40<00:17, 17.86s/it]Best trial: 56. Best value: 0.906894: 100%|██████████| 80/80 [22:40<00:00, 16.16s/it]Best trial: 56. Best value: 0.906894: 100%|██████████| 80/80 [22:40<00:00, 17.01s/it]
+05:35:33 [INFO] models.training.ordinal_trainer: Best params: {'bootstrap_type': 'Bayesian', 'grow_policy': 'Lossguide', 'depth': 8, 'iterations': 779, 'learning_rate': 0.047009347253508436, 'border_count': 90, 'l2_leaf_reg': 26.464412065332443, 'min_data_in_leaf': 55, 'random_strength': 0.8832053242699806, 'colsample_bylevel': 0.6925574655385712, 'max_leaves': 27, 'bagging_temperature': 0.8128595679519613}
+05:35:33 [INFO] models.training.ordinal_trainer: Best AUC: 0.9069
+05:35:34 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['nbm_peak_window_max_f', 'nbm_peak_window_revision_1h_f', 'hrrr_peak_window_max_f', 'hrrr_peak_window_revision_1h_f', 'ndfd_tmax_T1_f', 'ndfd_drift_T2_to_T1_f', 'hrrr_minus_nbm_peak_window_max_f', 'ndfd_minus_vc_T1_f', 'nbm_t15_z_30d_f', 'hrrr_t15_z_30d_f', 'hrrr_minus_nbm_t15_z_30d_f']
+05:35:37 [INFO] models.training.ordinal_trainer:   Threshold -11: trained (pos_rate=94.5%)
+05:35:37 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['nbm_peak_window_max_f', 'nbm_peak_window_revision_1h_f', 'hrrr_peak_window_max_f', 'hrrr_peak_window_revision_1h_f', 'ndfd_tmax_T1_f', 'ndfd_drift_T2_to_T1_f', 'hrrr_minus_nbm_peak_window_max_f', 'ndfd_minus_vc_T1_f', 'nbm_t15_z_30d_f', 'hrrr_t15_z_30d_f', 'hrrr_minus_nbm_t15_z_30d_f']
+05:35:40 [INFO] models.training.ordinal_trainer:   Threshold -10: trained (pos_rate=93.6%)
+05:35:40 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['nbm_peak_window_max_f', 'nbm_peak_window_revision_1h_f', 'hrrr_peak_window_max_f', 'hrrr_peak_window_revision_1h_f', 'ndfd_tmax_T1_f', 'ndfd_drift_T2_to_T1_f', 'hrrr_minus_nbm_peak_window_max_f', 'ndfd_minus_vc_T1_f', 'nbm_t15_z_30d_f', 'hrrr_t15_z_30d_f', 'hrrr_minus_nbm_t15_z_30d_f']
+05:35:42 [INFO] models.training.ordinal_trainer:   Threshold -9: trained (pos_rate=92.4%)
+05:35:42 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['nbm_peak_window_max_f', 'nbm_peak_window_revision_1h_f', 'hrrr_peak_window_max_f', 'hrrr_peak_window_revision_1h_f', 'ndfd_tmax_T1_f', 'ndfd_drift_T2_to_T1_f', 'hrrr_minus_nbm_peak_window_max_f', 'ndfd_minus_vc_T1_f', 'nbm_t15_z_30d_f', 'hrrr_t15_z_30d_f', 'hrrr_minus_nbm_t15_z_30d_f']
+05:35:45 [INFO] models.training.ordinal_trainer:   Threshold -8: trained (pos_rate=91.6%)
+05:35:45 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['nbm_peak_window_max_f', 'nbm_peak_window_revision_1h_f', 'hrrr_peak_window_max_f', 'hrrr_peak_window_revision_1h_f', 'ndfd_tmax_T1_f', 'ndfd_drift_T2_to_T1_f', 'hrrr_minus_nbm_peak_window_max_f', 'ndfd_minus_vc_T1_f', 'nbm_t15_z_30d_f', 'hrrr_t15_z_30d_f', 'hrrr_minus_nbm_t15_z_30d_f']
+05:35:50 [INFO] models.training.ordinal_trainer:   Threshold -7: trained (pos_rate=89.6%)
+05:35:50 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['nbm_peak_window_max_f', 'nbm_peak_window_revision_1h_f', 'hrrr_peak_window_max_f', 'hrrr_peak_window_revision_1h_f', 'ndfd_tmax_T1_f', 'ndfd_drift_T2_to_T1_f', 'hrrr_minus_nbm_peak_window_max_f', 'ndfd_minus_vc_T1_f', 'nbm_t15_z_30d_f', 'hrrr_t15_z_30d_f', 'hrrr_minus_nbm_t15_z_30d_f']
+05:35:56 [INFO] models.training.ordinal_trainer:   Threshold -6: trained (pos_rate=88.3%)
+05:35:56 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['nbm_peak_window_max_f', 'nbm_peak_window_revision_1h_f', 'hrrr_peak_window_max_f', 'hrrr_peak_window_revision_1h_f', 'ndfd_tmax_T1_f', 'ndfd_drift_T2_to_T1_f', 'hrrr_minus_nbm_peak_window_max_f', 'ndfd_minus_vc_T1_f', 'nbm_t15_z_30d_f', 'hrrr_t15_z_30d_f', 'hrrr_minus_nbm_t15_z_30d_f']
+05:36:10 [INFO] models.training.ordinal_trainer:   Threshold -5: trained (pos_rate=85.8%)
+05:36:10 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['nbm_peak_window_max_f', 'nbm_peak_window_revision_1h_f', 'hrrr_peak_window_max_f', 'hrrr_peak_window_revision_1h_f', 'ndfd_tmax_T1_f', 'ndfd_drift_T2_to_T1_f', 'hrrr_minus_nbm_peak_window_max_f', 'ndfd_minus_vc_T1_f', 'nbm_t15_z_30d_f', 'hrrr_t15_z_30d_f', 'hrrr_minus_nbm_t15_z_30d_f']
+05:36:21 [INFO] models.training.ordinal_trainer:   Threshold -4: trained (pos_rate=83.6%)
+05:36:21 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['nbm_peak_window_max_f', 'nbm_peak_window_revision_1h_f', 'hrrr_peak_window_max_f', 'hrrr_peak_window_revision_1h_f', 'ndfd_tmax_T1_f', 'ndfd_drift_T2_to_T1_f', 'hrrr_minus_nbm_peak_window_max_f', 'ndfd_minus_vc_T1_f', 'nbm_t15_z_30d_f', 'hrrr_t15_z_30d_f', 'hrrr_minus_nbm_t15_z_30d_f']
+05:36:28 [INFO] models.training.ordinal_trainer:   Threshold -3: trained (pos_rate=80.0%)
+05:36:28 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['nbm_peak_window_max_f', 'nbm_peak_window_revision_1h_f', 'hrrr_peak_window_max_f', 'hrrr_peak_window_revision_1h_f', 'ndfd_tmax_T1_f', 'ndfd_drift_T2_to_T1_f', 'hrrr_minus_nbm_peak_window_max_f', 'ndfd_minus_vc_T1_f', 'nbm_t15_z_30d_f', 'hrrr_t15_z_30d_f', 'hrrr_minus_nbm_t15_z_30d_f']
+05:36:42 [INFO] models.training.ordinal_trainer:   Threshold -2: trained (pos_rate=76.6%)
+05:36:42 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['nbm_peak_window_max_f', 'nbm_peak_window_revision_1h_f', 'hrrr_peak_window_max_f', 'hrrr_peak_window_revision_1h_f', 'ndfd_tmax_T1_f', 'ndfd_drift_T2_to_T1_f', 'hrrr_minus_nbm_peak_window_max_f', 'ndfd_minus_vc_T1_f', 'nbm_t15_z_30d_f', 'hrrr_t15_z_30d_f', 'hrrr_minus_nbm_t15_z_30d_f']
+05:36:48 [INFO] models.training.ordinal_trainer:   Threshold -1: trained (pos_rate=70.9%)
+05:36:49 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['nbm_peak_window_max_f', 'nbm_peak_window_revision_1h_f', 'hrrr_peak_window_max_f', 'hrrr_peak_window_revision_1h_f', 'ndfd_tmax_T1_f', 'ndfd_drift_T2_to_T1_f', 'hrrr_minus_nbm_peak_window_max_f', 'ndfd_minus_vc_T1_f', 'nbm_t15_z_30d_f', 'hrrr_t15_z_30d_f', 'hrrr_minus_nbm_t15_z_30d_f']
+05:37:00 [INFO] models.training.ordinal_trainer:   Threshold +0: trained (pos_rate=65.0%)
+05:37:00 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['nbm_peak_window_max_f', 'nbm_peak_window_revision_1h_f', 'hrrr_peak_window_max_f', 'hrrr_peak_window_revision_1h_f', 'ndfd_tmax_T1_f', 'ndfd_drift_T2_to_T1_f', 'hrrr_minus_nbm_peak_window_max_f', 'ndfd_minus_vc_T1_f', 'nbm_t15_z_30d_f', 'hrrr_t15_z_30d_f', 'hrrr_minus_nbm_t15_z_30d_f']
+05:37:13 [INFO] models.training.ordinal_trainer:   Threshold +1: trained (pos_rate=46.5%)
+05:37:13 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['nbm_peak_window_max_f', 'nbm_peak_window_revision_1h_f', 'hrrr_peak_window_max_f', 'hrrr_peak_window_revision_1h_f', 'ndfd_tmax_T1_f', 'ndfd_drift_T2_to_T1_f', 'hrrr_minus_nbm_peak_window_max_f', 'ndfd_minus_vc_T1_f', 'nbm_t15_z_30d_f', 'hrrr_t15_z_30d_f', 'hrrr_minus_nbm_t15_z_30d_f']
+05:37:20 [INFO] models.training.ordinal_trainer:   Threshold +2: trained (pos_rate=38.1%)
+05:37:20 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['nbm_peak_window_max_f', 'nbm_peak_window_revision_1h_f', 'hrrr_peak_window_max_f', 'hrrr_peak_window_revision_1h_f', 'ndfd_tmax_T1_f', 'ndfd_drift_T2_to_T1_f', 'hrrr_minus_nbm_peak_window_max_f', 'ndfd_minus_vc_T1_f', 'nbm_t15_z_30d_f', 'hrrr_t15_z_30d_f', 'hrrr_minus_nbm_t15_z_30d_f']
+05:37:27 [INFO] models.training.ordinal_trainer:   Threshold +3: trained (pos_rate=30.2%)
+05:37:27 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['nbm_peak_window_max_f', 'nbm_peak_window_revision_1h_f', 'hrrr_peak_window_max_f', 'hrrr_peak_window_revision_1h_f', 'ndfd_tmax_T1_f', 'ndfd_drift_T2_to_T1_f', 'hrrr_minus_nbm_peak_window_max_f', 'ndfd_minus_vc_T1_f', 'nbm_t15_z_30d_f', 'hrrr_t15_z_30d_f', 'hrrr_minus_nbm_t15_z_30d_f']
+05:37:31 [INFO] models.training.ordinal_trainer:   Threshold +4: trained (pos_rate=25.4%)
+05:37:31 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['nbm_peak_window_max_f', 'nbm_peak_window_revision_1h_f', 'hrrr_peak_window_max_f', 'hrrr_peak_window_revision_1h_f', 'ndfd_tmax_T1_f', 'ndfd_drift_T2_to_T1_f', 'hrrr_minus_nbm_peak_window_max_f', 'ndfd_minus_vc_T1_f', 'nbm_t15_z_30d_f', 'hrrr_t15_z_30d_f', 'hrrr_minus_nbm_t15_z_30d_f']
+05:37:37 [INFO] models.training.ordinal_trainer:   Threshold +5: trained (pos_rate=19.8%)
+05:37:37 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['nbm_peak_window_max_f', 'nbm_peak_window_revision_1h_f', 'hrrr_peak_window_max_f', 'hrrr_peak_window_revision_1h_f', 'ndfd_tmax_T1_f', 'ndfd_drift_T2_to_T1_f', 'hrrr_minus_nbm_peak_window_max_f', 'ndfd_minus_vc_T1_f', 'nbm_t15_z_30d_f', 'hrrr_t15_z_30d_f', 'hrrr_minus_nbm_t15_z_30d_f']
+05:37:43 [INFO] models.training.ordinal_trainer:   Threshold +6: trained (pos_rate=16.9%)
+05:37:43 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['nbm_peak_window_max_f', 'nbm_peak_window_revision_1h_f', 'hrrr_peak_window_max_f', 'hrrr_peak_window_revision_1h_f', 'ndfd_tmax_T1_f', 'ndfd_drift_T2_to_T1_f', 'hrrr_minus_nbm_peak_window_max_f', 'ndfd_minus_vc_T1_f', 'nbm_t15_z_30d_f', 'hrrr_t15_z_30d_f', 'hrrr_minus_nbm_t15_z_30d_f']
+05:37:48 [INFO] models.training.ordinal_trainer:   Threshold +7: trained (pos_rate=13.8%)
+05:37:49 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['nbm_peak_window_max_f', 'nbm_peak_window_revision_1h_f', 'hrrr_peak_window_max_f', 'hrrr_peak_window_revision_1h_f', 'ndfd_tmax_T1_f', 'ndfd_drift_T2_to_T1_f', 'hrrr_minus_nbm_peak_window_max_f', 'ndfd_minus_vc_T1_f', 'nbm_t15_z_30d_f', 'hrrr_t15_z_30d_f', 'hrrr_minus_nbm_t15_z_30d_f']
+05:37:56 [INFO] models.training.ordinal_trainer:   Threshold +8: trained (pos_rate=11.7%)
+05:37:57 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['nbm_peak_window_max_f', 'nbm_peak_window_revision_1h_f', 'hrrr_peak_window_max_f', 'hrrr_peak_window_revision_1h_f', 'ndfd_tmax_T1_f', 'ndfd_drift_T2_to_T1_f', 'hrrr_minus_nbm_peak_window_max_f', 'ndfd_minus_vc_T1_f', 'nbm_t15_z_30d_f', 'hrrr_t15_z_30d_f', 'hrrr_minus_nbm_t15_z_30d_f']
+05:38:02 [INFO] models.training.ordinal_trainer:   Threshold +9: trained (pos_rate=9.2%)
+05:38:02 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['nbm_peak_window_max_f', 'nbm_peak_window_revision_1h_f', 'hrrr_peak_window_max_f', 'hrrr_peak_window_revision_1h_f', 'ndfd_tmax_T1_f', 'ndfd_drift_T2_to_T1_f', 'hrrr_minus_nbm_peak_window_max_f', 'ndfd_minus_vc_T1_f', 'nbm_t15_z_30d_f', 'hrrr_t15_z_30d_f', 'hrrr_minus_nbm_t15_z_30d_f']
+05:38:08 [INFO] models.training.ordinal_trainer:   Threshold +10: trained (pos_rate=7.9%)
+05:38:09 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['nbm_peak_window_max_f', 'nbm_peak_window_revision_1h_f', 'hrrr_peak_window_max_f', 'hrrr_peak_window_revision_1h_f', 'ndfd_tmax_T1_f', 'ndfd_drift_T2_to_T1_f', 'hrrr_minus_nbm_peak_window_max_f', 'ndfd_minus_vc_T1_f', 'nbm_t15_z_30d_f', 'hrrr_t15_z_30d_f', 'hrrr_minus_nbm_t15_z_30d_f']
+05:38:15 [INFO] models.training.ordinal_trainer:   Threshold +11: trained (pos_rate=6.3%)
+05:38:15 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['nbm_peak_window_max_f', 'nbm_peak_window_revision_1h_f', 'hrrr_peak_window_max_f', 'hrrr_peak_window_revision_1h_f', 'ndfd_tmax_T1_f', 'ndfd_drift_T2_to_T1_f', 'hrrr_minus_nbm_peak_window_max_f', 'ndfd_minus_vc_T1_f', 'nbm_t15_z_30d_f', 'hrrr_t15_z_30d_f', 'hrrr_minus_nbm_t15_z_30d_f']
+05:38:20 [INFO] models.training.ordinal_trainer:   Threshold +12: trained (pos_rate=5.5%)
+05:38:20 [INFO] models.training.ordinal_trainer: Ordinal training complete: 24 classifiers
+05:38:20 [WARNING] models.training.base_trainer: Missing columns (will fill with NaN): ['nbm_peak_window_max_f', 'nbm_peak_window_revision_1h_f', 'hrrr_peak_window_max_f', 'hrrr_peak_window_revision_1h_f', 'ndfd_tmax_T1_f', 'ndfd_drift_T2_to_T1_f', 'hrrr_minus_nbm_peak_window_max_f', 'ndfd_minus_vc_T1_f', 'nbm_t15_z_30d_f', 'hrrr_t15_z_30d_f', 'hrrr_minus_nbm_t15_z_30d_f']
+05:38:22 [INFO] models.training.ordinal_trainer: Saved ordinal model to models/saved/austin/ordinal_catboost_optuna.pkl
+05:38:22 [INFO] scripts.train_city_ordinal_optuna: 
+Saved model to models/saved/austin/ordinal_catboost_optuna.pkl
+05:38:22 [INFO] scripts.train_city_ordinal_optuna: Saved best params to models/saved/austin/best_params.json
+05:38:22 [INFO] scripts.train_city_ordinal_optuna: Saved final metrics to models/saved/austin/final_metrics_austin.json
+
+============================================================
+EVALUATION
+============================================================
+
+Test Set Metrics:
+----------------------------------------
+  delta_accuracy: 0.2800
+  delta_mae: 1.9708
+  off_by_1_rate: 0.2688
+  off_by_2plus_rate: 0.4512
+  within_1_rate: 0.5488
+  within_2_rate: 0.7442
+
+============================================================
+FEATURE IMPORTANCE
+============================================================
+
+Top 30 Features:
+                         feature  importance
+0                 fcst_obs_ratio   11.088384
+1        temp_zscore_vs_forecast    8.711377
+2               obs_fcst_max_gap    7.236921
+3               remaining_upside    6.197752
+4           fcst_peak_hour_float    5.417268
+5        confidence_weighted_gap    4.638874
+6          gap_x_hours_remaining    4.055266
+7          fcst_prev_hour_of_max    3.948648
+8       fcst_remaining_potential    2.957120
+9              err_max_pos_sofar    2.140387
+10    minutes_since_max_observed    1.508594
+11      fcst_peak_band_width_min    1.413019
+12         fcst_multi_t1_t2_diff    1.126447
+13          obs_fcst_gap_squared    1.104352
+14          log_abs_obs_fcst_gap    1.090059
+15             num_samples_sofar    0.992412
+16              delta_vcmax_lag1    0.985529
+17               fcst_prev_std_f    0.918941
+18           fcst_dewpoint_range    0.910859
+19          fcst_cloudcover_mean    0.838730
+20            log_hours_to_close    0.824644
+21           fcst_cloudcover_min    0.802837
+22  fcst_humidity_afternoon_mean    0.777230
+23         fcst_cloudcover_range    0.735391
+24                err_mean_sofar    0.713537
+25    fcst_humidity_morning_mean    0.704619
+26             fcst_dewpoint_min    0.688915
+27            fcst_humidity_mean    0.672908
+28                       doy_sin    0.665186
+29             fcst_humidity_min    0.622457
+
+----------------------------------------
+Station-city feature importance:
+                         feature  importance
+32    station_city_max_gap_sofar    0.572244
+66   station_city_mean_gap_sofar    0.293926
+80          station_city_gap_std    0.215430
+115       station_city_gap_trend    0.045619
+164  station_city_gap_x_fcst_gap    0.000116
+165        station_city_temp_gap    0.000076
+  station_city_max_gap_sofar: rank 33/212
+  station_city_mean_gap_sofar: rank 67/212
+  station_city_gap_std: rank 81/212
+  station_city_gap_trend: rank 116/212
+  station_city_gap_x_fcst_gap: rank 165/212
+  station_city_temp_gap: rank 166/212
+
+----------------------------------------
+Multi-horizon feature importance:
+                  feature  importance
+12  fcst_multi_t1_t2_diff    1.126447
+46       fcst_multi_drift    0.493940
+47      fcst_multi_median    0.492960
+51          fcst_multi_cv    0.441095
+56        fcst_multi_mean    0.399135
+57   fcst_multi_range_pct    0.372023
+59       fcst_multi_range    0.360414
+60         fcst_multi_ema    0.355457
+71         fcst_multi_std    0.268288
+  fcst_multi_t1_t2_diff: rank 13/212
+  fcst_multi_drift: rank 47/212
+  fcst_multi_median: rank 48/212
+  fcst_multi_cv: rank 52/212
+  fcst_multi_mean: rank 57/212
+  fcst_multi_range_pct: rank 58/212
+  fcst_multi_range: rank 60/212
+  fcst_multi_ema: rank 61/212
+  fcst_multi_std: rank 72/212
+
+============================================================
+SUMMARY
+============================================================
+City: austin
+Model: models/saved/austin/ordinal_catboost_optuna.pkl
+Params: models/saved/austin/best_params.json
+Metrics: models/saved/austin/final_metrics_austin.json
+Training samples: 389,784
+Test samples: 97,128
+Optuna trials: 80
+Best params: {'bootstrap_type': 'Bayesian', 'grow_policy': 'Lossguide', 'depth': 8, 'iterations': 779, 'learning_rate': 0.047009347253508436, 'border_count': 90, 'l2_leaf_reg': 26.464412065332443, 'min_data_in_leaf': 55, 'random_strength': 0.8832053242699806, 'colsample_bylevel': 0.6925574655385712, 'max_leaves': 27, 'bagging_temperature': 0.8128595679519613}
+
+Key Metrics:
+  Accuracy: 28.0%
+  MAE: 1.97
+  Within 1: 54.9%
+  Within 2: 74.4%
+
+============================================================
+DONE
+============================================================

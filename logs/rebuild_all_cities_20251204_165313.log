@@ -1,0 +1,449 @@
+nohup: ignoring input
+16:53:13 [INFO] __main__: ================================================================================
+16:53:13 [INFO] __main__: REBUILDING ALL 6 CITIES WITH NEW FEATURES
+16:53:13 [INFO] __main__: ================================================================================
+16:53:13 [INFO] __main__: Cities: chicago, austin, denver, los_angeles, miami, philadelphia
+16:53:13 [INFO] __main__: Workers per city: 20
+16:53:13 [INFO] __main__: 
+16:53:13 [INFO] __main__: 
+================================================================================
+16:53:13 [INFO] __main__: [1/6] REBUILDING CHICAGO
+16:53:13 [INFO] __main__: ================================================================================
+16:53:13 [INFO] src.db.connection: Database engine created: localhost:5434/kalshi_weather
+16:53:13 [ERROR] __main__: ✗ Failed to rebuild chicago: (psycopg2.errors.UndefinedColumn) column "event_date" does not exist
+LINE 3:             MIN(event_date) as min_date,
+                        ^
+
+[SQL: 
+        SELECT
+            MIN(event_date) as min_date,
+            MAX(event_date) as max_date
+        FROM wx.settlement
+        WHERE city = %(city)s
+          AND settle_f IS NOT NULL
+    ]
+[parameters: {'city': 'chicago'}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 941, in do_execute
+    cursor.execute(statement, parameters)
+psycopg2.errors.UndefinedColumn: column "event_date" does not exist
+LINE 3:             MIN(event_date) as min_date,
+                        ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/halsted/Documents/python/weather_updated/scripts/rebuild_all_cities_fresh.py", line 76, in main
+    min_date, max_date = get_data_range(city)
+                         ^^^^^^^^^^^^^^^^^^^^
+  File "/home/halsted/Documents/python/weather_updated/scripts/rebuild_all_cities_fresh.py", line 49, in get_data_range
+    result = conn.execute(query, {"city": city}).fetchone()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1418, in execute
+    return meth(
+           ^^^^^
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 515, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1640, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2355, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 941, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.ProgrammingError: (psycopg2.errors.UndefinedColumn) column "event_date" does not exist
+LINE 3:             MIN(event_date) as min_date,
+                        ^
+
+[SQL: 
+        SELECT
+            MIN(event_date) as min_date,
+            MAX(event_date) as max_date
+        FROM wx.settlement
+        WHERE city = %(city)s
+          AND settle_f IS NOT NULL
+    ]
+[parameters: {'city': 'chicago'}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+16:53:13 [INFO] __main__: 
+================================================================================
+16:53:13 [INFO] __main__: [2/6] REBUILDING AUSTIN
+16:53:13 [INFO] __main__: ================================================================================
+16:53:13 [ERROR] __main__: ✗ Failed to rebuild austin: (psycopg2.errors.UndefinedColumn) column "event_date" does not exist
+LINE 3:             MIN(event_date) as min_date,
+                        ^
+
+[SQL: 
+        SELECT
+            MIN(event_date) as min_date,
+            MAX(event_date) as max_date
+        FROM wx.settlement
+        WHERE city = %(city)s
+          AND settle_f IS NOT NULL
+    ]
+[parameters: {'city': 'austin'}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 941, in do_execute
+    cursor.execute(statement, parameters)
+psycopg2.errors.UndefinedColumn: column "event_date" does not exist
+LINE 3:             MIN(event_date) as min_date,
+                        ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/halsted/Documents/python/weather_updated/scripts/rebuild_all_cities_fresh.py", line 76, in main
+    min_date, max_date = get_data_range(city)
+                         ^^^^^^^^^^^^^^^^^^^^
+  File "/home/halsted/Documents/python/weather_updated/scripts/rebuild_all_cities_fresh.py", line 49, in get_data_range
+    result = conn.execute(query, {"city": city}).fetchone()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1418, in execute
+    return meth(
+           ^^^^^
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 515, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1640, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2355, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 941, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.ProgrammingError: (psycopg2.errors.UndefinedColumn) column "event_date" does not exist
+LINE 3:             MIN(event_date) as min_date,
+                        ^
+
+[SQL: 
+        SELECT
+            MIN(event_date) as min_date,
+            MAX(event_date) as max_date
+        FROM wx.settlement
+        WHERE city = %(city)s
+          AND settle_f IS NOT NULL
+    ]
+[parameters: {'city': 'austin'}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+16:53:13 [INFO] __main__: 
+================================================================================
+16:53:13 [INFO] __main__: [3/6] REBUILDING DENVER
+16:53:13 [INFO] __main__: ================================================================================
+16:53:13 [ERROR] __main__: ✗ Failed to rebuild denver: (psycopg2.errors.UndefinedColumn) column "event_date" does not exist
+LINE 3:             MIN(event_date) as min_date,
+                        ^
+
+[SQL: 
+        SELECT
+            MIN(event_date) as min_date,
+            MAX(event_date) as max_date
+        FROM wx.settlement
+        WHERE city = %(city)s
+          AND settle_f IS NOT NULL
+    ]
+[parameters: {'city': 'denver'}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 941, in do_execute
+    cursor.execute(statement, parameters)
+psycopg2.errors.UndefinedColumn: column "event_date" does not exist
+LINE 3:             MIN(event_date) as min_date,
+                        ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/halsted/Documents/python/weather_updated/scripts/rebuild_all_cities_fresh.py", line 76, in main
+    min_date, max_date = get_data_range(city)
+                         ^^^^^^^^^^^^^^^^^^^^
+  File "/home/halsted/Documents/python/weather_updated/scripts/rebuild_all_cities_fresh.py", line 49, in get_data_range
+    result = conn.execute(query, {"city": city}).fetchone()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1418, in execute
+    return meth(
+           ^^^^^
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 515, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1640, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2355, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 941, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.ProgrammingError: (psycopg2.errors.UndefinedColumn) column "event_date" does not exist
+LINE 3:             MIN(event_date) as min_date,
+                        ^
+
+[SQL: 
+        SELECT
+            MIN(event_date) as min_date,
+            MAX(event_date) as max_date
+        FROM wx.settlement
+        WHERE city = %(city)s
+          AND settle_f IS NOT NULL
+    ]
+[parameters: {'city': 'denver'}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+16:53:13 [INFO] __main__: 
+================================================================================
+16:53:13 [INFO] __main__: [4/6] REBUILDING LOS_ANGELES
+16:53:13 [INFO] __main__: ================================================================================
+16:53:13 [ERROR] __main__: ✗ Failed to rebuild los_angeles: (psycopg2.errors.UndefinedColumn) column "event_date" does not exist
+LINE 3:             MIN(event_date) as min_date,
+                        ^
+
+[SQL: 
+        SELECT
+            MIN(event_date) as min_date,
+            MAX(event_date) as max_date
+        FROM wx.settlement
+        WHERE city = %(city)s
+          AND settle_f IS NOT NULL
+    ]
+[parameters: {'city': 'los_angeles'}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 941, in do_execute
+    cursor.execute(statement, parameters)
+psycopg2.errors.UndefinedColumn: column "event_date" does not exist
+LINE 3:             MIN(event_date) as min_date,
+                        ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/halsted/Documents/python/weather_updated/scripts/rebuild_all_cities_fresh.py", line 76, in main
+    min_date, max_date = get_data_range(city)
+                         ^^^^^^^^^^^^^^^^^^^^
+  File "/home/halsted/Documents/python/weather_updated/scripts/rebuild_all_cities_fresh.py", line 49, in get_data_range
+    result = conn.execute(query, {"city": city}).fetchone()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1418, in execute
+    return meth(
+           ^^^^^
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 515, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1640, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2355, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 941, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.ProgrammingError: (psycopg2.errors.UndefinedColumn) column "event_date" does not exist
+LINE 3:             MIN(event_date) as min_date,
+                        ^
+
+[SQL: 
+        SELECT
+            MIN(event_date) as min_date,
+            MAX(event_date) as max_date
+        FROM wx.settlement
+        WHERE city = %(city)s
+          AND settle_f IS NOT NULL
+    ]
+[parameters: {'city': 'los_angeles'}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+16:53:13 [INFO] __main__: 
+================================================================================
+16:53:13 [INFO] __main__: [5/6] REBUILDING MIAMI
+16:53:13 [INFO] __main__: ================================================================================
+16:53:13 [ERROR] __main__: ✗ Failed to rebuild miami: (psycopg2.errors.UndefinedColumn) column "event_date" does not exist
+LINE 3:             MIN(event_date) as min_date,
+                        ^
+
+[SQL: 
+        SELECT
+            MIN(event_date) as min_date,
+            MAX(event_date) as max_date
+        FROM wx.settlement
+        WHERE city = %(city)s
+          AND settle_f IS NOT NULL
+    ]
+[parameters: {'city': 'miami'}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 941, in do_execute
+    cursor.execute(statement, parameters)
+psycopg2.errors.UndefinedColumn: column "event_date" does not exist
+LINE 3:             MIN(event_date) as min_date,
+                        ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/halsted/Documents/python/weather_updated/scripts/rebuild_all_cities_fresh.py", line 76, in main
+    min_date, max_date = get_data_range(city)
+                         ^^^^^^^^^^^^^^^^^^^^
+  File "/home/halsted/Documents/python/weather_updated/scripts/rebuild_all_cities_fresh.py", line 49, in get_data_range
+    result = conn.execute(query, {"city": city}).fetchone()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1418, in execute
+    return meth(
+           ^^^^^
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 515, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1640, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2355, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 941, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.ProgrammingError: (psycopg2.errors.UndefinedColumn) column "event_date" does not exist
+LINE 3:             MIN(event_date) as min_date,
+                        ^
+
+[SQL: 
+        SELECT
+            MIN(event_date) as min_date,
+            MAX(event_date) as max_date
+        FROM wx.settlement
+        WHERE city = %(city)s
+          AND settle_f IS NOT NULL
+    ]
+[parameters: {'city': 'miami'}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+16:53:13 [INFO] __main__: 
+================================================================================
+16:53:13 [INFO] __main__: [6/6] REBUILDING PHILADELPHIA
+16:53:13 [INFO] __main__: ================================================================================
+16:53:13 [ERROR] __main__: ✗ Failed to rebuild philadelphia: (psycopg2.errors.UndefinedColumn) column "event_date" does not exist
+LINE 3:             MIN(event_date) as min_date,
+                        ^
+
+[SQL: 
+        SELECT
+            MIN(event_date) as min_date,
+            MAX(event_date) as max_date
+        FROM wx.settlement
+        WHERE city = %(city)s
+          AND settle_f IS NOT NULL
+    ]
+[parameters: {'city': 'philadelphia'}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 941, in do_execute
+    cursor.execute(statement, parameters)
+psycopg2.errors.UndefinedColumn: column "event_date" does not exist
+LINE 3:             MIN(event_date) as min_date,
+                        ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/halsted/Documents/python/weather_updated/scripts/rebuild_all_cities_fresh.py", line 76, in main
+    min_date, max_date = get_data_range(city)
+                         ^^^^^^^^^^^^^^^^^^^^
+  File "/home/halsted/Documents/python/weather_updated/scripts/rebuild_all_cities_fresh.py", line 49, in get_data_range
+    result = conn.execute(query, {"city": city}).fetchone()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1418, in execute
+    return meth(
+           ^^^^^
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 515, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1640, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2355, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 941, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.ProgrammingError: (psycopg2.errors.UndefinedColumn) column "event_date" does not exist
+LINE 3:             MIN(event_date) as min_date,
+                        ^
+
+[SQL: 
+        SELECT
+            MIN(event_date) as min_date,
+            MAX(event_date) as max_date
+        FROM wx.settlement
+        WHERE city = %(city)s
+          AND settle_f IS NOT NULL
+    ]
+[parameters: {'city': 'philadelphia'}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+16:53:13 [INFO] __main__: 
+================================================================================
+16:53:13 [INFO] __main__: REBUILD COMPLETE
+16:53:13 [INFO] __main__: ================================================================================
+16:53:13 [INFO] __main__: 
+✓ Successfully rebuilt 0/6 cities
+16:53:13 [INFO] __main__: ✓ Total rows: 0
+16:53:13 [INFO] __main__: ✓ Total time: 0.0s (0.0 min)
+16:53:13 [INFO] __main__: 
+Per-city summary:
+16:53:13 [INFO] __main__: 
+✓ All datasets ready for training!
+16:53:13 [INFO] __main__: 
+Next step: Train with new features
+16:53:13 [INFO] __main__:   python scripts/train_city_ordinal_optuna.py --city austin --trials 50 --use-cached

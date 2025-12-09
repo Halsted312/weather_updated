@@ -1,0 +1,317 @@
+2025-12-01 20:04:45,094 - __main__ - INFO - Ingesting VC observations from 2022-06-01 to 2022-12-30
+2025-12-01 20:04:45,095 - src.weather.visual_crossing - INFO - Visual Crossing client initialized (interval=5m)
+2025-12-01 20:04:45,100 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-01 20:04:45,125 - __main__ - INFO - Found 6 locations to process
+2025-12-01 20:04:45,127 - src.db.checkpoint - INFO - Resuming checkpoint: vc_obs_backfill/CHI_station from start (0 processed)
+2025-12-01 20:04:45,128 - __main__ - INFO - Ingesting CHI/station (stn:KMDW) from 2022-06-01 to 2022-12-30
+2025-12-01 20:04:45,128 - src.weather.visual_crossing - INFO - Fetching station history: KMDW from 2022-06-01 to 2022-06-14
+2025-12-01 20:04:45,411 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:04:48,037 - __main__ - INFO -   2022-06-01 to 2022-06-14: 4032 records
+2025-12-01 20:04:48,037 - src.weather.visual_crossing - INFO - Fetching station history: KMDW from 2022-06-15 to 2022-06-28
+2025-12-01 20:04:48,188 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:04:50,854 - __main__ - INFO -   2022-06-15 to 2022-06-28: 4032 records
+2025-12-01 20:04:50,854 - src.weather.visual_crossing - INFO - Fetching station history: KMDW from 2022-06-29 to 2022-07-12
+2025-12-01 20:04:51,024 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:04:53,656 - __main__ - INFO -   2022-06-29 to 2022-07-12: 4032 records
+2025-12-01 20:04:53,656 - src.weather.visual_crossing - INFO - Fetching station history: KMDW from 2022-07-13 to 2022-07-26
+2025-12-01 20:04:53,819 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:04:56,568 - __main__ - INFO -   2022-07-13 to 2022-07-26: 4032 records
+2025-12-01 20:04:56,568 - src.weather.visual_crossing - INFO - Fetching station history: KMDW from 2022-07-27 to 2022-08-09
+2025-12-01 20:04:56,700 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:04:59,412 - __main__ - INFO -   2022-07-27 to 2022-08-09: 4032 records
+2025-12-01 20:04:59,412 - src.weather.visual_crossing - INFO - Fetching station history: KMDW from 2022-08-10 to 2022-08-23
+2025-12-01 20:04:59,582 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:05:02,332 - __main__ - INFO -   2022-08-10 to 2022-08-23: 4032 records
+2025-12-01 20:05:02,332 - src.weather.visual_crossing - INFO - Fetching station history: KMDW from 2022-08-24 to 2022-09-06
+2025-12-01 20:05:02,495 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:05:05,245 - __main__ - INFO -   2022-08-24 to 2022-09-06: 4032 records
+2025-12-01 20:05:05,245 - src.weather.visual_crossing - INFO - Fetching station history: KMDW from 2022-09-07 to 2022-09-20
+2025-12-01 20:05:05,393 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:05:08,283 - __main__ - INFO -   2022-09-07 to 2022-09-20: 4032 records
+2025-12-01 20:05:08,283 - src.weather.visual_crossing - INFO - Fetching station history: KMDW from 2022-09-21 to 2022-10-04
+2025-12-01 20:05:08,450 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:05:11,168 - __main__ - INFO -   2022-09-21 to 2022-10-04: 4032 records
+2025-12-01 20:05:11,168 - src.weather.visual_crossing - INFO - Fetching station history: KMDW from 2022-10-05 to 2022-10-18
+2025-12-01 20:05:11,343 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:05:13,956 - __main__ - INFO -   2022-10-05 to 2022-10-18: 4032 records
+2025-12-01 20:05:13,956 - src.weather.visual_crossing - INFO - Fetching station history: KMDW from 2022-10-19 to 2022-11-01
+2025-12-01 20:05:14,132 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:05:16,918 - __main__ - INFO -   2022-10-19 to 2022-11-01: 4032 records
+2025-12-01 20:05:16,918 - src.weather.visual_crossing - INFO - Fetching station history: KMDW from 2022-11-02 to 2022-11-15
+2025-12-01 20:05:17,084 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:05:19,783 - __main__ - INFO -   2022-11-02 to 2022-11-15: 4032 records
+2025-12-01 20:05:19,783 - src.weather.visual_crossing - INFO - Fetching station history: KMDW from 2022-11-16 to 2022-11-29
+2025-12-01 20:05:19,940 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:05:22,631 - __main__ - INFO -   2022-11-16 to 2022-11-29: 4032 records
+2025-12-01 20:05:22,631 - src.weather.visual_crossing - INFO - Fetching station history: KMDW from 2022-11-30 to 2022-12-13
+2025-12-01 20:05:22,776 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:05:25,492 - __main__ - INFO -   2022-11-30 to 2022-12-13: 4032 records
+2025-12-01 20:05:25,492 - src.weather.visual_crossing - INFO - Fetching station history: KMDW from 2022-12-14 to 2022-12-27
+2025-12-01 20:05:25,611 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:05:28,289 - __main__ - INFO -   2022-12-14 to 2022-12-27: 4032 records
+2025-12-01 20:05:28,289 - src.weather.visual_crossing - INFO - Fetching station history: KMDW from 2022-12-28 to 2022-12-30
+2025-12-01 20:05:28,373 - src.weather.visual_crossing - INFO - Query cost: 864
+2025-12-01 20:05:29,103 - __main__ - INFO -   2022-12-28 to 2022-12-30: 864 records
+2025-12-01 20:05:29,107 - __main__ - INFO - CHI/station: upserted 61344 records
+2025-12-01 20:05:29,109 - src.db.checkpoint - INFO - Checkpoint 94 marked as completed
+2025-12-01 20:05:29,112 - src.db.checkpoint - INFO - Created new checkpoint: vc_obs_backfill/DEN_station
+2025-12-01 20:05:29,113 - __main__ - INFO - Ingesting DEN/station (stn:KDEN) from 2022-06-01 to 2022-12-30
+2025-12-01 20:05:29,113 - src.weather.visual_crossing - INFO - Fetching station history: KDEN from 2022-06-01 to 2022-06-14
+2025-12-01 20:05:29,221 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:05:31,943 - __main__ - INFO -   2022-06-01 to 2022-06-14: 4032 records
+2025-12-01 20:05:31,943 - src.weather.visual_crossing - INFO - Fetching station history: KDEN from 2022-06-15 to 2022-06-28
+2025-12-01 20:05:32,106 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:05:34,808 - __main__ - INFO -   2022-06-15 to 2022-06-28: 4032 records
+2025-12-01 20:05:34,808 - src.weather.visual_crossing - INFO - Fetching station history: KDEN from 2022-06-29 to 2022-07-12
+2025-12-01 20:05:34,958 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:05:37,638 - __main__ - INFO -   2022-06-29 to 2022-07-12: 4032 records
+2025-12-01 20:05:37,638 - src.weather.visual_crossing - INFO - Fetching station history: KDEN from 2022-07-13 to 2022-07-26
+2025-12-01 20:05:37,777 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:05:40,550 - __main__ - INFO -   2022-07-13 to 2022-07-26: 4032 records
+2025-12-01 20:05:40,550 - src.weather.visual_crossing - INFO - Fetching station history: KDEN from 2022-07-27 to 2022-08-09
+2025-12-01 20:05:40,698 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:05:43,489 - __main__ - INFO -   2022-07-27 to 2022-08-09: 4032 records
+2025-12-01 20:05:43,490 - src.weather.visual_crossing - INFO - Fetching station history: KDEN from 2022-08-10 to 2022-08-23
+2025-12-01 20:05:43,630 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:05:46,373 - __main__ - INFO -   2022-08-10 to 2022-08-23: 4032 records
+2025-12-01 20:05:46,374 - src.weather.visual_crossing - INFO - Fetching station history: KDEN from 2022-08-24 to 2022-09-06
+2025-12-01 20:05:46,532 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:05:49,359 - __main__ - INFO -   2022-08-24 to 2022-09-06: 4032 records
+2025-12-01 20:05:49,359 - src.weather.visual_crossing - INFO - Fetching station history: KDEN from 2022-09-07 to 2022-09-20
+2025-12-01 20:05:49,542 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:05:52,228 - __main__ - INFO -   2022-09-07 to 2022-09-20: 4032 records
+2025-12-01 20:05:52,228 - src.weather.visual_crossing - INFO - Fetching station history: KDEN from 2022-09-21 to 2022-10-04
+2025-12-01 20:05:52,395 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:05:55,020 - __main__ - INFO -   2022-09-21 to 2022-10-04: 4032 records
+2025-12-01 20:05:55,020 - src.weather.visual_crossing - INFO - Fetching station history: KDEN from 2022-10-05 to 2022-10-18
+2025-12-01 20:05:55,180 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:05:58,031 - __main__ - INFO -   2022-10-05 to 2022-10-18: 4032 records
+2025-12-01 20:05:58,031 - src.weather.visual_crossing - INFO - Fetching station history: KDEN from 2022-10-19 to 2022-11-01
+2025-12-01 20:05:58,196 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:06:00,993 - __main__ - INFO -   2022-10-19 to 2022-11-01: 4032 records
+2025-12-01 20:06:00,993 - src.weather.visual_crossing - INFO - Fetching station history: KDEN from 2022-11-02 to 2022-11-15
+2025-12-01 20:06:01,137 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:06:03,953 - __main__ - INFO -   2022-11-02 to 2022-11-15: 4032 records
+2025-12-01 20:06:03,953 - src.weather.visual_crossing - INFO - Fetching station history: KDEN from 2022-11-16 to 2022-11-29
+2025-12-01 20:06:04,158 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:06:06,897 - __main__ - INFO -   2022-11-16 to 2022-11-29: 4032 records
+2025-12-01 20:06:06,897 - src.weather.visual_crossing - INFO - Fetching station history: KDEN from 2022-11-30 to 2022-12-13
+2025-12-01 20:06:07,069 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:06:09,773 - __main__ - INFO -   2022-11-30 to 2022-12-13: 4032 records
+2025-12-01 20:06:09,773 - src.weather.visual_crossing - INFO - Fetching station history: KDEN from 2022-12-14 to 2022-12-27
+2025-12-01 20:06:09,936 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:06:12,587 - __main__ - INFO -   2022-12-14 to 2022-12-27: 4032 records
+2025-12-01 20:06:12,587 - src.weather.visual_crossing - INFO - Fetching station history: KDEN from 2022-12-28 to 2022-12-30
+2025-12-01 20:06:12,653 - src.weather.visual_crossing - INFO - Query cost: 864
+2025-12-01 20:06:13,410 - __main__ - INFO -   2022-12-28 to 2022-12-30: 864 records
+2025-12-01 20:06:13,413 - __main__ - INFO - DEN/station: upserted 61344 records
+2025-12-01 20:06:13,415 - src.db.checkpoint - INFO - Checkpoint 100 marked as completed
+2025-12-01 20:06:13,417 - src.db.checkpoint - INFO - Created new checkpoint: vc_obs_backfill/AUS_station
+2025-12-01 20:06:13,418 - __main__ - INFO - Ingesting AUS/station (stn:KAUS) from 2022-06-01 to 2022-12-30
+2025-12-01 20:06:13,418 - src.weather.visual_crossing - INFO - Fetching station history: KAUS from 2022-06-01 to 2022-06-14
+2025-12-01 20:06:13,562 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:06:16,289 - __main__ - INFO -   2022-06-01 to 2022-06-14: 4032 records
+2025-12-01 20:06:16,289 - src.weather.visual_crossing - INFO - Fetching station history: KAUS from 2022-06-15 to 2022-06-28
+2025-12-01 20:06:16,461 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:06:19,104 - __main__ - INFO -   2022-06-15 to 2022-06-28: 4032 records
+2025-12-01 20:06:19,104 - src.weather.visual_crossing - INFO - Fetching station history: KAUS from 2022-06-29 to 2022-07-12
+2025-12-01 20:06:19,258 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:06:22,153 - __main__ - INFO -   2022-06-29 to 2022-07-12: 4032 records
+2025-12-01 20:06:22,153 - src.weather.visual_crossing - INFO - Fetching station history: KAUS from 2022-07-13 to 2022-07-26
+2025-12-01 20:06:22,283 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:06:25,231 - __main__ - INFO -   2022-07-13 to 2022-07-26: 4032 records
+2025-12-01 20:06:25,231 - src.weather.visual_crossing - INFO - Fetching station history: KAUS from 2022-07-27 to 2022-08-09
+2025-12-01 20:06:25,366 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:06:28,215 - __main__ - INFO -   2022-07-27 to 2022-08-09: 4032 records
+2025-12-01 20:06:28,215 - src.weather.visual_crossing - INFO - Fetching station history: KAUS from 2022-08-10 to 2022-08-23
+2025-12-01 20:06:28,361 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:06:31,205 - __main__ - INFO -   2022-08-10 to 2022-08-23: 4032 records
+2025-12-01 20:06:31,205 - src.weather.visual_crossing - INFO - Fetching station history: KAUS from 2022-08-24 to 2022-09-06
+2025-12-01 20:06:31,355 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:06:34,112 - __main__ - INFO -   2022-08-24 to 2022-09-06: 4032 records
+2025-12-01 20:06:34,112 - src.weather.visual_crossing - INFO - Fetching station history: KAUS from 2022-09-07 to 2022-09-20
+2025-12-01 20:06:34,238 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:06:36,914 - __main__ - INFO -   2022-09-07 to 2022-09-20: 4032 records
+2025-12-01 20:06:36,914 - src.weather.visual_crossing - INFO - Fetching station history: KAUS from 2022-09-21 to 2022-10-04
+2025-12-01 20:06:37,083 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:06:39,724 - __main__ - INFO -   2022-09-21 to 2022-10-04: 4032 records
+2025-12-01 20:06:39,724 - src.weather.visual_crossing - INFO - Fetching station history: KAUS from 2022-10-05 to 2022-10-18
+2025-12-01 20:06:39,878 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:06:42,736 - __main__ - INFO -   2022-10-05 to 2022-10-18: 4032 records
+2025-12-01 20:06:42,736 - src.weather.visual_crossing - INFO - Fetching station history: KAUS from 2022-10-19 to 2022-11-01
+2025-12-01 20:06:42,894 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:06:45,742 - __main__ - INFO -   2022-10-19 to 2022-11-01: 4032 records
+2025-12-01 20:06:45,742 - src.weather.visual_crossing - INFO - Fetching station history: KAUS from 2022-11-02 to 2022-11-15
+2025-12-01 20:06:45,890 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:06:48,660 - __main__ - INFO -   2022-11-02 to 2022-11-15: 4032 records
+2025-12-01 20:06:48,660 - src.weather.visual_crossing - INFO - Fetching station history: KAUS from 2022-11-16 to 2022-11-29
+2025-12-01 20:06:48,837 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:06:51,553 - __main__ - INFO -   2022-11-16 to 2022-11-29: 4032 records
+2025-12-01 20:06:51,553 - src.weather.visual_crossing - INFO - Fetching station history: KAUS from 2022-11-30 to 2022-12-13
+2025-12-01 20:06:51,719 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:06:54,454 - __main__ - INFO -   2022-11-30 to 2022-12-13: 4032 records
+2025-12-01 20:06:54,454 - src.weather.visual_crossing - INFO - Fetching station history: KAUS from 2022-12-14 to 2022-12-27
+2025-12-01 20:06:54,591 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:06:57,282 - __main__ - INFO -   2022-12-14 to 2022-12-27: 4032 records
+2025-12-01 20:06:57,282 - src.weather.visual_crossing - INFO - Fetching station history: KAUS from 2022-12-28 to 2022-12-30
+2025-12-01 20:06:57,349 - src.weather.visual_crossing - INFO - Query cost: 864
+2025-12-01 20:06:58,077 - __main__ - INFO -   2022-12-28 to 2022-12-30: 864 records
+2025-12-01 20:06:58,080 - __main__ - INFO - AUS/station: upserted 61344 records
+2025-12-01 20:06:58,081 - src.db.checkpoint - INFO - Checkpoint 101 marked as completed
+2025-12-01 20:06:58,083 - src.db.checkpoint - INFO - Created new checkpoint: vc_obs_backfill/LAX_station
+2025-12-01 20:06:58,084 - __main__ - INFO - Ingesting LAX/station (stn:KLAX) from 2022-06-01 to 2022-12-30
+2025-12-01 20:06:58,084 - src.weather.visual_crossing - INFO - Fetching station history: KLAX from 2022-06-01 to 2022-06-14
+2025-12-01 20:06:58,226 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:07:00,843 - __main__ - INFO -   2022-06-01 to 2022-06-14: 4032 records
+2025-12-01 20:07:00,843 - src.weather.visual_crossing - INFO - Fetching station history: KLAX from 2022-06-15 to 2022-06-28
+2025-12-01 20:07:01,001 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:07:03,758 - __main__ - INFO -   2022-06-15 to 2022-06-28: 4032 records
+2025-12-01 20:07:03,758 - src.weather.visual_crossing - INFO - Fetching station history: KLAX from 2022-06-29 to 2022-07-12
+2025-12-01 20:07:03,925 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:07:06,810 - __main__ - INFO -   2022-06-29 to 2022-07-12: 4032 records
+2025-12-01 20:07:06,810 - src.weather.visual_crossing - INFO - Fetching station history: KLAX from 2022-07-13 to 2022-07-26
+2025-12-01 20:07:06,952 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:07:09,695 - __main__ - INFO -   2022-07-13 to 2022-07-26: 4032 records
+2025-12-01 20:07:09,695 - src.weather.visual_crossing - INFO - Fetching station history: KLAX from 2022-07-27 to 2022-08-09
+2025-12-01 20:07:09,834 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:07:12,553 - __main__ - INFO -   2022-07-27 to 2022-08-09: 4032 records
+2025-12-01 20:07:12,553 - src.weather.visual_crossing - INFO - Fetching station history: KLAX from 2022-08-10 to 2022-08-23
+2025-12-01 20:07:12,701 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:07:15,439 - __main__ - INFO -   2022-08-10 to 2022-08-23: 4032 records
+2025-12-01 20:07:15,439 - src.weather.visual_crossing - INFO - Fetching station history: KLAX from 2022-08-24 to 2022-09-06
+2025-12-01 20:07:15,625 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:07:18,340 - __main__ - INFO -   2022-08-24 to 2022-09-06: 4032 records
+2025-12-01 20:07:18,340 - src.weather.visual_crossing - INFO - Fetching station history: KLAX from 2022-09-07 to 2022-09-20
+2025-12-01 20:07:18,488 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:07:21,138 - __main__ - INFO -   2022-09-07 to 2022-09-20: 4032 records
+2025-12-01 20:07:21,138 - src.weather.visual_crossing - INFO - Fetching station history: KLAX from 2022-09-21 to 2022-10-04
+2025-12-01 20:07:21,307 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:07:24,169 - __main__ - INFO -   2022-09-21 to 2022-10-04: 4032 records
+2025-12-01 20:07:24,169 - src.weather.visual_crossing - INFO - Fetching station history: KLAX from 2022-10-05 to 2022-10-18
+2025-12-01 20:07:24,334 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:07:27,165 - __main__ - INFO -   2022-10-05 to 2022-10-18: 4032 records
+2025-12-01 20:07:27,165 - src.weather.visual_crossing - INFO - Fetching station history: KLAX from 2022-10-19 to 2022-11-01
+2025-12-01 20:07:27,331 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:07:30,111 - __main__ - INFO -   2022-10-19 to 2022-11-01: 4032 records
+2025-12-01 20:07:30,111 - src.weather.visual_crossing - INFO - Fetching station history: KLAX from 2022-11-02 to 2022-11-15
+2025-12-01 20:07:30,271 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:07:33,152 - __main__ - INFO -   2022-11-02 to 2022-11-15: 4032 records
+2025-12-01 20:07:33,152 - src.weather.visual_crossing - INFO - Fetching station history: KLAX from 2022-11-16 to 2022-11-29
+2025-12-01 20:07:33,325 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:07:36,170 - __main__ - INFO -   2022-11-16 to 2022-11-29: 4032 records
+2025-12-01 20:07:36,170 - src.weather.visual_crossing - INFO - Fetching station history: KLAX from 2022-11-30 to 2022-12-13
+2025-12-01 20:07:36,336 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:07:39,100 - __main__ - INFO -   2022-11-30 to 2022-12-13: 4032 records
+2025-12-01 20:07:39,100 - src.weather.visual_crossing - INFO - Fetching station history: KLAX from 2022-12-14 to 2022-12-27
+2025-12-01 20:07:39,239 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:07:41,989 - __main__ - INFO -   2022-12-14 to 2022-12-27: 4032 records
+2025-12-01 20:07:41,990 - src.weather.visual_crossing - INFO - Fetching station history: KLAX from 2022-12-28 to 2022-12-30
+2025-12-01 20:07:42,061 - src.weather.visual_crossing - INFO - Query cost: 864
+2025-12-01 20:07:42,764 - __main__ - INFO -   2022-12-28 to 2022-12-30: 864 records
+2025-12-01 20:07:42,767 - __main__ - INFO - LAX/station: upserted 61344 records
+2025-12-01 20:07:42,768 - src.db.checkpoint - INFO - Checkpoint 102 marked as completed
+2025-12-01 20:07:42,770 - src.db.checkpoint - INFO - Created new checkpoint: vc_obs_backfill/MIA_station
+2025-12-01 20:07:42,772 - __main__ - INFO - Ingesting MIA/station (stn:KMIA) from 2022-06-01 to 2022-12-30
+2025-12-01 20:07:42,772 - src.weather.visual_crossing - INFO - Fetching station history: KMIA from 2022-06-01 to 2022-06-14
+2025-12-01 20:07:42,891 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:07:45,641 - __main__ - INFO -   2022-06-01 to 2022-06-14: 4032 records
+2025-12-01 20:07:45,641 - src.weather.visual_crossing - INFO - Fetching station history: KMIA from 2022-06-15 to 2022-06-28
+2025-12-01 20:07:45,787 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:07:48,785 - __main__ - INFO -   2022-06-15 to 2022-06-28: 4032 records
+2025-12-01 20:07:48,785 - src.weather.visual_crossing - INFO - Fetching station history: KMIA from 2022-06-29 to 2022-07-12
+2025-12-01 20:07:48,936 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:07:51,809 - __main__ - INFO -   2022-06-29 to 2022-07-12: 4032 records
+2025-12-01 20:07:51,809 - src.weather.visual_crossing - INFO - Fetching station history: KMIA from 2022-07-13 to 2022-07-26
+2025-12-01 20:07:51,935 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:07:54,829 - __main__ - INFO -   2022-07-13 to 2022-07-26: 4032 records
+2025-12-01 20:07:54,829 - src.weather.visual_crossing - INFO - Fetching station history: KMIA from 2022-07-27 to 2022-08-09
+2025-12-01 20:07:54,992 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:07:57,903 - __main__ - INFO -   2022-07-27 to 2022-08-09: 4032 records
+2025-12-01 20:07:57,903 - src.weather.visual_crossing - INFO - Fetching station history: KMIA from 2022-08-10 to 2022-08-23
+2025-12-01 20:07:58,051 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:08:00,845 - __main__ - INFO -   2022-08-10 to 2022-08-23: 4032 records
+2025-12-01 20:08:00,845 - src.weather.visual_crossing - INFO - Fetching station history: KMIA from 2022-08-24 to 2022-09-06
+2025-12-01 20:08:00,990 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:08:03,779 - __main__ - INFO -   2022-08-24 to 2022-09-06: 4032 records
+2025-12-01 20:08:03,779 - src.weather.visual_crossing - INFO - Fetching station history: KMIA from 2022-09-07 to 2022-09-20
+2025-12-01 20:08:03,922 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:08:06,764 - __main__ - INFO -   2022-09-07 to 2022-09-20: 4032 records
+2025-12-01 20:08:06,764 - src.weather.visual_crossing - INFO - Fetching station history: KMIA from 2022-09-21 to 2022-10-04
+2025-12-01 20:08:06,911 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:08:09,918 - __main__ - INFO -   2022-09-21 to 2022-10-04: 4032 records
+2025-12-01 20:08:09,918 - src.weather.visual_crossing - INFO - Fetching station history: KMIA from 2022-10-05 to 2022-10-18
+2025-12-01 20:08:10,047 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:08:12,881 - __main__ - INFO -   2022-10-05 to 2022-10-18: 4032 records
+2025-12-01 20:08:12,881 - src.weather.visual_crossing - INFO - Fetching station history: KMIA from 2022-10-19 to 2022-11-01
+2025-12-01 20:08:13,033 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:08:15,834 - __main__ - INFO -   2022-10-19 to 2022-11-01: 4032 records
+2025-12-01 20:08:15,834 - src.weather.visual_crossing - INFO - Fetching station history: KMIA from 2022-11-02 to 2022-11-15
+2025-12-01 20:08:16,003 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:08:18,782 - __main__ - INFO -   2022-11-02 to 2022-11-15: 4032 records
+2025-12-01 20:08:18,782 - src.weather.visual_crossing - INFO - Fetching station history: KMIA from 2022-11-16 to 2022-11-29
+2025-12-01 20:08:18,984 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:08:21,848 - __main__ - INFO -   2022-11-16 to 2022-11-29: 4032 records
+2025-12-01 20:08:21,848 - src.weather.visual_crossing - INFO - Fetching station history: KMIA from 2022-11-30 to 2022-12-13
+2025-12-01 20:08:21,980 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:08:24,775 - __main__ - INFO -   2022-11-30 to 2022-12-13: 4032 records
+2025-12-01 20:08:24,775 - src.weather.visual_crossing - INFO - Fetching station history: KMIA from 2022-12-14 to 2022-12-27
+2025-12-01 20:08:24,933 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:08:27,780 - __main__ - INFO -   2022-12-14 to 2022-12-27: 4032 records
+2025-12-01 20:08:27,780 - src.weather.visual_crossing - INFO - Fetching station history: KMIA from 2022-12-28 to 2022-12-30
+2025-12-01 20:08:27,863 - src.weather.visual_crossing - INFO - Query cost: 864
+2025-12-01 20:08:28,548 - __main__ - INFO -   2022-12-28 to 2022-12-30: 864 records
+2025-12-01 20:08:28,551 - __main__ - INFO - MIA/station: upserted 61344 records
+2025-12-01 20:08:28,553 - src.db.checkpoint - INFO - Checkpoint 103 marked as completed
+2025-12-01 20:08:28,555 - src.db.checkpoint - INFO - Created new checkpoint: vc_obs_backfill/PHL_station
+2025-12-01 20:08:28,556 - __main__ - INFO - Ingesting PHL/station (stn:KPHL) from 2022-06-01 to 2022-12-30
+2025-12-01 20:08:28,556 - src.weather.visual_crossing - INFO - Fetching station history: KPHL from 2022-06-01 to 2022-06-14
+2025-12-01 20:08:28,713 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:08:31,646 - __main__ - INFO -   2022-06-01 to 2022-06-14: 4032 records
+2025-12-01 20:08:31,646 - src.weather.visual_crossing - INFO - Fetching station history: KPHL from 2022-06-15 to 2022-06-28
+2025-12-01 20:08:31,787 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:08:34,637 - __main__ - INFO -   2022-06-15 to 2022-06-28: 4032 records
+2025-12-01 20:08:34,637 - src.weather.visual_crossing - INFO - Fetching station history: KPHL from 2022-06-29 to 2022-07-12
+2025-12-01 20:08:34,755 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:08:37,704 - __main__ - INFO -   2022-06-29 to 2022-07-12: 4032 records
+2025-12-01 20:08:37,704 - src.weather.visual_crossing - INFO - Fetching station history: KPHL from 2022-07-13 to 2022-07-26
+2025-12-01 20:08:37,854 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:08:40,651 - __main__ - INFO -   2022-07-13 to 2022-07-26: 4032 records
+2025-12-01 20:08:40,651 - src.weather.visual_crossing - INFO - Fetching station history: KPHL from 2022-07-27 to 2022-08-09
+2025-12-01 20:08:40,779 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:08:43,541 - __main__ - INFO -   2022-07-27 to 2022-08-09: 4032 records
+2025-12-01 20:08:43,541 - src.weather.visual_crossing - INFO - Fetching station history: KPHL from 2022-08-10 to 2022-08-23
+2025-12-01 20:08:43,752 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:08:46,556 - __main__ - INFO -   2022-08-10 to 2022-08-23: 4032 records
+2025-12-01 20:08:46,556 - src.weather.visual_crossing - INFO - Fetching station history: KPHL from 2022-08-24 to 2022-09-06
+2025-12-01 20:08:46,682 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:08:49,482 - __main__ - INFO -   2022-08-24 to 2022-09-06: 4032 records
+2025-12-01 20:08:49,482 - src.weather.visual_crossing - INFO - Fetching station history: KPHL from 2022-09-07 to 2022-09-20
+2025-12-01 20:08:49,759 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:08:52,747 - __main__ - INFO -   2022-09-07 to 2022-09-20: 4032 records
+2025-12-01 20:08:52,747 - src.weather.visual_crossing - INFO - Fetching station history: KPHL from 2022-09-21 to 2022-10-04
+2025-12-01 20:08:52,908 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:08:55,825 - __main__ - INFO -   2022-09-21 to 2022-10-04: 4032 records
+2025-12-01 20:08:55,825 - src.weather.visual_crossing - INFO - Fetching station history: KPHL from 2022-10-05 to 2022-10-18
+2025-12-01 20:08:55,939 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:08:58,762 - __main__ - INFO -   2022-10-05 to 2022-10-18: 4032 records
+2025-12-01 20:08:58,762 - src.weather.visual_crossing - INFO - Fetching station history: KPHL from 2022-10-19 to 2022-11-01
+2025-12-01 20:08:58,927 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:09:01,832 - __main__ - INFO -   2022-10-19 to 2022-11-01: 4032 records
+2025-12-01 20:09:01,832 - src.weather.visual_crossing - INFO - Fetching station history: KPHL from 2022-11-02 to 2022-11-15
+2025-12-01 20:09:02,011 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:09:04,799 - __main__ - INFO -   2022-11-02 to 2022-11-15: 4032 records
+2025-12-01 20:09:04,799 - src.weather.visual_crossing - INFO - Fetching station history: KPHL from 2022-11-16 to 2022-11-29
+2025-12-01 20:09:04,961 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:09:07,840 - __main__ - INFO -   2022-11-16 to 2022-11-29: 4032 records
+2025-12-01 20:09:07,840 - src.weather.visual_crossing - INFO - Fetching station history: KPHL from 2022-11-30 to 2022-12-13
+2025-12-01 20:09:07,975 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:09:10,978 - __main__ - INFO -   2022-11-30 to 2022-12-13: 4032 records
+2025-12-01 20:09:10,978 - src.weather.visual_crossing - INFO - Fetching station history: KPHL from 2022-12-14 to 2022-12-27
+2025-12-01 20:09:11,108 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:09:14,047 - __main__ - INFO -   2022-12-14 to 2022-12-27: 4032 records
+2025-12-01 20:09:14,047 - src.weather.visual_crossing - INFO - Fetching station history: KPHL from 2022-12-28 to 2022-12-30
+2025-12-01 20:09:14,124 - src.weather.visual_crossing - INFO - Query cost: 864
+2025-12-01 20:09:14,888 - __main__ - INFO -   2022-12-28 to 2022-12-30: 864 records
+2025-12-01 20:09:14,891 - __main__ - INFO - PHL/station: upserted 61344 records
+2025-12-01 20:09:14,893 - src.db.checkpoint - INFO - Checkpoint 104 marked as completed
+2025-12-01 20:09:14,894 - __main__ - INFO - Ingestion complete: 368064 total records upserted

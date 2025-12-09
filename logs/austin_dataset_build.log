@@ -1,0 +1,33 @@
+[05:41:23] Building Austin dataset (2023-01-01 to 2024-11-30)...
+[05:41:23] This covers ~700 days x ~38 snapshots/day = ~26,600 rows
+[05:45:59] Dataset complete in 4.6 minutes
+[05:45:59] Shape: (26592, 203)
+[05:45:59] Saved to models/saved/austin_dataset_with_new_features.parquet
+
+[05:45:59] New features (26):
+  fcst_cloudcover_max: 26592/26592 non-null (100.0%)
+  fcst_cloudcover_mean: 26592/26592 non-null (100.0%)
+  fcst_cloudcover_min: 26592/26592 non-null (100.0%)
+  fcst_cloudcover_range: 26592/26592 non-null (100.0%)
+  fcst_dewpoint_max: 26592/26592 non-null (100.0%)
+  fcst_dewpoint_mean: 26592/26592 non-null (100.0%)
+  fcst_dewpoint_min: 26592/26592 non-null (100.0%)
+  fcst_dewpoint_range: 26592/26592 non-null (100.0%)
+  fcst_drift_max_downside_f: 26592/26592 non-null (100.0%)
+  fcst_drift_max_upside_f: 26592/26592 non-null (100.0%)
+  fcst_drift_mean_delta_f: 26592/26592 non-null (100.0%)
+  fcst_drift_num_leads: 26592/26592 non-null (100.0%)
+  fcst_drift_slope_f_per_lead: 26592/26592 non-null (100.0%)
+  fcst_drift_std_f: 26592/26592 non-null (100.0%)
+  fcst_humidity_afternoon_mean: 26592/26592 non-null (100.0%)
+  fcst_humidity_max: 26592/26592 non-null (100.0%)
+  fcst_humidity_mean: 26592/26592 non-null (100.0%)
+  fcst_humidity_min: 26592/26592 non-null (100.0%)
+  fcst_humidity_morning_mean: 26592/26592 non-null (100.0%)
+  fcst_humidity_range: 26592/26592 non-null (100.0%)
+  fcst_peak_band_width_min: 26592/26592 non-null (100.0%)
+  fcst_peak_hour_float: 26592/26592 non-null (100.0%)
+  fcst_peak_step_minutes: 26592/26592 non-null (100.0%)
+  fcst_peak_temp_f: 26592/26592 non-null (100.0%)
+  fcst_prev_distance_to_int: 26592/26592 non-null (100.0%)
+  fcst_prev_near_boundary_flag: 26592/26592 non-null (100.0%)

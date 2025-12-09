@@ -1,0 +1,785 @@
+2025-12-01 19:47:54,060 - __main__ - INFO - Ingesting VC observations from 2022-06-01 to 2023-12-30
+2025-12-01 19:47:54,061 - src.weather.visual_crossing - INFO - Visual Crossing client initialized (interval=5m)
+2025-12-01 19:47:54,067 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-01 19:47:54,094 - __main__ - INFO - Found 6 locations to process
+2025-12-01 19:47:54,099 - src.db.checkpoint - INFO - Created new checkpoint: vc_obs_backfill/CHI_city
+2025-12-01 19:47:54,101 - __main__ - INFO - Ingesting CHI/city (Chicago,IL) from 2022-06-01 to 2023-12-30
+2025-12-01 19:47:54,101 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2022-06-01 to 2022-06-14
+2025-12-01 19:47:54,693 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:47:57,473 - __main__ - INFO -   2022-06-01 to 2022-06-14: 4032 records
+2025-12-01 19:47:57,473 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2022-06-15 to 2022-06-28
+2025-12-01 19:47:57,923 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:48:00,717 - __main__ - INFO -   2022-06-15 to 2022-06-28: 4032 records
+2025-12-01 19:48:00,717 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2022-06-29 to 2022-07-12
+2025-12-01 19:48:01,193 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:48:03,957 - __main__ - INFO -   2022-06-29 to 2022-07-12: 4032 records
+2025-12-01 19:48:03,957 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2022-07-13 to 2022-07-26
+2025-12-01 19:48:04,341 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:48:07,361 - __main__ - INFO -   2022-07-13 to 2022-07-26: 4032 records
+2025-12-01 19:48:07,361 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2022-07-27 to 2022-08-09
+2025-12-01 19:48:07,919 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:48:10,845 - __main__ - INFO -   2022-07-27 to 2022-08-09: 4032 records
+2025-12-01 19:48:10,845 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2022-08-10 to 2022-08-23
+2025-12-01 19:48:11,209 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:48:14,134 - __main__ - INFO -   2022-08-10 to 2022-08-23: 4032 records
+2025-12-01 19:48:14,134 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2022-08-24 to 2022-09-06
+2025-12-01 19:48:14,627 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:48:17,562 - __main__ - INFO -   2022-08-24 to 2022-09-06: 4032 records
+2025-12-01 19:48:17,562 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2022-09-07 to 2022-09-20
+2025-12-01 19:48:17,982 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:48:20,853 - __main__ - INFO -   2022-09-07 to 2022-09-20: 4032 records
+2025-12-01 19:48:20,853 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2022-09-21 to 2022-10-04
+2025-12-01 19:48:21,228 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:48:24,059 - __main__ - INFO -   2022-09-21 to 2022-10-04: 4032 records
+2025-12-01 19:48:24,059 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2022-10-05 to 2022-10-18
+2025-12-01 19:48:24,468 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:48:27,313 - __main__ - INFO -   2022-10-05 to 2022-10-18: 4032 records
+2025-12-01 19:48:27,314 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2022-10-19 to 2022-11-01
+2025-12-01 19:48:28,013 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:48:30,989 - __main__ - INFO -   2022-10-19 to 2022-11-01: 4032 records
+2025-12-01 19:48:30,989 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2022-11-02 to 2022-11-15
+2025-12-01 19:48:31,465 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:48:34,398 - __main__ - INFO -   2022-11-02 to 2022-11-15: 4032 records
+2025-12-01 19:48:34,398 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2022-11-16 to 2022-11-29
+2025-12-01 19:48:35,214 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:48:38,225 - __main__ - INFO -   2022-11-16 to 2022-11-29: 4032 records
+2025-12-01 19:48:38,226 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2022-11-30 to 2022-12-13
+2025-12-01 19:48:39,307 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:48:42,189 - __main__ - INFO -   2022-11-30 to 2022-12-13: 4032 records
+2025-12-01 19:48:42,189 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2022-12-14 to 2022-12-27
+2025-12-01 19:48:42,959 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:48:45,808 - __main__ - INFO -   2022-12-14 to 2022-12-27: 4032 records
+2025-12-01 19:48:45,809 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2022-12-28 to 2023-01-10
+2025-12-01 19:48:46,417 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:48:49,231 - __main__ - INFO -   2022-12-28 to 2023-01-10: 4032 records
+2025-12-01 19:48:49,231 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2023-01-11 to 2023-01-24
+2025-12-01 19:48:49,778 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:48:52,706 - __main__ - INFO -   2023-01-11 to 2023-01-24: 4032 records
+2025-12-01 19:48:52,706 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2023-01-25 to 2023-02-07
+2025-12-01 19:48:53,560 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:48:56,502 - __main__ - INFO -   2023-01-25 to 2023-02-07: 4032 records
+2025-12-01 19:48:56,502 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2023-02-08 to 2023-02-21
+2025-12-01 19:48:57,049 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:48:59,970 - __main__ - INFO -   2023-02-08 to 2023-02-21: 4032 records
+2025-12-01 19:48:59,970 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2023-02-22 to 2023-03-07
+2025-12-01 19:49:00,482 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:49:03,344 - __main__ - INFO -   2023-02-22 to 2023-03-07: 4032 records
+2025-12-01 19:49:03,344 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2023-03-08 to 2023-03-21
+2025-12-01 19:49:03,716 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:49:06,620 - __main__ - INFO -   2023-03-08 to 2023-03-21: 4032 records
+2025-12-01 19:49:06,620 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2023-03-22 to 2023-04-04
+2025-12-01 19:49:06,993 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:49:09,857 - __main__ - INFO -   2023-03-22 to 2023-04-04: 4032 records
+2025-12-01 19:49:09,858 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2023-04-05 to 2023-04-18
+2025-12-01 19:49:10,369 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:49:13,182 - __main__ - INFO -   2023-04-05 to 2023-04-18: 4032 records
+2025-12-01 19:49:13,182 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2023-04-19 to 2023-05-02
+2025-12-01 19:49:13,616 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:49:16,585 - __main__ - INFO -   2023-04-19 to 2023-05-02: 4032 records
+2025-12-01 19:49:16,585 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2023-05-03 to 2023-05-16
+2025-12-01 19:49:16,948 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:49:19,917 - __main__ - INFO -   2023-05-03 to 2023-05-16: 4032 records
+2025-12-01 19:49:19,917 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2023-05-17 to 2023-05-30
+2025-12-01 19:49:20,284 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:49:23,175 - __main__ - INFO -   2023-05-17 to 2023-05-30: 4032 records
+2025-12-01 19:49:23,175 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2023-05-31 to 2023-06-13
+2025-12-01 19:49:23,561 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:49:26,457 - __main__ - INFO -   2023-05-31 to 2023-06-13: 4032 records
+2025-12-01 19:49:26,457 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2023-06-14 to 2023-06-27
+2025-12-01 19:49:26,831 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:49:29,656 - __main__ - INFO -   2023-06-14 to 2023-06-27: 4032 records
+2025-12-01 19:49:29,656 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2023-06-28 to 2023-07-11
+2025-12-01 19:49:29,941 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:49:32,847 - __main__ - INFO -   2023-06-28 to 2023-07-11: 4032 records
+2025-12-01 19:49:32,847 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2023-07-12 to 2023-07-25
+2025-12-01 19:49:33,244 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:49:36,267 - __main__ - INFO -   2023-07-12 to 2023-07-25: 4032 records
+2025-12-01 19:49:36,267 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2023-07-26 to 2023-08-08
+2025-12-01 19:49:36,885 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:49:39,813 - __main__ - INFO -   2023-07-26 to 2023-08-08: 4032 records
+2025-12-01 19:49:39,813 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2023-08-09 to 2023-08-22
+2025-12-01 19:49:40,444 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:49:43,405 - __main__ - INFO -   2023-08-09 to 2023-08-22: 4032 records
+2025-12-01 19:49:43,406 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2023-08-23 to 2023-09-05
+2025-12-01 19:49:43,994 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:49:46,898 - __main__ - INFO -   2023-08-23 to 2023-09-05: 4032 records
+2025-12-01 19:49:46,898 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2023-09-06 to 2023-09-19
+2025-12-01 19:49:47,538 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:49:50,410 - __main__ - INFO -   2023-09-06 to 2023-09-19: 4032 records
+2025-12-01 19:49:50,410 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2023-09-20 to 2023-10-03
+2025-12-01 19:49:51,018 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:49:53,837 - __main__ - INFO -   2023-09-20 to 2023-10-03: 4032 records
+2025-12-01 19:49:53,837 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2023-10-04 to 2023-10-17
+2025-12-01 19:49:54,453 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:49:57,493 - __main__ - INFO -   2023-10-04 to 2023-10-17: 4032 records
+2025-12-01 19:49:57,493 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2023-10-18 to 2023-10-31
+2025-12-01 19:49:58,178 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:50:01,163 - __main__ - INFO -   2023-10-18 to 2023-10-31: 4032 records
+2025-12-01 19:50:01,163 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2023-11-01 to 2023-11-14
+2025-12-01 19:50:01,756 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:50:04,709 - __main__ - INFO -   2023-11-01 to 2023-11-14: 4032 records
+2025-12-01 19:50:04,709 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2023-11-15 to 2023-11-28
+2025-12-01 19:50:05,482 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:50:08,372 - __main__ - INFO -   2023-11-15 to 2023-11-28: 4032 records
+2025-12-01 19:50:08,372 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2023-11-29 to 2023-12-12
+2025-12-01 19:50:08,945 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:50:11,861 - __main__ - INFO -   2023-11-29 to 2023-12-12: 4032 records
+2025-12-01 19:50:11,861 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2023-12-13 to 2023-12-26
+2025-12-01 19:50:12,425 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:50:15,314 - __main__ - INFO -   2023-12-13 to 2023-12-26: 4032 records
+2025-12-01 19:50:15,315 - src.weather.visual_crossing - INFO - Fetching city history: Chicago,IL from 2023-12-27 to 2023-12-30
+2025-12-01 19:50:15,523 - src.weather.visual_crossing - INFO - Query cost: 1152
+2025-12-01 19:50:16,473 - __main__ - INFO -   2023-12-27 to 2023-12-30: 1152 records
+2025-12-01 19:50:16,483 - __main__ - INFO - CHI/city: upserted 166464 records
+2025-12-01 19:50:16,487 - src.db.checkpoint - INFO - Checkpoint 93 marked as completed
+2025-12-01 19:50:16,489 - src.db.checkpoint - INFO - Created new checkpoint: vc_obs_backfill/DEN_city
+2025-12-01 19:50:16,490 - __main__ - INFO - Ingesting DEN/city (Denver,CO) from 2022-06-01 to 2023-12-30
+2025-12-01 19:50:16,490 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2022-06-01 to 2022-06-14
+2025-12-01 19:50:16,965 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:50:19,819 - __main__ - INFO -   2022-06-01 to 2022-06-14: 4032 records
+2025-12-01 19:50:19,819 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2022-06-15 to 2022-06-28
+2025-12-01 19:50:20,382 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:50:23,314 - __main__ - INFO -   2022-06-15 to 2022-06-28: 4032 records
+2025-12-01 19:50:23,314 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2022-06-29 to 2022-07-12
+2025-12-01 19:50:23,851 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:50:26,716 - __main__ - INFO -   2022-06-29 to 2022-07-12: 4032 records
+2025-12-01 19:50:26,716 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2022-07-13 to 2022-07-26
+2025-12-01 19:50:27,160 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:50:30,024 - __main__ - INFO -   2022-07-13 to 2022-07-26: 4032 records
+2025-12-01 19:50:30,024 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2022-07-27 to 2022-08-09
+2025-12-01 19:50:30,501 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:50:33,288 - __main__ - INFO -   2022-07-27 to 2022-08-09: 4032 records
+2025-12-01 19:50:33,288 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2022-08-10 to 2022-08-23
+2025-12-01 19:50:33,719 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:50:36,628 - __main__ - INFO -   2022-08-10 to 2022-08-23: 4032 records
+2025-12-01 19:50:36,628 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2022-08-24 to 2022-09-06
+2025-12-01 19:50:37,117 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:50:39,951 - __main__ - INFO -   2022-08-24 to 2022-09-06: 4032 records
+2025-12-01 19:50:39,951 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2022-09-07 to 2022-09-20
+2025-12-01 19:50:40,464 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:50:43,225 - __main__ - INFO -   2022-09-07 to 2022-09-20: 4032 records
+2025-12-01 19:50:43,225 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2022-09-21 to 2022-10-04
+2025-12-01 19:50:43,597 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:50:46,447 - __main__ - INFO -   2022-09-21 to 2022-10-04: 4032 records
+2025-12-01 19:50:46,448 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2022-10-05 to 2022-10-18
+2025-12-01 19:50:46,866 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:50:49,555 - __main__ - INFO -   2022-10-05 to 2022-10-18: 4032 records
+2025-12-01 19:50:49,555 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2022-10-19 to 2022-11-01
+2025-12-01 19:50:50,115 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:50:52,797 - __main__ - INFO -   2022-10-19 to 2022-11-01: 4032 records
+2025-12-01 19:50:52,797 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2022-11-02 to 2022-11-15
+2025-12-01 19:50:53,360 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:50:56,013 - __main__ - INFO -   2022-11-02 to 2022-11-15: 4032 records
+2025-12-01 19:50:56,013 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2022-11-16 to 2022-11-29
+2025-12-01 19:50:56,673 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:50:59,460 - __main__ - INFO -   2022-11-16 to 2022-11-29: 4032 records
+2025-12-01 19:50:59,460 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2022-11-30 to 2022-12-13
+2025-12-01 19:50:59,989 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:51:02,826 - __main__ - INFO -   2022-11-30 to 2022-12-13: 4032 records
+2025-12-01 19:51:02,826 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2022-12-14 to 2022-12-27
+2025-12-01 19:51:03,634 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:51:06,377 - __main__ - INFO -   2022-12-14 to 2022-12-27: 4032 records
+2025-12-01 19:51:06,377 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2022-12-28 to 2023-01-10
+2025-12-01 19:51:06,918 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:51:09,661 - __main__ - INFO -   2022-12-28 to 2023-01-10: 4032 records
+2025-12-01 19:51:09,662 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2023-01-11 to 2023-01-24
+2025-12-01 19:51:10,529 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:51:13,225 - __main__ - INFO -   2023-01-11 to 2023-01-24: 4032 records
+2025-12-01 19:51:13,225 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2023-01-25 to 2023-02-07
+2025-12-01 19:51:13,861 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:51:16,513 - __main__ - INFO -   2023-01-25 to 2023-02-07: 4032 records
+2025-12-01 19:51:16,513 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2023-02-08 to 2023-02-21
+2025-12-01 19:51:17,046 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:51:19,892 - __main__ - INFO -   2023-02-08 to 2023-02-21: 4032 records
+2025-12-01 19:51:19,892 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2023-02-22 to 2023-03-07
+2025-12-01 19:51:20,372 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:51:23,177 - __main__ - INFO -   2023-02-22 to 2023-03-07: 4032 records
+2025-12-01 19:51:23,177 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2023-03-08 to 2023-03-21
+2025-12-01 19:51:23,646 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:51:26,419 - __main__ - INFO -   2023-03-08 to 2023-03-21: 4032 records
+2025-12-01 19:51:26,419 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2023-03-22 to 2023-04-04
+2025-12-01 19:51:26,830 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:51:29,606 - __main__ - INFO -   2023-03-22 to 2023-04-04: 4032 records
+2025-12-01 19:51:29,606 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2023-04-05 to 2023-04-18
+2025-12-01 19:51:30,045 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:51:32,826 - __main__ - INFO -   2023-04-05 to 2023-04-18: 4032 records
+2025-12-01 19:51:32,826 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2023-04-19 to 2023-05-02
+2025-12-01 19:51:33,292 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:51:35,967 - __main__ - INFO -   2023-04-19 to 2023-05-02: 4032 records
+2025-12-01 19:51:35,968 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2023-05-03 to 2023-05-16
+2025-12-01 19:51:36,432 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:51:39,123 - __main__ - INFO -   2023-05-03 to 2023-05-16: 4032 records
+2025-12-01 19:51:39,123 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2023-05-17 to 2023-05-30
+2025-12-01 19:51:39,495 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:51:42,308 - __main__ - INFO -   2023-05-17 to 2023-05-30: 4032 records
+2025-12-01 19:51:42,308 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2023-05-31 to 2023-06-13
+2025-12-01 19:51:42,861 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:51:45,762 - __main__ - INFO -   2023-05-31 to 2023-06-13: 4032 records
+2025-12-01 19:51:45,762 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2023-06-14 to 2023-06-27
+2025-12-01 19:51:46,244 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:51:49,081 - __main__ - INFO -   2023-06-14 to 2023-06-27: 4032 records
+2025-12-01 19:51:49,081 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2023-06-28 to 2023-07-11
+2025-12-01 19:51:49,607 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:51:52,392 - __main__ - INFO -   2023-06-28 to 2023-07-11: 4032 records
+2025-12-01 19:51:52,392 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2023-07-12 to 2023-07-25
+2025-12-01 19:51:53,015 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:51:55,710 - __main__ - INFO -   2023-07-12 to 2023-07-25: 4032 records
+2025-12-01 19:51:55,710 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2023-07-26 to 2023-08-08
+2025-12-01 19:51:56,359 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:51:59,038 - __main__ - INFO -   2023-07-26 to 2023-08-08: 4032 records
+2025-12-01 19:51:59,038 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2023-08-09 to 2023-08-22
+2025-12-01 19:51:59,763 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:52:02,663 - __main__ - INFO -   2023-08-09 to 2023-08-22: 4032 records
+2025-12-01 19:52:02,663 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2023-08-23 to 2023-09-05
+2025-12-01 19:52:03,348 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:52:06,194 - __main__ - INFO -   2023-08-23 to 2023-09-05: 4032 records
+2025-12-01 19:52:06,194 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2023-09-06 to 2023-09-19
+2025-12-01 19:52:06,916 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:52:09,676 - __main__ - INFO -   2023-09-06 to 2023-09-19: 4032 records
+2025-12-01 19:52:09,676 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2023-09-20 to 2023-10-03
+2025-12-01 19:52:10,372 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:52:13,211 - __main__ - INFO -   2023-09-20 to 2023-10-03: 4032 records
+2025-12-01 19:52:13,211 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2023-10-04 to 2023-10-17
+2025-12-01 19:52:13,954 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:52:16,698 - __main__ - INFO -   2023-10-04 to 2023-10-17: 4032 records
+2025-12-01 19:52:16,698 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2023-10-18 to 2023-10-31
+2025-12-01 19:52:17,505 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:52:20,202 - __main__ - INFO -   2023-10-18 to 2023-10-31: 4032 records
+2025-12-01 19:52:20,202 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2023-11-01 to 2023-11-14
+2025-12-01 19:52:20,925 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:52:23,797 - __main__ - INFO -   2023-11-01 to 2023-11-14: 4032 records
+2025-12-01 19:52:23,797 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2023-11-15 to 2023-11-28
+2025-12-01 19:52:24,543 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:52:27,403 - __main__ - INFO -   2023-11-15 to 2023-11-28: 4032 records
+2025-12-01 19:52:27,403 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2023-11-29 to 2023-12-12
+2025-12-01 19:52:28,109 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:52:30,930 - __main__ - INFO -   2023-11-29 to 2023-12-12: 4032 records
+2025-12-01 19:52:30,930 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2023-12-13 to 2023-12-26
+2025-12-01 19:52:31,633 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:52:34,582 - __main__ - INFO -   2023-12-13 to 2023-12-26: 4032 records
+2025-12-01 19:52:34,582 - src.weather.visual_crossing - INFO - Fetching city history: Denver,CO from 2023-12-27 to 2023-12-30
+2025-12-01 19:52:34,907 - src.weather.visual_crossing - INFO - Query cost: 1152
+2025-12-01 19:52:35,878 - __main__ - INFO -   2023-12-27 to 2023-12-30: 1152 records
+2025-12-01 19:52:35,883 - __main__ - INFO - DEN/city: upserted 166464 records
+2025-12-01 19:52:35,884 - src.db.checkpoint - INFO - Checkpoint 95 marked as completed
+2025-12-01 19:52:35,886 - src.db.checkpoint - INFO - Created new checkpoint: vc_obs_backfill/AUS_city
+2025-12-01 19:52:35,888 - __main__ - INFO - Ingesting AUS/city (Austin,TX) from 2022-06-01 to 2023-12-30
+2025-12-01 19:52:35,888 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2022-06-01 to 2022-06-14
+2025-12-01 19:52:36,377 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:52:39,171 - __main__ - INFO -   2022-06-01 to 2022-06-14: 4032 records
+2025-12-01 19:52:39,171 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2022-06-15 to 2022-06-28
+2025-12-01 19:52:39,577 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:52:42,629 - __main__ - INFO -   2022-06-15 to 2022-06-28: 4032 records
+2025-12-01 19:52:42,629 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2022-06-29 to 2022-07-12
+2025-12-01 19:52:43,335 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:52:46,372 - __main__ - INFO -   2022-06-29 to 2022-07-12: 4032 records
+2025-12-01 19:52:46,372 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2022-07-13 to 2022-07-26
+2025-12-01 19:52:46,765 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:52:49,922 - __main__ - INFO -   2022-07-13 to 2022-07-26: 4032 records
+2025-12-01 19:52:49,922 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2022-07-27 to 2022-08-09
+2025-12-01 19:52:50,383 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:52:53,281 - __main__ - INFO -   2022-07-27 to 2022-08-09: 4032 records
+2025-12-01 19:52:53,281 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2022-08-10 to 2022-08-23
+2025-12-01 19:52:53,645 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:52:56,525 - __main__ - INFO -   2022-08-10 to 2022-08-23: 4032 records
+2025-12-01 19:52:56,525 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2022-08-24 to 2022-09-06
+2025-12-01 19:52:57,017 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:52:59,805 - __main__ - INFO -   2022-08-24 to 2022-09-06: 4032 records
+2025-12-01 19:52:59,805 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2022-09-07 to 2022-09-20
+2025-12-01 19:53:00,291 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:53:03,263 - __main__ - INFO -   2022-09-07 to 2022-09-20: 4032 records
+2025-12-01 19:53:03,263 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2022-09-21 to 2022-10-04
+2025-12-01 19:53:03,689 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:53:06,678 - __main__ - INFO -   2022-09-21 to 2022-10-04: 4032 records
+2025-12-01 19:53:06,678 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2022-10-05 to 2022-10-18
+2025-12-01 19:53:07,121 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:53:10,162 - __main__ - INFO -   2022-10-05 to 2022-10-18: 4032 records
+2025-12-01 19:53:10,162 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2022-10-19 to 2022-11-01
+2025-12-01 19:53:10,627 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:53:13,657 - __main__ - INFO -   2022-10-19 to 2022-11-01: 4032 records
+2025-12-01 19:53:13,657 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2022-11-02 to 2022-11-15
+2025-12-01 19:53:14,155 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:53:16,986 - __main__ - INFO -   2022-11-02 to 2022-11-15: 4032 records
+2025-12-01 19:53:16,986 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2022-11-16 to 2022-11-29
+2025-12-01 19:53:17,381 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:53:20,212 - __main__ - INFO -   2022-11-16 to 2022-11-29: 4032 records
+2025-12-01 19:53:20,212 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2022-11-30 to 2022-12-13
+2025-12-01 19:53:20,763 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:53:23,540 - __main__ - INFO -   2022-11-30 to 2022-12-13: 4032 records
+2025-12-01 19:53:23,540 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2022-12-14 to 2022-12-27
+2025-12-01 19:53:24,076 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:53:27,096 - __main__ - INFO -   2022-12-14 to 2022-12-27: 4032 records
+2025-12-01 19:53:27,096 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2022-12-28 to 2023-01-10
+2025-12-01 19:53:27,641 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:53:30,518 - __main__ - INFO -   2022-12-28 to 2023-01-10: 4032 records
+2025-12-01 19:53:30,518 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2023-01-11 to 2023-01-24
+2025-12-01 19:53:30,979 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:53:33,860 - __main__ - INFO -   2023-01-11 to 2023-01-24: 4032 records
+2025-12-01 19:53:33,860 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2023-01-25 to 2023-02-07
+2025-12-01 19:53:34,353 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:53:37,193 - __main__ - INFO -   2023-01-25 to 2023-02-07: 4032 records
+2025-12-01 19:53:37,193 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2023-02-08 to 2023-02-21
+2025-12-01 19:53:37,721 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:53:40,534 - __main__ - INFO -   2023-02-08 to 2023-02-21: 4032 records
+2025-12-01 19:53:40,534 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2023-02-22 to 2023-03-07
+2025-12-01 19:53:41,023 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:53:43,752 - __main__ - INFO -   2023-02-22 to 2023-03-07: 4032 records
+2025-12-01 19:53:43,752 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2023-03-08 to 2023-03-21
+2025-12-01 19:53:44,177 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:53:47,081 - __main__ - INFO -   2023-03-08 to 2023-03-21: 4032 records
+2025-12-01 19:53:47,081 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2023-03-22 to 2023-04-04
+2025-12-01 19:53:47,542 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:53:50,418 - __main__ - INFO -   2023-03-22 to 2023-04-04: 4032 records
+2025-12-01 19:53:50,418 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2023-04-05 to 2023-04-18
+2025-12-01 19:53:51,093 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:53:53,895 - __main__ - INFO -   2023-04-05 to 2023-04-18: 4032 records
+2025-12-01 19:53:53,895 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2023-04-19 to 2023-05-02
+2025-12-01 19:53:54,389 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:53:57,189 - __main__ - INFO -   2023-04-19 to 2023-05-02: 4032 records
+2025-12-01 19:53:57,189 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2023-05-03 to 2023-05-16
+2025-12-01 19:53:57,634 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:54:00,384 - __main__ - INFO -   2023-05-03 to 2023-05-16: 4032 records
+2025-12-01 19:54:00,384 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2023-05-17 to 2023-05-30
+2025-12-01 19:54:00,762 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:54:03,486 - __main__ - INFO -   2023-05-17 to 2023-05-30: 4032 records
+2025-12-01 19:54:03,486 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2023-05-31 to 2023-06-13
+2025-12-01 19:54:03,934 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:54:06,727 - __main__ - INFO -   2023-05-31 to 2023-06-13: 4032 records
+2025-12-01 19:54:06,727 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2023-06-14 to 2023-06-27
+2025-12-01 19:54:07,172 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:54:10,033 - __main__ - INFO -   2023-06-14 to 2023-06-27: 4032 records
+2025-12-01 19:54:10,033 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2023-06-28 to 2023-07-11
+2025-12-01 19:54:10,459 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:54:13,323 - __main__ - INFO -   2023-06-28 to 2023-07-11: 4032 records
+2025-12-01 19:54:13,323 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2023-07-12 to 2023-07-25
+2025-12-01 19:54:13,838 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:54:16,578 - __main__ - INFO -   2023-07-12 to 2023-07-25: 4032 records
+2025-12-01 19:54:16,578 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2023-07-26 to 2023-08-08
+2025-12-01 19:54:17,335 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:54:20,097 - __main__ - INFO -   2023-07-26 to 2023-08-08: 4032 records
+2025-12-01 19:54:20,097 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2023-08-09 to 2023-08-22
+2025-12-01 19:54:20,869 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:54:23,600 - __main__ - INFO -   2023-08-09 to 2023-08-22: 4032 records
+2025-12-01 19:54:23,600 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2023-08-23 to 2023-09-05
+2025-12-01 19:54:24,378 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:54:27,039 - __main__ - INFO -   2023-08-23 to 2023-09-05: 4032 records
+2025-12-01 19:54:27,039 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2023-09-06 to 2023-09-19
+2025-12-01 19:54:27,735 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:54:30,699 - __main__ - INFO -   2023-09-06 to 2023-09-19: 4032 records
+2025-12-01 19:54:30,699 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2023-09-20 to 2023-10-03
+2025-12-01 19:54:31,332 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:54:34,353 - __main__ - INFO -   2023-09-20 to 2023-10-03: 4032 records
+2025-12-01 19:54:34,353 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2023-10-04 to 2023-10-17
+2025-12-01 19:54:35,164 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:54:38,117 - __main__ - INFO -   2023-10-04 to 2023-10-17: 4032 records
+2025-12-01 19:54:38,117 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2023-10-18 to 2023-10-31
+2025-12-01 19:54:38,945 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:54:41,864 - __main__ - INFO -   2023-10-18 to 2023-10-31: 4032 records
+2025-12-01 19:54:41,864 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2023-11-01 to 2023-11-14
+2025-12-01 19:54:42,587 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:54:45,560 - __main__ - INFO -   2023-11-01 to 2023-11-14: 4032 records
+2025-12-01 19:54:45,560 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2023-11-15 to 2023-11-28
+2025-12-01 19:54:46,292 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:54:49,085 - __main__ - INFO -   2023-11-15 to 2023-11-28: 4032 records
+2025-12-01 19:54:49,086 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2023-11-29 to 2023-12-12
+2025-12-01 19:54:49,706 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:54:52,498 - __main__ - INFO -   2023-11-29 to 2023-12-12: 4032 records
+2025-12-01 19:54:52,498 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2023-12-13 to 2023-12-26
+2025-12-01 19:54:53,305 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:54:56,129 - __main__ - INFO -   2023-12-13 to 2023-12-26: 4032 records
+2025-12-01 19:54:56,129 - src.weather.visual_crossing - INFO - Fetching city history: Austin,TX from 2023-12-27 to 2023-12-30
+2025-12-01 19:54:56,421 - src.weather.visual_crossing - INFO - Query cost: 1152
+2025-12-01 19:54:57,333 - __main__ - INFO -   2023-12-27 to 2023-12-30: 1152 records
+2025-12-01 19:54:57,351 - __main__ - INFO - AUS/city: upserted 166464 records
+2025-12-01 19:54:57,352 - src.db.checkpoint - INFO - Checkpoint 96 marked as completed
+2025-12-01 19:54:57,355 - src.db.checkpoint - INFO - Created new checkpoint: vc_obs_backfill/LAX_city
+2025-12-01 19:54:57,356 - __main__ - INFO - Ingesting LAX/city (Los Angeles,CA) from 2022-06-01 to 2023-12-30
+2025-12-01 19:54:57,356 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2022-06-01 to 2022-06-14
+2025-12-01 19:54:57,847 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:55:00,552 - __main__ - INFO -   2022-06-01 to 2022-06-14: 4032 records
+2025-12-01 19:55:00,552 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2022-06-15 to 2022-06-28
+2025-12-01 19:55:00,958 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:55:03,765 - __main__ - INFO -   2022-06-15 to 2022-06-28: 4032 records
+2025-12-01 19:55:03,765 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2022-06-29 to 2022-07-12
+2025-12-01 19:55:04,301 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:55:07,114 - __main__ - INFO -   2022-06-29 to 2022-07-12: 4032 records
+2025-12-01 19:55:07,114 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2022-07-13 to 2022-07-26
+2025-12-01 19:55:07,559 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:55:10,623 - __main__ - INFO -   2022-07-13 to 2022-07-26: 4032 records
+2025-12-01 19:55:10,623 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2022-07-27 to 2022-08-09
+2025-12-01 19:55:11,023 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:55:14,004 - __main__ - INFO -   2022-07-27 to 2022-08-09: 4032 records
+2025-12-01 19:55:14,004 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2022-08-10 to 2022-08-23
+2025-12-01 19:55:14,470 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:55:17,340 - __main__ - INFO -   2022-08-10 to 2022-08-23: 4032 records
+2025-12-01 19:55:17,340 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2022-08-24 to 2022-09-06
+2025-12-01 19:55:17,812 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:55:20,586 - __main__ - INFO -   2022-08-24 to 2022-09-06: 4032 records
+2025-12-01 19:55:20,586 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2022-09-07 to 2022-09-20
+2025-12-01 19:55:21,043 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:55:23,742 - __main__ - INFO -   2022-09-07 to 2022-09-20: 4032 records
+2025-12-01 19:55:23,742 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2022-09-21 to 2022-10-04
+2025-12-01 19:55:24,174 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:55:26,907 - __main__ - INFO -   2022-09-21 to 2022-10-04: 4032 records
+2025-12-01 19:55:26,907 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2022-10-05 to 2022-10-18
+2025-12-01 19:55:27,354 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:55:30,233 - __main__ - INFO -   2022-10-05 to 2022-10-18: 4032 records
+2025-12-01 19:55:30,233 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2022-10-19 to 2022-11-01
+2025-12-01 19:55:30,687 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:55:33,633 - __main__ - INFO -   2022-10-19 to 2022-11-01: 4032 records
+2025-12-01 19:55:33,633 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2022-11-02 to 2022-11-15
+2025-12-01 19:55:34,133 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:55:36,989 - __main__ - INFO -   2022-11-02 to 2022-11-15: 4032 records
+2025-12-01 19:55:36,989 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2022-11-16 to 2022-11-29
+2025-12-01 19:55:37,461 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:55:40,188 - __main__ - INFO -   2022-11-16 to 2022-11-29: 4032 records
+2025-12-01 19:55:40,188 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2022-11-30 to 2022-12-13
+2025-12-01 19:55:40,617 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:55:43,368 - __main__ - INFO -   2022-11-30 to 2022-12-13: 4032 records
+2025-12-01 19:55:43,368 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2022-12-14 to 2022-12-27
+2025-12-01 19:55:43,852 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:55:46,561 - __main__ - INFO -   2022-12-14 to 2022-12-27: 4032 records
+2025-12-01 19:55:46,561 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2022-12-28 to 2023-01-10
+2025-12-01 19:55:47,012 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:55:49,782 - __main__ - INFO -   2022-12-28 to 2023-01-10: 4032 records
+2025-12-01 19:55:49,783 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2023-01-11 to 2023-01-24
+2025-12-01 19:55:50,189 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:55:53,037 - __main__ - INFO -   2023-01-11 to 2023-01-24: 4032 records
+2025-12-01 19:55:53,037 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2023-01-25 to 2023-02-07
+2025-12-01 19:55:53,684 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:55:56,466 - __main__ - INFO -   2023-01-25 to 2023-02-07: 4032 records
+2025-12-01 19:55:56,466 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2023-02-08 to 2023-02-21
+2025-12-01 19:55:56,983 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:55:59,760 - __main__ - INFO -   2023-02-08 to 2023-02-21: 4032 records
+2025-12-01 19:55:59,760 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2023-02-22 to 2023-03-07
+2025-12-01 19:56:00,401 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:56:03,135 - __main__ - INFO -   2023-02-22 to 2023-03-07: 4032 records
+2025-12-01 19:56:03,135 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2023-03-08 to 2023-03-21
+2025-12-01 19:56:03,603 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:56:06,434 - __main__ - INFO -   2023-03-08 to 2023-03-21: 4032 records
+2025-12-01 19:56:06,434 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2023-03-22 to 2023-04-04
+2025-12-01 19:56:06,972 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:56:09,675 - __main__ - INFO -   2023-03-22 to 2023-04-04: 4032 records
+2025-12-01 19:56:09,675 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2023-04-05 to 2023-04-18
+2025-12-01 19:56:10,208 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:56:13,125 - __main__ - INFO -   2023-04-05 to 2023-04-18: 4032 records
+2025-12-01 19:56:13,125 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2023-04-19 to 2023-05-02
+2025-12-01 19:56:13,543 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:56:16,363 - __main__ - INFO -   2023-04-19 to 2023-05-02: 4032 records
+2025-12-01 19:56:16,364 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2023-05-03 to 2023-05-16
+2025-12-01 19:56:16,818 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:56:19,641 - __main__ - INFO -   2023-05-03 to 2023-05-16: 4032 records
+2025-12-01 19:56:19,641 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2023-05-17 to 2023-05-30
+2025-12-01 19:56:20,214 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:56:23,024 - __main__ - INFO -   2023-05-17 to 2023-05-30: 4032 records
+2025-12-01 19:56:23,024 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2023-05-31 to 2023-06-13
+2025-12-01 19:56:23,420 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:56:26,160 - __main__ - INFO -   2023-05-31 to 2023-06-13: 4032 records
+2025-12-01 19:56:26,160 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2023-06-14 to 2023-06-27
+2025-12-01 19:56:26,581 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:56:29,303 - __main__ - INFO -   2023-06-14 to 2023-06-27: 4032 records
+2025-12-01 19:56:29,303 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2023-06-28 to 2023-07-11
+2025-12-01 19:56:29,889 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:56:32,716 - __main__ - INFO -   2023-06-28 to 2023-07-11: 4032 records
+2025-12-01 19:56:32,716 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2023-07-12 to 2023-07-25
+2025-12-01 19:56:34,287 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:56:37,331 - __main__ - INFO -   2023-07-12 to 2023-07-25: 4032 records
+2025-12-01 19:56:37,331 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2023-07-26 to 2023-08-08
+2025-12-01 19:56:40,183 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:56:43,165 - __main__ - INFO -   2023-07-26 to 2023-08-08: 4032 records
+2025-12-01 19:56:43,165 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2023-08-09 to 2023-08-22
+2025-12-01 19:56:46,419 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:56:49,413 - __main__ - INFO -   2023-08-09 to 2023-08-22: 4032 records
+2025-12-01 19:56:49,413 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2023-08-23 to 2023-09-05
+2025-12-01 19:56:52,642 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:56:55,439 - __main__ - INFO -   2023-08-23 to 2023-09-05: 4032 records
+2025-12-01 19:56:55,439 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2023-09-06 to 2023-09-19
+2025-12-01 19:56:58,439 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:57:01,188 - __main__ - INFO -   2023-09-06 to 2023-09-19: 4032 records
+2025-12-01 19:57:01,188 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2023-09-20 to 2023-10-03
+2025-12-01 19:57:04,028 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:57:06,890 - __main__ - INFO -   2023-09-20 to 2023-10-03: 4032 records
+2025-12-01 19:57:06,890 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2023-10-04 to 2023-10-17
+2025-12-01 19:57:10,237 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:57:13,272 - __main__ - INFO -   2023-10-04 to 2023-10-17: 4032 records
+2025-12-01 19:57:13,272 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2023-10-18 to 2023-10-31
+2025-12-01 19:57:16,297 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:57:19,232 - __main__ - INFO -   2023-10-18 to 2023-10-31: 4032 records
+2025-12-01 19:57:19,232 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2023-11-01 to 2023-11-14
+2025-12-01 19:57:22,054 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:57:24,998 - __main__ - INFO -   2023-11-01 to 2023-11-14: 4032 records
+2025-12-01 19:57:24,998 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2023-11-15 to 2023-11-28
+2025-12-01 19:57:28,042 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:57:30,812 - __main__ - INFO -   2023-11-15 to 2023-11-28: 4032 records
+2025-12-01 19:57:30,812 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2023-11-29 to 2023-12-12
+2025-12-01 19:57:33,997 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:57:36,781 - __main__ - INFO -   2023-11-29 to 2023-12-12: 4032 records
+2025-12-01 19:57:36,781 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2023-12-13 to 2023-12-26
+2025-12-01 19:57:39,916 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:57:42,692 - __main__ - INFO -   2023-12-13 to 2023-12-26: 4032 records
+2025-12-01 19:57:42,692 - src.weather.visual_crossing - INFO - Fetching city history: Los Angeles,CA from 2023-12-27 to 2023-12-30
+2025-12-01 19:57:43,749 - src.weather.visual_crossing - INFO - Query cost: 1152
+2025-12-01 19:57:44,667 - __main__ - INFO -   2023-12-27 to 2023-12-30: 1152 records
+2025-12-01 19:57:44,670 - __main__ - INFO - LAX/city: upserted 166464 records
+2025-12-01 19:57:44,672 - src.db.checkpoint - INFO - Checkpoint 97 marked as completed
+2025-12-01 19:57:44,674 - src.db.checkpoint - INFO - Created new checkpoint: vc_obs_backfill/MIA_city
+2025-12-01 19:57:44,675 - __main__ - INFO - Ingesting MIA/city (Miami,FL) from 2022-06-01 to 2023-12-30
+2025-12-01 19:57:44,675 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2022-06-01 to 2022-06-14
+2025-12-01 19:57:45,187 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:57:47,943 - __main__ - INFO -   2022-06-01 to 2022-06-14: 4032 records
+2025-12-01 19:57:47,943 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2022-06-15 to 2022-06-28
+2025-12-01 19:57:48,342 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:57:51,068 - __main__ - INFO -   2022-06-15 to 2022-06-28: 4032 records
+2025-12-01 19:57:51,068 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2022-06-29 to 2022-07-12
+2025-12-01 19:57:52,177 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:57:55,012 - __main__ - INFO -   2022-06-29 to 2022-07-12: 4032 records
+2025-12-01 19:57:55,012 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2022-07-13 to 2022-07-26
+2025-12-01 19:57:55,335 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:57:58,258 - __main__ - INFO -   2022-07-13 to 2022-07-26: 4032 records
+2025-12-01 19:57:58,258 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2022-07-27 to 2022-08-09
+2025-12-01 19:57:58,613 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:58:01,386 - __main__ - INFO -   2022-07-27 to 2022-08-09: 4032 records
+2025-12-01 19:58:01,387 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2022-08-10 to 2022-08-23
+2025-12-01 19:58:01,784 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:58:04,728 - __main__ - INFO -   2022-08-10 to 2022-08-23: 4032 records
+2025-12-01 19:58:04,728 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2022-08-24 to 2022-09-06
+2025-12-01 19:58:05,111 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:58:07,992 - __main__ - INFO -   2022-08-24 to 2022-09-06: 4032 records
+2025-12-01 19:58:07,992 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2022-09-07 to 2022-09-20
+2025-12-01 19:58:08,395 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:58:11,190 - __main__ - INFO -   2022-09-07 to 2022-09-20: 4032 records
+2025-12-01 19:58:11,190 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2022-09-21 to 2022-10-04
+2025-12-01 19:58:11,491 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:58:14,340 - __main__ - INFO -   2022-09-21 to 2022-10-04: 4032 records
+2025-12-01 19:58:14,340 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2022-10-05 to 2022-10-18
+2025-12-01 19:58:14,794 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:58:17,587 - __main__ - INFO -   2022-10-05 to 2022-10-18: 4032 records
+2025-12-01 19:58:17,587 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2022-10-19 to 2022-11-01
+2025-12-01 19:58:17,997 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:58:20,655 - __main__ - INFO -   2022-10-19 to 2022-11-01: 4032 records
+2025-12-01 19:58:20,655 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2022-11-02 to 2022-11-15
+2025-12-01 19:58:21,064 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:58:23,941 - __main__ - INFO -   2022-11-02 to 2022-11-15: 4032 records
+2025-12-01 19:58:23,941 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2022-11-16 to 2022-11-29
+2025-12-01 19:58:24,330 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:58:27,196 - __main__ - INFO -   2022-11-16 to 2022-11-29: 4032 records
+2025-12-01 19:58:27,196 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2022-11-30 to 2022-12-13
+2025-12-01 19:58:27,652 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:58:30,548 - __main__ - INFO -   2022-11-30 to 2022-12-13: 4032 records
+2025-12-01 19:58:30,548 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2022-12-14 to 2022-12-27
+2025-12-01 19:58:30,918 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:58:33,884 - __main__ - INFO -   2022-12-14 to 2022-12-27: 4032 records
+2025-12-01 19:58:33,884 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2022-12-28 to 2023-01-10
+2025-12-01 19:58:34,295 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:58:37,206 - __main__ - INFO -   2022-12-28 to 2023-01-10: 4032 records
+2025-12-01 19:58:37,206 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2023-01-11 to 2023-01-24
+2025-12-01 19:58:37,603 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:58:40,386 - __main__ - INFO -   2023-01-11 to 2023-01-24: 4032 records
+2025-12-01 19:58:40,386 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2023-01-25 to 2023-02-07
+2025-12-01 19:58:40,958 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:58:43,733 - __main__ - INFO -   2023-01-25 to 2023-02-07: 4032 records
+2025-12-01 19:58:43,733 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2023-02-08 to 2023-02-21
+2025-12-01 19:58:44,087 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:58:47,143 - __main__ - INFO -   2023-02-08 to 2023-02-21: 4032 records
+2025-12-01 19:58:47,143 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2023-02-22 to 2023-03-07
+2025-12-01 19:58:47,448 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:58:50,457 - __main__ - INFO -   2023-02-22 to 2023-03-07: 4032 records
+2025-12-01 19:58:50,457 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2023-03-08 to 2023-03-21
+2025-12-01 19:58:50,921 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:58:53,883 - __main__ - INFO -   2023-03-08 to 2023-03-21: 4032 records
+2025-12-01 19:58:53,884 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2023-03-22 to 2023-04-04
+2025-12-01 19:58:54,335 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:58:57,142 - __main__ - INFO -   2023-03-22 to 2023-04-04: 4032 records
+2025-12-01 19:58:57,142 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2023-04-05 to 2023-04-18
+2025-12-01 19:58:57,857 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:59:00,658 - __main__ - INFO -   2023-04-05 to 2023-04-18: 4032 records
+2025-12-01 19:59:00,658 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2023-04-19 to 2023-05-02
+2025-12-01 19:59:00,963 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:59:03,710 - __main__ - INFO -   2023-04-19 to 2023-05-02: 4032 records
+2025-12-01 19:59:03,710 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2023-05-03 to 2023-05-16
+2025-12-01 19:59:04,062 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:59:06,973 - __main__ - INFO -   2023-05-03 to 2023-05-16: 4032 records
+2025-12-01 19:59:06,973 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2023-05-17 to 2023-05-30
+2025-12-01 19:59:07,398 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:59:10,511 - __main__ - INFO -   2023-05-17 to 2023-05-30: 4032 records
+2025-12-01 19:59:10,511 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2023-05-31 to 2023-06-13
+2025-12-01 19:59:10,861 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:59:13,826 - __main__ - INFO -   2023-05-31 to 2023-06-13: 4032 records
+2025-12-01 19:59:13,826 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2023-06-14 to 2023-06-27
+2025-12-01 19:59:14,341 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:59:17,228 - __main__ - INFO -   2023-06-14 to 2023-06-27: 4032 records
+2025-12-01 19:59:17,228 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2023-06-28 to 2023-07-11
+2025-12-01 19:59:17,600 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:59:20,401 - __main__ - INFO -   2023-06-28 to 2023-07-11: 4032 records
+2025-12-01 19:59:20,401 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2023-07-12 to 2023-07-25
+2025-12-01 19:59:21,029 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:59:23,867 - __main__ - INFO -   2023-07-12 to 2023-07-25: 4032 records
+2025-12-01 19:59:23,867 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2023-07-26 to 2023-08-08
+2025-12-01 19:59:24,649 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:59:27,403 - __main__ - INFO -   2023-07-26 to 2023-08-08: 4032 records
+2025-12-01 19:59:27,403 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2023-08-09 to 2023-08-22
+2025-12-01 19:59:28,152 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:59:31,121 - __main__ - INFO -   2023-08-09 to 2023-08-22: 4032 records
+2025-12-01 19:59:31,121 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2023-08-23 to 2023-09-05
+2025-12-01 19:59:31,736 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:59:34,718 - __main__ - INFO -   2023-08-23 to 2023-09-05: 4032 records
+2025-12-01 19:59:34,719 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2023-09-06 to 2023-09-19
+2025-12-01 19:59:35,430 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:59:38,322 - __main__ - INFO -   2023-09-06 to 2023-09-19: 4032 records
+2025-12-01 19:59:38,322 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2023-09-20 to 2023-10-03
+2025-12-01 19:59:39,091 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:59:41,965 - __main__ - INFO -   2023-09-20 to 2023-10-03: 4032 records
+2025-12-01 19:59:41,965 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2023-10-04 to 2023-10-17
+2025-12-01 19:59:42,567 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:59:45,435 - __main__ - INFO -   2023-10-04 to 2023-10-17: 4032 records
+2025-12-01 19:59:45,435 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2023-10-18 to 2023-10-31
+2025-12-01 19:59:46,081 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:59:48,868 - __main__ - INFO -   2023-10-18 to 2023-10-31: 4032 records
+2025-12-01 19:59:48,868 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2023-11-01 to 2023-11-14
+2025-12-01 19:59:49,642 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:59:52,586 - __main__ - INFO -   2023-11-01 to 2023-11-14: 4032 records
+2025-12-01 19:59:52,586 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2023-11-15 to 2023-11-28
+2025-12-01 19:59:53,385 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:59:56,330 - __main__ - INFO -   2023-11-15 to 2023-11-28: 4032 records
+2025-12-01 19:59:56,330 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2023-11-29 to 2023-12-12
+2025-12-01 19:59:57,099 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 19:59:59,995 - __main__ - INFO -   2023-11-29 to 2023-12-12: 4032 records
+2025-12-01 19:59:59,995 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2023-12-13 to 2023-12-26
+2025-12-01 20:00:01,142 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:00:04,028 - __main__ - INFO -   2023-12-13 to 2023-12-26: 4032 records
+2025-12-01 20:00:04,028 - src.weather.visual_crossing - INFO - Fetching city history: Miami,FL from 2023-12-27 to 2023-12-30
+2025-12-01 20:00:09,470 - src.weather.visual_crossing - INFO - Query cost: 1152
+2025-12-01 20:00:10,394 - __main__ - INFO -   2023-12-27 to 2023-12-30: 1152 records
+2025-12-01 20:00:10,399 - __main__ - INFO - MIA/city: upserted 166464 records
+2025-12-01 20:00:10,400 - src.db.checkpoint - INFO - Checkpoint 98 marked as completed
+2025-12-01 20:00:10,402 - src.db.checkpoint - INFO - Created new checkpoint: vc_obs_backfill/PHL_city
+2025-12-01 20:00:10,403 - __main__ - INFO - Ingesting PHL/city (Philadelphia,PA) from 2022-06-01 to 2023-12-30
+2025-12-01 20:00:10,403 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2022-06-01 to 2022-06-14
+2025-12-01 20:00:13,485 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:00:16,354 - __main__ - INFO -   2022-06-01 to 2022-06-14: 4032 records
+2025-12-01 20:00:16,354 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2022-06-15 to 2022-06-28
+2025-12-01 20:00:16,781 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:00:19,731 - __main__ - INFO -   2022-06-15 to 2022-06-28: 4032 records
+2025-12-01 20:00:19,731 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2022-06-29 to 2022-07-12
+2025-12-01 20:00:20,413 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:00:23,326 - __main__ - INFO -   2022-06-29 to 2022-07-12: 4032 records
+2025-12-01 20:00:23,326 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2022-07-13 to 2022-07-26
+2025-12-01 20:00:23,814 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:00:26,671 - __main__ - INFO -   2022-07-13 to 2022-07-26: 4032 records
+2025-12-01 20:00:26,671 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2022-07-27 to 2022-08-09
+2025-12-01 20:00:27,059 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:00:29,901 - __main__ - INFO -   2022-07-27 to 2022-08-09: 4032 records
+2025-12-01 20:00:29,901 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2022-08-10 to 2022-08-23
+2025-12-01 20:00:30,348 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:00:33,303 - __main__ - INFO -   2022-08-10 to 2022-08-23: 4032 records
+2025-12-01 20:00:33,303 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2022-08-24 to 2022-09-06
+2025-12-01 20:00:34,054 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:00:36,975 - __main__ - INFO -   2022-08-24 to 2022-09-06: 4032 records
+2025-12-01 20:00:36,975 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2022-09-07 to 2022-09-20
+2025-12-01 20:00:37,401 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:00:40,436 - __main__ - INFO -   2022-09-07 to 2022-09-20: 4032 records
+2025-12-01 20:00:40,436 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2022-09-21 to 2022-10-04
+2025-12-01 20:00:40,880 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:00:43,829 - __main__ - INFO -   2022-09-21 to 2022-10-04: 4032 records
+2025-12-01 20:00:43,829 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2022-10-05 to 2022-10-18
+2025-12-01 20:00:44,501 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:00:47,472 - __main__ - INFO -   2022-10-05 to 2022-10-18: 4032 records
+2025-12-01 20:00:47,472 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2022-10-19 to 2022-11-01
+2025-12-01 20:00:47,856 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:00:50,769 - __main__ - INFO -   2022-10-19 to 2022-11-01: 4032 records
+2025-12-01 20:00:50,769 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2022-11-02 to 2022-11-15
+2025-12-01 20:00:51,341 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:00:54,253 - __main__ - INFO -   2022-11-02 to 2022-11-15: 4032 records
+2025-12-01 20:00:54,253 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2022-11-16 to 2022-11-29
+2025-12-01 20:00:55,175 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:00:58,005 - __main__ - INFO -   2022-11-16 to 2022-11-29: 4032 records
+2025-12-01 20:00:58,005 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2022-11-30 to 2022-12-13
+2025-12-01 20:00:58,832 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:01:01,811 - __main__ - INFO -   2022-11-30 to 2022-12-13: 4032 records
+2025-12-01 20:01:01,811 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2022-12-14 to 2022-12-27
+2025-12-01 20:01:02,663 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:01:05,677 - __main__ - INFO -   2022-12-14 to 2022-12-27: 4032 records
+2025-12-01 20:01:05,677 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2022-12-28 to 2023-01-10
+2025-12-01 20:01:06,413 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:01:09,382 - __main__ - INFO -   2022-12-28 to 2023-01-10: 4032 records
+2025-12-01 20:01:09,382 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2023-01-11 to 2023-01-24
+2025-12-01 20:01:09,822 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:01:12,711 - __main__ - INFO -   2023-01-11 to 2023-01-24: 4032 records
+2025-12-01 20:01:12,711 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2023-01-25 to 2023-02-07
+2025-12-01 20:01:13,120 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:01:16,058 - __main__ - INFO -   2023-01-25 to 2023-02-07: 4032 records
+2025-12-01 20:01:16,058 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2023-02-08 to 2023-02-21
+2025-12-01 20:01:16,607 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:01:19,441 - __main__ - INFO -   2023-02-08 to 2023-02-21: 4032 records
+2025-12-01 20:01:19,441 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2023-02-22 to 2023-03-07
+2025-12-01 20:01:20,300 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:01:23,117 - __main__ - INFO -   2023-02-22 to 2023-03-07: 4032 records
+2025-12-01 20:01:23,117 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2023-03-08 to 2023-03-21
+2025-12-01 20:01:23,593 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:01:26,703 - __main__ - INFO -   2023-03-08 to 2023-03-21: 4032 records
+2025-12-01 20:01:26,703 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2023-03-22 to 2023-04-04
+2025-12-01 20:01:27,185 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:01:30,118 - __main__ - INFO -   2023-03-22 to 2023-04-04: 4032 records
+2025-12-01 20:01:30,118 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2023-04-05 to 2023-04-18
+2025-12-01 20:01:30,888 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:01:33,849 - __main__ - INFO -   2023-04-05 to 2023-04-18: 4032 records
+2025-12-01 20:01:33,849 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2023-04-19 to 2023-05-02
+2025-12-01 20:01:34,201 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:01:37,218 - __main__ - INFO -   2023-04-19 to 2023-05-02: 4032 records
+2025-12-01 20:01:37,218 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2023-05-03 to 2023-05-16
+2025-12-01 20:01:37,721 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:01:40,584 - __main__ - INFO -   2023-05-03 to 2023-05-16: 4032 records
+2025-12-01 20:01:40,584 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2023-05-17 to 2023-05-30
+2025-12-01 20:01:41,084 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:01:44,004 - __main__ - INFO -   2023-05-17 to 2023-05-30: 4032 records
+2025-12-01 20:01:44,004 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2023-05-31 to 2023-06-13
+2025-12-01 20:01:44,479 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:01:47,473 - __main__ - INFO -   2023-05-31 to 2023-06-13: 4032 records
+2025-12-01 20:01:47,473 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2023-06-14 to 2023-06-27
+2025-12-01 20:01:47,821 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:01:50,829 - __main__ - INFO -   2023-06-14 to 2023-06-27: 4032 records
+2025-12-01 20:01:50,829 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2023-06-28 to 2023-07-11
+2025-12-01 20:01:51,264 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:01:54,276 - __main__ - INFO -   2023-06-28 to 2023-07-11: 4032 records
+2025-12-01 20:01:54,276 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2023-07-12 to 2023-07-25
+2025-12-01 20:01:54,814 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:01:57,881 - __main__ - INFO -   2023-07-12 to 2023-07-25: 4032 records
+2025-12-01 20:01:57,881 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2023-07-26 to 2023-08-08
+2025-12-01 20:01:58,487 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:02:01,386 - __main__ - INFO -   2023-07-26 to 2023-08-08: 4032 records
+2025-12-01 20:02:01,386 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2023-08-09 to 2023-08-22
+2025-12-01 20:02:02,064 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:02:04,915 - __main__ - INFO -   2023-08-09 to 2023-08-22: 4032 records
+2025-12-01 20:02:04,915 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2023-08-23 to 2023-09-05
+2025-12-01 20:02:05,499 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:02:08,362 - __main__ - INFO -   2023-08-23 to 2023-09-05: 4032 records
+2025-12-01 20:02:08,362 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2023-09-06 to 2023-09-19
+2025-12-01 20:02:08,936 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:02:11,960 - __main__ - INFO -   2023-09-06 to 2023-09-19: 4032 records
+2025-12-01 20:02:11,961 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2023-09-20 to 2023-10-03
+2025-12-01 20:02:12,700 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:02:15,771 - __main__ - INFO -   2023-09-20 to 2023-10-03: 4032 records
+2025-12-01 20:02:15,771 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2023-10-04 to 2023-10-17
+2025-12-01 20:02:16,408 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:02:19,366 - __main__ - INFO -   2023-10-04 to 2023-10-17: 4032 records
+2025-12-01 20:02:19,366 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2023-10-18 to 2023-10-31
+2025-12-01 20:02:20,032 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:02:22,974 - __main__ - INFO -   2023-10-18 to 2023-10-31: 4032 records
+2025-12-01 20:02:22,975 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2023-11-01 to 2023-11-14
+2025-12-01 20:02:23,717 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:02:26,666 - __main__ - INFO -   2023-11-01 to 2023-11-14: 4032 records
+2025-12-01 20:02:26,667 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2023-11-15 to 2023-11-28
+2025-12-01 20:02:27,296 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:02:30,152 - __main__ - INFO -   2023-11-15 to 2023-11-28: 4032 records
+2025-12-01 20:02:30,152 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2023-11-29 to 2023-12-12
+2025-12-01 20:02:30,866 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:02:33,900 - __main__ - INFO -   2023-11-29 to 2023-12-12: 4032 records
+2025-12-01 20:02:33,900 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2023-12-13 to 2023-12-26
+2025-12-01 20:02:34,559 - src.weather.visual_crossing - INFO - Query cost: 4032
+2025-12-01 20:02:37,592 - __main__ - INFO -   2023-12-13 to 2023-12-26: 4032 records
+2025-12-01 20:02:37,592 - src.weather.visual_crossing - INFO - Fetching city history: Philadelphia,PA from 2023-12-27 to 2023-12-30
+2025-12-01 20:02:37,855 - src.weather.visual_crossing - INFO - Query cost: 1152
+2025-12-01 20:02:38,812 - __main__ - INFO -   2023-12-27 to 2023-12-30: 1152 records
+2025-12-01 20:02:38,816 - __main__ - INFO - PHL/city: upserted 166464 records
+2025-12-01 20:02:38,818 - src.db.checkpoint - INFO - Checkpoint 99 marked as completed
+2025-12-01 20:02:38,818 - __main__ - INFO - Ingestion complete: 998784 total records upserted

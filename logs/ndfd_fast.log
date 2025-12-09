@@ -1,0 +1,925 @@
+2025-12-06 03:11:59,950 - __main__ - INFO - ================================================================================
+2025-12-06 03:11:59,950 - __main__ - INFO - FAST NOAA INGESTION - AUSTIN
+2025-12-06 03:11:59,950 - __main__ - INFO - ================================================================================
+2025-12-06 03:11:59,950 - __main__ - INFO - Models: NDFD
+2025-12-06 03:11:59,950 - __main__ - INFO - Date range: 2025-05-01 to 2025-12-01 (215 days)
+2025-12-06 03:11:59,950 - __main__ - INFO - Workers: 14
+2025-12-06 03:11:59,950 - __main__ - INFO - 
+2025-12-06 03:11:59,950 - __main__ - INFO - Total tasks: 215 (215 days × 1 models)
+2025-12-06 03:11:59,961 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 03:11:59,961 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 03:11:59,961 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 03:11:59,961 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 03:11:59,961 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-05-01 run=2025-04-30 00:00:00+00:00
+2025-12-06 03:11:59,961 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 03:11:59,961 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 03:11:59,961 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-05-14 run=2025-05-13 00:00:00+00:00
+2025-12-06 03:11:59,961 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 03:11:59,962 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 03:11:59,962 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-05-05 run=2025-05-04 00:00:00+00:00
+2025-12-06 03:11:59,962 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 03:11:59,962 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 03:11:59,963 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 03:11:59,963 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 03:11:59,963 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-05-02 run=2025-05-01 00:00:00+00:00
+2025-12-06 03:11:59,963 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-06 03:11:59,963 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-05-06 run=2025-05-05 00:00:00+00:00
+2025-12-06 03:11:59,963 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-05-12 run=2025-05-11 00:00:00+00:00
+2025-12-06 03:11:59,963 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-05-07 run=2025-05-06 00:00:00+00:00
+2025-12-06 03:11:59,963 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-05-03 run=2025-05-02 00:00:00+00:00
+2025-12-06 03:11:59,964 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-05-08 run=2025-05-07 00:00:00+00:00
+2025-12-06 03:11:59,964 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-05-13 run=2025-05-12 00:00:00+00:00
+2025-12-06 03:11:59,964 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-05-09 run=2025-05-08 00:00:00+00:00
+2025-12-06 03:11:59,964 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-05-04 run=2025-05-03 00:00:00+00:00
+2025-12-06 03:11:59,965 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-05-10 run=2025-05-09 00:00:00+00:00
+2025-12-06 03:11:59,966 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-05-11 run=2025-05-10 00:00:00+00:00
+2025-12-06 03:12:00,088 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,088 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-05-05 00:00:00+00:00
+2025-12-06 03:12:00,088 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-05-06
+2025-12-06 03:12:00,089 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-05-15 run=2025-05-14 00:00:00+00:00
+2025-12-06 03:12:00,092 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,092 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-05-09 00:00:00+00:00
+2025-12-06 03:12:00,092 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,092 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-05-10
+2025-12-06 03:12:00,092 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-05-11 00:00:00+00:00
+2025-12-06 03:12:00,092 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-05-16 run=2025-05-15 00:00:00+00:00
+2025-12-06 03:12:00,093 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-05-12
+2025-12-06 03:12:00,093 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-05-17 run=2025-05-16 00:00:00+00:00
+2025-12-06 03:12:00,094 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,094 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-05-12 00:00:00+00:00
+2025-12-06 03:12:00,094 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-05-13
+2025-12-06 03:12:00,094 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-05-18 run=2025-05-17 00:00:00+00:00
+2025-12-06 03:12:00,094 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,095 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-05-13 00:00:00+00:00
+2025-12-06 03:12:00,095 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,095 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,095 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-05-14
+2025-12-06 03:12:00,095 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-05-06 00:00:00+00:00
+2025-12-06 03:12:00,095 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-05-08 00:00:00+00:00
+2025-12-06 03:12:00,095 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,095 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-05-19 run=2025-05-18 00:00:00+00:00
+2025-12-06 03:12:00,096 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-05-07
+2025-12-06 03:12:00,096 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-05-09
+2025-12-06 03:12:00,096 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-05-03 00:00:00+00:00
+2025-12-06 03:12:00,096 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-05-20 run=2025-05-19 00:00:00+00:00
+2025-12-06 03:12:00,096 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-05-21 run=2025-05-20 00:00:00+00:00
+2025-12-06 03:12:00,096 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-05-04
+2025-12-06 03:12:00,097 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-05-22 run=2025-05-21 00:00:00+00:00
+2025-12-06 03:12:00,098 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,098 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-05-04 00:00:00+00:00
+2025-12-06 03:12:00,098 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-05-05
+2025-12-06 03:12:00,098 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-05-23 run=2025-05-22 00:00:00+00:00
+2025-12-06 03:12:00,100 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,100 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-05-01 00:00:00+00:00
+2025-12-06 03:12:00,100 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-05-02
+2025-12-06 03:12:00,100 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-05-24 run=2025-05-23 00:00:00+00:00
+2025-12-06 03:12:00,100 - __main__ - INFO - Progress: 10/215 (4.7%) | Rate: 66.6 tasks/sec | ETA: 3s
+2025-12-06 03:12:00,102 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,102 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,102 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-05-02 00:00:00+00:00
+2025-12-06 03:12:00,102 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-04-30 00:00:00+00:00
+2025-12-06 03:12:00,102 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-05-03
+2025-12-06 03:12:00,102 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-05-01
+2025-12-06 03:12:00,103 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-05-25 run=2025-05-24 00:00:00+00:00
+2025-12-06 03:12:00,103 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-05-26 run=2025-05-25 00:00:00+00:00
+2025-12-06 03:12:00,104 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,104 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-05-07 00:00:00+00:00
+2025-12-06 03:12:00,104 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-05-08
+2025-12-06 03:12:00,104 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-05-27 run=2025-05-26 00:00:00+00:00
+2025-12-06 03:12:00,107 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,108 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-05-10 00:00:00+00:00
+2025-12-06 03:12:00,108 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-05-11
+2025-12-06 03:12:00,108 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-05-28 run=2025-05-27 00:00:00+00:00
+2025-12-06 03:12:00,175 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,175 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-05-14 00:00:00+00:00
+2025-12-06 03:12:00,175 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-05-15
+2025-12-06 03:12:00,175 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-05-29 run=2025-05-28 00:00:00+00:00
+2025-12-06 03:12:00,181 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,181 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-05-20 00:00:00+00:00
+2025-12-06 03:12:00,182 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-05-21
+2025-12-06 03:12:00,182 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,182 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-05-30 run=2025-05-29 00:00:00+00:00
+2025-12-06 03:12:00,182 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-05-17 00:00:00+00:00
+2025-12-06 03:12:00,182 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-05-18
+2025-12-06 03:12:00,182 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-05-31 run=2025-05-30 00:00:00+00:00
+2025-12-06 03:12:00,184 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,184 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-05-19 00:00:00+00:00
+2025-12-06 03:12:00,184 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-05-20
+2025-12-06 03:12:00,184 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-06-01 run=2025-05-31 00:00:00+00:00
+2025-12-06 03:12:00,185 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,185 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,185 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-05-18 00:00:00+00:00
+2025-12-06 03:12:00,185 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-05-22 00:00:00+00:00
+2025-12-06 03:12:00,186 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,186 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-05-19
+2025-12-06 03:12:00,186 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-05-23
+2025-12-06 03:12:00,186 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-06-02 run=2025-06-01 00:00:00+00:00
+2025-12-06 03:12:00,186 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-05-21 00:00:00+00:00
+2025-12-06 03:12:00,186 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-06-03 run=2025-06-02 00:00:00+00:00
+2025-12-06 03:12:00,186 - __main__ - INFO - Progress: 20/215 (9.3%) | Rate: 84.8 tasks/sec | ETA: 2s
+2025-12-06 03:12:00,186 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-05-22
+2025-12-06 03:12:00,187 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-06-04 run=2025-06-03 00:00:00+00:00
+2025-12-06 03:12:00,189 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,189 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-05-15 00:00:00+00:00
+2025-12-06 03:12:00,189 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-05-16
+2025-12-06 03:12:00,189 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-06-05 run=2025-06-04 00:00:00+00:00
+2025-12-06 03:12:00,192 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,192 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,193 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-05-16 00:00:00+00:00
+2025-12-06 03:12:00,193 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-05-25 00:00:00+00:00
+2025-12-06 03:12:00,193 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-05-17
+2025-12-06 03:12:00,193 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-05-26
+2025-12-06 03:12:00,193 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-06-06 run=2025-06-05 00:00:00+00:00
+2025-12-06 03:12:00,193 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-06-07 run=2025-06-06 00:00:00+00:00
+2025-12-06 03:12:00,193 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,194 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-05-24 00:00:00+00:00
+2025-12-06 03:12:00,194 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-05-25
+2025-12-06 03:12:00,194 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-06-08 run=2025-06-07 00:00:00+00:00
+2025-12-06 03:12:00,194 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,194 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-05-27 00:00:00+00:00
+2025-12-06 03:12:00,195 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-05-28
+2025-12-06 03:12:00,195 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-06-09 run=2025-06-08 00:00:00+00:00
+2025-12-06 03:12:00,196 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,196 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-05-23 00:00:00+00:00
+2025-12-06 03:12:00,196 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-05-24
+2025-12-06 03:12:00,196 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-06-10 run=2025-06-09 00:00:00+00:00
+2025-12-06 03:12:00,204 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,204 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-05-26 00:00:00+00:00
+2025-12-06 03:12:00,204 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-05-27
+2025-12-06 03:12:00,204 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-06-11 run=2025-06-10 00:00:00+00:00
+2025-12-06 03:12:00,257 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,257 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-05-28 00:00:00+00:00
+2025-12-06 03:12:00,258 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-05-29
+2025-12-06 03:12:00,258 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-06-12 run=2025-06-11 00:00:00+00:00
+2025-12-06 03:12:00,266 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,266 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-05-29 00:00:00+00:00
+2025-12-06 03:12:00,266 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-05-30
+2025-12-06 03:12:00,267 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-06-13 run=2025-06-12 00:00:00+00:00
+2025-12-06 03:12:00,267 - __main__ - INFO - Progress: 30/215 (14.0%) | Rate: 94.8 tasks/sec | ETA: 2s
+2025-12-06 03:12:00,269 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,269 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-05-30 00:00:00+00:00
+2025-12-06 03:12:00,269 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-05-31
+2025-12-06 03:12:00,269 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-06-14 run=2025-06-13 00:00:00+00:00
+2025-12-06 03:12:00,270 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,270 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-05-31 00:00:00+00:00
+2025-12-06 03:12:00,270 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-06-01
+2025-12-06 03:12:00,270 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-06-15 run=2025-06-14 00:00:00+00:00
+2025-12-06 03:12:00,276 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,276 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-06-06 00:00:00+00:00
+2025-12-06 03:12:00,276 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-06-07
+2025-12-06 03:12:00,276 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-06-16 run=2025-06-15 00:00:00+00:00
+2025-12-06 03:12:00,277 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,278 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-06-03 00:00:00+00:00
+2025-12-06 03:12:00,278 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-06-04
+2025-12-06 03:12:00,278 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-06-17 run=2025-06-16 00:00:00+00:00
+2025-12-06 03:12:00,278 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,279 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-06-02 00:00:00+00:00
+2025-12-06 03:12:00,279 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-06-03
+2025-12-06 03:12:00,279 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-06-18 run=2025-06-17 00:00:00+00:00
+2025-12-06 03:12:00,280 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,280 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-06-05 00:00:00+00:00
+2025-12-06 03:12:00,280 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-06-06
+2025-12-06 03:12:00,280 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-06-19 run=2025-06-18 00:00:00+00:00
+2025-12-06 03:12:00,283 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,283 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-06-08 00:00:00+00:00
+2025-12-06 03:12:00,283 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-06-09
+2025-12-06 03:12:00,283 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-06-20 run=2025-06-19 00:00:00+00:00
+2025-12-06 03:12:00,284 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,284 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-06-01 00:00:00+00:00
+2025-12-06 03:12:00,284 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-06-02
+2025-12-06 03:12:00,284 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-06-21 run=2025-06-20 00:00:00+00:00
+2025-12-06 03:12:00,286 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,286 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-06-09 00:00:00+00:00
+2025-12-06 03:12:00,286 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-06-10
+2025-12-06 03:12:00,286 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-06-22 run=2025-06-21 00:00:00+00:00
+2025-12-06 03:12:00,287 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,287 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-06-10 00:00:00+00:00
+2025-12-06 03:12:00,287 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-06-11
+2025-12-06 03:12:00,288 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-06-23 run=2025-06-22 00:00:00+00:00
+2025-12-06 03:12:00,288 - __main__ - INFO - Progress: 40/215 (18.6%) | Rate: 118.5 tasks/sec | ETA: 1s
+2025-12-06 03:12:00,289 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,289 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-06-04 00:00:00+00:00
+2025-12-06 03:12:00,289 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-06-05
+2025-12-06 03:12:00,289 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-06-24 run=2025-06-23 00:00:00+00:00
+2025-12-06 03:12:00,293 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,293 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-06-07 00:00:00+00:00
+2025-12-06 03:12:00,294 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-06-08
+2025-12-06 03:12:00,294 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-06-25 run=2025-06-24 00:00:00+00:00
+2025-12-06 03:12:00,344 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,345 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-06-11 00:00:00+00:00
+2025-12-06 03:12:00,345 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-06-12
+2025-12-06 03:12:00,345 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-06-26 run=2025-06-25 00:00:00+00:00
+2025-12-06 03:12:00,350 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,350 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-06-13 00:00:00+00:00
+2025-12-06 03:12:00,351 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-06-14
+2025-12-06 03:12:00,351 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-06-27 run=2025-06-26 00:00:00+00:00
+2025-12-06 03:12:00,357 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,357 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-06-12 00:00:00+00:00
+2025-12-06 03:12:00,357 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-06-13
+2025-12-06 03:12:00,357 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-06-28 run=2025-06-27 00:00:00+00:00
+2025-12-06 03:12:00,367 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,367 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-06-17 00:00:00+00:00
+2025-12-06 03:12:00,367 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-06-18
+2025-12-06 03:12:00,367 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-06-29 run=2025-06-28 00:00:00+00:00
+2025-12-06 03:12:00,371 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,371 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-06-21 00:00:00+00:00
+2025-12-06 03:12:00,372 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-06-22
+2025-12-06 03:12:00,372 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-06-30 run=2025-06-29 00:00:00+00:00
+2025-12-06 03:12:00,372 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,372 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-06-19 00:00:00+00:00
+2025-12-06 03:12:00,373 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,373 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,373 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-06-20
+2025-12-06 03:12:00,373 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-06-22 00:00:00+00:00
+2025-12-06 03:12:00,373 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-07-01 run=2025-06-30 00:00:00+00:00
+2025-12-06 03:12:00,373 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-06-23 00:00:00+00:00
+2025-12-06 03:12:00,373 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-06-23
+2025-12-06 03:12:00,374 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-06-24
+2025-12-06 03:12:00,374 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-07-02 run=2025-07-01 00:00:00+00:00
+2025-12-06 03:12:00,374 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-07-03 run=2025-07-02 00:00:00+00:00
+2025-12-06 03:12:00,374 - __main__ - INFO - Progress: 50/215 (23.3%) | Rate: 118.0 tasks/sec | ETA: 1s
+2025-12-06 03:12:00,375 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,376 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-06-15 00:00:00+00:00
+2025-12-06 03:12:00,376 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-06-16
+2025-12-06 03:12:00,376 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-07-04 run=2025-07-03 00:00:00+00:00
+2025-12-06 03:12:00,376 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,376 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-06-16 00:00:00+00:00
+2025-12-06 03:12:00,376 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-06-17
+2025-12-06 03:12:00,377 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-07-05 run=2025-07-04 00:00:00+00:00
+2025-12-06 03:12:00,378 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,378 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-06-18 00:00:00+00:00
+2025-12-06 03:12:00,378 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-06-19
+2025-12-06 03:12:00,379 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-07-06 run=2025-07-05 00:00:00+00:00
+2025-12-06 03:12:00,380 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,380 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-06-24 00:00:00+00:00
+2025-12-06 03:12:00,381 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-06-25
+2025-12-06 03:12:00,381 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-07-07 run=2025-07-06 00:00:00+00:00
+2025-12-06 03:12:00,381 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,381 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-06-20 00:00:00+00:00
+2025-12-06 03:12:00,381 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-06-21
+2025-12-06 03:12:00,382 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-07-08 run=2025-07-07 00:00:00+00:00
+2025-12-06 03:12:00,394 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,394 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-06-14 00:00:00+00:00
+2025-12-06 03:12:00,394 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-06-15
+2025-12-06 03:12:00,394 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-07-09 run=2025-07-08 00:00:00+00:00
+2025-12-06 03:12:00,441 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,441 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-06-26 00:00:00+00:00
+2025-12-06 03:12:00,441 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,441 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-06-27
+2025-12-06 03:12:00,441 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-06-25 00:00:00+00:00
+2025-12-06 03:12:00,441 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-07-10 run=2025-07-09 00:00:00+00:00
+2025-12-06 03:12:00,441 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-06-26
+2025-12-06 03:12:00,441 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-07-11 run=2025-07-10 00:00:00+00:00
+2025-12-06 03:12:00,453 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,453 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-06-28 00:00:00+00:00
+2025-12-06 03:12:00,453 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-06-29
+2025-12-06 03:12:00,454 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-07-12 run=2025-07-11 00:00:00+00:00
+2025-12-06 03:12:00,455 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,455 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-06-27 00:00:00+00:00
+2025-12-06 03:12:00,455 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-06-28
+2025-12-06 03:12:00,455 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-07-13 run=2025-07-12 00:00:00+00:00
+2025-12-06 03:12:00,455 - __main__ - INFO - Progress: 60/215 (27.9%) | Rate: 118.7 tasks/sec | ETA: 1s
+2025-12-06 03:12:00,458 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,458 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-06-29 00:00:00+00:00
+2025-12-06 03:12:00,458 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-06-30
+2025-12-06 03:12:00,458 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-07-14 run=2025-07-13 00:00:00+00:00
+2025-12-06 03:12:00,465 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,465 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-07-04 00:00:00+00:00
+2025-12-06 03:12:00,465 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-07-05
+2025-12-06 03:12:00,465 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-07-15 run=2025-07-14 00:00:00+00:00
+2025-12-06 03:12:00,466 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,466 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-07-01 00:00:00+00:00
+2025-12-06 03:12:00,466 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-07-02
+2025-12-06 03:12:00,466 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-07-16 run=2025-07-15 00:00:00+00:00
+2025-12-06 03:12:00,469 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,469 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-06-30 00:00:00+00:00
+2025-12-06 03:12:00,469 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-07-01
+2025-12-06 03:12:00,469 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-07-17 run=2025-07-16 00:00:00+00:00
+2025-12-06 03:12:00,471 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,471 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-07-07 00:00:00+00:00
+2025-12-06 03:12:00,471 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-07-08
+2025-12-06 03:12:00,471 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-07-18 run=2025-07-17 00:00:00+00:00
+2025-12-06 03:12:00,474 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,474 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-07-02 00:00:00+00:00
+2025-12-06 03:12:00,474 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-07-03
+2025-12-06 03:12:00,474 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-07-19 run=2025-07-18 00:00:00+00:00
+2025-12-06 03:12:00,477 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,477 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-07-03 00:00:00+00:00
+2025-12-06 03:12:00,477 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,477 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-07-04
+2025-12-06 03:12:00,477 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-07-06 00:00:00+00:00
+2025-12-06 03:12:00,478 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-07-20 run=2025-07-19 00:00:00+00:00
+2025-12-06 03:12:00,478 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-07-07
+2025-12-06 03:12:00,478 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-07-21 run=2025-07-20 00:00:00+00:00
+2025-12-06 03:12:00,481 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,481 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-07-05 00:00:00+00:00
+2025-12-06 03:12:00,481 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-07-06
+2025-12-06 03:12:00,481 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-07-22 run=2025-07-21 00:00:00+00:00
+2025-12-06 03:12:00,483 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,483 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-07-08 00:00:00+00:00
+2025-12-06 03:12:00,483 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-07-09
+2025-12-06 03:12:00,483 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-07-23 run=2025-07-22 00:00:00+00:00
+2025-12-06 03:12:00,483 - __main__ - INFO - Progress: 70/215 (32.6%) | Rate: 131.3 tasks/sec | ETA: 1s
+2025-12-06 03:12:00,527 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,527 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-07-10 00:00:00+00:00
+2025-12-06 03:12:00,527 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-07-11
+2025-12-06 03:12:00,527 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-07-24 run=2025-07-23 00:00:00+00:00
+2025-12-06 03:12:00,536 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,536 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-07-13 00:00:00+00:00
+2025-12-06 03:12:00,537 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-07-14
+2025-12-06 03:12:00,537 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-07-25 run=2025-07-24 00:00:00+00:00
+2025-12-06 03:12:00,538 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,539 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-07-09 00:00:00+00:00
+2025-12-06 03:12:00,539 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-07-10
+2025-12-06 03:12:00,539 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-07-26 run=2025-07-25 00:00:00+00:00
+2025-12-06 03:12:00,543 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,543 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-07-11 00:00:00+00:00
+2025-12-06 03:12:00,543 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-07-12
+2025-12-06 03:12:00,543 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-07-27 run=2025-07-26 00:00:00+00:00
+2025-12-06 03:12:00,543 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,544 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-07-12 00:00:00+00:00
+2025-12-06 03:12:00,544 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-07-13
+2025-12-06 03:12:00,544 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-07-28 run=2025-07-27 00:00:00+00:00
+2025-12-06 03:12:00,559 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,559 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-07-15 00:00:00+00:00
+2025-12-06 03:12:00,559 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-07-16
+2025-12-06 03:12:00,560 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-07-29 run=2025-07-28 00:00:00+00:00
+2025-12-06 03:12:00,560 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,560 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-07-18 00:00:00+00:00
+2025-12-06 03:12:00,560 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-07-19
+2025-12-06 03:12:00,561 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-07-30 run=2025-07-29 00:00:00+00:00
+2025-12-06 03:12:00,561 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,562 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-07-19 00:00:00+00:00
+2025-12-06 03:12:00,562 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-07-20
+2025-12-06 03:12:00,562 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-07-31 run=2025-07-30 00:00:00+00:00
+2025-12-06 03:12:00,563 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,563 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-07-22 00:00:00+00:00
+2025-12-06 03:12:00,564 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-07-23
+2025-12-06 03:12:00,564 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-08-01 run=2025-07-31 00:00:00+00:00
+2025-12-06 03:12:00,565 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,565 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-07-14 00:00:00+00:00
+2025-12-06 03:12:00,565 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,565 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-07-15
+2025-12-06 03:12:00,565 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-07-16 00:00:00+00:00
+2025-12-06 03:12:00,565 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-08-02 run=2025-08-01 00:00:00+00:00
+2025-12-06 03:12:00,566 - __main__ - INFO - Progress: 80/215 (37.2%) | Rate: 130.0 tasks/sec | ETA: 1s
+2025-12-06 03:12:00,566 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-07-17
+2025-12-06 03:12:00,566 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-08-03 run=2025-08-02 00:00:00+00:00
+2025-12-06 03:12:00,567 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,568 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-07-20 00:00:00+00:00
+2025-12-06 03:12:00,568 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-07-21
+2025-12-06 03:12:00,568 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-08-04 run=2025-08-03 00:00:00+00:00
+2025-12-06 03:12:00,571 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,571 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-07-17 00:00:00+00:00
+2025-12-06 03:12:00,571 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-07-18
+2025-12-06 03:12:00,571 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-08-05 run=2025-08-04 00:00:00+00:00
+2025-12-06 03:12:00,579 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,579 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-07-21 00:00:00+00:00
+2025-12-06 03:12:00,580 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-07-22
+2025-12-06 03:12:00,580 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-08-06 run=2025-08-05 00:00:00+00:00
+2025-12-06 03:12:00,611 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,612 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-07-23 00:00:00+00:00
+2025-12-06 03:12:00,612 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-07-24
+2025-12-06 03:12:00,612 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-08-07 run=2025-08-06 00:00:00+00:00
+2025-12-06 03:12:00,623 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,623 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-07-24 00:00:00+00:00
+2025-12-06 03:12:00,623 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-07-25
+2025-12-06 03:12:00,623 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-08-08 run=2025-08-07 00:00:00+00:00
+2025-12-06 03:12:00,631 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,631 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-07-27 00:00:00+00:00
+2025-12-06 03:12:00,631 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-07-28
+2025-12-06 03:12:00,631 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-08-09 run=2025-08-08 00:00:00+00:00
+2025-12-06 03:12:00,635 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,635 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-07-25 00:00:00+00:00
+2025-12-06 03:12:00,635 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-07-26
+2025-12-06 03:12:00,635 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-08-10 run=2025-08-09 00:00:00+00:00
+2025-12-06 03:12:00,648 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,648 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-07-26 00:00:00+00:00
+2025-12-06 03:12:00,648 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-07-27
+2025-12-06 03:12:00,648 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-08-11 run=2025-08-10 00:00:00+00:00
+2025-12-06 03:12:00,649 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,649 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-08-02 00:00:00+00:00
+2025-12-06 03:12:00,649 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,650 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-08-03
+2025-12-06 03:12:00,650 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-07-28 00:00:00+00:00
+2025-12-06 03:12:00,650 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-08-12 run=2025-08-11 00:00:00+00:00
+2025-12-06 03:12:00,650 - __main__ - INFO - Progress: 90/215 (41.9%) | Rate: 128.6 tasks/sec | ETA: 1s
+2025-12-06 03:12:00,650 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-07-29
+2025-12-06 03:12:00,650 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-08-13 run=2025-08-12 00:00:00+00:00
+2025-12-06 03:12:00,650 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,651 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-07-31 00:00:00+00:00
+2025-12-06 03:12:00,651 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-08-01
+2025-12-06 03:12:00,651 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-08-14 run=2025-08-13 00:00:00+00:00
+2025-12-06 03:12:00,654 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,654 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-07-29 00:00:00+00:00
+2025-12-06 03:12:00,655 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-07-30
+2025-12-06 03:12:00,655 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-08-15 run=2025-08-14 00:00:00+00:00
+2025-12-06 03:12:00,656 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,656 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-08-01 00:00:00+00:00
+2025-12-06 03:12:00,656 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-08-02
+2025-12-06 03:12:00,656 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-08-16 run=2025-08-15 00:00:00+00:00
+2025-12-06 03:12:00,657 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,657 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-08-04 00:00:00+00:00
+2025-12-06 03:12:00,657 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-08-05
+2025-12-06 03:12:00,657 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-08-17 run=2025-08-16 00:00:00+00:00
+2025-12-06 03:12:00,663 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,663 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-08-03 00:00:00+00:00
+2025-12-06 03:12:00,663 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-08-04
+2025-12-06 03:12:00,663 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-08-18 run=2025-08-17 00:00:00+00:00
+2025-12-06 03:12:00,663 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,664 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-07-30 00:00:00+00:00
+2025-12-06 03:12:00,664 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-07-31
+2025-12-06 03:12:00,664 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-08-19 run=2025-08-18 00:00:00+00:00
+2025-12-06 03:12:00,682 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,682 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-08-05 00:00:00+00:00
+2025-12-06 03:12:00,682 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-08-06
+2025-12-06 03:12:00,682 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-08-20 run=2025-08-19 00:00:00+00:00
+2025-12-06 03:12:00,698 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,698 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-08-06 00:00:00+00:00
+2025-12-06 03:12:00,698 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-08-07
+2025-12-06 03:12:00,698 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-08-21 run=2025-08-20 00:00:00+00:00
+2025-12-06 03:12:00,717 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,717 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-08-07 00:00:00+00:00
+2025-12-06 03:12:00,717 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-08-08
+2025-12-06 03:12:00,717 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-08-22 run=2025-08-21 00:00:00+00:00
+2025-12-06 03:12:00,717 - __main__ - INFO - Progress: 100/215 (46.5%) | Rate: 130.4 tasks/sec | ETA: 1s
+2025-12-06 03:12:00,727 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,727 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-08-09 00:00:00+00:00
+2025-12-06 03:12:00,727 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-08-10
+2025-12-06 03:12:00,727 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-08-23 run=2025-08-22 00:00:00+00:00
+2025-12-06 03:12:00,729 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,729 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-08-08 00:00:00+00:00
+2025-12-06 03:12:00,729 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-08-09
+2025-12-06 03:12:00,729 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-08-24 run=2025-08-23 00:00:00+00:00
+2025-12-06 03:12:00,731 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,731 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-08-13 00:00:00+00:00
+2025-12-06 03:12:00,731 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-08-14
+2025-12-06 03:12:00,731 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-08-25 run=2025-08-24 00:00:00+00:00
+2025-12-06 03:12:00,732 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,733 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-08-12 00:00:00+00:00
+2025-12-06 03:12:00,733 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-08-13
+2025-12-06 03:12:00,733 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-08-26 run=2025-08-25 00:00:00+00:00
+2025-12-06 03:12:00,739 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,739 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-08-15 00:00:00+00:00
+2025-12-06 03:12:00,739 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-08-16
+2025-12-06 03:12:00,739 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-08-27 run=2025-08-26 00:00:00+00:00
+2025-12-06 03:12:00,741 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,741 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-08-10 00:00:00+00:00
+2025-12-06 03:12:00,741 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-08-11
+2025-12-06 03:12:00,741 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-08-28 run=2025-08-27 00:00:00+00:00
+2025-12-06 03:12:00,743 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,743 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-08-11 00:00:00+00:00
+2025-12-06 03:12:00,743 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-08-12
+2025-12-06 03:12:00,743 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-08-29 run=2025-08-28 00:00:00+00:00
+2025-12-06 03:12:00,745 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,746 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-08-16 00:00:00+00:00
+2025-12-06 03:12:00,746 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-08-17
+2025-12-06 03:12:00,746 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-08-30 run=2025-08-29 00:00:00+00:00
+2025-12-06 03:12:00,747 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,747 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-08-14 00:00:00+00:00
+2025-12-06 03:12:00,747 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-08-15
+2025-12-06 03:12:00,747 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-08-31 run=2025-08-30 00:00:00+00:00
+2025-12-06 03:12:00,750 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,750 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-08-17 00:00:00+00:00
+2025-12-06 03:12:00,750 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-08-18
+2025-12-06 03:12:00,750 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-09-01 run=2025-08-31 00:00:00+00:00
+2025-12-06 03:12:00,751 - __main__ - INFO - Progress: 110/215 (51.2%) | Rate: 137.4 tasks/sec | ETA: 1s
+2025-12-06 03:12:00,752 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,752 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-08-18 00:00:00+00:00
+2025-12-06 03:12:00,752 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-08-19
+2025-12-06 03:12:00,752 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-09-02 run=2025-09-01 00:00:00+00:00
+2025-12-06 03:12:00,772 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,772 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-08-19 00:00:00+00:00
+2025-12-06 03:12:00,772 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-08-20
+2025-12-06 03:12:00,772 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-09-03 run=2025-09-02 00:00:00+00:00
+2025-12-06 03:12:00,780 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,781 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-08-20 00:00:00+00:00
+2025-12-06 03:12:00,781 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-08-21
+2025-12-06 03:12:00,781 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-09-04 run=2025-09-03 00:00:00+00:00
+2025-12-06 03:12:00,821 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,821 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-08-21 00:00:00+00:00
+2025-12-06 03:12:00,821 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-08-22
+2025-12-06 03:12:00,821 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-09-05 run=2025-09-04 00:00:00+00:00
+2025-12-06 03:12:00,826 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,826 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-08-22 00:00:00+00:00
+2025-12-06 03:12:00,826 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-08-23
+2025-12-06 03:12:00,826 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-09-06 run=2025-09-05 00:00:00+00:00
+2025-12-06 03:12:00,828 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,828 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-08-23 00:00:00+00:00
+2025-12-06 03:12:00,828 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-08-24
+2025-12-06 03:12:00,828 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-09-07 run=2025-09-06 00:00:00+00:00
+2025-12-06 03:12:00,831 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,831 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-08-24 00:00:00+00:00
+2025-12-06 03:12:00,831 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-08-25
+2025-12-06 03:12:00,831 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-09-08 run=2025-09-07 00:00:00+00:00
+2025-12-06 03:12:00,837 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,838 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-08-25 00:00:00+00:00
+2025-12-06 03:12:00,838 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-08-26
+2025-12-06 03:12:00,838 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-09-09 run=2025-09-08 00:00:00+00:00
+2025-12-06 03:12:00,841 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,841 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,842 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-08-30 00:00:00+00:00
+2025-12-06 03:12:00,842 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-08-27 00:00:00+00:00
+2025-12-06 03:12:00,842 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-08-31
+2025-12-06 03:12:00,842 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-09-10 run=2025-09-09 00:00:00+00:00
+2025-12-06 03:12:00,842 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-08-28
+2025-12-06 03:12:00,842 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-09-11 run=2025-09-10 00:00:00+00:00
+2025-12-06 03:12:00,842 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,842 - __main__ - INFO - Progress: 120/215 (55.8%) | Rate: 134.5 tasks/sec | ETA: 1s
+2025-12-06 03:12:00,843 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-08-29 00:00:00+00:00
+2025-12-06 03:12:00,843 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-08-30
+2025-12-06 03:12:00,844 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-09-12 run=2025-09-11 00:00:00+00:00
+2025-12-06 03:12:00,844 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,844 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-08-31 00:00:00+00:00
+2025-12-06 03:12:00,844 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-09-01
+2025-12-06 03:12:00,844 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-09-13 run=2025-09-12 00:00:00+00:00
+2025-12-06 03:12:00,848 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,848 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-09-01 00:00:00+00:00
+2025-12-06 03:12:00,848 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-09-02
+2025-12-06 03:12:00,848 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-09-14 run=2025-09-13 00:00:00+00:00
+2025-12-06 03:12:00,850 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,850 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-08-26 00:00:00+00:00
+2025-12-06 03:12:00,850 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-08-27
+2025-12-06 03:12:00,850 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-09-15 run=2025-09-14 00:00:00+00:00
+2025-12-06 03:12:00,867 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,867 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-09-02 00:00:00+00:00
+2025-12-06 03:12:00,867 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-09-03
+2025-12-06 03:12:00,867 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-09-16 run=2025-09-15 00:00:00+00:00
+2025-12-06 03:12:00,878 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,878 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-08-28 00:00:00+00:00
+2025-12-06 03:12:00,878 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-08-29
+2025-12-06 03:12:00,878 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-09-17 run=2025-09-16 00:00:00+00:00
+2025-12-06 03:12:00,889 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,889 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-09-03 00:00:00+00:00
+2025-12-06 03:12:00,889 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-09-04
+2025-12-06 03:12:00,889 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-09-18 run=2025-09-17 00:00:00+00:00
+2025-12-06 03:12:00,912 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,912 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-09-06 00:00:00+00:00
+2025-12-06 03:12:00,912 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-09-07
+2025-12-06 03:12:00,912 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-09-19 run=2025-09-18 00:00:00+00:00
+2025-12-06 03:12:00,913 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,913 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-09-07 00:00:00+00:00
+2025-12-06 03:12:00,914 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-09-08
+2025-12-06 03:12:00,914 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-09-20 run=2025-09-19 00:00:00+00:00
+2025-12-06 03:12:00,916 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,916 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-09-05 00:00:00+00:00
+2025-12-06 03:12:00,917 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-09-06
+2025-12-06 03:12:00,917 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-09-21 run=2025-09-20 00:00:00+00:00
+2025-12-06 03:12:00,917 - __main__ - INFO - Progress: 130/215 (60.5%) | Rate: 134.5 tasks/sec | ETA: 1s
+2025-12-06 03:12:00,919 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,919 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-09-04 00:00:00+00:00
+2025-12-06 03:12:00,919 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-09-05
+2025-12-06 03:12:00,919 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-09-22 run=2025-09-21 00:00:00+00:00
+2025-12-06 03:12:00,926 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,926 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-09-08 00:00:00+00:00
+2025-12-06 03:12:00,926 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-09-09
+2025-12-06 03:12:00,926 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-09-23 run=2025-09-22 00:00:00+00:00
+2025-12-06 03:12:00,927 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,927 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-09-11 00:00:00+00:00
+2025-12-06 03:12:00,927 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-09-12
+2025-12-06 03:12:00,927 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-09-24 run=2025-09-23 00:00:00+00:00
+2025-12-06 03:12:00,928 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,928 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-09-10 00:00:00+00:00
+2025-12-06 03:12:00,928 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-09-11
+2025-12-06 03:12:00,928 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-09-25 run=2025-09-24 00:00:00+00:00
+2025-12-06 03:12:00,929 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,929 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-09-12 00:00:00+00:00
+2025-12-06 03:12:00,929 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-09-13
+2025-12-06 03:12:00,929 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-09-26 run=2025-09-25 00:00:00+00:00
+2025-12-06 03:12:00,932 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,932 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,932 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-09-14 00:00:00+00:00
+2025-12-06 03:12:00,932 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-09-09 00:00:00+00:00
+2025-12-06 03:12:00,932 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-09-15
+2025-12-06 03:12:00,932 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-09-27 run=2025-09-26 00:00:00+00:00
+2025-12-06 03:12:00,932 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-09-10
+2025-12-06 03:12:00,932 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-09-28 run=2025-09-27 00:00:00+00:00
+2025-12-06 03:12:00,939 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,939 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-09-13 00:00:00+00:00
+2025-12-06 03:12:00,939 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-09-14
+2025-12-06 03:12:00,939 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-09-29 run=2025-09-28 00:00:00+00:00
+2025-12-06 03:12:00,961 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,961 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-09-16 00:00:00+00:00
+2025-12-06 03:12:00,961 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-09-17
+2025-12-06 03:12:00,962 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-09-30 run=2025-09-29 00:00:00+00:00
+2025-12-06 03:12:00,964 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,964 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-09-15 00:00:00+00:00
+2025-12-06 03:12:00,965 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-09-16
+2025-12-06 03:12:00,965 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-10-01 run=2025-09-30 00:00:00+00:00
+2025-12-06 03:12:00,965 - __main__ - INFO - Progress: 140/215 (65.1%) | Rate: 138.0 tasks/sec | ETA: 1s
+2025-12-06 03:12:00,984 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,984 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-09-17 00:00:00+00:00
+2025-12-06 03:12:00,984 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-09-18
+2025-12-06 03:12:00,984 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-10-02 run=2025-10-01 00:00:00+00:00
+2025-12-06 03:12:00,992 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,992 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-09-19 00:00:00+00:00
+2025-12-06 03:12:00,992 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-09-20
+2025-12-06 03:12:00,992 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-10-03 run=2025-10-02 00:00:00+00:00
+2025-12-06 03:12:00,996 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:00,996 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-09-18 00:00:00+00:00
+2025-12-06 03:12:00,996 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-09-19
+2025-12-06 03:12:00,996 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-10-04 run=2025-10-03 00:00:00+00:00
+2025-12-06 03:12:01,000 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,000 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-09-20 00:00:00+00:00
+2025-12-06 03:12:01,000 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-09-21
+2025-12-06 03:12:01,000 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-10-05 run=2025-10-04 00:00:00+00:00
+2025-12-06 03:12:01,003 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,003 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-09-22 00:00:00+00:00
+2025-12-06 03:12:01,003 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-09-23
+2025-12-06 03:12:01,003 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-10-06 run=2025-10-05 00:00:00+00:00
+2025-12-06 03:12:01,006 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,006 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-09-21 00:00:00+00:00
+2025-12-06 03:12:01,006 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-09-22
+2025-12-06 03:12:01,006 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-10-07 run=2025-10-06 00:00:00+00:00
+2025-12-06 03:12:01,013 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,013 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-09-24 00:00:00+00:00
+2025-12-06 03:12:01,013 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-09-25
+2025-12-06 03:12:01,013 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-10-08 run=2025-10-07 00:00:00+00:00
+2025-12-06 03:12:01,015 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,015 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-09-25 00:00:00+00:00
+2025-12-06 03:12:01,015 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-09-26
+2025-12-06 03:12:01,015 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-10-09 run=2025-10-08 00:00:00+00:00
+2025-12-06 03:12:01,016 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,016 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-09-23 00:00:00+00:00
+2025-12-06 03:12:01,016 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-09-24
+2025-12-06 03:12:01,016 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-10-10 run=2025-10-09 00:00:00+00:00
+2025-12-06 03:12:01,017 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,017 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-09-27 00:00:00+00:00
+2025-12-06 03:12:01,017 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-09-28
+2025-12-06 03:12:01,017 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-10-11 run=2025-10-10 00:00:00+00:00
+2025-12-06 03:12:01,017 - __main__ - INFO - Progress: 150/215 (69.8%) | Rate: 140.6 tasks/sec | ETA: 0s
+2025-12-06 03:12:01,020 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,020 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-09-26 00:00:00+00:00
+2025-12-06 03:12:01,020 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-09-27
+2025-12-06 03:12:01,020 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-10-12 run=2025-10-11 00:00:00+00:00
+2025-12-06 03:12:01,028 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,028 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-09-28 00:00:00+00:00
+2025-12-06 03:12:01,028 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-09-29
+2025-12-06 03:12:01,028 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-10-13 run=2025-10-12 00:00:00+00:00
+2025-12-06 03:12:01,049 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,049 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-09-29 00:00:00+00:00
+2025-12-06 03:12:01,049 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-09-30
+2025-12-06 03:12:01,050 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-10-14 run=2025-10-13 00:00:00+00:00
+2025-12-06 03:12:01,058 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,058 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-09-30 00:00:00+00:00
+2025-12-06 03:12:01,058 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-10-01
+2025-12-06 03:12:01,059 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-10-15 run=2025-10-14 00:00:00+00:00
+2025-12-06 03:12:01,069 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,070 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-10-01 00:00:00+00:00
+2025-12-06 03:12:01,070 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-10-02
+2025-12-06 03:12:01,070 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-10-16 run=2025-10-15 00:00:00+00:00
+2025-12-06 03:12:01,082 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,082 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-10-04 00:00:00+00:00
+2025-12-06 03:12:01,082 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-10-05
+2025-12-06 03:12:01,083 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-10-17 run=2025-10-16 00:00:00+00:00
+2025-12-06 03:12:01,083 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,083 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-10-03 00:00:00+00:00
+2025-12-06 03:12:01,083 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-10-04
+2025-12-06 03:12:01,083 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-10-18 run=2025-10-17 00:00:00+00:00
+2025-12-06 03:12:01,086 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,086 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-10-02 00:00:00+00:00
+2025-12-06 03:12:01,086 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-10-03
+2025-12-06 03:12:01,087 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-10-19 run=2025-10-18 00:00:00+00:00
+2025-12-06 03:12:01,090 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,090 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-10-05 00:00:00+00:00
+2025-12-06 03:12:01,090 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-10-06
+2025-12-06 03:12:01,090 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-10-20 run=2025-10-19 00:00:00+00:00
+2025-12-06 03:12:01,097 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,097 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-10-06 00:00:00+00:00
+2025-12-06 03:12:01,097 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-10-07
+2025-12-06 03:12:01,097 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-10-21 run=2025-10-20 00:00:00+00:00
+2025-12-06 03:12:01,097 - __main__ - INFO - Progress: 160/215 (74.4%) | Rate: 139.5 tasks/sec | ETA: 0s
+2025-12-06 03:12:01,101 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,101 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-10-11 00:00:00+00:00
+2025-12-06 03:12:01,101 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-10-12
+2025-12-06 03:12:01,101 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-10-22 run=2025-10-21 00:00:00+00:00
+2025-12-06 03:12:01,102 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,102 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-10-09 00:00:00+00:00
+2025-12-06 03:12:01,102 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-10-10
+2025-12-06 03:12:01,102 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-10-23 run=2025-10-22 00:00:00+00:00
+2025-12-06 03:12:01,103 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,103 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-10-08 00:00:00+00:00
+2025-12-06 03:12:01,103 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-10-09
+2025-12-06 03:12:01,103 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-10-24 run=2025-10-23 00:00:00+00:00
+2025-12-06 03:12:01,106 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,106 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-10-07 00:00:00+00:00
+2025-12-06 03:12:01,106 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-10-08
+2025-12-06 03:12:01,106 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-10-25 run=2025-10-24 00:00:00+00:00
+2025-12-06 03:12:01,113 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,113 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-10-10 00:00:00+00:00
+2025-12-06 03:12:01,113 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-10-11
+2025-12-06 03:12:01,113 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-10-26 run=2025-10-25 00:00:00+00:00
+2025-12-06 03:12:01,115 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,115 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-10-12 00:00:00+00:00
+2025-12-06 03:12:01,115 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-10-13
+2025-12-06 03:12:01,115 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-10-27 run=2025-10-26 00:00:00+00:00
+2025-12-06 03:12:01,137 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,137 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-10-13 00:00:00+00:00
+2025-12-06 03:12:01,138 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-10-14
+2025-12-06 03:12:01,138 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-10-28 run=2025-10-27 00:00:00+00:00
+2025-12-06 03:12:01,150 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,151 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-10-14 00:00:00+00:00
+2025-12-06 03:12:01,151 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-10-15
+2025-12-06 03:12:01,151 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-10-29 run=2025-10-28 00:00:00+00:00
+2025-12-06 03:12:01,152 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,152 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-10-15 00:00:00+00:00
+2025-12-06 03:12:01,152 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-10-16
+2025-12-06 03:12:01,152 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-10-30 run=2025-10-29 00:00:00+00:00
+2025-12-06 03:12:01,164 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,164 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-10-17 00:00:00+00:00
+2025-12-06 03:12:01,164 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-10-18
+2025-12-06 03:12:01,164 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,164 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-10-31 run=2025-10-30 00:00:00+00:00
+2025-12-06 03:12:01,164 - __main__ - INFO - Progress: 170/215 (79.1%) | Rate: 140.0 tasks/sec | ETA: 0s
+2025-12-06 03:12:01,164 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-10-16 00:00:00+00:00
+2025-12-06 03:12:01,165 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-10-17
+2025-12-06 03:12:01,165 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-11-01 run=2025-10-31 00:00:00+00:00
+2025-12-06 03:12:01,169 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,170 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-10-18 00:00:00+00:00
+2025-12-06 03:12:01,170 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-10-19
+2025-12-06 03:12:01,170 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-11-02 run=2025-11-01 00:00:00+00:00
+2025-12-06 03:12:01,172 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,173 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-10-19 00:00:00+00:00
+2025-12-06 03:12:01,173 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-10-20
+2025-12-06 03:12:01,173 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-11-03 run=2025-11-02 00:00:00+00:00
+2025-12-06 03:12:01,177 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,177 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-10-20 00:00:00+00:00
+2025-12-06 03:12:01,177 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-10-21
+2025-12-06 03:12:01,177 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-11-04 run=2025-11-03 00:00:00+00:00
+2025-12-06 03:12:01,180 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,180 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-10-21 00:00:00+00:00
+2025-12-06 03:12:01,180 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-10-22
+2025-12-06 03:12:01,180 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-11-05 run=2025-11-04 00:00:00+00:00
+2025-12-06 03:12:01,182 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,182 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-10-23 00:00:00+00:00
+2025-12-06 03:12:01,182 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-10-24
+2025-12-06 03:12:01,182 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-11-06 run=2025-11-05 00:00:00+00:00
+2025-12-06 03:12:01,182 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,183 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-10-22 00:00:00+00:00
+2025-12-06 03:12:01,183 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-10-23
+2025-12-06 03:12:01,183 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-11-07 run=2025-11-06 00:00:00+00:00
+2025-12-06 03:12:01,193 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,193 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-10-24 00:00:00+00:00
+2025-12-06 03:12:01,193 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-10-25
+2025-12-06 03:12:01,194 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-11-08 run=2025-11-07 00:00:00+00:00
+2025-12-06 03:12:01,197 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,197 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-10-26 00:00:00+00:00
+2025-12-06 03:12:01,197 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-10-27
+2025-12-06 03:12:01,198 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-11-09 run=2025-11-08 00:00:00+00:00
+2025-12-06 03:12:01,202 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,202 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-10-25 00:00:00+00:00
+2025-12-06 03:12:01,202 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-10-26
+2025-12-06 03:12:01,202 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-11-10 run=2025-11-09 00:00:00+00:00
+2025-12-06 03:12:01,202 - __main__ - INFO - Progress: 180/215 (83.7%) | Rate: 143.8 tasks/sec | ETA: 0s
+2025-12-06 03:12:01,216 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,216 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-10-27 00:00:00+00:00
+2025-12-06 03:12:01,216 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-10-28
+2025-12-06 03:12:01,216 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-11-11 run=2025-11-10 00:00:00+00:00
+2025-12-06 03:12:01,239 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,239 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-10-29 00:00:00+00:00
+2025-12-06 03:12:01,239 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-10-30
+2025-12-06 03:12:01,239 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-11-12 run=2025-11-11 00:00:00+00:00
+2025-12-06 03:12:01,241 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,241 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-10-28 00:00:00+00:00
+2025-12-06 03:12:01,241 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-10-29
+2025-12-06 03:12:01,241 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-11-13 run=2025-11-12 00:00:00+00:00
+2025-12-06 03:12:01,244 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,244 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-10-30 00:00:00+00:00
+2025-12-06 03:12:01,244 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-10-31
+2025-12-06 03:12:01,244 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-11-14 run=2025-11-13 00:00:00+00:00
+2025-12-06 03:12:01,257 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,257 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-11-02 00:00:00+00:00
+2025-12-06 03:12:01,257 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-11-03
+2025-12-06 03:12:01,257 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-11-15 run=2025-11-14 00:00:00+00:00
+2025-12-06 03:12:01,258 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,258 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-10-31 00:00:00+00:00
+2025-12-06 03:12:01,258 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-11-01
+2025-12-06 03:12:01,258 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-11-16 run=2025-11-15 00:00:00+00:00
+2025-12-06 03:12:01,259 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,259 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-11-01 00:00:00+00:00
+2025-12-06 03:12:01,259 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-11-02
+2025-12-06 03:12:01,259 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-11-17 run=2025-11-16 00:00:00+00:00
+2025-12-06 03:12:01,260 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,260 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-11-05 00:00:00+00:00
+2025-12-06 03:12:01,261 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-11-06
+2025-12-06 03:12:01,261 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-11-18 run=2025-11-17 00:00:00+00:00
+2025-12-06 03:12:01,262 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,262 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-11-03 00:00:00+00:00
+2025-12-06 03:12:01,262 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-11-04
+2025-12-06 03:12:01,262 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-11-19 run=2025-11-18 00:00:00+00:00
+2025-12-06 03:12:01,267 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,267 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-11-04 00:00:00+00:00
+2025-12-06 03:12:01,267 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-11-05
+2025-12-06 03:12:01,267 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-11-20 run=2025-11-19 00:00:00+00:00
+2025-12-06 03:12:01,267 - __main__ - INFO - Progress: 190/215 (88.4%) | Rate: 144.2 tasks/sec | ETA: 0s
+2025-12-06 03:12:01,270 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,270 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-11-06 00:00:00+00:00
+2025-12-06 03:12:01,270 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-11-07
+2025-12-06 03:12:01,270 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-11-21 run=2025-11-20 00:00:00+00:00
+2025-12-06 03:12:01,276 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,277 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-11-07 00:00:00+00:00
+2025-12-06 03:12:01,277 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-11-08
+2025-12-06 03:12:01,277 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-11-22 run=2025-11-21 00:00:00+00:00
+2025-12-06 03:12:01,286 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,286 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-11-09 00:00:00+00:00
+2025-12-06 03:12:01,286 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-11-10
+2025-12-06 03:12:01,286 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-11-23 run=2025-11-22 00:00:00+00:00
+2025-12-06 03:12:01,297 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,297 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-11-08 00:00:00+00:00
+2025-12-06 03:12:01,297 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-11-09
+2025-12-06 03:12:01,297 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-11-24 run=2025-11-23 00:00:00+00:00
+2025-12-06 03:12:01,303 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,303 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-11-10 00:00:00+00:00
+2025-12-06 03:12:01,303 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-11-11
+2025-12-06 03:12:01,303 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-11-25 run=2025-11-24 00:00:00+00:00
+2025-12-06 03:12:01,323 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,323 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-11-12 00:00:00+00:00
+2025-12-06 03:12:01,323 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-11-13
+2025-12-06 03:12:01,323 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-11-26 run=2025-11-25 00:00:00+00:00
+2025-12-06 03:12:01,324 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,324 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-11-13 00:00:00+00:00
+2025-12-06 03:12:01,324 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-11-14
+2025-12-06 03:12:01,324 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-11-27 run=2025-11-26 00:00:00+00:00
+2025-12-06 03:12:01,342 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,342 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-11-15 00:00:00+00:00
+2025-12-06 03:12:01,343 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-11-16
+2025-12-06 03:12:01,343 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-11-28 run=2025-11-27 00:00:00+00:00
+2025-12-06 03:12:01,347 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,347 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-11-18 00:00:00+00:00
+2025-12-06 03:12:01,347 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-11-19
+2025-12-06 03:12:01,348 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-11-29 run=2025-11-28 00:00:00+00:00
+2025-12-06 03:12:01,352 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,353 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-11-16 00:00:00+00:00
+2025-12-06 03:12:01,353 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-11-17
+2025-12-06 03:12:01,353 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-11-30 run=2025-11-29 00:00:00+00:00
+2025-12-06 03:12:01,353 - __main__ - INFO - Progress: 200/215 (93.0%) | Rate: 142.6 tasks/sec | ETA: 0s
+2025-12-06 03:12:01,356 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,356 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-11-17 00:00:00+00:00
+2025-12-06 03:12:01,356 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-11-18
+2025-12-06 03:12:01,356 - src.weather_more_apis.ingest - INFO - Ingesting NDFD for austin 2025-12-01 run=2025-11-30 00:00:00+00:00
+2025-12-06 03:12:01,360 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,360 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-11-14 00:00:00+00:00
+2025-12-06 03:12:01,360 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-11-15
+2025-12-06 03:12:01,361 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,361 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-11-20 00:00:00+00:00
+2025-12-06 03:12:01,361 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-11-21
+2025-12-06 03:12:01,362 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,362 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-11-22 00:00:00+00:00
+2025-12-06 03:12:01,362 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-11-23
+2025-12-06 03:12:01,364 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,364 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-11-19 00:00:00+00:00
+2025-12-06 03:12:01,364 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-11-20
+2025-12-06 03:12:01,367 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,367 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-11-21 00:00:00+00:00
+2025-12-06 03:12:01,367 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-11-22
+2025-12-06 03:12:01,380 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,380 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-11-23 00:00:00+00:00
+2025-12-06 03:12:01,380 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-11-24
+2025-12-06 03:12:01,389 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,389 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-11-24 00:00:00+00:00
+2025-12-06 03:12:01,389 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-11-25
+2025-12-06 03:12:01,403 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,403 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-11-11 00:00:00+00:00
+2025-12-06 03:12:01,403 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-11-12
+2025-12-06 03:12:01,407 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,407 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-11-26 00:00:00+00:00
+2025-12-06 03:12:01,407 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-11-27
+2025-12-06 03:12:01,407 - __main__ - INFO - Progress: 210/215 (97.7%) | Rate: 144.1 tasks/sec | ETA: 0s
+2025-12-06 03:12:01,420 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,420 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-11-25 00:00:00+00:00
+2025-12-06 03:12:01,420 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-11-26
+2025-12-06 03:12:01,427 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,427 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-11-28 00:00:00+00:00
+2025-12-06 03:12:01,427 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-11-29
+2025-12-06 03:12:01,428 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,428 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-11-27 00:00:00+00:00
+2025-12-06 03:12:01,428 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-11-28
+2025-12-06 03:12:01,434 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,434 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-11-30 00:00:00+00:00
+2025-12-06 03:12:01,434 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-12-01
+2025-12-06 03:12:01,441 - src.weather_more_apis.ingest - WARNING - Failed to download https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2: 404 Client Error: Not Found for url: https://noaa-ndfd-pds.s3.amazonaws.com/NDFD_conus_T00Z/NDFD_conus_T00Z.grib2
+2025-12-06 03:12:01,441 - src.weather_more_apis.ingest - WARNING - Missing NDFD GRIB for cycle 2025-11-29 00:00:00+00:00
+2025-12-06 03:12:01,441 - src.weather_more_apis.ingest - WARNING - Failed to extract temperature for ndfd austin 2025-11-30
+2025-12-06 03:12:01,441 - __main__ - INFO - Progress: 215/215 (100.0%) | Rate: 144.2 tasks/sec | ETA: 0s
+2025-12-06 03:12:01,442 - __main__ - INFO - 
+2025-12-06 03:12:01,442 - __main__ - INFO - ================================================================================
+2025-12-06 03:12:01,442 - __main__ - INFO - INGESTION COMPLETE
+2025-12-06 03:12:01,442 - __main__ - INFO - ================================================================================
+2025-12-06 03:12:01,442 - __main__ - INFO - Total time: 0.0 minutes (1 seconds)
+2025-12-06 03:12:01,442 - __main__ - INFO - Successful: 0
+2025-12-06 03:12:01,442 - __main__ - INFO - Failed: 215
+2025-12-06 03:12:01,442 - __main__ - INFO - Success rate: 0.0%
+2025-12-06 03:12:01,442 - __main__ - INFO - Throughput: 0.00 tasks/second
+2025-12-06 03:12:01,442 - __main__ - WARNING - Failed (215):
+2025-12-06 03:12:01,442 - __main__ - WARNING -   2025-05-06 ndfd: Unknown
+2025-12-06 03:12:01,442 - __main__ - WARNING -   2025-05-10 ndfd: Unknown
+2025-12-06 03:12:01,442 - __main__ - WARNING -   2025-05-12 ndfd: Unknown
+2025-12-06 03:12:01,442 - __main__ - WARNING -   2025-05-13 ndfd: Unknown
+2025-12-06 03:12:01,442 - __main__ - WARNING -   2025-05-14 ndfd: Unknown
+2025-12-06 03:12:01,442 - __main__ - WARNING -   2025-05-07 ndfd: Unknown
+2025-12-06 03:12:01,442 - __main__ - WARNING -   2025-05-09 ndfd: Unknown
+2025-12-06 03:12:01,442 - __main__ - WARNING -   2025-05-04 ndfd: Unknown
+2025-12-06 03:12:01,442 - __main__ - WARNING -   2025-05-05 ndfd: Unknown
+2025-12-06 03:12:01,442 - __main__ - WARNING -   2025-05-02 ndfd: Unknown
+2025-12-06 03:12:01,442 - __main__ - WARNING -   ... +205 more
+2025-12-06 03:12:01,442 - __main__ - INFO - Log: /home/halsted/Documents/python/weather_updated/logs/noaa_guidance_fast_20251206_031159.log
