@@ -477,12 +477,29 @@ def _process_chunk_worker(args: tuple) -> List[dict]:
     return process_day_chunk(city, days, raw_data_dir, candles_dir, snapshot_interval_min, obs_t15_stats)
 
 
-def _chunk_days(days: List[date], n_chunks: int) -> List[List[date]]:
-    """Split a list of days into roughly equal chunks."""
-    if n_chunks < 1:
-        return [days]
-    chunk_size = max(1, math.ceil(len(days) / n_chunks))
-    return [days[i:i + chunk_size] for i in range(0, len(days), chunk_size)]
+def _init_pool_globals():
+    """Initializer to bind already-loaded globals inside forked workers.
+
+    Note: relies on fork copy-on-write; do not use with spawn.
+    """
+    global _G_RAW_DATA, _G_GROUPED, _G_OBS_T15_STATS, _G_CITY, _G_SNAPSHOT_INTERVAL
+    _G_RAW_DATA = _PARENT_RAW_DATA
+    _G_GROUPED = _PARENT_GROUPED
+    _G_OBS_T15_STATS = _PARENT_OBS_T15_STATS
+    _G_CITY = _PARENT_CITY
+    _G_SNAPSHOT_INTERVAL = _PARENT_SNAPSHOT_INTERVAL
+
+
+def _process_single_day_worker(event_date: date) -> List[dict]:
+    """Process a single day using globals initialized in the pool."""
+    return build_day_snapshots(
+        _G_CITY,
+        event_date,
+        _G_RAW_DATA,
+        _G_GROUPED,
+        _G_SNAPSHOT_INTERVAL,
+        _G_OBS_T15_STATS,
+    )
 
 
 def build_dataset_parallel(
@@ -490,35 +507,46 @@ def build_dataset_parallel(
     days: List[date],
     desc: str,
     n_workers: int,
-    raw_data_dir: Path,
-    candles_dir: Path,
+    raw_data: RawData,
+    grouped: Dict[str, Any],
     snapshot_interval_min: int,
     obs_t15_stats: Dict[date, tuple[Optional[float], Optional[float]]],
 ) -> pd.DataFrame:
-    """Build dataset in parallel using per-chunk workers (robust to pickling)."""
+    """Build dataset in parallel by forking after data is loaded (copy-on-write)."""
     import multiprocessing as mp
 
     if n_workers <= 1:
         raise ValueError("Parallel build requested with <=1 worker")
 
-    start_method = "fork" if "fork" in mp.get_all_start_methods() else "spawn"
-    ctx = mp.get_context(start_method)
-    day_chunks = _chunk_days(days, n_workers)
+    # Prefer fork to avoid re-reading massive parquets; fall back to sequential if unavailable.
+    if "fork" not in mp.get_all_start_methods():
+        logger.warning("Fork start method not available; falling back to sequential to avoid huge copies.")
+        return None  # Signal caller to fall back
+
+    ctx = mp.get_context("fork")
+
+    # Stash parent copies for forked children (no pickling required)
+    global _PARENT_RAW_DATA, _PARENT_GROUPED, _PARENT_OBS_T15_STATS, _PARENT_CITY, _PARENT_SNAPSHOT_INTERVAL
+    _PARENT_RAW_DATA = raw_data
+    _PARENT_GROUPED = grouped
+    _PARENT_OBS_T15_STATS = obs_t15_stats
+    _PARENT_CITY = city
+    _PARENT_SNAPSHOT_INTERVAL = snapshot_interval_min
 
     logger.info(
-        f"Building {desc} ({len(days)} days) with {n_workers} workers via {start_method} "
-        f"({len(day_chunks)} chunks)"
+        f"Building {desc} ({len(days)} days) with {n_workers} workers via fork (copy-on-write memory)."
     )
 
-    work_items = [
-        (city, chunk, raw_data_dir, candles_dir, snapshot_interval_min, obs_t15_stats)
-        for chunk in day_chunks
-    ]
+    with ctx.Pool(
+        processes=n_workers,
+        initializer=_init_pool_globals,
+        initargs=(),
+    ) as pool:
+        results = list(tqdm(pool.imap_unordered(_process_single_day_worker, days), total=len(days), desc=desc))
 
     all_rows: List[dict] = []
-    with ctx.Pool(processes=n_workers) as pool:
-        for chunk_rows in tqdm(pool.imap_unordered(_process_chunk_worker, work_items), total=len(work_items), desc=desc):
-            all_rows.extend(chunk_rows)
+    for day_rows in results:
+        all_rows.extend(day_rows)
 
     return pd.DataFrame(all_rows)
 
@@ -730,7 +758,7 @@ def main():
         return pd.DataFrame(all_rows)
 
     # Build FULL dataset (ALL days)
-    # Parallel uses chunked workers with top-level functions to avoid pickle issues
+    # Parallel forks after loading data to keep memory bounded (copy-on-write)
     logger.info("\n--- Building full dataset ---")
     if args.workers and args.workers > 1:
         try:
@@ -739,11 +767,14 @@ def main():
                 days=all_days,
                 desc="All days",
                 n_workers=args.workers,
-                raw_data_dir=raw_data_dir,
-                candles_dir=candles_dir,
+                raw_data=raw_data,
+                grouped=grouped,
                 snapshot_interval_min=args.snapshot_interval,
                 obs_t15_stats=obs_t15_stats,
             )
+            if df_new is None:
+                # Parallel declined (e.g., fork not available); fall back
+                df_new = build_dataset_sequential(all_days, "All days")
         except Exception as e:
             logger.warning(f"Parallel build failed ({e}); falling back to sequential.")
             df_new = build_dataset_sequential(all_days, "All days")
