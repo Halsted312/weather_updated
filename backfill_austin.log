@@ -1,0 +1,24 @@
+2025-12-05 23:14:44,925 - __main__ - INFO - Starting full historical backfill for Austin
+2025-12-05 23:14:44,925 - __main__ - INFO - Date range: 2022-12-23 to 2025-12-05
+2025-12-05 23:14:44,925 - __main__ - INFO - Total days: 1079
+2025-12-05 23:14:44,932 - src.db.connection - INFO - Database engine created: localhost:5434/kalshi_weather
+2025-12-05 23:14:44,932 - __main__ - INFO - Starting backfill for austin
+2025-12-05 23:14:44,932 - __main__ - INFO - Date range: 2022-12-23 to 2025-12-05
+2025-12-05 23:14:44,932 - __main__ - INFO - Timezone: America/Chicago
+2025-12-05 23:14:44,932 - __main__ - INFO - City query: Austin,TX
+2025-12-05 23:14:44,945 - __main__ - INFO - Using vc_location_id: 6
+2025-12-05 23:14:44,945 - __main__ - INFO - Requesting VC historical forecast: 2022-12-23 (basis=2022-12-22)
+2025-12-05 23:14:45,421 - __main__ - INFO - [1/1079] Event 2022-12-23 basis 2022-12-22: 96 rows
+Traceback (most recent call last):
+  File "/home/halsted/Documents/python/weather_updated/scripts/backfill_vc_historical_forecast_minutes_austin.py", line 354, in <module>
+    main()
+  File "/home/halsted/Documents/python/weather_updated/scripts/backfill_vc_historical_forecast_minutes_austin.py", line 350, in main
+    backfill_austin_historical_forecast_minutes(session, start_event_date, end_event_date)
+  File "/home/halsted/Documents/python/weather_updated/scripts/backfill_vc_historical_forecast_minutes_austin.py", line 332, in backfill_austin_historical_forecast_minutes
+    upsert_vc_minute_weather(session, rows)
+  File "/home/halsted/Documents/python/weather_updated/scripts/backfill_vc_historical_forecast_minutes_austin.py", line 259, in upsert_vc_minute_weather
+    with session.begin():
+         ^^^^^^^^^^^^^^^
+  File "/home/halsted/anaconda3/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1939, in begin
+    raise sa_exc.InvalidRequestError(
+sqlalchemy.exc.InvalidRequestError: A transaction is already begun on this Session.

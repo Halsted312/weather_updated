@@ -81,10 +81,16 @@ data/file_inventory.json
 data/raw/
 data/results/
 data/cache/
-
+*.parquet
+*.csv
+*.pkl
+*.pickle
+*.h5
+*.hdf5
 
 # Logs
-
+*.log
+logs/
 
 # Reports and analysis outputs
 reports/
@@ -100,7 +106,12 @@ run_dense_overnight.sh
 alembic/versions/__pycache__/
 
 # Models and ML artifacts
-
+catboost_info/
+optuna_studies/
+*.joblib
+*.onnx
+*.pt
+*.pth
 
 # macOS
 .DS_Store
@@ -128,3 +139,6 @@ migrations/env.py
 
 # Docker local overrides (docker-compose.yml is tracked)
 docker-compose.override.yml
+
+# Trash
+.Trash-*/
