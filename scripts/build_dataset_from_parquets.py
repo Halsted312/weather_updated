@@ -48,6 +48,7 @@ Workflow:
 
 import argparse
 import logging
+import math
 import sys
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import dataclass
@@ -447,7 +448,7 @@ def process_day_chunk(
         obs_t15_stats: Pre-computed obs_t15 stats dict (computed per-chunk if not provided)
     """
     # Load raw data (each worker loads its own copy)
-    raw_data = load_raw_data(city, raw_data_dir, candles_dir)
+    raw_data, grouped = load_raw_data(city, raw_data_dir, candles_dir)
 
     # If no pre-computed stats, compute them for this chunk's days
     # (still more efficient than per-day computation)
@@ -456,7 +457,14 @@ def process_day_chunk(
 
     all_rows = []
     for event_date in days:
-        rows = build_day_snapshots(city, event_date, raw_data, snapshot_interval_min, obs_t15_stats)
+        rows = build_day_snapshots(
+            city,
+            event_date,
+            raw_data,
+            grouped,
+            snapshot_interval_min,
+            obs_t15_stats,
+        )
         all_rows.extend(rows)
 
     return all_rows
@@ -467,6 +475,52 @@ def _process_chunk_worker(args: tuple) -> List[dict]:
     """Worker wrapper for process_day_chunk (unpacks args for ProcessPoolExecutor)."""
     city, days, raw_data_dir, candles_dir, snapshot_interval_min, obs_t15_stats = args
     return process_day_chunk(city, days, raw_data_dir, candles_dir, snapshot_interval_min, obs_t15_stats)
+
+
+def _chunk_days(days: List[date], n_chunks: int) -> List[List[date]]:
+    """Split a list of days into roughly equal chunks."""
+    if n_chunks < 1:
+        return [days]
+    chunk_size = max(1, math.ceil(len(days) / n_chunks))
+    return [days[i:i + chunk_size] for i in range(0, len(days), chunk_size)]
+
+
+def build_dataset_parallel(
+    city: str,
+    days: List[date],
+    desc: str,
+    n_workers: int,
+    raw_data_dir: Path,
+    candles_dir: Path,
+    snapshot_interval_min: int,
+    obs_t15_stats: Dict[date, tuple[Optional[float], Optional[float]]],
+) -> pd.DataFrame:
+    """Build dataset in parallel using per-chunk workers (robust to pickling)."""
+    import multiprocessing as mp
+
+    if n_workers <= 1:
+        raise ValueError("Parallel build requested with <=1 worker")
+
+    start_method = "fork" if "fork" in mp.get_all_start_methods() else "spawn"
+    ctx = mp.get_context(start_method)
+    day_chunks = _chunk_days(days, n_workers)
+
+    logger.info(
+        f"Building {desc} ({len(days)} days) with {n_workers} workers via {start_method} "
+        f"({len(day_chunks)} chunks)"
+    )
+
+    work_items = [
+        (city, chunk, raw_data_dir, candles_dir, snapshot_interval_min, obs_t15_stats)
+        for chunk in day_chunks
+    ]
+
+    all_rows: List[dict] = []
+    with ctx.Pool(processes=n_workers) as pool:
+        for chunk_rows in tqdm(pool.imap_unordered(_process_chunk_worker, work_items), total=len(work_items), desc=desc):
+            all_rows.extend(chunk_rows)
+
+    return pd.DataFrame(all_rows)
 
 
 def check_existing_data_full(output_dir: Path) -> tuple[Optional[pd.DataFrame], set]:
@@ -675,31 +729,24 @@ def main():
             all_rows.extend(rows)
         return pd.DataFrame(all_rows)
 
-    def build_dataset_parallel(days: List[date], desc: str, n_workers: int) -> pd.DataFrame:
-        """Build dataset using parallel processing (safe: lags computed after)."""
-        from joblib import Parallel, delayed
-
-        logger.info(f"Building {desc} ({len(days)} days) with {n_workers} workers...")
-
-        def process_single_day(event_date: date) -> List[dict]:
-            return build_day_snapshots(city, event_date, raw_data, grouped, args.snapshot_interval, obs_t15_stats)
-
-        # Parallel process days - safe because each day is independent
-        # Lag features are added AFTER this step
-        results = Parallel(n_jobs=n_workers, backend="loky")(
-            delayed(process_single_day)(d) for d in tqdm(days, desc=desc)
-        )
-
-        # Flatten results
-        all_rows = []
-        for day_rows in results:
-            all_rows.extend(day_rows)
-        return pd.DataFrame(all_rows)
-
     # Build FULL dataset (ALL days)
+    # Parallel uses chunked workers with top-level functions to avoid pickle issues
     logger.info("\n--- Building full dataset ---")
-    if args.workers > 1:
-        df_new = build_dataset_parallel(all_days, "All days", args.workers)
+    if args.workers and args.workers > 1:
+        try:
+            df_new = build_dataset_parallel(
+                city=city,
+                days=all_days,
+                desc="All days",
+                n_workers=args.workers,
+                raw_data_dir=raw_data_dir,
+                candles_dir=candles_dir,
+                snapshot_interval_min=args.snapshot_interval,
+                obs_t15_stats=obs_t15_stats,
+            )
+        except Exception as e:
+            logger.warning(f"Parallel build failed ({e}); falling back to sequential.")
+            df_new = build_dataset_sequential(all_days, "All days")
     else:
         df_new = build_dataset_sequential(all_days, "All days")
     logger.info(f"New samples: {len(df_new):,}")
