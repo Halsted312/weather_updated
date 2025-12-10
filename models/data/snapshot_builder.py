@@ -95,6 +95,166 @@ def interpolate_small_gaps(series: pd.Series, max_gap: int = MAX_INTERPOLATE_GAP
     return result
 
 
+# =============================================================================
+# UNIFIED SNAPSHOT BUILDER - Single source of truth for training AND inference
+# =============================================================================
+
+def build_snapshot(
+    city: str,
+    day: date,
+    temps_sofar: list[float],
+    timestamps_sofar: list[datetime],
+    cutoff_time: datetime,
+    fcst_daily: Optional[dict] = None,
+    fcst_hourly_df: Optional[pd.DataFrame] = None,
+    fcst_daily_multi: Optional[pd.DataFrame] = None,
+    settle_f: Optional[int] = None,
+) -> Optional[dict]:
+    """
+    UNIFIED snapshot builder for both training and inference.
+
+    This is the SINGLE SOURCE OF TRUTH for feature computation.
+    Training and inference use identical code paths.
+
+    Args:
+        city: City identifier
+        day: Target date
+        temps_sofar: Observed temperatures up to cutoff_time
+        timestamps_sofar: Corresponding timestamps
+        cutoff_time: Snapshot datetime (only use data before this)
+        fcst_daily: T-1 daily forecast dict (optional)
+        fcst_hourly_df: T-1 hourly forecast DataFrame (optional)
+        fcst_daily_multi: Multi-lead daily forecasts DataFrame (optional)
+        settle_f: Ground truth settlement (only for training, None for inference)
+
+    Returns:
+        Feature dictionary, or None if insufficient data
+
+    Note:
+        - If settle_f is provided: computes delta target (training mode)
+        - If settle_f is None: skips delta computation (inference mode)
+    """
+    if not temps_sofar:
+        return None
+
+    if len(temps_sofar) < MIN_SAMPLES:
+        return None
+
+    # Extract snapshot_hour from cutoff_time
+    snapshot_hour = cutoff_time.hour
+
+    # === CORE FEATURES (always computed) ===
+
+    # Partial-day features from observations
+    partial_day_fs = compute_partial_day_features(temps_sofar)
+    if not partial_day_fs.features:
+        return None
+
+    t_base = partial_day_fs["t_base"]
+    vc_max_f_sofar = partial_day_fs["vc_max_f_sofar"]
+
+    # Shape features
+    shape_fs = compute_shape_features(temps_sofar, timestamps_sofar, t_base)
+
+    # Rule features (settle_f can be None for inference)
+    rules_fs = compute_rule_features(temps_sofar, settle_f)
+
+    # Calendar features
+    calendar_fs = compute_calendar_features(day, cutoff_time=cutoff_time)
+
+    # Quality features
+    expected_samples = estimate_expected_samples(cutoff_time=cutoff_time)
+    quality_fs = compute_quality_features(temps_sofar, timestamps_sofar, expected_samples)
+
+    # Build base row
+    row = {
+        "city": city,
+        "day": day,
+        "snapshot_hour": snapshot_hour,
+        "t_base": t_base,
+        **partial_day_fs.to_dict(),
+        **shape_fs.to_dict(),
+        **rules_fs.to_dict(),
+        **calendar_fs.to_dict(),
+        **quality_fs.to_dict(),
+    }
+
+    # === DELTA TARGET (only for training) ===
+    if settle_f is not None:
+        row["settle_f"] = settle_f
+        delta_info = compute_delta_target(settle_f, vc_max_f_sofar)
+        row.update(delta_info)
+
+    # === FORECAST FEATURES ===
+    if fcst_daily is not None:
+        fcst_max_f = fcst_daily.get("tempmax_f")
+
+        # Static forecast features
+        if fcst_hourly_df is not None and not fcst_hourly_df.empty:
+            fcst_temps = fcst_hourly_df["temp_f"].dropna().tolist()
+        elif fcst_max_f is not None:
+            fcst_temps = [fcst_max_f]
+        else:
+            fcst_temps = []
+
+        fcst_static_fs = compute_forecast_static_features(fcst_temps)
+        row.update(fcst_static_fs.to_dict())
+
+        # Forecast delta features
+        fcst_delta_fs = compute_forecast_delta_features(fcst_max_f, vc_max_f_sofar)
+        row.update(fcst_delta_fs.to_dict())
+
+        # Forecast error features (need hourly alignment)
+        if fcst_hourly_df is not None and not fcst_hourly_df.empty:
+            # Filter forecast to hours before snapshot
+            fcst_hourly_sofar = fcst_hourly_df[
+                pd.to_datetime(fcst_hourly_df["target_datetime_local"]).dt.hour < snapshot_hour
+            ]
+
+            # Build obs_df for alignment
+            obs_df = pd.DataFrame({
+                "datetime_local": timestamps_sofar,
+                "temp_f": temps_sofar,
+            })
+
+            fcst_series, obs_series = align_forecast_to_observations(
+                fcst_hourly_sofar, obs_df
+            )
+            fcst_error_fs = compute_forecast_error_features(fcst_series, obs_series)
+            row.update(fcst_error_fs.to_dict())
+
+        # Feature Group 2: Peak window (from hourly curve)
+        if fcst_hourly_df is not None and not fcst_hourly_df.empty:
+            try:
+                tmp = fcst_hourly_df.sort_values("target_datetime_local").copy()
+                temps = tmp["temp_f"].dropna().tolist()
+                times = pd.to_datetime(tmp["target_datetime_local"]).tolist()
+                step_min = int((times[1] - times[0]).total_seconds() / 60) if len(times) > 1 else 60
+                fcst_peak_fs = compute_forecast_peak_window_features(temps, times, step_min)
+                row.update(fcst_peak_fs.to_dict())
+            except Exception as e:
+                logger.debug(f"Could not compute peak window features: {e}")
+
+        # Feature Group 3: Forecast drift (from multi-lead daily)
+        if fcst_daily_multi is not None and not fcst_daily_multi.empty:
+            fcst_drift_fs = compute_forecast_drift_features(fcst_daily_multi)
+            row.update(fcst_drift_fs.to_dict())
+
+        # Feature Group 4: Multivar static (humidity, cloudcover, dewpoint)
+        if fcst_hourly_df is not None and not fcst_hourly_df.empty:
+            try:
+                fcst_multivar_fs = compute_forecast_multivar_static_features(fcst_hourly_df)
+                row.update(fcst_multivar_fs.to_dict())
+            except Exception as e:
+                logger.debug(f"Could not compute multivar features: {e}")
+
+    return row
+
+
+# =============================================================================
+# DATASET BUILDER (for training) - Uses unified build_snapshot
+# =============================================================================
+
 def build_snapshot_dataset(
     cities: list[str],
     start_date: date,
@@ -149,11 +309,7 @@ def build_snapshot_dataset(
         obs_df["day"] = pd.to_datetime(obs_df["datetime_local"]).dt.date
 
         # Load hourly forecast for cloudcover interpolation
-        # (cloudcover not available in 5-min obs, only in hourly forecasts)
         from models.features.interpolation import interpolate_cloudcover_from_hourly
-
-        # We'll interpolate cloudcover per day when we have fcst_hourly_df
-        # (see below in the daily loop after loading fcst_hourly_df)
 
         # Process each day
         for _, settle_row in settlements_df.iterrows():
@@ -169,54 +325,53 @@ def build_snapshot_dataset(
             basis_date = day - timedelta(days=1)
             fcst_daily = None
             fcst_hourly_df = None
-            fcst_peak_fs = None
-            fcst_drift_fs = None
-            fcst_multivar_fs = None
+            fcst_daily_multi = None
 
             if include_forecast_features:
                 fcst_daily = load_historical_forecast_daily(session, city_id, day, basis_date)
                 fcst_hourly_df = load_historical_forecast_hourly(session, city_id, day, basis_date)
+                fcst_daily_multi = load_historical_forecast_daily_multi(session, city_id, day, max_lead_days=6)
 
                 # Interpolate cloudcover from hourly forecast to observation timestamps
-                # (cloudcover only available hourly, not in 5-min observations)
                 if fcst_hourly_df is not None and not fcst_hourly_df.empty:
                     day_obs = interpolate_cloudcover_from_hourly(day_obs, fcst_hourly_df)
 
-                # Compute per-day forecast features (reused across all snapshots)
-
-                # Feature Group 2: Peak window (from hourly curve)
-                if fcst_hourly_df is not None and not fcst_hourly_df.empty:
-                    tmp = fcst_hourly_df.sort_values("target_datetime_local").copy()
-                    temps = tmp["temp_f"].dropna().tolist()
-                    times = pd.to_datetime(tmp["target_datetime_local"]).tolist()
-                    step_min = int((times[1] - times[0]).total_seconds() / 60) if len(times) > 1 else 60
-                    fcst_peak_fs = compute_forecast_peak_window_features(temps, times, step_min)
-
-                # Feature Group 3: Forecast drift (from multi-lead daily)
-                fcst_daily_multi = load_historical_forecast_daily_multi(session, city_id, day, max_lead_days=6)
-                fcst_drift_fs = compute_forecast_drift_features(fcst_daily_multi)
-
-                # Feature Group 4: Multivar static (from hourly data - has cloudcover)
-                # Note: Minute data does NOT have cloudcover, so we use hourly
-                if fcst_hourly_df is not None and not fcst_hourly_df.empty:
-                    fcst_multivar_fs = compute_forecast_multivar_static_features(fcst_hourly_df)
-                else:
-                    fcst_multivar_fs = None
-
             # Build snapshot for each hour
             for snapshot_hour in snapshot_hours:
-                row = build_single_snapshot(
+                # Create cutoff datetime
+                cutoff_time = datetime(day.year, day.month, day.day, snapshot_hour, 0, 0)
+
+                # Filter observations to before cutoff
+                day_obs_copy = day_obs.copy()
+                day_obs_copy["datetime_local"] = pd.to_datetime(day_obs_copy["datetime_local"])
+                obs_sofar = day_obs_copy[day_obs_copy["datetime_local"] < cutoff_time]
+
+                if len(obs_sofar) < MIN_SAMPLES:
+                    continue
+
+                # Interpolate small gaps
+                obs_sofar = obs_sofar.copy()
+                obs_sofar["temp_f"] = interpolate_small_gaps(obs_sofar["temp_f"])
+
+                # Extract temps and timestamps
+                valid_mask = obs_sofar["temp_f"].notna()
+                temps_sofar = obs_sofar.loc[valid_mask, "temp_f"].tolist()
+                timestamps_sofar = obs_sofar.loc[valid_mask, "datetime_local"].tolist()
+
+                if not temps_sofar:
+                    continue
+
+                # Use UNIFIED build_snapshot
+                row = build_snapshot(
                     city=city_id,
                     day=day,
-                    snapshot_hour=snapshot_hour,
-                    day_obs_df=day_obs,
-                    settle_f=settle_f,
+                    temps_sofar=temps_sofar,
+                    timestamps_sofar=timestamps_sofar,
+                    cutoff_time=cutoff_time,
                     fcst_daily=fcst_daily,
                     fcst_hourly_df=fcst_hourly_df,
-                    include_forecast=include_forecast_features,
-                    fcst_peak_fs=fcst_peak_fs,
-                    fcst_drift_fs=fcst_drift_fs,
-                    fcst_multivar_fs=fcst_multivar_fs,
+                    fcst_daily_multi=fcst_daily_multi,
+                    settle_f=settle_f,  # Training mode: provide settlement
                 )
 
                 if row is not None:
@@ -247,6 +402,10 @@ def build_snapshot_dataset(
     return df
 
 
+# =============================================================================
+# DEPRECATED - Keep for backward compatibility but redirect to unified function
+# =============================================================================
+
 def build_single_snapshot(
     city: str,
     day: date,
@@ -260,28 +419,19 @@ def build_single_snapshot(
     fcst_drift_fs: Optional[FeatureSet] = None,
     fcst_multivar_fs: Optional[FeatureSet] = None,
 ) -> Optional[dict]:
-    """Build feature row for one snapshot.
+    """DEPRECATED: Use build_snapshot() instead.
 
-    Args:
-        city: City identifier
-        day: Target date
-        snapshot_hour: Local hour of snapshot (0-23)
-        day_obs_df: DataFrame with day's observations (datetime_local, temp_f, ...)
-        settle_f: Ground truth settlement
-        fcst_daily: T-1 daily forecast dict (optional)
-        fcst_hourly_df: T-1 hourly forecast DataFrame (optional)
-        include_forecast: Whether to compute forecast features
-        fcst_peak_fs: Feature Group 2 - peak window features (optional)
-        fcst_drift_fs: Feature Group 3 - forecast drift features (optional)
-        fcst_multivar_fs: Feature Group 4 - multivar static features (optional)
-
-    Returns:
-        Dictionary with all features, or None if insufficient data
+    This function is kept for backward compatibility only.
     """
-    # Create cutoff datetime
-    cutoff = datetime(day.year, day.month, day.day, snapshot_hour, 0, 0)
+    import warnings
+    warnings.warn(
+        "build_single_snapshot is deprecated, use build_snapshot instead",
+        DeprecationWarning,
+        stacklevel=2
+    )
 
-    # Filter observations to before cutoff
+    # Convert DataFrame to lists
+    cutoff = datetime(day.year, day.month, day.day, snapshot_hour, 0, 0)
     day_obs_df = day_obs_df.copy()
     day_obs_df["datetime_local"] = pd.to_datetime(day_obs_df["datetime_local"])
     obs_sofar = day_obs_df[day_obs_df["datetime_local"] < cutoff]
@@ -289,140 +439,24 @@ def build_single_snapshot(
     if len(obs_sofar) < MIN_SAMPLES:
         return None
 
-    # Interpolate small gaps in temperature data (up to 3 consecutive NaN)
     obs_sofar = obs_sofar.copy()
     obs_sofar["temp_f"] = interpolate_small_gaps(obs_sofar["temp_f"])
 
-    # Filter to rows with valid temp (after interpolation)
     valid_mask = obs_sofar["temp_f"].notna()
     temps_sofar = obs_sofar.loc[valid_mask, "temp_f"].tolist()
     timestamps_sofar = obs_sofar.loc[valid_mask, "datetime_local"].tolist()
 
-    if not temps_sofar:
-        return None
-
-    # Compute partial-day features
-    partial_day_fs = compute_partial_day_features(temps_sofar)
-    if not partial_day_fs.features:
-        return None
-
-    t_base = partial_day_fs["t_base"]
-    vc_max_f_sofar = partial_day_fs["vc_max_f_sofar"]
-
-    # Compute delta target
-    delta_info = compute_delta_target(settle_f, vc_max_f_sofar)
-
-    # Compute shape features
-    shape_fs = compute_shape_features(temps_sofar, timestamps_sofar, t_base)
-
-    # Compute rule features
-    rules_fs = compute_rule_features(temps_sofar, settle_f)
-
-    # Compute calendar features
-    calendar_fs = compute_calendar_features(day, snapshot_hour=snapshot_hour)
-
-    # Compute quality features
-    expected_samples = estimate_expected_samples(snapshot_hour=snapshot_hour)
-    quality_fs = compute_quality_features(temps_sofar, timestamps_sofar, expected_samples)
-
-    # Start building the row
-    row = {
-        "city": city,
-        "day": day,
-        "snapshot_hour": snapshot_hour,
-        "settle_f": settle_f,
-        **delta_info,
-        **partial_day_fs.to_dict(),
-        **shape_fs.to_dict(),
-        **rules_fs.to_dict(),
-        **calendar_fs.to_dict(),
-        **quality_fs.to_dict(),
-    }
-
-    # Optionally compute forecast features
-    if include_forecast and fcst_daily is not None:
-        # Static forecast features
-        fcst_max_f = fcst_daily.get("tempmax_f")
-
-        if fcst_hourly_df is not None and not fcst_hourly_df.empty:
-            fcst_temps = fcst_hourly_df["temp_f"].dropna().tolist()
-        elif fcst_max_f is not None:
-            # If no hourly, create synthetic series from daily
-            fcst_temps = [fcst_max_f]
-        else:
-            fcst_temps = []
-
-        fcst_static_fs = compute_forecast_static_features(fcst_temps)
-        row.update(fcst_static_fs.to_dict())
-
-        # Forecast error features (need hourly alignment)
-        if fcst_hourly_df is not None and not fcst_hourly_df.empty:
-            # Filter forecast to hours up to snapshot
-            fcst_hourly_sofar = fcst_hourly_df[
-                pd.to_datetime(fcst_hourly_df["target_datetime_local"]).dt.hour < snapshot_hour
-            ]
-
-            fcst_series, obs_series = align_forecast_to_observations(
-                fcst_hourly_sofar,
-                obs_sofar,
-            )
-
-            fcst_error_fs = compute_forecast_error_features(fcst_series, obs_series)
-            row.update(fcst_error_fs.to_dict())
-
-            # Forecast delta features
-            fcst_delta_fs = compute_forecast_delta_features(fcst_max_f, vc_max_f_sofar)
-            row.update(fcst_delta_fs.to_dict())
-        else:
-            # No forecast data - fill with None
-            row.update({
-                "err_mean_sofar": None,
-                "err_std_sofar": None,
-                "err_max_pos_sofar": None,
-                "err_max_neg_sofar": None,
-                "err_abs_mean_sofar": None,
-                "err_last1h": None,
-                "err_last3h_mean": None,
-                "delta_vcmax_fcstmax_sofar": None,
-                "fcst_remaining_potential": None,
-            })
-        # Add new feature groups (2, 3, 4)
-        if fcst_peak_fs is not None:
-            row.update(fcst_peak_fs.to_dict())
-        if fcst_drift_fs is not None:
-            row.update(fcst_drift_fs.to_dict())
-        if fcst_multivar_fs is not None:
-            row.update(fcst_multivar_fs.to_dict())
-    else:
-        # Fill forecast columns with None if not including
-        forecast_cols = [
-            "fcst_prev_max_f", "fcst_prev_min_f", "fcst_prev_mean_f", "fcst_prev_std_f",
-            "fcst_prev_q10_f", "fcst_prev_q25_f", "fcst_prev_q50_f",
-            "fcst_prev_q75_f", "fcst_prev_q90_f",
-            "fcst_prev_frac_part", "fcst_prev_hour_of_max", "t_forecast_base",
-            # Feature Group 1 (integer boundary)
-            "fcst_prev_distance_to_int", "fcst_prev_near_boundary_flag",
-            # Error features
-            "err_mean_sofar", "err_std_sofar", "err_max_pos_sofar", "err_max_neg_sofar",
-            "err_abs_mean_sofar", "err_last1h", "err_last3h_mean",
-            "delta_vcmax_fcstmax_sofar", "fcst_remaining_potential",
-            # Feature Group 2 (peak window)
-            "fcst_peak_temp_f", "fcst_peak_hour_float",
-            "fcst_peak_band_width_min", "fcst_peak_step_minutes",
-            # Feature Group 3 (forecast drift)
-            "fcst_drift_num_leads", "fcst_drift_std_f",
-            "fcst_drift_max_upside_f", "fcst_drift_max_downside_f",
-            "fcst_drift_mean_delta_f", "fcst_drift_slope_f_per_lead",
-            # Feature Group 4 (multivar static)
-            "fcst_humidity_mean", "fcst_humidity_min", "fcst_humidity_max", "fcst_humidity_range",
-            "fcst_cloudcover_mean", "fcst_cloudcover_min", "fcst_cloudcover_max", "fcst_cloudcover_range",
-            "fcst_dewpoint_mean", "fcst_dewpoint_min", "fcst_dewpoint_max", "fcst_dewpoint_range",
-            "fcst_humidity_morning_mean", "fcst_humidity_afternoon_mean",
-        ]
-        for col in forecast_cols:
-            row[col] = None
-
-    return row
+    return build_snapshot(
+        city=city,
+        day=day,
+        temps_sofar=temps_sofar,
+        timestamps_sofar=timestamps_sofar,
+        cutoff_time=cutoff,
+        fcst_daily=fcst_daily if include_forecast else None,
+        fcst_hourly_df=fcst_hourly_df if include_forecast else None,
+        fcst_daily_multi=None,  # Not supported in old API
+        settle_f=settle_f,
+    )
 
 
 def build_snapshot_for_inference(
@@ -438,88 +472,36 @@ def build_snapshot_for_inference(
     fcst_drift_fs: Optional[FeatureSet] = None,
     fcst_multivar_fs: Optional[FeatureSet] = None,
 ) -> dict:
-    """Build a single snapshot row for inference (no settle_f needed).
+    """DEPRECATED: Use build_snapshot() instead.
 
-    Similar to build_single_snapshot but:
-    - Doesn't require settlement (we're predicting it)
-    - Returns dict suitable for model input
-    - Supports both legacy snapshot_hour and new cutoff_time for tod_v1
-
-    Args:
-        city: City identifier
-        day: Target date
-        temps_sofar: Observed temperatures up to now
-        timestamps_sofar: Corresponding timestamps
-        cutoff_time: Full datetime for snapshot (tod_v1 models) - PRIMARY
-        snapshot_hour: Legacy integer hour (baseline models) - DEPRECATED
-        fcst_daily: T-1 forecast dict
-        fcst_hourly_df: T-1 hourly forecast DataFrame
-        fcst_peak_fs: Feature Group 2 - peak window features (optional)
-        fcst_drift_fs: Feature Group 3 - forecast drift features (optional)
-        fcst_multivar_fs: Feature Group 4 - multivar static features (optional)
-
-    Returns:
-        Feature dictionary ready for model inference
+    This function is kept for backward compatibility only.
     """
-    # Backward compatibility: support old snapshot_hour parameter
+    import warnings
+    warnings.warn(
+        "build_snapshot_for_inference is deprecated, use build_snapshot instead",
+        DeprecationWarning,
+        stacklevel=2
+    )
+
+    # Handle legacy parameters
     if cutoff_time is None and snapshot_hour is not None:
         cutoff_time = datetime.combine(day, datetime.min.time()).replace(hour=snapshot_hour, minute=0)
     elif cutoff_time is None:
         raise ValueError("Must provide either cutoff_time or snapshot_hour")
 
-    # Extract snapshot_hour for backward compat (some features may still use it)
-    if snapshot_hour is None:
-        snapshot_hour = cutoff_time.hour
+    result = build_snapshot(
+        city=city,
+        day=day,
+        temps_sofar=temps_sofar,
+        timestamps_sofar=timestamps_sofar,
+        cutoff_time=cutoff_time,
+        fcst_daily=fcst_daily,
+        fcst_hourly_df=fcst_hourly_df,
+        fcst_daily_multi=None,  # Not supported in old API
+        settle_f=None,  # Inference mode: no settlement
+    )
 
-    if not temps_sofar:
-        raise ValueError("No temperature observations provided")
+    if result is None:
+        raise ValueError("Insufficient data for snapshot")
 
-    # Compute features (no settle_f)
-    partial_day_fs = compute_partial_day_features(temps_sofar)
-    t_base = partial_day_fs["t_base"]
-
-    shape_fs = compute_shape_features(temps_sofar, timestamps_sofar, t_base)
-    rules_fs = compute_rule_features(temps_sofar, settle_f=None)  # No settlement
-    calendar_fs = compute_calendar_features(day, cutoff_time=cutoff_time)
-
-    expected_samples = estimate_expected_samples(cutoff_time=cutoff_time)
-    quality_fs = compute_quality_features(temps_sofar, timestamps_sofar, expected_samples)
-
-    row = {
-        "city": city,
-        "day": day,
-        "snapshot_hour": snapshot_hour,
-        "t_base": t_base,
-        **partial_day_fs.to_dict(),
-        **shape_fs.to_dict(),
-        **rules_fs.to_dict(),
-        **calendar_fs.to_dict(),
-        **quality_fs.to_dict(),
-    }
-
-    # Forecast features
-    if fcst_daily is not None:
-        fcst_max_f = fcst_daily.get("tempmax_f")
-        fcst_temps = []
-
-        if fcst_hourly_df is not None and not fcst_hourly_df.empty:
-            fcst_temps = fcst_hourly_df["temp_f"].dropna().tolist()
-
-        fcst_static_fs = compute_forecast_static_features(fcst_temps)
-        row.update(fcst_static_fs.to_dict())
-
-        # Forecast delta
-        fcst_delta_fs = compute_forecast_delta_features(
-            fcst_max_f, partial_day_fs["vc_max_f_sofar"]
-        )
-        row.update(fcst_delta_fs.to_dict())
-
-    # Add new feature groups (2, 3, 4)
-    if fcst_peak_fs is not None:
-        row.update(fcst_peak_fs.to_dict())
-    if fcst_drift_fs is not None:
-        row.update(fcst_drift_fs.to_dict())
-    if fcst_multivar_fs is not None:
-        row.update(fcst_multivar_fs.to_dict())
-
-    return row
+    return result

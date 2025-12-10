@@ -17,8 +17,10 @@ from zoneinfo import ZoneInfo
 from sqlalchemy import text
 
 from models.training.ordinal_trainer import OrdinalDeltaTrainer
-from models.data.snapshot_builder import build_snapshot_for_inference
-from models.data.loader import load_inference_data
+from models.features.pipeline import SnapshotContext, compute_snapshot_features
+from models.features.calendar import compute_lag_features
+from models.features.base import DELTA_CLASSES
+from models.data.loader import load_full_inference_data
 from models.inference.probability import (
     delta_probs_to_dict,
     expected_settlement,
@@ -88,8 +90,8 @@ class LiveInferenceEngine:
                 # Store metadata
                 self.model_metadata[city] = {
                     'path': str(model_path),
-                    'delta_range': getattr(trainer, '_metadata', {}).get('delta_range', [-2, 10]),
-                    'n_classifiers': len(trainer.classifiers) if hasattr(trainer, 'classifiers') else 12,
+                    'delta_range': getattr(trainer, '_metadata', {}).get('delta_range', [-12, 12]),
+                    'n_classifiers': len(trainer.classifiers) if hasattr(trainer, 'classifiers') else 24,
                 }
 
                 logger.info(f"✓ Loaded {city} model: {self.model_metadata[city]['n_classifiers']} classifiers")
@@ -151,21 +153,21 @@ class LiveInferenceEngine:
         # Get snapshot parameters based on variant
         cutoff_time, snapshot_hour = self._get_snapshot_params(current_time)
 
-        # Load all inference data (observations + T-1 forecasts)
+        # Load ALL data for inference (matches training pipeline exactly)
         try:
-            inference_data = load_inference_data(
+            data = load_full_inference_data(
                 city_id=city,
-                target_date=event_date,
+                event_date=event_date,
                 cutoff_time=cutoff_time,
                 session=session,
             )
-            temps_sofar = inference_data["temps_sofar"]
-            timestamps_sofar = inference_data["timestamps_sofar"]
-            fcst_daily = inference_data.get("fcst_daily")
-            fcst_hourly_df = inference_data.get("fcst_hourly_df")
-        except Exception as e:
+        except ValueError as e:
+            # STRICT: load_full_inference_data raises on missing data
             logger.error(f"Failed to load inference data for {city} {event_date}: {e}")
             return None
+
+        temps_sofar = data["temps_sofar"]
+        timestamps_sofar = data["timestamps_sofar"]
 
         if len(temps_sofar) < config.MIN_OBSERVATIONS:
             logger.warning(
@@ -175,29 +177,82 @@ class LiveInferenceEngine:
             if config.REQUIRE_MIN_OBSERVATIONS:
                 return None
 
-        # Get t_base (current max observed temp, rounded)
-        t_base = round(max(temps_sofar)) if temps_sofar else 0
+        # Build SnapshotContext (same as training pipeline)
+        ctx = SnapshotContext(
+            city=city,
+            event_date=event_date,
+            cutoff_time=cutoff_time,
+            window_start=data["window_start"],
+            temps_sofar=temps_sofar,
+            timestamps_sofar=timestamps_sofar,
+            obs_df=data["obs_df"],
+            fcst_daily=data["fcst_daily"],
+            fcst_hourly_df=data["fcst_hourly_df"],
+            fcst_multi=data["fcst_multi"],
+            candles_df=data["candles_df"],
+            city_obs_df=data["city_obs_df"],
+            more_apis=data["more_apis"],
+            obs_t15_mean_30d_f=data["obs_t15_mean"],
+            obs_t15_std_30d_f=data["obs_t15_std"],
+            settle_f=None,  # Inference mode - no settlement
+        )
 
-        # Build features
+        # Compute features using UNIFIED pipeline (same as training!)
         try:
-            features = build_snapshot_for_inference(
-                city=city,
-                day=event_date,
-                temps_sofar=temps_sofar,
-                timestamps_sofar=timestamps_sofar,
-                cutoff_time=cutoff_time,  # Primary parameter
-                snapshot_hour=snapshot_hour,  # Backward compat
-                fcst_daily=fcst_daily,
-                fcst_hourly_df=fcst_hourly_df,
-            )
+            features = compute_snapshot_features(ctx, include_labels=False)
         except Exception as e:
             logger.error(f"Feature building failed for {city} {event_date}: {e}")
             return None
 
+        # Add lag features using existing compute_lag_features()
+        lag_df = data.get("lag_data")
+        if lag_df is not None and not lag_df.empty:
+            try:
+                lag_fs = compute_lag_features(lag_df, city, event_date)
+                features.update(lag_fs.to_dict())
+
+                # Compute delta_vcmax_lag1 = today's max so far - yesterday's max
+                vc_max_f_lag1 = features.get("vc_max_f_lag1")
+                vc_max_f_sofar = features.get("vc_max_f_sofar")
+                if vc_max_f_lag1 is not None and vc_max_f_sofar is not None:
+                    features["delta_vcmax_lag1"] = vc_max_f_sofar - vc_max_f_lag1
+
+                logger.debug(f"{city}: Added {len(lag_fs)} lag features")
+            except Exception as e:
+                logger.warning(f"{city}: Could not compute lag features: {e}")
+
+        # VALIDATION: STRICT feature parity check - RAISE on any mismatch
+        expected_cols = set(self.models[city].numeric_cols + self.models[city].categorical_cols)
+        actual_cols = set(features.keys())
+
+        missing = expected_cols - actual_cols
+        if missing:
+            raise ValueError(
+                f"{city}: Missing {len(missing)} features. "
+                f"First 10: {sorted(missing)[:10]}. "
+                "Inference pipeline not aligned with training."
+            )
+
+        # HARD-FAIL on high null rate (>1%)
+        features_df_check = pd.DataFrame([features])
+        present_cols = list(expected_cols & actual_cols)
+        null_rates = features_df_check[present_cols].isna().mean()
+        high_null_cols = null_rates[null_rates > 0.01]
+
+        if len(high_null_cols) > 0:
+            raise ValueError(
+                f"{city}: Null rate >1% in {len(high_null_cols)} columns. "
+                f"Columns: {dict(high_null_cols)}. "
+                "Check data loading - all sources must be present."
+            )
+
+        # Get t_base from features
+        t_base = features.get("t_base", round(max(temps_sofar)) if temps_sofar else 0)
+
         # Run model prediction
         try:
             features_df = pd.DataFrame([features])
-            delta_probs_array = self.models[city].predict_proba(features_df)  # Shape: (1, 13)
+            delta_probs_array = self.models[city].predict_proba(features_df)  # Shape: (1, 25) for 25 delta classes
             delta_probs_array = delta_probs_array[0]  # Get first row
 
             # Convert to dict for probability.py utilities
@@ -245,7 +300,7 @@ class LiveInferenceEngine:
             ci_90_low=ci_low,
             ci_90_high=ci_high,
             timestamp=datetime.now(),
-            snapshot_hour=snapshot_hour
+            snapshot_hour=snapshot_hour if snapshot_hour else cutoff_time.hour
         )
 
         # Cache result
@@ -260,73 +315,25 @@ class LiveInferenceEngine:
         return result
 
     def _get_snapshot_params(self, current_time: datetime) -> Tuple[datetime, Optional[int]]:
-        """Get snapshot parameters based on model variant"""
+        """Get snapshot parameters - always use 5-min intervals like training.
 
-        if not self.variant_config['requires_snapping']:
-            # TOD model: use exact timestamp floored to interval
-            interval_min = config.TOD_SNAPSHOT_INTERVAL_MIN
-            total_minutes = current_time.hour * 60 + current_time.minute
-            floored_minutes = (total_minutes // interval_min) * interval_min
-
-            cutoff_time = current_time.replace(
-                hour=floored_minutes // 60,
-                minute=floored_minutes % 60,
-                second=0,
-                microsecond=0
-            )
-            return cutoff_time, None
-
-        else:
-            # Baseline/hourly: snap to nearest training hour
-            snapshot_hour = min(
-                self.variant_config['snapshot_hours'],
-                key=lambda x: abs(x - current_time.hour)
-            )
-            cutoff_time = current_time.replace(hour=snapshot_hour, minute=0, second=0, microsecond=0)
-            return cutoff_time, snapshot_hour
-
-    def _get_observations(
-        self,
-        session,
-        city: str,
-        event_date: date,
-        cutoff: datetime
-    ) -> Tuple[List[float], List[datetime]]:
+        Training uses 5-minute market-clock snapshots (D-1 10:00 → D 23:55).
+        We replicate this at inference time for feature parity.
         """
-        Query observations from wx.vc_minute_weather up to cutoff time.
+        # Floor to 5-minute intervals (same as training pipeline)
+        interval_min = 5
+        total_minutes = current_time.hour * 60 + current_time.minute
+        floored_minutes = (total_minutes // interval_min) * interval_min
 
-        Returns:
-            (temps_sofar, timestamps_sofar)
-        """
-        city_code = config.CITY_CODES[city]
-
-        query = text("""
-            SELECT vm.datetime_local, vm.temp_f
-            FROM wx.vc_minute_weather vm
-            JOIN wx.vc_location vl ON vm.vc_location_id = vl.id
-            WHERE vl.city_code = :city_code
-              AND DATE(vm.datetime_local) = :target_date
-              AND vm.temp_f IS NOT NULL
-              AND vm.datetime_local <= :cutoff
-            ORDER BY vm.datetime_local
-        """)
-
-        result = session.execute(
-            query,
-            {
-                'city_code': city_code,
-                'target_date': event_date,
-                'cutoff': cutoff
-            }
+        cutoff_time = current_time.replace(
+            hour=floored_minutes // 60,
+            minute=floored_minutes % 60,
+            second=0,
+            microsecond=0
         )
 
-        temps = []
-        timestamps = []
-        for row in result:
-            timestamps.append(row[0])
-            temps.append(row[1])
-
-        return temps, timestamps
+        # Return None for snapshot_hour (not used with 5-min intervals)
+        return cutoff_time, None
 
     def _delta_to_bracket_probs(
         self,
@@ -339,8 +346,10 @@ class LiveInferenceEngine:
         """
         Convert delta probabilities to bracket win probabilities.
 
-        Delta classes are [-2, -1, 0, 1, ..., 10] for most cities.
+        Delta classes are [-12, -11, ..., 0, ..., +11, +12] (25 classes).
         delta = settled_temp - t_base (current max observed)
+
+        Uses DELTA_CLASSES imported from models.features.base for consistency.
         """
         # Get markets for this city/event
         markets = self._get_markets(session, city, event_date)
@@ -348,8 +357,8 @@ class LiveInferenceEngine:
             logger.warning(f"{city} {event_date}: No markets found in database")
             return {}
 
-        # Delta classes (global range)
-        DELTA_CLASSES = list(range(-2, 11))  # [-2, -1, 0, 1, ..., 10]
+        # Use global DELTA_CLASSES from models.features.base (imported at top)
+        # DELTA_CLASSES = [-12, -11, ..., 0, ..., +11, +12] (25 classes)
 
         bracket_probs = {}
 
@@ -394,7 +403,7 @@ class LiveInferenceEngine:
         """Query Kalshi markets for this city/event"""
         query = text("""
             SELECT ticker, strike_type, floor_strike, cap_strike
-            FROM kalshi.market
+            FROM kalshi.markets
             WHERE city = :city AND event_date = :event_date
         """)
 
@@ -411,9 +420,3 @@ class LiveInferenceEngine:
 
         return pd.DataFrame(rows)
 
-    def _compute_std(self, delta_probs: np.ndarray) -> float:
-        """Compute standard deviation of delta distribution"""
-        DELTA_CLASSES = np.array(range(-2, 11))
-        mean = np.sum(DELTA_CLASSES * delta_probs)
-        variance = np.sum(((DELTA_CLASSES - mean) ** 2) * delta_probs)
-        return np.sqrt(variance)

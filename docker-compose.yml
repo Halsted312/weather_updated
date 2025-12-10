@@ -121,5 +121,30 @@ services:
     profiles:
       - daemons
 
+  # Settlement daemon - polls every 30 min from 5:20 AM EST for 7.5 hours
+  # Covers all timezones (EST→PST) before their 10 AM market opens
+  # Schedule: 5:20, 5:50, 6:20, ... 12:50 EST (16 polls/day)
+  settlement-daemon:
+    build: .
+    container_name: kalshi_settlement_daemon
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${DB_USER:-kalshi}:${DB_PASSWORD:-kalshi}@db:5432/${DB_NAME:-kalshi_weather}
+      VC_API_KEY: ${VC_API_KEY}
+      KALSHI_API_KEY: ${KALSHI_API_KEY}
+      KALSHI_PRIVATE_KEY_PATH: /app/weather.pem
+      TZ: America/New_York
+    volumes:
+      - ./weather.pem:/app/weather.pem:ro
+      - ./.env:/app/.env:ro
+      - ./scripts:/app/scripts
+      - ./src:/app/src
+    command: python scripts/poll_settlement_daemon.py --start 05:20 --interval 30 --duration 7.5 --lookback 7
+    restart: unless-stopped
+    profiles:
+      - daemons
+
 volumes:
   kalshi_weather_data:

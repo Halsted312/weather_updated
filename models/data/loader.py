@@ -25,6 +25,7 @@ Example:
 import logging
 from datetime import date, datetime, timedelta
 from typing import Optional, Dict, Any
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 from sqlalchemy import text
@@ -628,6 +629,11 @@ def load_inference_data(
 ) -> dict:
     """Load current data for live inference.
 
+    .. deprecated::
+        Use :func:`load_full_inference_data` instead for full feature parity
+        with the training pipeline. This function only loads temp_f and T-1
+        forecast, missing 12 observation columns and 6 other data sources.
+
     Loads observations up to cutoff_time and yesterday's forecast
     for real-time prediction.
 
@@ -644,6 +650,13 @@ def load_inference_data(
             fcst_daily: T-1 daily forecast dict
             fcst_hourly_df: T-1 hourly forecast DataFrame
     """
+    import warnings
+    warnings.warn(
+        "load_inference_data() is deprecated. Use load_full_inference_data() "
+        "for full feature parity with training pipeline.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
     city_config = get_city(city_id)
     vc_location_id = get_vc_location_id(session, city_id, "station")
 
@@ -838,3 +851,307 @@ def load_obs_t15_stats_30d(
         return (None, None)
 
     return (float(daily_t15.mean()), float(daily_t15.std(ddof=0)))
+
+
+# =============================================================================
+# Full Inference Data Loading (Unified Pipeline)
+# =============================================================================
+
+
+def _to_naive(dt: datetime) -> datetime:
+    """Convert datetime to naive (strip tzinfo) for DB comparison.
+
+    DB stores datetime_local as naive TIMESTAMP (per DATETIME_AND_API_REFERENCE.md).
+    This ensures consistent comparison regardless of whether input is tz-aware.
+    """
+    if dt is None:
+        return None
+    return dt.replace(tzinfo=None) if dt.tzinfo else dt
+
+
+def load_candles_for_inference(
+    session: Session,
+    city_id: str,
+    event_date: date,
+    window_start: datetime,
+    cutoff_time: datetime,
+) -> Optional[pd.DataFrame]:
+    """Load market candles for inference window.
+
+    Replicates logic from dataset._load_candles() for inference use.
+    This is a public function to avoid brittle imports of private functions.
+
+    Args:
+        session: Database session
+        city_id: City identifier
+        event_date: Event date (not used directly, kept for API consistency)
+        window_start: Start of observation window
+        cutoff_time: End of observation window
+
+    Returns:
+        DataFrame with candle data, or None if empty
+    """
+    # Normalize datetimes to naive for DB comparison
+    window_start_naive = _to_naive(window_start)
+    cutoff_naive = _to_naive(cutoff_time)
+
+    # Use centralized city config instead of hardcoded mapping
+    city_config = get_city(city_id)
+    ticker_pattern = city_config.city_code
+
+    query = text("""
+        SELECT bucket_start, ticker, yes_bid_close, yes_ask_close,
+               volume, open_interest, has_trade, is_synthetic
+        FROM kalshi.candles_1m_dense
+        WHERE ticker LIKE :ticker_pattern
+          AND bucket_start >= :window_start
+          AND bucket_start <= :cutoff_time
+        ORDER BY bucket_start
+    """)
+
+    try:
+        result = session.execute(query, {
+            "ticker_pattern": f"%{ticker_pattern}%",
+            "window_start": window_start_naive,
+            "cutoff_time": cutoff_naive,
+        })
+        df = pd.DataFrame(result.fetchall(), columns=[
+            "bucket_start", "ticker", "yes_bid_close", "yes_ask_close",
+            "volume", "open_interest", "has_trade", "is_synthetic"
+        ])
+        return df if not df.empty else None
+    except Exception as e:
+        logger.debug(f"Could not load candles for {city_id}: {e}")
+        return None
+
+
+def load_city_observations_for_inference(
+    session: Session,
+    city_id: str,
+    window_start: datetime,
+    cutoff_time: datetime,
+) -> Optional[pd.DataFrame]:
+    """Load city-aggregate observations for inference window.
+
+    Replicates logic from dataset._load_city_observations() for inference use.
+    This is a public function to avoid brittle imports of private functions.
+
+    Args:
+        session: Database session
+        city_id: City identifier
+        window_start: Start of observation window (D-1 10:00)
+        cutoff_time: End of observation window
+
+    Returns:
+        DataFrame with city observation data, or None if empty
+    """
+    # Normalize datetimes to naive for DB comparison
+    window_start_naive = _to_naive(window_start)
+    cutoff_naive = _to_naive(cutoff_time)
+
+    vc_location_id = get_vc_location_id(session, city_id, "city")
+    if vc_location_id is None:
+        logger.debug(f"No city location found for {city_id}")
+        return None
+
+    query = text("""
+        SELECT datetime_local, datetime_utc, temp_f, humidity,
+               windspeed_mph, cloudcover
+        FROM wx.vc_minute_weather
+        WHERE vc_location_id = :vc_location_id
+          AND data_type = 'actual_obs'
+          AND datetime_local >= :window_start
+          AND datetime_local < :cutoff_time
+        ORDER BY datetime_local
+    """)
+
+    result = session.execute(query, {
+        "vc_location_id": vc_location_id,
+        "window_start": window_start_naive,
+        "cutoff_time": cutoff_naive,
+    })
+
+    df = pd.DataFrame(result.fetchall(), columns=[
+        "datetime_local", "datetime_utc", "temp_f", "humidity",
+        "windspeed_mph", "cloudcover"
+    ])
+    return df if not df.empty else None
+
+
+def load_historical_lag_data(
+    session: Session,
+    city_id: str,
+    event_date: date,
+) -> pd.DataFrame:
+    """Load historical data needed for compute_lag_features().
+
+    Returns a DataFrame with ['city', 'day', 'settle_f', 'vc_max_f'] that can
+    be passed to calendar.compute_lag_features().
+
+    Args:
+        session: Database session
+        city_id: City identifier
+        event_date: Target date (loads data for 7 days before this)
+
+    Returns:
+        DataFrame ready for compute_lag_features()
+    """
+    start_date = event_date - timedelta(days=7)
+    end_date = event_date - timedelta(days=1)
+
+    # Load settlements (reuse existing function)
+    settlements_df = load_settlements(session, city_id, start_date, end_date)
+
+    # Load VC obs and compute daily max (reuse existing function)
+    obs_df = load_vc_observations(session, city_id, start_date, end_date)
+
+    # Build historical DataFrame in format expected by compute_lag_features
+    rows = []
+    if not settlements_df.empty:
+        for _, row in settlements_df.iterrows():
+            day = row["date_local"]
+            settle_f = int(row["tmax_final"]) if row["tmax_final"] else None
+
+            # Get VC max for this day
+            vc_max_f = None
+            if obs_df is not None and not obs_df.empty:
+                day_obs = obs_df[pd.to_datetime(obs_df["datetime_local"]).dt.date == day]
+                if not day_obs.empty:
+                    vc_max_f = float(day_obs["temp_f"].max())
+
+            rows.append({
+                "city": city_id,
+                "day": day,
+                "settle_f": settle_f,
+                "vc_max_f": vc_max_f,
+            })
+
+    return pd.DataFrame(rows)
+
+
+def load_full_inference_data(
+    city_id: str,
+    event_date: date,
+    cutoff_time: datetime,
+    session: Session,
+) -> dict:
+    """Load ALL data for inference matching training pipeline.
+
+    This function replicates the data loading from dataset.build_dataset()
+    to ensure feature parity between training and inference.
+
+    STRICT MODE: Raises ValueError if critical data is missing.
+
+    Args:
+        city_id: City identifier
+        event_date: The settlement date (D)
+        cutoff_time: Local datetime cutoff for observations
+        session: Database session
+
+    Returns:
+        Dict with all data needed for SnapshotContext:
+            obs_df, temps_sofar, timestamps_sofar, fcst_daily, fcst_hourly_df,
+            fcst_multi, candles_df, city_obs_df, more_apis,
+            obs_t15_mean, obs_t15_std, window_start
+
+    Raises:
+        ValueError: If observations are empty or critical data missing
+    """
+    from models.data.snapshot import get_market_clock_window
+
+    # Get market-clock window: D-1 10:00 to D 23:55
+    window_start, window_end = get_market_clock_window(event_date)
+
+    # 1. Load FULL observations (all 14 columns) from D-1 to D
+    d_minus_1 = event_date - timedelta(days=1)
+    obs_df = load_vc_observations(session, city_id, d_minus_1, event_date)
+
+    # STRICT: Fail if no observations
+    if obs_df is None or obs_df.empty:
+        raise ValueError(f"No observations found for {city_id} {event_date}")
+
+    # Normalize cutoff_time to naive for comparison with DB datetime_local
+    # (DB stores local time as naive datetime)
+    cutoff_naive = cutoff_time.replace(tzinfo=None) if cutoff_time.tzinfo else cutoff_time
+
+    # Filter to [window_start, cutoff_time)
+    obs_df = obs_df[
+        (obs_df["datetime_local"] >= window_start) &
+        (obs_df["datetime_local"] < cutoff_naive)
+    ].copy()
+
+    if obs_df.empty:
+        raise ValueError(
+            f"No observations in window [{window_start}, {cutoff_time}) for {city_id}"
+        )
+
+    # Extract temps_sofar and timestamps_sofar
+    temps_sofar = []
+    timestamps_sofar = []
+    for _, row in obs_df.iterrows():
+        if row["temp_f"] is not None:
+            temps_sofar.append(float(row["temp_f"]))
+            timestamps_sofar.append(row["datetime_local"])
+
+    if len(temps_sofar) == 0:
+        raise ValueError(f"No valid temperatures in observations for {city_id}")
+
+    # 2. Load T-1 forecasts (daily + hourly)
+    basis_date = event_date - timedelta(days=1)
+    fcst_daily = load_historical_forecast_daily(session, city_id, event_date, basis_date)
+    fcst_hourly_df = load_historical_forecast_hourly(session, city_id, event_date, basis_date)
+    if fcst_hourly_df is not None and fcst_hourly_df.empty:
+        fcst_hourly_df = None
+
+    # 3. Load multi-horizon forecasts (T-1 to T-6)
+    fcst_multi = load_multi_horizon_forecasts(session, city_id, event_date)
+
+    # 4. Load market candles
+    candles_df = load_candles_for_inference(
+        session, city_id, event_date, window_start, cutoff_time
+    )
+
+    # 5. Load city observations for station-city gap
+    city_obs_df = load_city_observations_for_inference(
+        session, city_id, window_start, cutoff_time
+    )
+
+    # 6. Load NOAA guidance
+    # Only convert to UTC if cutoff_time has tzinfo
+    cutoff_utc = None
+    if cutoff_time.tzinfo is not None:
+        cutoff_utc = cutoff_time.astimezone(ZoneInfo("UTC"))
+    more_apis = load_weather_more_apis_guidance(session, city_id, event_date, cutoff_utc)
+
+    # 7. Load 30-day obs stats for z-score normalization
+    obs_t15_mean, obs_t15_std = load_obs_t15_stats_30d(session, city_id, event_date)
+
+    # 8. Load historical lag data (settlements + VC max for past 7 days)
+    lag_data = load_historical_lag_data(session, city_id, event_date)
+
+    logger.info(
+        f"Loaded full inference data for {city_id} {event_date}: "
+        f"{len(temps_sofar)} obs, fcst={'Yes' if fcst_daily else 'No'}, "
+        f"candles={'Yes' if candles_df is not None else 'No'}, "
+        f"city_obs={'Yes' if city_obs_df is not None else 'No'}, "
+        f"lag_data={'Yes' if not lag_data.empty else 'No'}"
+    )
+
+    return {
+        "city": city_id,
+        "event_date": event_date,
+        "cutoff_time": cutoff_time,
+        "window_start": window_start,
+        "obs_df": obs_df,
+        "temps_sofar": temps_sofar,
+        "timestamps_sofar": timestamps_sofar,
+        "fcst_daily": fcst_daily,
+        "fcst_hourly_df": fcst_hourly_df,
+        "fcst_multi": fcst_multi,
+        "candles_df": candles_df,
+        "city_obs_df": city_obs_df,
+        "more_apis": more_apis,
+        "obs_t15_mean": obs_t15_mean,
+        "obs_t15_std": obs_t15_std,
+        "lag_data": lag_data,
+    }

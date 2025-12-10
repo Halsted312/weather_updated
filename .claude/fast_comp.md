@@ -1,3 +1,11 @@
+ou have 32 cores - CatBoost will use all of them automatically for each trial.
+Recommended Command for Denver:
+python scripts/train_city_ordinal_optuna.py --city denver --trials 100 --use-cached
+Quick test first (3 trials, ~5 min):
+python scripts/train_city_ordinal_optuna.py --city denver --trials 3 --use-cached
+The --workers flag only helps with dataset building from DB, which is skipped when using --use-cached. With 32 cores, each Optuna trial should be fast. Ready to exit plan mode so you can run it?
+
+
 (.venv) (base) halsted@halsted:~/Python/weather_updated$ PYTHONPATH=. python scripts/train_edge_classifier.py     --city austin     --threshold 3.5     --sample-rate 4     --workers 28     --regenerate-only
 00:05:28 [INFO] __main__: Auto-detected candle parquet: models/candles/candles_austin.parquet
 ============================================================

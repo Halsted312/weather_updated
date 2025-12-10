@@ -234,13 +234,27 @@ def backfill_markets(
     """
     logger.info(f"Fetching markets for {series_ticker} from {min_close_ts} to {max_close_ts}")
 
-    # Fetch all markets (handles pagination internally)
-    markets = client.get_all_markets(
-        series_ticker=series_ticker,
-        status="closed,settled",
-        min_close_ts=min_close_ts,
-        max_close_ts=max_close_ts,
-    )
+    # Fetch all markets - Kalshi API requires separate calls per status
+    # (comma-separated status no longer supported)
+    markets = []
+    for status in ["settled", "closed"]:
+        status_markets = client.get_all_markets(
+            series_ticker=series_ticker,
+            status=status,
+            min_close_ts=min_close_ts,
+            max_close_ts=max_close_ts,
+        )
+        logger.info(f"  {status}: {len(status_markets)} markets")
+        markets.extend(status_markets)
+
+    # Deduplicate by ticker (in case of overlap)
+    seen_tickers = set()
+    unique_markets = []
+    for m in markets:
+        if m.ticker not in seen_tickers:
+            seen_tickers.add(m.ticker)
+            unique_markets.append(m)
+    markets = unique_markets
 
     if not markets:
         logger.info(f"No markets found for {series_ticker}")
@@ -321,13 +335,17 @@ def main():
     if args.dry_run:
         logger.info("DRY RUN - not writing to database")
         for series_ticker in series_tickers:
-            markets = client.get_all_markets(
-                series_ticker=series_ticker,
-                status="closed,settled",
-                min_close_ts=min_close_ts,
-                max_close_ts=max_close_ts,
-            )
-            logger.info(f"{series_ticker}: {len(markets)} markets found")
+            # Kalshi API requires separate calls per status
+            total = 0
+            for status in ["settled", "closed"]:
+                markets = client.get_all_markets(
+                    series_ticker=series_ticker,
+                    status=status,
+                    min_close_ts=min_close_ts,
+                    max_close_ts=max_close_ts,
+                )
+                total += len(markets)
+            logger.info(f"{series_ticker}: {total} markets found")
         return
 
     # Backfill each series with checkpoint tracking
