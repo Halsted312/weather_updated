@@ -1,12 +1,12 @@
 {
   "grow_policy": "SymmetricTree",
-  "depth": 7,
-  "iterations": 1318,
-  "learning_rate": 0.053906581594944686,
-  "border_count": 139,
-  "l2_leaf_reg": 31.30262150493859,
-  "min_data_in_leaf": 92,
-  "random_strength": 1.3504818443583864,
-  "colsample_bylevel": 0.6230015461679068,
-  "subsample": 0.7736080523427494
+  "depth": 6,
+  "iterations": 1137,
+  "learning_rate": 0.07818610240549075,
+  "border_count": 204,
+  "l2_leaf_reg": 3.1236059728487238,
+  "min_data_in_leaf": 117,
+  "random_strength": 1.4856356362929928,
+  "colsample_bylevel": 0.6120568490452296,
+  "subsample": 0.6194979378889551
 }
