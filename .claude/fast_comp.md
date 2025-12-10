@@ -1,9 +1,205 @@
-ou have 32 cores - CatBoost will use all of them automatically for each trial.
-Recommended Command for Denver:
-python scripts/train_city_ordinal_optuna.py --city denver --trials 100 --use-cached
-Quick test first (3 trials, ~5 min):
-python scripts/train_city_ordinal_optuna.py --city denver --trials 3 --use-cached
-The --workers flag only helps with dataset building from DB, which is skipped when using --use-cached. With 32 cores, each Optuna trial should be fast. Ready to exit plan mode so you can run it?
+.venv) (base) halsted@halsted:~/Python/weather_updated$ python scripts/train_city_ordinal_optuna.py --city denver --trials 25 --use-cached
+18:21:05 [INFO] __main__: ============================================================
+18:21:05 [INFO] __main__: DENVER Optuna Training (25 trials)
+18:21:05 [INFO] __main__: Optimization objective: weighted_auc
+18:21:05 [INFO] __main__: ============================================================
+18:21:05 [INFO] __main__: Loading cached train/test datasets from: models/saved/denver
+18:21:05 [INFO] __main__:   Train: models/saved/denver/train_data_full.parquet
+18:21:05 [INFO] __main__:   Test:  models/saved/denver/test_data_full.parquet
+18:21:05 [INFO] __main__: Loaded train: 389,712 rows, 256 columns
+18:21:05 [INFO] __main__: Loaded test:  97,128 rows, 256 columns
+18:21:05 [INFO] __main__: 
+NOAA feature columns check:
+18:21:05 [INFO] __main__:   ✓ nbm_peak_window_max_f: 0/389,712 non-null (0.0%)
+18:21:05 [INFO] __main__:   ✓ hrrr_peak_window_max_f: 0/389,712 non-null (0.0%)
+18:21:05 [INFO] __main__:   ✓ nbm_t15_z_30d_f: 0/389,712 non-null (0.0%)
+18:21:05 [INFO] __main__:   ✓ hrrr_t15_z_30d_f: 0/389,712 non-null (0.0%)
+18:21:05 [INFO] __main__:   ✓ hrrr_minus_nbm_t15_z_30d_f: 0/389,712 non-null (0.0%)
+18:21:05 [INFO] __main__: 
+Data range: 2023-01-01 to 2025-12-03
+18:21:05 [INFO] __main__: Training: 2023-01-01 to 2025-05-04 (855 days)
+18:21:05 [INFO] __main__: Testing:  2025-05-05 to 2025-12-03 (213 days)
+18:21:05 [INFO] __main__: 
+Training samples: 389,712
+18:21:05 [INFO] __main__: Training days: 855
+18:21:05 [INFO] __main__: Test samples: 97,128
+18:21:05 [INFO] __main__: Test days: 213
+18:21:05 [INFO] __main__: 
+Station-city features: ['station_city_temp_gap', 'station_city_max_gap_sofar', 'station_city_mean_gap_sofar', 'station_city_gap_std', 'city_warmer_flag', 'station_city_gap_trend', 'station_city_gap_x_fcst_gap']
+18:21:05 [INFO] __main__:   station_city_temp_gap: 389,628/389,712 non-null (100.0%)
+18:21:05 [INFO] __main__:   station_city_max_gap_sofar: 389,628/389,712 non-null (100.0%)
+18:21:05 [INFO] __main__:   station_city_mean_gap_sofar: 389,628/389,712 non-null (100.0%)
+18:21:05 [INFO] __main__:   station_city_gap_std: 389,628/389,712 non-null (100.0%)
+18:21:05 [INFO] __main__:   city_warmer_flag: 389,628/389,712 non-null (100.0%)
+18:21:05 [INFO] __main__:   station_city_gap_trend: 389,622/389,712 non-null (100.0%)
+18:21:05 [INFO] __main__:   station_city_gap_x_fcst_gap: 389,628/389,712 non-null (100.0%)
+18:21:05 [INFO] __main__: 
+Multi-horizon features: ['fcst_multi_mean', 'fcst_multi_median', 'fcst_multi_ema', 'fcst_multi_std', 'fcst_multi_range', 'fcst_multi_t1_t2_diff', 'fcst_multi_drift', 'fcst_multi_cv', 'fcst_multi_range_pct']
+18:21:05 [INFO] __main__:   fcst_multi_mean: 389,712/389,712 non-null (100.0%)
+18:21:05 [INFO] __main__:   fcst_multi_median: 389,712/389,712 non-null (100.0%)
+18:21:05 [INFO] __main__:   fcst_multi_ema: 389,712/389,712 non-null (100.0%)
+18:21:05 [INFO] __main__:   fcst_multi_std: 389,712/389,712 non-null (100.0%)
+18:21:05 [INFO] __main__:   fcst_multi_range: 389,712/389,712 non-null (100.0%)
+18:21:05 [INFO] __main__:   fcst_multi_t1_t2_diff: 389,712/389,712 non-null (100.0%)
+18:21:05 [INFO] __main__:   fcst_multi_drift: 389,712/389,712 non-null (100.0%)
+18:21:05 [INFO] __main__:   fcst_multi_cv: 389,712/389,712 non-null (100.0%)
+18:21:05 [INFO] __main__:   fcst_multi_range_pct: 389,712/389,712 non-null (100.0%)
+
+============================================================
+OPTUNA TRAINING (25 trials, objective=weighted_auc)
+============================================================
+18:21:05 [INFO] models.training.ordinal_trainer: Training ordinal model (catboost) on 389712 samples
+18:21:05 [INFO] models.training.ordinal_trainer: City delta range: [-12, 12]
+18:21:05 [INFO] models.training.ordinal_trainer: Training 24 threshold classifiers: [-11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+18:21:05 [INFO] models.training.ordinal_trainer: Starting Optuna tuning with 25 trials (objective=weighted_auc)
+18:21:05 [INFO] models.training.ordinal_trainer: Weighted AUC thresholds: [-1, 0, 1, 2]
+18:21:05 [INFO] models.training.ordinal_trainer: Threshold weights: {-1: np.float64(0.2298528333699857), 0: np.float64(0.24258157649347278), 1: np.float64(0.24661820529346945), 2: np.float64(0.23422195018793415)}
+Best trial: 8. Best value: 0.936735: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 25/25 [15:31<00:00, 37.25s/it]
+18:36:37 [INFO] models.training.ordinal_trainer: Best params: {'grow_policy': 'SymmetricTree', 'depth': 6, 'iterations': 1137, 'learning_rate': 0.07818610240549075, 'border_count': 204, 'l2_leaf_reg': 3.1236059728487238, 'min_data_in_leaf': 117, 'random_strength': 1.4856356362929928, 'colsample_bylevel': 0.6120568490452296, 'subsample': 0.6194979378889551}
+18:36:37 [INFO] models.training.ordinal_trainer: Best Weighted AUC: 0.9367
+18:36:40 [INFO] models.training.ordinal_trainer:   Threshold -11: trained (pos_rate=88.5%)
+18:36:45 [INFO] models.training.ordinal_trainer:   Threshold -10: trained (pos_rate=87.6%)
+18:36:47 [INFO] models.training.ordinal_trainer:   Threshold -9: trained (pos_rate=85.7%)
+18:36:48 [INFO] models.training.ordinal_trainer:   Threshold -8: trained (pos_rate=84.2%)
+18:36:50 [INFO] models.training.ordinal_trainer:   Threshold -7: trained (pos_rate=81.5%)
+18:36:52 [INFO] models.training.ordinal_trainer:   Threshold -6: trained (pos_rate=80.1%)
+18:36:54 [INFO] models.training.ordinal_trainer:   Threshold -5: trained (pos_rate=77.5%)
+18:36:55 [INFO] models.training.ordinal_trainer:   Threshold -4: trained (pos_rate=75.4%)
+18:36:57 [INFO] models.training.ordinal_trainer:   Threshold -3: trained (pos_rate=71.3%)
+18:37:00 [INFO] models.training.ordinal_trainer:   Threshold -2: trained (pos_rate=69.0%)
+18:37:01 [INFO] models.training.ordinal_trainer:   Threshold -1: trained (pos_rate=64.2%)
+18:37:03 [INFO] models.training.ordinal_trainer:   Threshold +0: trained (pos_rate=58.6%)
+18:37:06 [INFO] models.training.ordinal_trainer:   Threshold +1: trained (pos_rate=44.2%)
+18:37:12 [INFO] models.training.ordinal_trainer:   Threshold +2: trained (pos_rate=37.4%)
+18:37:13 [INFO] models.training.ordinal_trainer:   Threshold +3: trained (pos_rate=32.3%)
+18:37:15 [INFO] models.training.ordinal_trainer:   Threshold +4: trained (pos_rate=29.2%)
+18:37:17 [INFO] models.training.ordinal_trainer:   Threshold +5: trained (pos_rate=25.3%)
+18:37:19 [INFO] models.training.ordinal_trainer:   Threshold +6: trained (pos_rate=22.7%)
+18:37:21 [INFO] models.training.ordinal_trainer:   Threshold +7: trained (pos_rate=19.5%)
+18:37:24 [INFO] models.training.ordinal_trainer:   Threshold +8: trained (pos_rate=17.2%)
+18:37:25 [INFO] models.training.ordinal_trainer:   Threshold +9: trained (pos_rate=15.2%)
+18:37:27 [INFO] models.training.ordinal_trainer:   Threshold +10: trained (pos_rate=13.0%)
+18:37:29 [INFO] models.training.ordinal_trainer:   Threshold +11: trained (pos_rate=11.0%)
+18:37:31 [INFO] models.training.ordinal_trainer:   Threshold +12: trained (pos_rate=9.5%)
+18:37:31 [INFO] models.training.ordinal_trainer: Ordinal training complete: 24 classifiers
+
+============================================================
+EVALUATION
+============================================================
+
+Test Set Metrics:
+----------------------------------------
+  delta_accuracy: 0.1957
+  delta_mae: 4.6009
+  off_by_1_rate: 0.1607
+  off_by_2plus_rate: 0.6436
+  within_1_rate: 0.3564
+  within_2_rate: 0.5058
+18:37:33 [INFO] models.training.ordinal_trainer: Saved ordinal model to models/saved/denver/ordinal_catboost_optuna.pkl
+18:37:33 [INFO] __main__: 
+Saved model to models/saved/denver/ordinal_catboost_optuna.pkl
+18:37:33 [INFO] __main__: Saved best params to models/saved/denver/best_params.json
+18:37:33 [INFO] __main__: Saved final metrics to models/saved/denver/final_metrics_denver.json
+
+============================================================
+FEATURE IMPORTANCE
+============================================================
+
+Top 30 Features:
+                           feature  importance
+0            fcst_prev_hour_of_max   10.994010
+1          temp_zscore_vs_forecast    9.325909
+2             fcst_peak_hour_float    4.692571
+3          confidence_weighted_gap    3.836804
+4                   fcst_obs_ratio    3.308182
+5              fcst_cloudcover_max    3.213779
+6                 obs_fcst_max_gap    3.034073
+7             log_abs_obs_fcst_gap    2.332155
+8             obs_fcst_gap_squared    2.324329
+9                    fcst_multi_cv    2.268940
+10        fcst_peak_band_width_min    2.230776
+11                delta_vcmax_lag1    2.162897
+12            fcst_cloudcover_mean    2.139872
+13      minutes_since_max_observed    2.073591
+14           fcst_multi_t1_t2_diff    2.059343
+15           gap_x_hours_remaining    1.766939
+16  log_expected_delta_uncertainty    1.684912
+17            fcst_multi_range_pct    1.582331
+18             fcst_dewpoint_range    1.531671
+19      expected_delta_uncertainty    1.487878
+20               err_max_pos_sofar    1.414681
+21      fcst_humidity_morning_mean    1.288947
+22                fcst_drift_std_f    1.280438
+23             fcst_humidity_range    1.268688
+24                         doy_cos    1.190539
+25        fcst_remaining_potential    1.095733
+26                remaining_upside    1.080600
+27                 fcst_prev_std_f    1.070763
+28                           month    0.976738
+29               fcst_dewpoint_min    0.904126
+
+----------------------------------------
+Station-city feature importance:
+                         feature  importance
+53    station_city_max_gap_sofar    0.406499
+74   station_city_mean_gap_sofar    0.223615
+106       station_city_gap_trend    0.040685
+107  station_city_gap_x_fcst_gap    0.038592
+108         station_city_gap_std    0.037303
+184        station_city_temp_gap    0.000000
+  station_city_max_gap_sofar: rank 54/220
+  station_city_mean_gap_sofar: rank 75/220
+  station_city_gap_trend: rank 107/220
+  station_city_gap_x_fcst_gap: rank 108/220
+  station_city_gap_std: rank 109/220
+  station_city_temp_gap: rank 185/220
+
+----------------------------------------
+Multi-horizon feature importance:
+                  feature  importance
+9           fcst_multi_cv    2.268940
+14  fcst_multi_t1_t2_diff    2.059343
+17   fcst_multi_range_pct    1.582331
+30         fcst_multi_std    0.847269
+33       fcst_multi_range    0.811359
+50       fcst_multi_drift    0.469530
+56        fcst_multi_mean    0.374292
+61         fcst_multi_ema    0.332189
+66      fcst_multi_median    0.303320
+  fcst_multi_cv: rank 10/220
+  fcst_multi_t1_t2_diff: rank 15/220
+  fcst_multi_range_pct: rank 18/220
+  fcst_multi_std: rank 31/220
+  fcst_multi_range: rank 34/220
+  fcst_multi_drift: rank 51/220
+  fcst_multi_mean: rank 57/220
+  fcst_multi_ema: rank 62/220
+  fcst_multi_median: rank 67/220
+
+============================================================
+SUMMARY
+============================================================
+City: denver
+Model: models/saved/denver/ordinal_catboost_optuna.pkl
+Params: models/saved/denver/best_params.json
+Metrics: models/saved/denver/final_metrics_denver.json
+Training samples: 389,712
+Test samples: 97,128
+Optuna trials: 25
+Best params: {'grow_policy': 'SymmetricTree', 'depth': 6, 'iterations': 1137, 'learning_rate': 0.07818610240549075, 'border_count': 204, 'l2_leaf_reg': 3.1236059728487238, 'min_data_in_leaf': 117, 'random_strength': 1.4856356362929928, 'colsample_bylevel': 0.6120568490452296, 'subsample': 0.6194979378889551}
+
+Key Metrics:
+  Accuracy: 19.6%
+  MAE: 4.60
+  Within 1: 35.6%
+  Within 2: 50.6%
+
+============================================================
+DONE
+============================================================
+
+
+
 
 
 (.venv) (base) halsted@halsted:~/Python/weather_updated$ PYTHONPATH=. python scripts/train_edge_classifier.py     --city austin     --threshold 3.5     --sample-rate 4     --workers 28     --regenerate-only
