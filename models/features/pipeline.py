@@ -658,9 +658,15 @@ def compute_snapshot_features(
     # 17. Labels (training only)
     # ==========================================================================
     if include_labels and ctx.settle_f is not None:
-        vc_max = features.get("vc_max_f_sofar", 0) or 0
-        delta = ctx.settle_f - vc_max
-        features["delta"] = int(round(delta))
+        # Delta = settlement - T-1 forecast (NOT observed max so far)
+        # The model predicts deviation from the forecast, not from current obs
+        fcst_max = features.get("fcst_prev_max_f")
+        if fcst_max is not None:
+            delta = ctx.settle_f - fcst_max
+            features["delta"] = int(round(delta))
+        else:
+            # Fallback if no forecast available - use 0 delta (will be filtered)
+            features["delta"] = 0
         features["settle_f"] = ctx.settle_f
 
     # ==========================================================================
