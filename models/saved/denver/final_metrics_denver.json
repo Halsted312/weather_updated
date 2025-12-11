@@ -1,41 +1,41 @@
 {
   "city": "denver",
-  "trained_at": "2025-12-09T18:37:33.301967",
-  "n_train_samples": 389712,
-  "n_train_days": 855,
-  "n_test_samples": 97128,
-  "n_test_days": 213,
+  "trained_at": "2025-12-11T15:53:00.068671",
+  "n_train_samples": 158232,
+  "n_train_days": 347,
+  "n_test_samples": 17784,
+  "n_test_days": 39,
   "date_range": {
-    "min_date": "2023-01-01",
-    "max_date": "2025-12-03",
-    "train_start": "2023-01-01",
-    "train_end": "2025-05-04",
-    "test_start": "2025-05-05",
-    "test_end": "2025-12-03"
+    "min_date": "2024-11-20",
+    "max_date": "2025-12-10",
+    "train_start": "2024-11-20",
+    "train_end": "2025-11-01",
+    "test_start": "2025-11-02",
+    "test_end": "2025-12-10"
   },
   "delta_range": [
-    -12,
-    12
+    -3,
+    3
   ],
-  "optuna_trials": 25,
+  "optuna_trials": 120,
   "cv_splits": 4,
   "include_station_city": true,
   "metrics": {
-    "delta_accuracy": 0.19565933613376163,
-    "delta_mae": 4.600877192982456,
-    "within_1_rate": 0.3564059797380776,
-    "within_2_rate": 0.5058067704472449
+    "delta_accuracy": 0.3476158344579397,
+    "delta_mae": 1.6957939721097617,
+    "within_1_rate": 0.5808029689608637,
+    "within_2_rate": 0.8714012595591543
   },
   "best_params": {
     "grow_policy": "SymmetricTree",
     "depth": 6,
-    "iterations": 1137,
-    "learning_rate": 0.07818610240549075,
-    "border_count": 204,
-    "l2_leaf_reg": 3.1236059728487238,
-    "min_data_in_leaf": 117,
-    "random_strength": 1.4856356362929928,
-    "colsample_bylevel": 0.6120568490452296,
-    "subsample": 0.6194979378889551
+    "iterations": 668,
+    "learning_rate": 0.03927719431111035,
+    "border_count": 175,
+    "l2_leaf_reg": 17.44101104049194,
+    "min_data_in_leaf": 81,
+    "random_strength": 0.21922661357193496,
+    "colsample_bylevel": 0.5984688839094451,
+    "subsample": 0.8253091066040598
   }
 }

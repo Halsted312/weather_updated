@@ -113,7 +113,8 @@ class SnapshotContext:
     obs_df: Optional[pd.DataFrame] = None
 
     # Forecast (optional)
-    fcst_daily: Optional[dict] = None
+    fcst_daily: Optional[dict] = None  # City-level T-1 forecast
+    fcst_daily_station: Optional[dict] = None  # Station-level T-1 forecast
     fcst_hourly_df: Optional[pd.DataFrame] = None
     fcst_multi: Optional[dict[int, Optional[dict]]] = None  # Multi-horizon {lead_day: forecast}
 
@@ -233,14 +234,32 @@ def _add_forecast_features(features: dict[str, Any], ctx: SnapshotContext) -> No
         tempmax_f = ctx.fcst_daily.get("tempmax_f")
         tempmin_f = ctx.fcst_daily.get("tempmin_f")
 
-        features["fcst_prev_max_f"] = tempmax_f
+        features["fcst_prev_max_f"] = tempmax_f  # City-level forecast
         features["fcst_prev_min_f"] = tempmin_f
+
+        # Station-level forecast features (if available)
+        if ctx.fcst_daily_station:
+            station_tempmax_f = ctx.fcst_daily_station.get("tempmax_f")
+            features["fcst_station_max_f"] = station_tempmax_f
+            # Compute city-station gap (valuable signal - varies by city)
+            if tempmax_f is not None and station_tempmax_f is not None:
+                features["fcst_city_station_gap"] = station_tempmax_f - tempmax_f
+            else:
+                features["fcst_city_station_gap"] = None
+        else:
+            features["fcst_station_max_f"] = None
+            features["fcst_city_station_gap"] = None
 
         # Compute other static features from hourly
         if ctx.fcst_hourly_df is not None and not ctx.fcst_hourly_df.empty:
             hourly_temps = ctx.fcst_hourly_df["temp_f"].dropna().tolist()
             static_fs = compute_forecast_static_features(hourly_temps)
-            features.update(static_fs.to_dict())
+            # Don't overwrite fcst_prev_max_f/min_f from daily forecast with hourly-derived values
+            # Daily tempmax_f is the official forecast high, max(hourly_temps) is different
+            static_dict = static_fs.to_dict()
+            static_dict.pop("fcst_prev_max_f", None)
+            static_dict.pop("fcst_prev_min_f", None)
+            features.update(static_dict)
         else:
             # Use daily values if no hourly
             if tempmax_f is not None:
@@ -658,9 +677,9 @@ def compute_snapshot_features(
     # 17. Labels (training only)
     # ==========================================================================
     if include_labels and ctx.settle_f is not None:
-        # Delta = settlement - T-1 forecast (NOT observed max so far)
-        # The model predicts deviation from the forecast, not from current obs
-        fcst_max = features.get("fcst_prev_max_f")
+        # Delta = settlement - T-1 STATION forecast (settlement comes from station obs)
+        # Fall back to city forecast if station not available
+        fcst_max = features.get("fcst_station_max_f") or features.get("fcst_prev_max_f")
         if fcst_max is not None:
             delta = ctx.settle_f - fcst_max
             features["delta"] = int(round(delta))

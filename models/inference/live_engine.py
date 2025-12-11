@@ -187,6 +187,7 @@ class LiveInferenceEngine:
             timestamps_sofar=timestamps_sofar,
             obs_df=data["obs_df"],
             fcst_daily=data["fcst_daily"],
+            fcst_daily_station=data.get("fcst_daily_station"),
             fcst_hourly_df=data["fcst_hourly_df"],
             fcst_multi=data["fcst_multi"],
             candles_df=data["candles_df"],

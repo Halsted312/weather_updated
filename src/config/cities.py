@@ -26,6 +26,13 @@ class CityConfig:
     # Station coordinates from NOAA/NCEI (for historical forecast queries)
     latitude: float  # Station latitude (decimal degrees)
     longitude: float  # Station longitude (decimal degrees)
+    # Kalshi 1-min candle coverage (as of 2025-12-11)
+    kalshi_candles_first: str  # First date with 1-min candles (may have gaps)
+    kalshi_candles_continuous_from: str  # Continuous coverage starts (no gaps after)
+    # Recommended training start (earliest date with all data sources available)
+    training_start_date: str  # Default start date for model training
+    # Delta range for ordinal model training (min, max)
+    delta_range: tuple[int, int] = (-3, 3)  # Station forecasts are accurate: 99.4% within ±3°F
 
     @property
     def vc_location(self) -> str:
@@ -57,6 +64,9 @@ CITIES: Dict[str, CityConfig] = {
         vc_city_query="Chicago,IL",
         latitude=41.78412,
         longitude=-87.75514,
+        kalshi_candles_first="2021-12-31",
+        kalshi_candles_continuous_from="2023-12-25",  # 1 gap: 2023-12-24
+        training_start_date="2023-12-25",  # 716 days, continuous coverage
     ),
     "austin": CityConfig(
         city_id="austin",
@@ -70,6 +80,9 @@ CITIES: Dict[str, CityConfig] = {
         vc_city_query="Austin,TX",
         latitude=30.18311,
         longitude=-97.67989,
+        kalshi_candles_first="2023-05-12",
+        kalshi_candles_continuous_from="2025-12-01",  # 5 gaps before this
+        training_start_date="2023-05-12",  # 941 usable days (5 gaps - auto filtered)
     ),
     "denver": CityConfig(
         city_id="denver",
@@ -83,6 +96,9 @@ CITIES: Dict[str, CityConfig] = {
         vc_city_query="Denver,CO",
         latitude=39.84657,
         longitude=-104.65623,
+        kalshi_candles_first="2024-11-20",
+        kalshi_candles_continuous_from="2025-12-01",  # 1 gap: 2025-11-30
+        training_start_date="2024-11-20",  # 387 usable days (1 gap - auto filtered)
     ),
     "los_angeles": CityConfig(
         city_id="los_angeles",
@@ -96,6 +112,9 @@ CITIES: Dict[str, CityConfig] = {
         vc_city_query="Los Angeles,CA",
         latitude=33.93816,
         longitude=-118.38660,
+        kalshi_candles_first="2025-01-05",
+        kalshi_candles_continuous_from="2025-01-05",  # No gaps (newest city)
+        training_start_date="2025-01-05",  # 342 days, perfect coverage
     ),
     "miami": CityConfig(
         city_id="miami",
@@ -109,6 +128,9 @@ CITIES: Dict[str, CityConfig] = {
         vc_city_query="Miami,FL",
         latitude=25.78805,
         longitude=-80.31694,
+        kalshi_candles_first="2023-05-12",
+        kalshi_candles_continuous_from="2025-12-01",  # 2 gaps: 2023-12-24, 2025-11-30
+        training_start_date="2023-05-12",  # 944 usable days (2 gaps - auto filtered)
     ),
     "philadelphia": CityConfig(
         city_id="philadelphia",
@@ -122,6 +144,9 @@ CITIES: Dict[str, CityConfig] = {
         vc_city_query="Philadelphia,PA",
         latitude=39.87326,
         longitude=-75.22681,
+        kalshi_candles_first="2024-11-20",
+        kalshi_candles_continuous_from="2025-12-01",  # 1 gap: 2025-11-30
+        training_start_date="2024-11-20",  # 387 usable days (1 gap - auto filtered)
     ),
 }
 

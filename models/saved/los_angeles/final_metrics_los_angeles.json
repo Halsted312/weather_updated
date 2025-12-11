@@ -1,41 +1,41 @@
 {
   "city": "los_angeles",
-  "trained_at": "2025-12-06T16:48:53.965204",
-  "n_train_samples": 389808,
-  "n_train_days": 855,
-  "n_test_samples": 97128,
-  "n_test_days": 213,
+  "trained_at": "2025-12-11T16:26:11.956930",
+  "n_train_samples": 139080,
+  "n_train_days": 305,
+  "n_test_samples": 15960,
+  "n_test_days": 35,
   "date_range": {
-    "min_date": "2023-01-01",
-    "max_date": "2025-12-03",
-    "train_start": "2023-01-01",
-    "train_end": "2025-05-04",
-    "test_start": "2025-05-05",
-    "test_end": "2025-12-03"
+    "min_date": "2025-01-05",
+    "max_date": "2025-12-10",
+    "train_start": "2025-01-05",
+    "train_end": "2025-11-05",
+    "test_start": "2025-11-06",
+    "test_end": "2025-12-10"
   },
   "delta_range": [
-    -12,
-    12
+    -3,
+    3
   ],
-  "optuna_trials": 150,
+  "optuna_trials": 120,
   "cv_splits": 4,
   "include_station_city": true,
   "metrics": {
-    "delta_accuracy": 0.2654229470389589,
-    "delta_mae": 2.0704740136726794,
-    "within_1_rate": 0.5603121653900008,
-    "within_2_rate": 0.7326414628119595
+    "delta_accuracy": 0.3714912280701754,
+    "delta_mae": 0.9142230576441103,
+    "within_1_rate": 0.8,
+    "within_2_rate": 0.9142857142857143
   },
   "best_params": {
     "grow_policy": "SymmetricTree",
     "depth": 5,
-    "iterations": 1099,
-    "learning_rate": 0.026027115804080462,
-    "border_count": 154,
-    "l2_leaf_reg": 15.38496554136279,
-    "min_data_in_leaf": 42,
-    "random_strength": 1.1805707340144176,
-    "colsample_bylevel": 0.6535587020018705,
-    "subsample": 0.6716897952947537
+    "iterations": 648,
+    "learning_rate": 0.04986080730902581,
+    "border_count": 140,
+    "l2_leaf_reg": 29.439030757280758,
+    "min_data_in_leaf": 127,
+    "random_strength": 0.6278131986921732,
+    "colsample_bylevel": 0.7741385407781234,
+    "subsample": 0.6450612833930518
   }
 }

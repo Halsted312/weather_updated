@@ -164,11 +164,13 @@ NUMERIC_FEATURE_COLS: list[str] = [
     # Note: err_{rule}_sofar features are EXCLUDED (target leakage)
     # Note: disagree_flag_sofar EXCLUDED (99.4% constant at 1)
     "range_pred_rules_sofar", "num_distinct_preds_sofar",
-    # T-1 Forecast features
+    # T-1 Forecast features (city-level)
     "fcst_prev_max_f", "fcst_prev_min_f", "fcst_prev_mean_f", "fcst_prev_std_f",
     "fcst_prev_q10_f", "fcst_prev_q25_f", "fcst_prev_q50_f",
     "fcst_prev_q75_f", "fcst_prev_q90_f",
     "fcst_prev_frac_part", "fcst_prev_hour_of_max", "t_forecast_base",
+    # T-1 Forecast features (station-level) - critical for settlement alignment
+    "fcst_station_max_f", "fcst_city_station_gap",
     # Feature Group 1: Integer boundary features
     "fcst_prev_distance_to_int", "fcst_prev_near_boundary_flag",
     # Feature Group 2: Peak window features (from hourly/15-min curve)

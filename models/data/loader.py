@@ -194,26 +194,28 @@ def load_historical_forecast_daily(
     city_id: str,
     target_date: date,
     basis_date: date,
+    location_type: str = "city",
 ) -> Optional[dict]:
     """Load T-1 daily forecast for a specific target date.
 
     Used to get "what did VC think yesterday about today's high?"
 
-    Note: Forecasts are stored under 'city' locations (e.g., "Chicago,IL"),
-    not 'station' locations (e.g., "KMDW").
+    Both city and station forecasts are available in the database:
+    - City forecasts: aggregate from multiple stations near city center
+    - Station forecasts: from specific airport station (KMDW, etc.)
 
     Args:
         session: Database session
         city_id: City identifier
         target_date: The day we're predicting
         basis_date: When the forecast was issued (typically target_date - 1)
+        location_type: 'city' for city-aggregate or 'station' for station-specific
 
     Returns:
         Dict with forecast fields or None if not found:
             tempmax_f, tempmin_f, temp_f, humidity, precip_in, etc.
     """
-    # Forecasts are on city locations, not station locations
-    vc_location_id = get_vc_location_id(session, city_id, "city")
+    vc_location_id = get_vc_location_id(session, city_id, location_type)
 
     if vc_location_id is None:
         return None
@@ -1104,9 +1106,10 @@ def load_full_inference_data(
     if len(temps_sofar) == 0:
         raise ValueError(f"No valid temperatures in observations for {city_id}")
 
-    # 2. Load T-1 forecasts (daily + hourly)
+    # 2. Load T-1 forecasts (daily + hourly) - both city and station levels
     basis_date = event_date - timedelta(days=1)
-    fcst_daily = load_historical_forecast_daily(session, city_id, event_date, basis_date)
+    fcst_daily = load_historical_forecast_daily(session, city_id, event_date, basis_date, location_type="city")
+    fcst_daily_station = load_historical_forecast_daily(session, city_id, event_date, basis_date, location_type="station")
     fcst_hourly_df = load_historical_forecast_hourly(session, city_id, event_date, basis_date)
     if fcst_hourly_df is not None and fcst_hourly_df.empty:
         fcst_hourly_df = None
@@ -1166,6 +1169,7 @@ def load_full_inference_data(
         "temps_sofar": temps_sofar,
         "timestamps_sofar": timestamps_sofar,
         "fcst_daily": fcst_daily,
+        "fcst_daily_station": fcst_daily_station,
         "fcst_hourly_df": fcst_hourly_df,
         "fcst_multi": fcst_multi,
         "candles_df": candles_df,

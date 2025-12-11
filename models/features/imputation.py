@@ -28,6 +28,9 @@ FORECAST_STATIC_COLS = [
     "fcst_prev_frac_part",
     "fcst_prev_hour_of_max",
     "t_forecast_base",
+    # Station-level forecast features
+    "fcst_station_max_f",
+    "fcst_city_station_gap",
 ]
 
 FORECAST_ERROR_COLS = [

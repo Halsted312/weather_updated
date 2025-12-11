@@ -278,14 +278,21 @@ class OrdinalDeltaTrainer(BaseTrainer):
                         y_tr_k = (y.iloc[train_idx] >= k).astype(int)
                         y_va_k = (y_va_delta >= k).astype(int)
 
-                        # Skip if validation has only one class
-                        if len(y_va_k.unique()) < 2:
+                        # Skip if train or validation has only one class
+                        if len(y_tr_k.unique()) < 2 or len(y_va_k.unique()) < 2:
                             continue
 
                         model = CatBoostClassifier(**params)
                         train_pool = Pool(X_tr, y_tr_k, cat_features=self._cat_features)
                         val_pool = Pool(X_va, y_va_k, cat_features=self._cat_features)
-                        model.fit(train_pool, eval_set=val_pool, early_stopping_rounds=50)
+
+                        try:
+                            model.fit(train_pool, eval_set=val_pool, early_stopping_rounds=50)
+                        except Exception as e:
+                            if "only one unique value" in str(e):
+                                # Skip threshold if CV fold has constant target (skewed data)
+                                continue
+                            raise
 
                         from sklearn.metrics import roc_auc_score
                         proba = model.predict_proba(val_pool)[:, 1]
@@ -373,16 +380,35 @@ class OrdinalDeltaTrainer(BaseTrainer):
         """
         logger.info(f"Training ordinal model ({self.base_model_type}) on {len(df_train)} samples")
 
+        # Fixed delta range for ALL cities: -3 to +3
+        # Station forecasts are accurate: 99.4%+ within ±3°F
+        # Extreme deltas (<0.2% samples) get clipped to boundaries
+        self._min_delta = -3
+        self._max_delta = 3
+
+        # Clip deltas BEFORE extracting features (rare extremes → -3 or +3)
+        actual_min_before = int(df_train['delta'].min())
+        actual_max_before = int(df_train['delta'].max())
+
+        df_train = df_train.copy()
+        df_train['delta'] = df_train['delta'].clip(self._min_delta, self._max_delta)
+
+        # Also clip validation set if provided
+        if df_val is not None:
+            df_val = df_val.copy()
+            df_val['delta'] = df_val['delta'].clip(self._min_delta, self._max_delta)
+
+        n_clipped_train = ((df_train['delta'] == self._min_delta) | (df_train['delta'] == self._max_delta)).sum()
+
+        # NOW extract features with clipped deltas
         X_train, y_train = self._prepare_features(df_train)
 
-        # Fixed symmetric delta range for all cities (standardized pipeline)
-        # Covers vast majority of data, handles both cooling and warming patterns
-        self._min_delta = -12  # Standardized for all cities
-        self._max_delta = 12   # Standardized for all cities
         self.thresholds = list(range(self._min_delta + 1, self._max_delta + 1))
         self._delta_classes = list(range(self._min_delta, self._max_delta + 1))
 
-        logger.info(f"City delta range: [{self._min_delta}, {self._max_delta}]")
+        logger.info(f"Delta range (FIXED for all cities): [{self._min_delta}, {self._max_delta}]")
+        logger.info(f"  Actual before clip: [{actual_min_before}, {actual_max_before}]")
+        logger.info(f"  Clipped {n_clipped_train:,} train samples ({100.0*n_clipped_train/len(df_train):.2f}%)")
         logger.info(f"Training {len(self.thresholds)} threshold classifiers: {self.thresholds}")
 
         # Get categorical feature indices for CatBoost
