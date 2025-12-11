@@ -173,6 +173,12 @@ def _compute_market_clock_features(ctx: SnapshotContext) -> dict[str, Any]:
     event_date = ctx.event_date
     market_open = ctx.window_start
 
+    # Normalize to naive datetimes to avoid mixing aware/naive
+    if hasattr(cutoff_time, 'tzinfo') and cutoff_time.tzinfo is not None:
+        cutoff_time = cutoff_time.replace(tzinfo=None)
+    if hasattr(market_open, 'tzinfo') and market_open.tzinfo is not None:
+        market_open = market_open.replace(tzinfo=None)
+
     # Minutes since market open (using window_start as market open)
     delta_seconds = (cutoff_time - market_open).total_seconds()
     minutes_since_market_open = max(0, int(delta_seconds // 60))

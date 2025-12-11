@@ -203,7 +203,7 @@ NUMERIC_FEATURE_COLS: list[str] = [
     "time_of_day_sin", "time_of_day_cos",
     # Day-level features
     "doy_sin", "doy_cos", "week_sin", "week_cos",
-    "month", "is_weekend",
+    "is_weekend",  # month moved to categorical
     # Lag features (small % nulls - median imputation OK)
     "settle_f_lag1", "settle_f_lag2", "settle_f_lag7",
     "vc_max_f_lag1", "vc_max_f_lag7", "delta_vcmax_lag1",
@@ -280,6 +280,7 @@ MARKET_FEATURE_COLS: list[str] = [
 
 CATEGORICAL_FEATURE_COLS: list[str] = [
     "city",
+    "month",  # Treat month as categorical for seasonal patterns
 ]
 
 # Delta classes for the Δ-model

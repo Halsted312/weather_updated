@@ -99,7 +99,9 @@ def compute_market_features(
             # Candles are naive
             if isinstance(snapshot_time, datetime) and snapshot_time.tzinfo is not None:
                 df["bucket_start"] = df["bucket_start"].dt.tz_localize("UTC")
-        df = df[df["bucket_start"] <= snapshot_time]
+        # Use strict < to exclude the currently-forming candle
+        # At 14:35:00, we only want candles from 14:34:59 and earlier
+        df = df[df["bucket_start"] < snapshot_time]
 
     if df.empty:
         return FeatureSet(name="market", features=null_features)
@@ -219,7 +221,8 @@ def compute_market_bracket_features(
             continue
 
         if snapshot_time is not None:
-            df = df[df["bucket_start"] <= snapshot_time]
+            # Use strict < to exclude the currently-forming candle
+            df = df[df["bucket_start"] < snapshot_time]
 
         if df.empty:
             continue

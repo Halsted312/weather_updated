@@ -135,8 +135,13 @@ def _get_obs_in_window(
     if obs_df.empty or column not in obs_df.columns:
         return pd.Series(dtype=float)
 
-    cutoff = snapshot_time - timedelta(minutes=window_minutes)
-    mask = (obs_df["datetime_local"] >= cutoff) & (obs_df["datetime_local"] <= snapshot_time)
+    # Normalize to naive datetimes for comparison
+    cmp_time = snapshot_time
+    if isinstance(snapshot_time, datetime) and snapshot_time.tzinfo is not None:
+        cmp_time = snapshot_time.replace(tzinfo=None)
+
+    cutoff = cmp_time - timedelta(minutes=window_minutes)
+    mask = (obs_df["datetime_local"] >= cutoff) & (obs_df["datetime_local"] <= cmp_time)
     return obs_df.loc[mask, column].dropna()
 
 
@@ -188,13 +193,14 @@ def compute_meteo_advanced_features(
     if not pd.api.types.is_datetime64_any_dtype(df["datetime_local"]):
         df["datetime_local"] = pd.to_datetime(df["datetime_local"])
 
-    # Filter to snapshot time if provided
+    # Filter to snapshot time if provided - normalize to naive for comparison
+    cmp_time = snapshot_time
     if snapshot_time is not None:
-        # Handle timezone comparison
+        if isinstance(snapshot_time, datetime) and snapshot_time.tzinfo is not None:
+            cmp_time = snapshot_time.replace(tzinfo=None)
         if df["datetime_local"].dt.tz is not None:
-            if isinstance(snapshot_time, datetime) and snapshot_time.tzinfo is None:
-                df["datetime_local"] = df["datetime_local"].dt.tz_localize(None)
-        df = df[df["datetime_local"] <= snapshot_time]
+            df["datetime_local"] = df["datetime_local"].dt.tz_localize(None)
+        df = df[df["datetime_local"] <= cmp_time]
 
     if df.empty:
         return FeatureSet(name="meteo_advanced", features=null_features)
@@ -209,7 +215,7 @@ def compute_meteo_advanced_features(
     last_time = df["datetime_local"].iloc[-1]
 
     # If snapshot_time provided, use it for window calculations
-    ref_time = snapshot_time if snapshot_time else last_time
+    ref_time = cmp_time if cmp_time else last_time
 
     # =========================================================================
     # WET BULB FEATURES

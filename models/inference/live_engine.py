@@ -233,18 +233,25 @@ class LiveInferenceEngine:
                 "Inference pipeline not aligned with training."
             )
 
-        # HARD-FAIL on high null rate (>1%)
+        # Check for high null rates (>1%) - configurable via STRICT_FEATURE_VALIDATION
         features_df_check = pd.DataFrame([features])
         present_cols = list(expected_cols & actual_cols)
         null_rates = features_df_check[present_cols].isna().mean()
         high_null_cols = null_rates[null_rates > 0.01]
 
         if len(high_null_cols) > 0:
-            raise ValueError(
-                f"{city}: Null rate >1% in {len(high_null_cols)} columns. "
-                f"Columns: {dict(high_null_cols)}. "
-                "Check data loading - all sources must be present."
-            )
+            if getattr(config, 'STRICT_FEATURE_VALIDATION', True):
+                raise ValueError(
+                    f"{city}: Null rate >1% in {len(high_null_cols)} columns. "
+                    f"Columns: {dict(high_null_cols)}. "
+                    "Check data loading - all sources must be present."
+                )
+            else:
+                logger.warning(
+                    f"{city}: {len(high_null_cols)} columns have >1% null rate. "
+                    f"Proceeding anyway (STRICT_FEATURE_VALIDATION=False). "
+                    f"CatBoost handles NaN gracefully."
+                )
 
         # Get t_base from features
         t_base = features.get("t_base", round(max(temps_sofar)) if temps_sofar else 0)

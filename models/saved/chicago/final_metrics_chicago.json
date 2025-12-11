@@ -1,17 +1,17 @@
 {
   "city": "chicago",
-  "trained_at": "2025-12-08T11:17:04.612484",
-  "n_train_samples": 389712,
-  "n_train_days": 855,
-  "n_test_samples": 97128,
-  "n_test_days": 213,
+  "trained_at": "2025-12-09T23:09:31.388920",
+  "n_train_samples": 149568,
+  "n_train_days": 328,
+  "n_test_samples": 37848,
+  "n_test_days": 83,
   "date_range": {
-    "min_date": "2023-01-01",
-    "max_date": "2025-12-03",
-    "train_start": "2023-01-01",
-    "train_end": "2025-05-04",
-    "test_start": "2025-05-05",
-    "test_end": "2025-12-03"
+    "min_date": "2024-10-24",
+    "max_date": "2025-12-08",
+    "train_start": "2024-10-24",
+    "train_end": "2025-09-16",
+    "test_start": "2025-09-17",
+    "test_end": "2025-12-08"
   },
   "delta_range": [
     -12,
@@ -21,21 +21,21 @@
   "cv_splits": 4,
   "include_station_city": true,
   "metrics": {
-    "delta_accuracy": 0.23962194217939214,
-    "delta_mae": 2.3248085001235483,
-    "within_1_rate": 0.5136212008895478,
-    "within_2_rate": 0.6720719051148999
+    "delta_accuracy": 0.09794440921581062,
+    "delta_mae": 8.177473050095116,
+    "within_1_rate": 0.2415451278799408,
+    "within_2_rate": 0.28770344536038894
   },
   "best_params": {
     "grow_policy": "SymmetricTree",
-    "depth": 8,
-    "iterations": 1453,
-    "learning_rate": 0.04379074175964758,
-    "border_count": 224,
-    "l2_leaf_reg": 38.212017260950894,
-    "min_data_in_leaf": 111,
-    "random_strength": 1.434812553927814,
-    "colsample_bylevel": 0.7680988118297574,
-    "subsample": 0.8709869447397797
+    "depth": 5,
+    "iterations": 1440,
+    "learning_rate": 0.024009283478176636,
+    "border_count": 247,
+    "l2_leaf_reg": 11.208502031091603,
+    "min_data_in_leaf": 118,
+    "random_strength": 0.5448603601799336,
+    "colsample_bylevel": 0.5130757577830849,
+    "subsample": 0.9193325422408598
   }
 }

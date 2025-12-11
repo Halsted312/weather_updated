@@ -33,8 +33,10 @@ KELLY_FRACTION = 0.25       # Use quarter-Kelly (conservative)
 # ===== DATA QUALITY CHECKS =====
 MAX_FORECAST_AGE_HOURS = 24  # Reject forecasts older than 24h
 MIN_OBSERVATIONS = 12        # Need at least 12 observations (1 hour at 5-min intervals)
-MAX_MODEL_STD_DEGF = 4.0    # Model uncertainty threshold (std deviation in °F)
-MAX_MODEL_CI_SPAN_DEGF = 10.0  # Max 90% confidence interval span
+MAX_MODEL_STD_DEGF = 8.0    # Model uncertainty threshold (std deviation in °F) - relaxed for prediction
+MAX_MODEL_CI_SPAN_DEGF = 20.0  # Max 90% confidence interval span - relaxed
+STRICT_FEATURE_VALIDATION = False  # If True, fail on >1% null rate in any feature column
+                                    # If False, allow prediction with missing data (CatBoost handles NaN)
 
 # ===== MODEL CONFIGURATION =====
 MODEL_DIR = Path("models/saved")

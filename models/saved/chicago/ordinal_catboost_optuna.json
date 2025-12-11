@@ -1,8 +1,8 @@
 {
   "model_type": "ordinal_catboost",
-  "trained_at": "2025-12-08T11:17:02.799565",
-  "n_train_samples": 389712,
-  "n_train_days": 855,
+  "trained_at": "2025-12-09T23:09:30.408239",
+  "n_train_samples": 149568,
+  "n_train_days": 328,
   "delta_range": [
     -12,
     12
@@ -93,14 +93,14 @@
   "n_optuna_trials": 100,
   "best_params": {
     "grow_policy": "SymmetricTree",
-    "depth": 8,
-    "iterations": 1453,
-    "learning_rate": 0.04379074175964758,
-    "border_count": 224,
-    "l2_leaf_reg": 38.212017260950894,
-    "min_data_in_leaf": 111,
-    "random_strength": 1.434812553927814,
-    "colsample_bylevel": 0.7680988118297574,
-    "subsample": 0.8709869447397797
+    "depth": 5,
+    "iterations": 1440,
+    "learning_rate": 0.024009283478176636,
+    "border_count": 247,
+    "l2_leaf_reg": 11.208502031091603,
+    "min_data_in_leaf": 118,
+    "random_strength": 0.5448603601799336,
+    "colsample_bylevel": 0.5130757577830849,
+    "subsample": 0.9193325422408598
   }
 }

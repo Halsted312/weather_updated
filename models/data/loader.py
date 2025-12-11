@@ -32,6 +32,7 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from src.config.cities import get_city, CityConfig
+from models.features.interpolation import interpolate_cloudcover_from_hourly
 
 logger = logging.getLogger(__name__)
 
@@ -608,6 +609,13 @@ def load_training_data(
             fcst_daily = load_historical_forecast_daily(session, city_id, day, basis_date)
             fcst_hourly = load_historical_forecast_hourly(session, city_id, day, basis_date)
 
+            # Interpolate hourly cloudcover to 5-minute obs timestamps
+            if fcst_hourly is not None and not fcst_hourly.empty:
+                hourly_for_interp = fcst_hourly.rename(
+                    columns={"target_datetime_local": "datetime_local"}
+                )
+                day_obs = interpolate_cloudcover_from_hourly(day_obs, hourly_for_interp)
+
             all_data.append({
                 "city": city_id,
                 "day": day,
@@ -1102,6 +1110,18 @@ def load_full_inference_data(
     fcst_hourly_df = load_historical_forecast_hourly(session, city_id, event_date, basis_date)
     if fcst_hourly_df is not None and fcst_hourly_df.empty:
         fcst_hourly_df = None
+
+    # 2a. Interpolate hourly cloudcover to 5-minute observation timestamps
+    # VC minute obs often lack cloudcover; hourly forecasts have it
+    if fcst_hourly_df is not None and not fcst_hourly_df.empty:
+        # Rename column to match interpolation function expectation
+        hourly_for_interp = fcst_hourly_df.rename(
+            columns={"target_datetime_local": "datetime_local"}
+        )
+        obs_df = interpolate_cloudcover_from_hourly(obs_df, hourly_for_interp)
+        logger.debug(
+            f"Interpolated cloudcover from hourly forecast to {len(obs_df)} observations"
+        )
 
     # 3. Load multi-horizon forecasts (T-1 to T-6)
     fcst_multi = load_multi_horizon_forecasts(session, city_id, event_date)
