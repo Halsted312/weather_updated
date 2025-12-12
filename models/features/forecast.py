@@ -258,30 +258,28 @@ def compute_forecast_delta_features(
     fcst_max_f: Optional[float],
     obs_max_sofar: float,
 ) -> FeatureSet:
-    """Compute simple delta between forecast max and observed max so far.
+    """Compute forecast remaining potential feature.
+
+    NOTE: delta_vcmax_fcstmax_sofar was removed - it duplicates obs_fcst_max_gap
+    which is computed in compute_derived_forecast_features().
 
     Args:
         fcst_max_f: Forecast daily high from T-1
         obs_max_sofar: Maximum observed temperature so far
 
     Returns:
-        FeatureSet with delta features
+        FeatureSet with fcst_remaining_potential
     """
     if fcst_max_f is None:
         return FeatureSet(name="forecast_delta", features={
-            "delta_vcmax_fcstmax_sofar": None,
             "fcst_remaining_potential": None,
         })
-
-    # How much has observed exceeded forecast so far?
-    delta = obs_max_sofar - fcst_max_f
 
     # Remaining potential: how much higher could it still go if forecast is right?
     # (Only meaningful if obs is still below forecast max)
     remaining = max(0.0, fcst_max_f - obs_max_sofar)
 
     features = {
-        "delta_vcmax_fcstmax_sofar": delta,
         "fcst_remaining_potential": remaining,
     }
 

@@ -41,7 +41,7 @@ FORECAST_ERROR_COLS = [
     "err_abs_mean_sofar",
     "err_last1h",
     "err_last3h_mean",
-    "delta_vcmax_fcstmax_sofar",
+    # NOTE: delta_vcmax_fcstmax_sofar removed - duplicate of obs_fcst_max_gap
     "fcst_remaining_potential",
 ]
 
@@ -225,7 +225,7 @@ INTERACTION_COLS = [
     "gap_x_hours_remaining",
     "temp_x_day_fraction",
     "fcst_obs_ratio",
-    "fcst_obs_diff_squared",
+    # NOTE: fcst_obs_diff_squared removed - not in NUMERIC_FEATURE_COLS, low importance
     "log_minutes_since_open",
     "log_hours_to_close",
     "temp_zscore_vs_forecast",

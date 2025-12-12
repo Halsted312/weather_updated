@@ -16,7 +16,6 @@ Features computed:
 
     Forecast × Observation ratios:
         fcst_obs_ratio: fcst_max / obs_max (>1 means upside expected)
-        fcst_obs_diff_squared: (fcst - obs)^2 (emphasizes large gaps)
 
     Log transforms:
         log_minutes_since_market_open: Captures diminishing returns
@@ -91,11 +90,7 @@ def compute_interaction_features(
     else:
         features["fcst_obs_ratio"] = None
 
-    if fcst_prev_max_f is not None and vc_max_f_sofar is not None:
-        diff = fcst_prev_max_f - vc_max_f_sofar
-        features["fcst_obs_diff_squared"] = diff * diff
-    else:
-        features["fcst_obs_diff_squared"] = None
+    # NOTE: fcst_obs_diff_squared removed - not in NUMERIC_FEATURE_COLS, low importance
 
     # Log transforms
     if minutes_since_market_open is not None and minutes_since_market_open > 0:
