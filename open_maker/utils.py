@@ -83,6 +83,71 @@ def kalshi_maker_fee(price_cents: float, num_contracts: int = 1) -> float:
 # Bracket Selection
 # =============================================================================
 
+
+def _match_between_bracket(
+    row: pd.Series, temp: float
+) -> Optional[Tuple[str, Optional[float], Optional[float]]]:
+    """
+    Check if temp falls within a 'between' bracket (inclusive on both ends).
+
+    Subtitle "X° to Y°" means both X and Y are covered.
+    """
+    floor_s = row["floor_strike"]
+    cap_s = row["cap_strike"]
+
+    if pd.notna(floor_s) and pd.notna(cap_s) and floor_s <= temp <= cap_s:
+        return row["ticker"], float(floor_s), float(cap_s)
+    return None
+
+
+def _match_low_tail_bracket(
+    row: pd.Series, temp: float
+) -> Optional[Tuple[str, Optional[float], Optional[float]]]:
+    """
+    Check if temp matches a low tail bracket ('less' or 'less_or_equal').
+
+    - 'less': temp < cap (exclusive upper bound)
+    - 'less_or_equal': temp <= cap (inclusive upper bound)
+    """
+    strike_type = row["strike_type"]
+    cap_s = row["cap_strike"]
+
+    if not pd.notna(cap_s):
+        return None
+
+    if strike_type == "less" and temp < cap_s:
+        return row["ticker"], None, float(cap_s)
+    if strike_type == "less_or_equal" and temp <= cap_s:
+        return row["ticker"], None, float(cap_s)
+
+    return None
+
+
+def _match_high_tail_bracket(
+    row: pd.Series, temp: float
+) -> Optional[Tuple[str, Optional[float], Optional[float]]]:
+    """
+    Check if temp matches a high tail bracket ('greater' or 'greater_or_equal').
+
+    - 'greater': temp > floor (exclusive lower bound), requires cap_strike to be NULL
+    - 'greater_or_equal': temp >= floor (inclusive lower bound)
+    """
+    strike_type = row["strike_type"]
+    floor_s = row["floor_strike"]
+
+    if not pd.notna(floor_s):
+        return None
+
+    if strike_type == "greater":
+        # Only match true tail brackets (cap_strike is NULL/NaN)
+        if pd.isna(row["cap_strike"]) and temp > floor_s:
+            return row["ticker"], float(floor_s), None
+    elif strike_type == "greater_or_equal" and temp >= floor_s:
+        return row["ticker"], float(floor_s), None
+
+    return None
+
+
 def find_bracket_for_temp(
     markets_df: pd.DataFrame,
     event_date: date,
@@ -92,7 +157,7 @@ def find_bracket_for_temp(
     """
     Find the bracket containing a temperature.
 
-    Priority: between > less/less_or_equal > greater/greater_or_equal
+    Priority: between > low_tail > high_tail
     This ensures we match specific brackets before tail brackets.
 
     IMPORTANT: Kalshi weather brackets may have 1°F gaps between them (e.g., [43,44], [45,46])
@@ -119,44 +184,33 @@ def find_bracket_for_temp(
     if round_for_trading:
         temp = round(temp)
 
-    # First pass: check "between" brackets (the specific temperature ranges)
-    # Use INCLUSIVE cap since subtitle "X° to Y°" means both X and Y are covered
-    for _, row in day_markets.iterrows():
-        if row["strike_type"] == "between":
-            floor_s = row["floor_strike"]
-            cap_s = row["cap_strike"]
-            # Handle both None and NaN
-            # Inclusive on both ends: floor <= temp <= cap
-            if pd.notna(floor_s) and pd.notna(cap_s) and floor_s <= temp <= cap_s:
-                return row["ticker"], float(floor_s), float(cap_s)
+    # Group markets by strike type for efficient lookup
+    by_type = day_markets.groupby("strike_type")
 
-    # Second pass: check tail brackets only if no between bracket matched
-    # Low tail: "less" or "less_or_equal" (YES if below some threshold)
-    for _, row in day_markets.iterrows():
-        strike_type = row["strike_type"]
-        cap_s = row["cap_strike"]
+    # Priority 1: Check "between" brackets first (specific temperature ranges)
+    if "between" in by_type.groups:
+        for _, row in by_type.get_group("between").iterrows():
+            result = _match_between_bracket(row, temp)
+            if result:
+                return result
 
-        if strike_type == "less":
-            # Subtitle "X° or below" -> temp <= cap - 1 (since cap is the exclusive boundary)
-            if pd.notna(cap_s) and temp < cap_s:
-                return row["ticker"], None, float(cap_s)
-        elif strike_type == "less_or_equal":
-            if pd.notna(cap_s) and temp <= cap_s:
-                return row["ticker"], None, float(cap_s)
+    # Priority 2: Check low tail brackets ('less' or 'less_or_equal')
+    low_tail_types = ["less", "less_or_equal"]
+    for strike_type in low_tail_types:
+        if strike_type in by_type.groups:
+            for _, row in by_type.get_group(strike_type).iterrows():
+                result = _match_low_tail_bracket(row, temp)
+                if result:
+                    return result
 
-    # High tail: "greater" or "greater_or_equal" (YES if above some threshold)
-    for _, row in day_markets.iterrows():
-        strike_type = row["strike_type"]
-        floor_s = row["floor_strike"]
-
-        if strike_type == "greater":
-            # Subtitle "X° or above" -> temp >= floor + 1 (since floor is the exclusive boundary)
-            # Only match if cap_strike is NULL/NaN (true tail)
-            if pd.notna(floor_s) and pd.isna(row["cap_strike"]) and temp > floor_s:
-                return row["ticker"], float(floor_s), None
-        elif strike_type == "greater_or_equal":
-            if pd.notna(floor_s) and temp >= floor_s:
-                return row["ticker"], float(floor_s), None
+    # Priority 3: Check high tail brackets ('greater' or 'greater_or_equal')
+    high_tail_types = ["greater", "greater_or_equal"]
+    for strike_type in high_tail_types:
+        if strike_type in by_type.groups:
+            for _, row in by_type.get_group(strike_type).iterrows():
+                result = _match_high_tail_bracket(row, temp)
+                if result:
+                    return result
 
     return None
 
