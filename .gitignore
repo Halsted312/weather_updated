@@ -97,7 +97,6 @@ analysis/outputs/
 analysis/results/
 *.html
 !docs/**/*.html
-data/
 run_dense_overnight.sh
 
 
