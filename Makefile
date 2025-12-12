@@ -26,11 +26,11 @@ help:
 	@echo "  make format       - Format code (black)"
 	@echo ""
 	@echo "Ingestion:"
-	@echo "  make ingest-markets   - Backfill Kalshi markets"
-	@echo "  make ingest-candles   - Backfill Kalshi candles"
-	@echo "  make ingest-vc        - Backfill Visual Crossing minutes"
-	@echo "  make ingest-forecasts - Backfill VC forecasts"
-	@echo "  make ingest-settlement - Backfill NWS settlements"
+	@echo "  make ingest-markets     - Backfill Kalshi markets"
+	@echo "  make ingest-candles     - Backfill Kalshi candles"
+	@echo "  make ingest-vc-obs      - Backfill Visual Crossing observations"
+	@echo "  make ingest-vc-forecasts - Backfill VC historical forecasts"
+	@echo "  make ingest-settlement  - Backfill NWS settlements"
 
 # Setup
 install:
@@ -95,26 +95,19 @@ format:
 
 # Ingestion scripts
 ingest-markets:
-	python scripts/backfill_kalshi_markets.py
+	python scripts/ingestion/kalshi/backfill_kalshi_markets.py
 
 ingest-candles:
-	python scripts/backfill_kalshi_candles.py
+	python scripts/ingestion/kalshi/backfill_kalshi_candles.py
 
-ingest-vc:
-	python scripts/ingest_vc_minutes.py
+ingest-vc-obs:
+	python scripts/ingestion/vc/ingest_vc_obs_backfill.py
 
-ingest-forecasts:
-	python scripts/ingest_vc_forecasts.py
+ingest-vc-forecasts:
+	python scripts/ingestion/vc/ingest_vc_historical_forecast_parallel.py
 
 ingest-settlement:
-	python scripts/ingest_settlement_nws.py
-
-validate-settlements:
-	python scripts/validate_settlements.py
-
-# Backtest
-backtest-option1:
-	python scripts/run_option1_backtest.py
+	python scripts/ingestion/settlement/ingest_settlement_multi.py
 
 # Clean
 clean:

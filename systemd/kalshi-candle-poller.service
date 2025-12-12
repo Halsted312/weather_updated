@@ -9,7 +9,7 @@ User=halsted
 Group=halsted
 WorkingDirectory=/home/halsted/Python/weather_updated
 Environment="PYTHONPATH=/home/halsted/Python/weather_updated"
-ExecStart=/home/halsted/Python/weather_updated/.venv/bin/python scripts/poll_kalshi_candles.py --interval 60 --lookback 10
+ExecStart=/home/halsted/Python/weather_updated/.venv/bin/python scripts/daemons/poll_kalshi_candles.py --interval 60 --lookback 10
 Restart=always
 RestartSec=10
 

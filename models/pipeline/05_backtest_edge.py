@@ -8,13 +8,14 @@ Uses the ordinal model + cached test parquet + DB candles/settlements.
 import argparse
 import logging
 import sys
+from pathlib import Path
 
 # Add project root to path
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from scripts.backtest_edge import main as backtest_main  # noqa: E402
-from scripts.backtest_edge import CITY_CONFIG  # noqa: E402
+from scripts.training.core.backtest_edge import main as backtest_main  # noqa: E402
+from scripts.training.core.backtest_edge import CITY_CONFIG  # noqa: E402
 
 logging.basicConfig(
     level=logging.INFO,

@@ -9,7 +9,7 @@ User=halsted
 Group=halsted
 WorkingDirectory=/home/halsted/Python/weather_updated
 Environment="PYTHONPATH=/home/halsted/Python/weather_updated"
-ExecStart=/home/halsted/Python/weather_updated/.venv/bin/python scripts/poll_vc_live_daemon.py
+ExecStart=/home/halsted/Python/weather_updated/.venv/bin/python scripts/daemons/poll_vc_live_daemon.py
 Restart=always
 RestartSec=10
 

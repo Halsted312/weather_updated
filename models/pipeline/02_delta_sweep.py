@@ -17,7 +17,7 @@ import pandas as pd
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from scripts.optuna_delta_range_sweep import run_optuna_sweep  # noqa: E402
+from scripts.training.core.optuna_delta_range_sweep import run_optuna_sweep  # noqa: E402
 
 logging.basicConfig(
     level=logging.INFO,

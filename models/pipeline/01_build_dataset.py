@@ -27,7 +27,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from models.data.loader import get_available_date_range  # noqa: E402
-from scripts.train_city_ordinal_optuna import (  # noqa: E402
+from scripts.training.core.train_city_ordinal_optuna import (  # noqa: E402
     VALID_CITIES,
     build_dataset_parallel,
 )

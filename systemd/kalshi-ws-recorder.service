@@ -9,7 +9,7 @@ User=halsted
 Group=halsted
 WorkingDirectory=/home/halsted/Python/weather_updated
 Environment="PYTHONPATH=/home/halsted/Python/weather_updated"
-ExecStart=/home/halsted/Python/weather_updated/.venv/bin/python scripts/kalshi_ws_recorder.py
+ExecStart=/home/halsted/Python/weather_updated/.venv/bin/python scripts/daemons/kalshi_ws_recorder.py
 Restart=always
 RestartSec=10
 

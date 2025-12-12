@@ -34,7 +34,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 import pandas as pd
 
 from models.data.splits import train_test_split_by_ratio
-from scripts.train_city_ordinal_optuna import (  # noqa: E402
+from scripts.training.core.train_city_ordinal_optuna import (  # noqa: E402
     VALID_CITIES,
     main as train_city_main,
 )
